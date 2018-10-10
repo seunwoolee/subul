@@ -1,3 +1,15 @@
 from django.contrib import admin
+from .models import Product, ProductAdmin, ProductCode, ProductMaster, ProductEgg, ProductUnitPrice, SetProductCode\
+    , SetProductMatch
 
-# Register your models here.
+
+myModels = [Product,
+            ProductAdmin,
+            ProductCode,
+            ProductMaster,
+            ProductEgg,
+            ProductUnitPrice,
+            SetProductCode,
+            SetProductMatch]
+
+admin.site.register(myModels)

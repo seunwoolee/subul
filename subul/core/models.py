@@ -106,9 +106,9 @@ class Location(Code):
         choices=LOCATION_TYPE_CHOICES,
         default='05',
     )
-    location_address = models.CharField(max_length=255)
-    location_phone = models.CharField(max_length=255)
-    location_companyNumber = models.CharField(max_length=255)
+    location_address = models.CharField(max_length=255,blank=True,null=True)
+    location_phone = models.CharField(max_length=255,blank=True,null=True)
+    location_companyNumber = models.CharField(max_length=255,blank=True,null=True)
     location_shoppingmall = models.CharField(
         max_length=2,
         choices=SHOPPINGMALL_TYPE_CHOICES,
@@ -120,3 +120,6 @@ class Location(Code):
         default='99',
     )
     location_manager = models.ForeignKey(CustomUser ,on_delete=models.SET_NULL, null=True, blank=True, related_name='location_manager')
+
+    def __str__(self):
+        return self.codeName

@@ -21,93 +21,15 @@ hotkeys('f2', function(event, handler) {
   addRow();
 });
 
-$('.gubun1').select2({placeholder: '공정 구분'});
-$('.product1').select2({  placeholder: '제품명을 선택해주세요'});
-
- 
-var counter = 1;
-var product;
-
-function addRow()
-{
-	row =  '<tr class="animated fadeIn">'
-	row += '<td>'+counter+'</td>'
-	row += ' <td><select class="form-control product'+counter+'" >'
-	row += ' <option value=""></option>'
-	row += ' <optgroup label="제품명">'
-	row += ' <option value="00152">오랩 요리란 500g 전란</option>'
-	row += ' <option value="00151">오랩 요리란 500g 난백</option>'
-	row += ' <option value="00150">오랩 요리란 200g 전란</option>'
-	row += ' <option value="00149">오랩 요리란 200g 난백</option>'
-	row += ' </optgroup>'
-	row += ' </select></td>'		 
-	row += '                      <td>'                        
-	row += '						<div class="input-group">'
-	row += '                          <span class="input-group-prepend">'
-	row += '                            <span class="input-group-text">'
-	row += '                              <i class="fa fa-phone"></i>'
-	row += '                            </span>'
-	row += '                          </span>'
-	row += '                          <input class="form-control" name="asdf1" id="phone" type="text">'
-	row += '						</div>'
-	row += '					  </td>'
-	row += '                      <td>'
-	row += '						<div class="input-group">'
-	row += '                          <span class="input-group-prepend">'
-	row += '                            <span class="input-group-text">'
-	row += '                              <i class="fa fa-phone"></i>'
-	row += '                            </span>'
-	row += '                          </span>'
-	row += '                          <input class="form-control" id="phone" type="text">'
-	row += '						</div>'
-	row += '                      </td>'
-	row += '                      <td>'
-	row += '						<div class="input-group">'
-	row += '                          <span class="input-group-prepend">'
-	row += '                            <span class="input-group-text">'
-	row += '                              <i class="fa fa-edit"></i>'
-	row += '                            </span>'
-	row += '                          </span>'
-	row += '                          <textarea class="form-control" rows="2" id="memo" name="memo">'
-	row += '						  </textarea>'
-	row += '						</div>'
-	row += '                      </td>'
-	row += '                      <td>'
-	row += '                        <a class="btn btn-success" href="#">'
-	row += '                          <i class="fa fa-search-plus"></i>'
-	row += '                        </a>'
-	row += '                        <a class="btn btn-info" href="#">'
-	row += '                          <i class="fa fa-edit"></i>'
-	row += '                        </a>'
-	row += '                        <a class="btn btn-danger" href="#">'
-	row += '                          <i class="fa fa-trash-o"></i>'
-	row += '                        </a>'
-	row += '                      </td>'
-	row += '                    </tr>'
-	
-	product = '.product'+counter;
-	
-	
-
-	$('#result').append(row); // Row 생성
-	$(product).select2({  placeholder: '제품명을 선택해주세요'}); //select2 기능활성화	
-	
-	counter++; //class 고유번호를 위한 counter ++
-	$(product).focus(); // 편의기능(신규 생성된곳 focus)
-
-}
-
-
-
 
 function cloneMore(selector, prefix) {
     $(selector).find('select').select2("destroy");
-
     var newElement = $(selector).clone(true);
+    var no = newElement.find('.no');
+
     var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
     newElement.find(':input').each(function() {
         var name = $(this).attr('name')
-
         if(name) {
             name = name.replace('-' + (total-1) + '-', '-' + total + '-');
             var id = 'id_' + name;
@@ -115,6 +37,7 @@ function cloneMore(selector, prefix) {
         }
     });
     total++;
+    no.html(total);
     $('#id_' + prefix + '-TOTAL_FORMS').val(total);
     $(selector).after(newElement);
     var conditionRow = $('.forms-row:not(:last)');
@@ -158,10 +81,34 @@ $(document).on('click', '.add-form-row', function(e){
 
 $(document).on('click', '.remove-form-row', function(e){
     e.preventDefault();
-    console.log($(this))
     deleteForm('form', $(this));
     return false;
 });
+
+
+$(function () {
+  $("#datepicker").datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        format:'yyyymmdd'
+  });
+});
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
+
+function validTest(){
+  console.log($("input[name*='amount']"))
+  console.log($("input[name*='count']"))
+//  var tt = $("input").val()
+//  console.log(tt)
+
+//  console.log(document.getElementsByName(""))
+}
+
+
 
 // $('#select2-3').select2({
   // theme: 'bootstrap',

@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import *
+from .models import ReleaseMaster, Release
 
 
-myModels = [Order,OrderMaster]
+myModels = [Release,ReleaseMaster]
 
 admin.site.register(myModels)
 # Register your models here.

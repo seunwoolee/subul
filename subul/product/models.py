@@ -1,21 +1,24 @@
 from django.db import models
 from core.models import Code, Detail, Location, Out , TimeStampedModel
 from release.models import Release
+from django.db.models import Sum
 
 class ProductMaster(models.Model):
-    produce_id = models.IntegerField()
+    produce_id = models.IntegerField(default=0)
     ymd = models.CharField(max_length=8)
-    total_loss_openEgg = models.IntegerField()
-    total_loss_insert = models.IntegerField()
-    total_loss_clean = models.IntegerField()
-    total_loss_fill = models.IntegerField()
-    total_openEgg = models.IntegerField()
-    total_eggUse = models.IntegerField()
-    total_storeInsert = models.IntegerField()
-    total_produceStore = models.IntegerField()
-    total_productAmount = models.IntegerField()
-    total_productCount = models.IntegerField()
+    total_loss_openEgg = models.IntegerField(default=0)
+    total_loss_insert = models.IntegerField(default=0)
+    total_loss_clean = models.IntegerField(default=0)
+    total_loss_fill = models.IntegerField(default=0)
+    total_openEgg = models.IntegerField(default=0)
+    total_eggUse = models.IntegerField(default=0)
+    total_storeInsert = models.IntegerField(default=0)
+    total_produceStore = models.IntegerField(default=0)
+    total_productAmount = models.IntegerField(default=0)
+    total_productCount = models.IntegerField(default=0)
 
+    def __str__(self):
+        return self.ymd + '_생산마스터'
 
 class ProductEgg(models.Model):
     EGG_TYPE_CHOICES= (
@@ -51,11 +54,67 @@ class ProductEgg(models.Model):
         choices=TANK_TYPE_CHOICES,
         default='01201'
     )
-    rawTank_amount = models.IntegerField()
-    pastTank_amount = models.IntegerField()
-    loss_insert = models.FloatField()
-    loss_openEgg = models.FloatField()
-    memo = models.TextField()
+    rawTank_amount = models.IntegerField(default=0)
+    pastTank_amount = models.IntegerField(default=0)
+    loss_insert = models.FloatField(default=0)
+    loss_openEgg = models.FloatField(default=0)
+    memo = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.type + '_' + self.tank + '(' + self.ymd + ')'
+
+    @staticmethod
+    def makeVaildinfo(productEggInfo, memo): # ('이름','실제값') -> ('이름','실제값','메모')
+        j = 0
+        for info in productEggInfo:  # ('이름','실제값','메모')
+            if '메모' in info[0]:
+                j += 1
+                pass
+            else:
+                info.append(memo[j])
+
+        return productEggInfo
+
+    @staticmethod
+    def insertInfo(main, validInfo):
+        for info in validInfo:  # ('이름','실제값','메모')
+            if info[1] and '메모' not in info[0]:  # 값이 있으며 AND 메모가 아닌경우
+                type, rawOrPastType, tankCode = info[0].split("_")
+                productEgg = ProductEgg.objects.create(
+                    master_id=main,
+                    ymd=main.ymd,
+                    type=type,
+                    tank=tankCode,
+                    memo=info[2],
+                )
+
+                if '투입' in type or '사용' in type : #공정품투입 , 할란사용 경우 -number 입력
+                    print(type)
+                    info[1] = -info[1]
+
+                if 'RawTank' in rawOrPastType:
+                    productEgg.rawTank_amount = info[1]
+                elif 'PastTank' in rawOrPastType:
+                    productEgg.pastTank_amount = info[1]
+                productEgg.save()  # TODO 할란 , 할란사용 수율 비례식 계산 필요
+
+    @staticmethod
+    def getLossOpenEggPercent(masterInstance):
+        total_rawTank_amount = 0
+        eggs = ProductEgg.objects.filter(master_id=masterInstance).filter(type='할란')
+        for egg in eggs:
+            total_rawTank_amount += egg.rawTank_amount
+
+        try:
+            for egg in eggs:
+                percent = egg.rawTank_amount / total_rawTank_amount
+                openEgglossPercent = round(masterInstance.total_loss_openEgg * percent ,2)
+                insertlossPercent = round(masterInstance.total_loss_insert * percent, 2)
+                egg.loss_openEgg = openEgglossPercent
+                egg.loss_insert = insertlossPercent
+                egg.save()
+        except ZeroDivisionError:
+            pass
 
 
 class ProductCode(Code):
@@ -63,7 +122,7 @@ class ProductCode(Code):
         ('전란', '전란'),
         ('난백', '난백'),
         ('난황', '난황'),
-        ('', '없음'),
+        ('X', '없음'),
     )
 
     STORE_TYPE_CHOICES = (
@@ -84,7 +143,7 @@ class ProductCode(Code):
         default='',
     )
 
-    amount_kg = models.IntegerField()
+    amount_kg = models.FloatField()
     price = models.IntegerField()
     store_type = models.CharField(
         max_length=10,
@@ -95,23 +154,26 @@ class ProductCode(Code):
     expiration = models.IntegerField(default=0)
 
     def __str__(self ):
-        return self.code_name + ' ' + self.code
+        return self.codeName + '(' + self.code + ')'
 
 
 class Product(Detail): #TODO 주문 나갈때 Tag 붙이는 필드 필요
     master_id = models.ForeignKey(ProductMaster,
                                   on_delete=models.CASCADE,
                                   related_name='master_id')
-    loss_clean = models.FloatField()
-    loss_fill = models.FloatField()
+    loss_clean = models.FloatField(default=0)
+    loss_fill = models.FloatField(default=0)
     '''OEM 상품에 한해서 있는 필드'''
-    purchaseYymd = models.CharField(max_length=8)
-    purchaseLocation = models.ForeignKey(Location,on_delete=models.CASCADE,related_name='purchase_locationCode')
-    purchaseLocationName = models.CharField(max_length=255)
+    purchaseYmd = models.CharField(max_length=8, blank=True, null=True)
+    purchaseLocation = models.ForeignKey(Location,on_delete=models.CASCADE,related_name='purchase_locationCode', blank=True, null=True)
+    purchaseLocationName = models.CharField(max_length=255, blank=True, null=True)
 
+    def __str__(self):
+        return self.codeName + '(' + self.ymd + ')'
 
 class ProductAdmin(models.Model):
     RELEASE_TYPE_CHOICES = (
+        ('생성','생성'),
         ('판매','판매'),
         ('샘플','샘플'),
         ('증정','증정'),
@@ -126,9 +188,13 @@ class ProductAdmin(models.Model):
     releaseType = models.CharField(
         max_length=10,
         choices=RELEASE_TYPE_CHOICES,
-        default='',
+        default='생성',
     )
-    releaseSeq = models.ForeignKey(Release, on_delete=models.CASCADE)
+    releaseSeq = models.ForeignKey(Release, on_delete=models.CASCADE, null=True, blank=True)
+
+
+    def __str__(self):
+        return self.product_id.codeName + '(' + self.ymd + ') _' + self.releaseType
 
 
 class ProductUnitPrice(TimeStampedModel):

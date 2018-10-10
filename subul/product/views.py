@@ -1,22 +1,74 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.views.generic.base import View
-from .forms import StepOneForm , StepTwoForm , StepThreeForm , StepFourForm , StepFourFormSet ,  Select2WidgetForm
+
+from core.models import Location
+from product.models import ProductEgg, Product, ProductCode, ProductAdmin
+from .forms import StepOneForm, StepTwoForm, StepThreeForm, StepFourForm, StepFourFormSet, MainForm
 from django.views.generic import FormView
-# class HomePageView(TemplateView):
-#     template_name = 'product/home.html'
 
-class TemplateFormView(View):
-
-    def get(self, request):
-        form = Select2WidgetForm(auto_id=False)
-        template_name = 'product/form.html'
-        return render(request, template_name, {'form':form})
 
 class ProductView(View):
 
     def post(self, request):
-        print(request.POST)
+        form0 = MainForm(request.POST)
+        form1 = StepOneForm(request.POST)
+        form2 = StepTwoForm(request.POST)
+        form3 = StepThreeForm(request.POST)
+        formset = StepFourFormSet(request.POST)
+
+        if form0.is_valid():
+            main = form0.save()
+
+        if form1.is_valid():
+            stepOneProductEgg = [[key, value] for key, value in form1.cleaned_data.items()]
+            memo = [stepOneProductEgg[i][1] for i in range(2, len(stepOneProductEgg), 3)]  # 메모만 가져오기
+            validStepOne = ProductEgg.makeVaildinfo(stepOneProductEgg, memo)
+            ProductEgg.insertInfo(main, validStepOne)
+            ProductEgg.getLossOpenEggPercent(main)
+
+
+        if form2.is_valid():
+            stepTwoProductEgg = [[key, value] for key, value in form2.cleaned_data.items()]
+            memo = [stepTwoProductEgg[i][1] for i in range(1, len(stepTwoProductEgg), 2)]
+            validStepTwo = ProductEgg.makeVaildinfo(stepTwoProductEgg, memo)
+            ProductEgg.insertInfo(main, validStepTwo)
+            # print(steTwoInstance)
+
+        if form3.is_valid():
+            stepThreeProductEgg = [[key, value] for key, value in form3.cleaned_data.items()]
+            memo = [stepThreeProductEgg[i][1] for i in range(1, len(stepThreeProductEgg), 2)]
+            validStepThree = ProductEgg.makeVaildinfo(stepThreeProductEgg, memo)
+            ProductEgg.insertInfo(main, validStepThree)
+
+        if formset.is_valid():
+            for form in formset:
+                code = form.cleaned_data.get('product')
+                amount = form.cleaned_data.get('amount')
+                count = form.cleaned_data.get('count')
+                memo = form.cleaned_data.get('memo')
+                codeName = ProductCode.objects.filter(code=code)
+                product = Product.objects.create(
+                    master_id = main,
+                    ymd = main.ymd,
+                    code = code,
+                    codeName = codeName[0].codeName,
+                    amount = amount,
+                    count = count,
+                    memo = memo
+                )
+                # ProductAdmin도 insert 해줘야...
+                location = Location.objects.get(code=301)
+                productAdmin = ProductAdmin.objects.create(
+                    product_id = product,
+                    amount = amount,
+                    count = count,
+                    ymd = main.ymd,
+                    location = location,
+                )
+                product.save()
+                productAdmin.save()
+
         return render(request, 'product/home.html')
 
     def get(self, request):
@@ -24,10 +76,11 @@ class ProductView(View):
         stepTwoForm = StepTwoForm(auto_id=False)
         stepThreeForm = StepThreeForm(auto_id=False)
         stepFourForm = StepFourFormSet(request.GET or None)
-
+        mainForm = MainForm(auto_id=False)
         testValue = '12222'
-        return render(request, 'product/home.html',{'stepOneForm' : stepOneForm,
-                                                       'stepTwoForm' : stepTwoForm,
-                                                       'stepThreeForm' : stepThreeForm,
-                                                       'stepFourForm' : stepFourForm,
-                                                       'testValue' : testValue})
+        return render(request, 'product/home.html', {'stepOneForm': stepOneForm,
+                                                     'stepTwoForm': stepTwoForm,
+                                                     'stepThreeForm': stepThreeForm,
+                                                     'stepFourForm': stepFourForm,
+                                                     'mainForm': mainForm,
+                                                     'testValue': testValue})

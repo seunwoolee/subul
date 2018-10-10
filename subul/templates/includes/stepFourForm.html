@@ -2,13 +2,13 @@
 {% load mathfilters %}
 
     {{ stepFourForm.management_form }}
-    {% for field in stepFourForm %}
 
+    {% for field in stepFourForm %}
           <tr class="forms-row">
-            <td>{{ forloop.counter }}</td>
-            <td>{% render_field field.product style="width : 200px;" %}</td>
+            <td class="no">{{ forloop.counter }}</td>
+            <td>{% render_field field.product style="width : 300px;" %}</td>
             <td>{% render_field field.amount class="form-control" %}</td>
-            <td>{% render_field field.count class="form-control" %}</td>
+            <td>{% render_field field.count  class="form-control" %}</td>
             <td>
                 <div class="input-group">
                     {% render_field field.memo class="form-control" %}

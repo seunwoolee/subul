@@ -1,0 +1,8 @@
+{% load widget_tweaks %}
+
+
+    {% for field in mainForm.visible_fields %}
+        <div class="col-auto">
+            {% render_field field class="form-control" %}
+        </div>
+    {% endfor %}
