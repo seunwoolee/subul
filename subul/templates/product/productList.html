@@ -1,0 +1,233 @@
+﻿{% extends 'baseHTML.html' %}
+
+{% load static %}
+
+
+{% block stylesheet %}
+{% endblock %}
+
+{% block content %}
+        <div class="container-fluid">
+          <div class="animated fadeIn">
+            <div class="card">
+              <div class="card-header">
+                <i class="fa fa-edit"></i> DataTables
+                <div class="card-header-actions">
+                  <a class="card-header-action" href="https://datatables.net" target="_blank">
+                    <small class="text-muted">docs</small>
+                  </a>
+                </div>
+              </div>
+              <div class="card-body">
+                <table class="table table-striped table-bordered datatable">
+                  <thead>
+                    <tr>
+                      <th>Username</th>
+                      <th>Date registered</th>
+                      <th>Role</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Anton Phunihel</td>
+                      <td>2012/01/01</td>
+                      <td>Member</td>
+                      <td>
+                        <span class="badge badge-success">Active</span>
+                      </td>
+                      <td>
+                        <a class="btn btn-success" href="#">
+                          <i class="fa fa-search-plus"></i>
+                        </a>
+                        <a class="btn btn-info" href="#">
+                          <i class="fa fa-edit"></i>
+                        </a>
+                        <a class="btn btn-danger" href="#">
+                          <i class="fa fa-trash-o"></i>
+                        </a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Alphonse Ivo</td>
+                      <td>2012/01/01</td>
+                      <td>Member</td>
+                      <td>
+                        <span class="badge badge-success">Active</span>
+                      </td>
+                      <td>
+                        <a class="btn btn-success" href="#">
+                          <i class="fa fa-search-plus"></i>
+                        </a>
+                        <a class="btn btn-info" href="#">
+                          <i class="fa fa-edit"></i>
+                        </a>
+                        <a class="btn btn-danger" href="#">
+                          <i class="fa fa-trash-o"></i>
+                        </a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Thancmar Theophanes</td>
+                      <td>2012/01/01</td>
+                      <td>Member</td>
+                      <td>
+                        <span class="badge badge-success">Active</span>
+                      </td>
+                      <td>
+                        <a class="btn btn-success" href="#">
+                          <i class="fa fa-search-plus"></i>
+                        </a>
+                        <a class="btn btn-info" href="#">
+                          <i class="fa fa-edit"></i>
+                        </a>
+                        <a class="btn btn-danger" href="#">
+                          <i class="fa fa-trash-o"></i>
+                        </a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Walerian Khwaja</td>
+                      <td>2012/01/01</td>
+                      <td>Member</td>
+                      <td>
+                        <span class="badge badge-success">Active</span>
+                      </td>
+                      <td>
+                        <a class="btn btn-success" href="#">
+                          <i class="fa fa-search-plus"></i>
+                        </a>
+                        <a class="btn btn-info" href="#">
+                          <i class="fa fa-edit"></i>
+                        </a>
+                        <a class="btn btn-danger" href="#">
+                          <i class="fa fa-trash-o"></i>
+                        </a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Clemens Janko</td>
+                      <td>2012/02/01</td>
+                      <td>Staff</td>
+                      <td>
+                        <span class="badge badge-danger">Banned</span>
+                      </td>
+                      <td>
+                        <a class="btn btn-success" href="#">
+                          <i class="fa fa-search-plus"></i>
+                        </a>
+                        <a class="btn btn-info" href="#">
+                          <i class="fa fa-edit"></i>
+                        </a>
+                        <a class="btn btn-danger" href="#">
+                          <i class="fa fa-trash-o"></i>
+                        </a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Chidubem Gottlob</td>
+                      <td>2012/02/01</td>
+                      <td>Staff</td>
+                      <td>
+                        <span class="badge badge-danger">Banned</span>
+                      </td>
+                      <td>
+                        <a class="btn btn-success" href="#">
+                          <i class="fa fa-search-plus"></i>
+                        </a>
+                        <a class="btn btn-info" href="#">
+                          <i class="fa fa-edit"></i>
+                        </a>
+                        <a class="btn btn-danger" href="#">
+                          <i class="fa fa-trash-o"></i>
+                        </a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Hristofor Sergio</td>
+                      <td>2012/03/01</td>
+                      <td>Member</td>
+                      <td>
+                        <span class="badge badge-warning">Pending</span>
+                      </td>
+                      <td>
+                        <a class="btn btn-success" href="#">
+                          <i class="fa fa-search-plus"></i>
+                        </a>
+                        <a class="btn btn-info" href="#">
+                          <i class="fa fa-edit"></i>
+                        </a>
+                        <a class="btn btn-danger" href="#">
+                          <i class="fa fa-trash-o"></i>
+                        </a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Tadhg Griogair</td>
+                      <td>2012/03/01</td>
+                      <td>Member</td>
+                      <td>
+                        <span class="badge badge-warning">Pending</span>
+                      </td>
+                      <td>
+                        <a class="btn btn-success" href="#">
+                          <i class="fa fa-search-plus"></i>
+                        </a>
+                        <a class="btn btn-info" href="#">
+                          <i class="fa fa-edit"></i>
+                        </a>
+                        <a class="btn btn-danger" href="#">
+                          <i class="fa fa-trash-o"></i>
+                        </a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Pollux Beaumont</td>
+                      <td>2012/01/21</td>
+                      <td>Staff</td>
+                      <td>
+                        <span class="badge badge-success">Active</span>
+                      </td>
+                      <td>
+                        <a class="btn btn-success" href="#">
+                          <i class="fa fa-search-plus"></i>
+                        </a>
+                        <a class="btn btn-info" href="#">
+                          <i class="fa fa-edit"></i>
+                        </a>
+                        <a class="btn btn-danger" href="#">
+                          <i class="fa fa-trash-o"></i>
+                        </a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Ajith Hristijan</td>
+                      <td>2012/03/01</td>
+                      <td>Member</td>
+                      <td>
+                        <span class="badge badge-warning">Pending</span>
+                      </td>
+                      <td>
+                        <a class="btn btn-success" href="#">
+                          <i class="fa fa-search-plus"></i>
+                        </a>
+                        <a class="btn btn-info" href="#">
+                          <i class="fa fa-edit"></i>
+                        </a>
+                        <a class="btn btn-danger" href="#">
+                          <i class="fa fa-trash-o"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/productList.js' %}"></script>
+{% endblock %}

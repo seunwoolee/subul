@@ -1,15 +1,15 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.views.generic.base import View
-
+from django.core import serializers
 from core.models import Location
 from product.models import ProductEgg, Product, ProductCode, ProductAdmin
 from .forms import StepOneForm, StepTwoForm, StepThreeForm, StepFourForm, StepFourFormSet, MainForm
 from django.views.generic import FormView
 
 
-class ProductView(View):
-
+class ProductRegister(View):
     def post(self, request):
         form0 = MainForm(request.POST)
         form1 = StepOneForm(request.POST)
@@ -69,7 +69,7 @@ class ProductView(View):
                 product.save()
                 productAdmin.save()
 
-        return render(request, 'product/home.html')
+        return render(request, 'product/productRegister.html')
 
     def get(self, request):
         stepOneForm = StepOneForm(auto_id=False)
@@ -78,9 +78,22 @@ class ProductView(View):
         stepFourForm = StepFourFormSet(request.GET or None)
         mainForm = MainForm(auto_id=False)
         testValue = '12222'
-        return render(request, 'product/home.html', {'stepOneForm': stepOneForm,
+        return render(request, 'product/productRegister.html', {'stepOneForm': stepOneForm,
                                                      'stepTwoForm': stepTwoForm,
                                                      'stepThreeForm': stepThreeForm,
                                                      'stepFourForm': stepFourForm,
                                                      'mainForm': mainForm,
                                                      'testValue': testValue})
+
+
+class ProductList(View):
+    def get(self, request):
+        return render (request, 'product/productList.html')
+
+
+def listData(request):
+    product = Product.objects.get(code = 102)
+    json = serializers.serialize('json', product)
+    print(product)
+    print(json)
+    return HttpResponse(product, content_type='application/json; encoding=utf-8')

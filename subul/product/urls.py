@@ -1,9 +1,10 @@
 from django.conf.urls import url
 from django.urls import path, include
-
-# from django_select2.forms import Select2WidgetForm
 from . import views
 
 urlpatterns = [
-    path('',views.ProductView.as_view(),name='home'),
+    path('',views.ProductRegister.as_view(),name='productRegister'),
+    path('list',views.ProductList.as_view(),name='productList'),
+    path('listData',views.listData,name='listData'),
+
 ]

@@ -12,7 +12,7 @@ var t = $('.datatable').DataTable({
             "infoEmpty": "No records available",
             "infoFiltered": "(검색된결과 from _MAX_ total records)"
         }
-    });
+});
 
 	
 hotkeys('f2', function(event, handler) {
