@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'pinax.eventlog',
     'widget_tweaks',
     'mathfilters',
+    'rest_framework',
 
     # local
     'core',
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
     'product',
     'release',
     'order',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -139,8 +141,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 AUTH_USER_MODEL = 'users.CustomUser'
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'login'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 #email config

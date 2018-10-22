@@ -33,6 +33,7 @@
 
 	<!-- DataTables -->
 	<link href="{% static 'node_modules/datatables.net-bs4/css/dataTables.bootstrap4.css' %}" rel="stylesheet">
+	<link href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css" rel="stylesheet">
   </head>
 
   <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show" >
@@ -41,267 +42,27 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <a class="navbar-brand" href="#">
-        <img class="navbar-brand-full" src="img/brand/logo.svg" width="89" height="25" alt="CoreUI Logo">
+        <img class="navbar-brand-full" src="{% static 'img/logo.gif' %}" width="89" height="25" alt="CoreUI Logo">
         <img class="navbar-brand-minimized" src="img/brand/sygnet.svg" width="30" height="30" alt="CoreUI Logo">
       </a>
       <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button" data-toggle="sidebar-lg-show">
         <span class="navbar-toggler-icon"></span>
       </button>
       <ul class="nav navbar-nav d-md-down-none">
-        <li class="nav-item px-3">
-          <a class="nav-link" href="#">Dashboard</a>
-        </li>
-        <li class="nav-item px-3">
-          <a class="nav-link" href="#">Users</a>
-        </li>
-        <li class="nav-item px-3">
-          <a class="nav-link" href="#">Settings</a>
-        </li>
       </ul>
       <ul class="nav navbar-nav ml-auto">
-        <li class="nav-item dropdown d-md-down-none">
-          <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-            <i class="icon-bell"></i>
-            <span class="badge badge-pill badge-danger">5</span>
-          </a>
-          <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg">
-            <div class="dropdown-header text-center">
-              <strong>You have 5 notifications</strong>
-            </div>
-            <a class="dropdown-item" href="#">
-              <i class="icon-user-follow text-success"></i> New user registered</a>
-            <a class="dropdown-item" href="#">
-              <i class="icon-user-unfollow text-danger"></i> User deleted</a>
-            <a class="dropdown-item" href="#">
-              <i class="icon-chart text-info"></i> Sales report is ready</a>
-            <a class="dropdown-item" href="#">
-              <i class="icon-basket-loaded text-primary"></i> New client</a>
-            <a class="dropdown-item" href="#">
-              <i class="icon-speedometer text-warning"></i> Server overloaded</a>
-            <div class="dropdown-header text-center">
-              <strong>Server</strong>
-            </div>
-            <a class="dropdown-item" href="#">
-              <div class="text-uppercase mb-1">
-                <small>
-                  <b>CPU Usage</b>
-                </small>
-              </div>
-              <span class="progress progress-xs">
-                <div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-              </span>
-              <small class="text-muted">348 Processes. 1/4 Cores.</small>
-            </a>
-            <a class="dropdown-item" href="#">
-              <div class="text-uppercase mb-1">
-                <small>
-                  <b>Memory Usage</b>
-                </small>
-              </div>
-              <span class="progress progress-xs">
-                <div class="progress-bar bg-warning" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
-              </span>
-              <small class="text-muted">11444GB/16384MB</small>
-            </a>
-            <a class="dropdown-item" href="#">
-              <div class="text-uppercase mb-1">
-                <small>
-                  <b>SSD 1 Usage</b>
-                </small>
-              </div>
-              <span class="progress progress-xs">
-                <div class="progress-bar bg-danger" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
-              </span>
-              <small class="text-muted">243GB/256GB</small>
-            </a>
-          </div>
-        </li>
-        <li class="nav-item dropdown d-md-down-none">
-          <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-            <i class="icon-list"></i>
-            <span class="badge badge-pill badge-warning">15</span>
-          </a>
-          <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg">
-            <div class="dropdown-header text-center">
-              <strong>You have 5 pending tasks</strong>
-            </div>
-            <a class="dropdown-item" href="#">
-              <div class="small mb-1">Upgrade NPM & Bower
-                <span class="float-right">
-                  <strong>0%</strong>
-                </span>
-              </div>
-              <span class="progress progress-xs">
-                <div class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-              </span>
-            </a>
-            <a class="dropdown-item" href="#">
-              <div class="small mb-1">ReactJS Version
-                <span class="float-right">
-                  <strong>25%</strong>
-                </span>
-              </div>
-              <span class="progress progress-xs">
-                <div class="progress-bar bg-danger" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-              </span>
-            </a>
-            <a class="dropdown-item" href="#">
-              <div class="small mb-1">VueJS Version
-                <span class="float-right">
-                  <strong>50%</strong>
-                </span>
-              </div>
-              <span class="progress progress-xs">
-                <div class="progress-bar bg-warning" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-              </span>
-            </a>
-            <a class="dropdown-item" href="#">
-              <div class="small mb-1">Add new layouts
-                <span class="float-right">
-                  <strong>75%</strong>
-                </span>
-              </div>
-              <span class="progress progress-xs">
-                <div class="progress-bar bg-info" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-              </span>
-            </a>
-            <a class="dropdown-item" href="#">
-              <div class="small mb-1">Angular 2 Cli Version
-                <span class="float-right">
-                  <strong>100%</strong>
-                </span>
-              </div>
-              <span class="progress progress-xs">
-                <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-              </span>
-            </a>
-            <a class="dropdown-item text-center" href="#">
-              <strong>View all tasks</strong>
-            </a>
-          </div>
-        </li>
-        <li class="nav-item dropdown d-md-down-none">
-          <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-            <i class="icon-envelope-letter"></i>
-            <span class="badge badge-pill badge-info">7</span>
-          </a>
-          <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg">
-            <div class="dropdown-header text-center">
-              <strong>You have 4 messages</strong>
-            </div>
-            <a class="dropdown-item" href="#">
-              <div class="message">
-                <div class="py-3 mr-3 float-left">
-                  <div class="avatar">
-                    <img class="img-avatar" src="img/avatars/7.jpg" alt="admin@bootstrapmaster.com">
-                    <span class="avatar-status badge-success"></span>
-                  </div>
-                </div>
-                <div>
-                  <small class="text-muted">John Doe</small>
-                  <small class="text-muted float-right mt-1">Just now</small>
-                </div>
-                <div class="text-truncate font-weight-bold">
-                  <span class="fa fa-exclamation text-danger"></span> Important message</div>
-                <div class="small text-muted text-truncate">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</div>
-              </div>
-            </a>
-            <a class="dropdown-item" href="#">
-              <div class="message">
-                <div class="py-3 mr-3 float-left">
-                  <div class="avatar">
-                    <img class="img-avatar" src="img/avatars/6.jpg" alt="admin@bootstrapmaster.com">
-                    <span class="avatar-status badge-warning"></span>
-                  </div>
-                </div>
-                <div>
-                  <small class="text-muted">John Doe</small>
-                  <small class="text-muted float-right mt-1">5 minutes ago</small>
-                </div>
-                <div class="text-truncate font-weight-bold">Lorem ipsum dolor sit amet</div>
-                <div class="small text-muted text-truncate">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</div>
-              </div>
-            </a>
-            <a class="dropdown-item" href="#">
-              <div class="message">
-                <div class="py-3 mr-3 float-left">
-                  <div class="avatar">
-                    <img class="img-avatar" src="img/avatars/5.jpg" alt="admin@bootstrapmaster.com">
-                    <span class="avatar-status badge-danger"></span>
-                  </div>
-                </div>
-                <div>
-                  <small class="text-muted">John Doe</small>
-                  <small class="text-muted float-right mt-1">1:52 PM</small>
-                </div>
-                <div class="text-truncate font-weight-bold">Lorem ipsum dolor sit amet</div>
-                <div class="small text-muted text-truncate">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</div>
-              </div>
-            </a>
-            <a class="dropdown-item" href="#">
-              <div class="message">
-                <div class="py-3 mr-3 float-left">
-                  <div class="avatar">
-                    <img class="img-avatar" src="img/avatars/4.jpg" alt="admin@bootstrapmaster.com">
-                    <span class="avatar-status badge-info"></span>
-                  </div>
-                </div>
-                <div>
-                  <small class="text-muted">John Doe</small>
-                  <small class="text-muted float-right mt-1">4:03 PM</small>
-                </div>
-                <div class="text-truncate font-weight-bold">Lorem ipsum dolor sit amet</div>
-                <div class="small text-muted text-truncate">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</div>
-              </div>
-            </a>
-            <a class="dropdown-item text-center" href="#">
-              <strong>View all messages</strong>
-            </a>
-          </div>
-        </li>
         <li class="nav-item dropdown">
           <a class="nav-link nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-            <img class="img-avatar" src="img/avatars/6.jpg" alt="admin@bootstrapmaster.com">
+            <img class="img-avatar" src="{% static 'img/employee/21803.jpg' %} " alt="admin@bootstrapmaster.com">
+              {{ user.username }}
           </a>
           <div class="dropdown-menu dropdown-menu-right">
             <div class="dropdown-header text-center">
               <strong>Account</strong>
             </div>
-            <a class="dropdown-item" href="#">
-              <i class="fa fa-bell-o"></i> Updates
-              <span class="badge badge-info">42</span>
-            </a>
-            <a class="dropdown-item" href="#">
-              <i class="fa fa-envelope-o"></i> Messages
-              <span class="badge badge-success">42</span>
-            </a>
-            <a class="dropdown-item" href="#">
-              <i class="fa fa-tasks"></i> Tasks
-              <span class="badge badge-danger">42</span>
-            </a>
-            <a class="dropdown-item" href="#">
-              <i class="fa fa-comments"></i> Comments
-              <span class="badge badge-warning">42</span>
-            </a>
-            <div class="dropdown-header text-center">
-              <strong>Settings</strong>
-            </div>
-            <a class="dropdown-item" href="#">
+            <a class="dropdown-item" href="{% url 'password_change' %}">
               <i class="fa fa-user"></i> Profile</a>
-            <a class="dropdown-item" href="#">
-              <i class="fa fa-wrench"></i> Settings</a>
-            <a class="dropdown-item" href="#">
-              <i class="fa fa-usd"></i> Payments
-              <span class="badge badge-dark">42</span>
-            </a>
-            <a class="dropdown-item" href="#">
-              <i class="fa fa-file"></i> Projects
-              <span class="badge badge-primary">42</span>
-            </a>
-            <div class="divider"></div>
-            <a class="dropdown-item" href="#">
-              <i class="fa fa-shield"></i> Lock Account</a>
-            <a class="dropdown-item" href="#">
+            <a class="dropdown-item" href="{% url 'logout' %}">
               <i class="fa fa-lock"></i> Logout</a>
           </div>
         </li>
@@ -318,82 +79,32 @@
         <nav class="sidebar-nav">
           <ul class="nav">
             <li class="nav-item">
-              <a class="nav-link" href="index.html">
-                <i class="nav-icon icon-speedometer"></i> Dashboard
-                <span class="badge badge-info">NEW</span>
+              <a class="nav-link" href="{% url 'index' %}">
+                <i class="nav-icon icon-speedometer"></i> HOME
               </a>
             </li>
-            <li class="nav-title">Theme</li>
+            <li class="nav-title">생산등록</li>
             <li class="nav-item">
-              <a class="nav-link" href="colors.html">
-                <i class="nav-icon icon-drop"></i> Colors</a>
+              <a class="nav-link" href="{% url 'productRegister' %}">
+                <i class="nav-icon icon-pencil"></i>제품생산등록</a>
+            </li>
+            <!--<li class="nav-item">-->
+              <!--<a class="nav-link" >-->
+                <!--<i class="nav-icon icon-pencil"></i>생산추가등록</a>-->
+            <!--</li>-->
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'productList' %}">
+                <i class="nav-icon icon-drop"></i>생산내역조회</a>
+            </li>
+            <li class="nav-title">주문발주</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'productRegister' %}">
+                <i class="nav-icon icon-puzzle"></i>주문등록</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="typography.html">
-                <i class="nav-icon icon-pencil"></i> Typography</a>
+              <a class="nav-link" href="{% url 'orderList' %}">
+                <i class="nav-icon icon-puzzle"></i>주문조회</a>
             </li>
-            <li class="nav-title">Components</li>
-            <li class="nav-item nav-dropdown">
-              <a class="nav-link nav-dropdown-toggle" href="#">
-                <i class="nav-icon icon-puzzle"></i> Base</a>
-              <ul class="nav-dropdown-items">
-                <li class="nav-item">
-                  <a class="nav-link" href="base/breadcrumb.html">
-                    <i class="nav-icon icon-puzzle"></i> Breadcrumb</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="base/cards.html">
-                    <i class="nav-icon icon-puzzle"></i> Cards</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="base/carousel.html">
-                    <i class="nav-icon icon-puzzle"></i> Carousel</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="base/collapse.html">
-                    <i class="nav-icon icon-puzzle"></i> Collapse</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="base/jumbotron.html">
-                    <i class="nav-icon icon-puzzle"></i> Jumbotron</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="base/list-group.html">
-                    <i class="nav-icon icon-puzzle"></i> List group</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="base/navs.html">
-                    <i class="nav-icon icon-puzzle"></i> Navs</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="base/pagination.html">
-                    <i class="nav-icon icon-puzzle"></i> Pagination</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="base/popovers.html">
-                    <i class="nav-icon icon-puzzle"></i> Popovers</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="base/progress.html">
-                    <i class="nav-icon icon-puzzle"></i> Progress</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="base/scrollspy.html">
-                    <i class="nav-icon icon-puzzle"></i> Scrollspy</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="base/switches.html">
-                    <i class="nav-icon icon-puzzle"></i> Switches</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="base/tabs.html">
-                    <i class="nav-icon icon-puzzle"></i> Tabs</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="base/tooltips.html">
-                    <i class="nav-icon icon-puzzle"></i> Tooltips</a>
-                </li>
-              </ul>
             </li>
             <li class="nav-item nav-dropdown">
               <a class="nav-link nav-dropdown-toggle" href="#">
@@ -727,6 +438,7 @@
           <div class="animated fadeIn">
 
             {% block content %}
+
             {% endblock %}
       </main>
 
@@ -1042,6 +754,7 @@
     <!-- Plugins and scripts required by this view-->
     <script src="{% static 'node_modules/datatables.net/js/jquery.dataTables.js' %}"></script>
     <script src="{% static 'node_modules/datatables.net-bs4/js/dataTables.bootstrap4.js' %}"></script>
+
 	<script src="{% static 'node_modules/select2/dist/js/select2.min.js' %}"></script>
     {% block js %}{% endblock %}
 

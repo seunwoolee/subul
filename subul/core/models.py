@@ -42,6 +42,11 @@ class Master(models.Model):
     ymd = models.CharField(max_length=8)
     totalCount = models.IntegerField()
     totalAmount = models.IntegerField()
+    delete_state = models.CharField(
+        max_length=2,
+        choices=DELETE_STATE_CHOICES,
+        default='N',
+    )
 
     class Meta:
         abstract = True
@@ -53,7 +58,7 @@ class Detail(models.Model):
     codeName = models.CharField(max_length=255)
     count = models.IntegerField()
     amount = models.IntegerField()
-    memo = models.TextField()
+    memo = models.TextField(blank=True)
     delete_state = models.CharField(
         max_length=2,
         choices=DELETE_STATE_CHOICES,
@@ -69,6 +74,11 @@ class Out(models.Model):
     ymd = models.CharField(max_length=8)
     count = models.IntegerField()
     type = models.CharField(max_length=255)
+    delete_state = models.CharField(
+        max_length=2,
+        choices=DELETE_STATE_CHOICES,
+        default='N',
+    )
 
     class Meta:
         abstract = True
@@ -119,7 +129,8 @@ class Location(Code):
         choices=CHARACTER_TYPE_CHOICES,
         default='99',
     )
-    location_manager = models.ForeignKey(CustomUser ,on_delete=models.SET_NULL, null=True, blank=True, related_name='location_manager')
+    location_manager = models.ForeignKey(CustomUser ,on_delete=models.SET_NULL, null=True, blank=True,
+                                         related_name='location_manager')
 
     def __str__(self):
         return self.codeName

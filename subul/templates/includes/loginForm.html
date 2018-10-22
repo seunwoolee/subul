@@ -1,0 +1,53 @@
+{% load widget_tweaks %}
+{% load mathfilters %}
+
+          {% if form.non_field_errors %}
+            <ul>
+              {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+
+
+            <form method="post">
+              {% csrf_token %}
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="icon-user"></i>
+                    </span>
+                  </div>
+                  {% render_field form.username class="form-control" placeholder="Username" %}
+                </div>
+                <div class="input-group mb-4">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="icon-lock"></i>
+                    </span>
+                  </div>
+                    {% render_field form.password class="form-control" placeholder="Username" %}
+                </div>
+                <button class="btn btn-primary px-4" type="submit">Login</button>
+            </form>
+
+
+    <!--{% for field in stepThreeForm.visible_fields %}-->
+
+        <!--{% if field.help_text|length > 0 %}-->
+         <!--{% if forloop.counter|mod:4 == 1 %}-->
+          <!--<tr class="table-success">-->
+         <!--{% else %}-->
+          <!--<tr>-->
+         <!--{% endif %}-->
+            <!--<td>{{ forloop.counter|intdiv:2|add:1 }}</td>-->
+            <!--<td>{{ field.help_text}}</td>-->
+            <!--<td class="text-center">{{ field.label_tag}}</td>-->
+            <!--<td>-->
+              <!--{% render_field field class="form-control" %}-->
+            <!--</td>-->
+        <!--{% else %}-->
+              <!--<td>{% render_field field class="form-control"  %}</td>-->
+        <!--{% endif %}-->
+
+    <!--{% endfor %}-->
