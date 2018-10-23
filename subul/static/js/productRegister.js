@@ -39,10 +39,9 @@ var t = $('.datatable').DataTable({
 });
 
 	
-hotkeys('f2', function(event, handler) {
+hotkeys('BackSpace,f5', function(event, handler) {
   // Prevent the default refresh event under WINDOWS system
   event.preventDefault();
-  addRow();
 });
 
 
