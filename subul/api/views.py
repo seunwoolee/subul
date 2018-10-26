@@ -1,9 +1,14 @@
+from django.http import Http404
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import mixins
-from product.models import ProductMaster, Product, ProductEgg, productEggQuery, productQuery
-from .serializers import ProductSerializer, ProductEggSerializer
+
+from core.models import Location
+from product.models import ProductMaster, Product, ProductEgg, productEggQuery, productQuery, ProductUnitPrice, \
+    SetProductMatch, SetProductCode, ProductCode
+from .serializers import ProductSerializer, ProductEggSerializer, ProductUnitPriceSerializer, SetProductCodeSerializer, \
+    ProductCodeSerializer, SetProductMatchSerializer
 
 
 # Create your views here.
@@ -66,7 +71,7 @@ class ProductsAPIView(APIView):
 class ProductUpdate(mixins.CreateModelMixin,
                     generics.UpdateAPIView):
     '''
-    You just need to provide the field which is to be modified.
+    생산내역 조회에서 Update를 칠때 Patch
     '''
 
     queryset = Product.objects.all()
@@ -83,11 +88,29 @@ class ProductUpdate(mixins.CreateModelMixin,
         return Response(status=status.HTTP_200_OK)
 
 
+
+class ProductCodes(APIView):
+    '''
+    You just need to provide the field which is to be modified.
+    '''
+
+    def get_object(self, code):
+        try:
+            return ProductCode.objects.get(code=code)
+        except ProductCode.DoesNotExist:
+            raise Http404
+
+    def get(self, request, code, format=None):
+        productCode = self.get_object(code)
+        serializer = ProductCodeSerializer(productCode)
+        return Response(serializer.data)
+
+
+
 class ProductEggUpdate(mixins.CreateModelMixin,
                        generics.UpdateAPIView):
     '''
-    You just need to provide the field which is to be modified.
-
+    생산내역 조회에서 Update를 칠때 Patch
     '''
     queryset = ProductEgg.objects.all()
     serializer_class = ProductEggSerializer
@@ -100,3 +123,59 @@ class ProductEggUpdate(mixins.CreateModelMixin,
         self.partial_update(request, *args, **kwargs)
         ProductEgg.getLossOpenEggPercent(instance.master_id)
         return Response(status=status.HTTP_200_OK)
+
+
+class OrderProductUnitPrice(APIView):
+    """
+    일반 상품일때 제품코드 , 코드명 , 가격, 키로수를 담고있음
+    """
+
+    def get_object(self, code):
+        try:
+            location = Location.objects.get(code=code)
+            return ProductUnitPrice.objects.filter(locationCode=location)
+            # return ProductUnitPrice.objects.all
+        except ProductUnitPrice.DoesNotExist:
+            raise Http404 # TODO 없으면 그냥 None
+
+    def get(self, request, code, format=None):
+        productUnitPrice = self.get_object(code)
+        serializer = ProductUnitPriceSerializer(productUnitPrice, many=True)
+        return Response(serializer.data)
+
+
+class OrderSetProductCode(APIView):
+    """
+    패키지 상품일때 거래처 선택에 따라 제품명에 패키지 상품 추가(option)
+    """
+
+    def get_object(self, code):
+        try:
+            location = Location.objects.get(code=code)
+            return SetProductCode.objects.filter(location=location).filter(delete_state='Y')
+            # return ProductUnitPrice.objects.all
+        except SetProductCode.DoesNotExist:
+            raise Http404 # TODO 없으면 그냥 None
+
+    def get(self, request, code, format=None):
+        setProductCode = self.get_object(code)
+        serializer = SetProductCodeSerializer(setProductCode, many=True)
+        return Response(serializer.data)
+
+
+class OrderSetProductMatch(APIView):
+    """
+    주문등록 - 패키지 상품일때 패키지상품 Match 값들을 가져와줌
+    """
+
+    def get_object(self, code):
+        try:
+            setProductCode = SetProductCode.objects.get(code=code)
+            return SetProductMatch.objects.filter(setProductCode=setProductCode)
+        except SetProductMatch.DoesNotExist:
+            raise Http404
+
+    def get(self, request, code, format=None):
+        setProductMatch = self.get_object(code)
+        serializer = SetProductMatchSerializer(setProductMatch, many=True)
+        return Response(serializer.data)

@@ -23,5 +23,5 @@ class Order(Detail):
         default='판매',
     )
     price = models.IntegerField()
-    setProduct = models.ForeignKey('product.SetProductCode',on_delete=models.CASCADE)
-    release_id = models.ForeignKey('release.Release',on_delete=models.CASCADE)
+    setProduct = models.ForeignKey('product.SetProductCode',on_delete=models.CASCADE, null=True, blank=True)
+    release_id = models.ForeignKey('release.Release',on_delete=models.CASCADE, null=True, blank=True)

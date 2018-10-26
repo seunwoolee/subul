@@ -44,8 +44,9 @@ hotkeys('BackSpace,f5', function(event, handler) {
   event.preventDefault();
 });
 
-
+SEQ = 2;
 function cloneMore(selector, prefix) {
+
     $(selector).find('select').select2("destroy");
     var newElement = $(selector).clone(true);
     var no = newElement.find('.no');
@@ -60,7 +61,8 @@ function cloneMore(selector, prefix) {
         }
     });
     total++;
-    no.html(total);
+    no.html(SEQ);
+    SEQ++;
     $('#id_' + prefix + '-TOTAL_FORMS').val(total);
     $(selector).after(newElement);
     var conditionRow = $('.forms-row:not(:last)');
@@ -96,6 +98,26 @@ function deleteForm(prefix, btn) {
     return false;
 }
 
+AMOUNT_KG = 0.0;
+$( ".product" ).change(function() {
+
+    parentTR = $(this).parents('tr');
+    data = parentTR.find('.product').val();
+    url = '/api/productCodes/'+data;
+
+    $.ajax({
+    url: url,
+    type: 'get',
+    data: data,
+    }).done(function(data) { // data는  code, codeName, amount_kg를 담고있다
+        window.AMOUNT_KG = data["amount_kg"];
+    }).fail(function() {
+        alert('수정 에러 전산실로 문의바랍니다.');
+    });
+
+});
+
+
 $(document).on('click', '.add-form-row', function(e){
     e.preventDefault();
     cloneMore('.forms-row:last', 'form');
@@ -106,6 +128,22 @@ $(document).on('click', '.remove-form-row', function(e){
     e.preventDefault();
     deleteForm('form', $(this));
     return false;
+});
+
+
+$(".amount").focusout(function(){
+    parentTR = $(this).parents('tr');
+    amount = $(this).val();
+    count = amount / window.AMOUNT_KG;
+    parentTR.find('.count').val(count);
+});
+
+
+$(".count").focusout(function(){
+    parentTR = $(this).parents('tr');
+    count = $(this).val();
+    amount = count * window.AMOUNT_KG;
+    parentTR.find('.amount').val(amount);
 });
 
 
@@ -121,15 +159,6 @@ $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
 
-
-function validTest(){
-  console.log($("input[name*='amount']"))
-  console.log($("input[name*='count']"))
-//  var tt = $("input").val()
-//  console.log(tt)
-
-//  console.log(document.getElementsByName(""))
-}
 
 
 

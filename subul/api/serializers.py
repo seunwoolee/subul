@@ -1,5 +1,8 @@
 from rest_framework import serializers
-from product.models import ProductMaster, Product, ProductEgg
+
+from core.models import Location
+from product.models import ProductMaster, Product, ProductEgg, ProductUnitPrice, SetProductMatch, SetProductCode, \
+    ProductCode
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -54,3 +57,62 @@ class ProductEggSerializer(serializers.ModelSerializer):
 
     def get_loss_fill(self, obj):
         return None
+
+
+class ProductUnitPriceSerializer(serializers.ModelSerializer):
+    codeName = serializers.SerializerMethodField()
+    code = serializers.SerializerMethodField()
+    amount_kg = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProductUnitPrice
+        fields = ('id', 'price', 'code', 'codeName', 'amount_kg')
+
+    def get_codeName(self, obj):
+        return obj.productCode.codeName
+
+    def get_code(self, obj):
+        return obj.productCode.code
+
+    def get_amount_kg(self, obj):
+        return obj.productCode.amount_kg
+
+
+class SetProductCodeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SetProductCode
+        fields = ('code','codeName')
+
+
+class ProductCodeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProductCode
+        fields = ('code','codeName','amount_kg')
+
+
+class SetProductMatchSerializer(serializers.ModelSerializer):
+    code = serializers.SerializerMethodField()
+    codeName = serializers.SerializerMethodField()
+    amount_kg = serializers.SerializerMethodField()
+    amount = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SetProductMatch
+        fields = ('code', 'codeName', 'price', 'count', 'amount_kg', 'amount')
+
+    def get_code(self, obj):
+        return obj.productCode.code
+
+    def get_codeName(self, obj):
+        return obj.productCode.codeName
+
+    def get_amount_kg(self, obj):
+        return obj.productCode.amount_kg
+
+    def get_amount(self, obj):
+        return obj.productCode.amount_kg * obj.count
+
+
+

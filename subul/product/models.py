@@ -12,15 +12,15 @@ DELETE_STATE_CHOICES = (
 class ProductMaster(models.Model):
     produce_id = models.IntegerField(default=0)
     ymd = models.CharField(max_length=8)
-    total_loss_openEgg = models.IntegerField(default=0)
-    total_loss_insert = models.IntegerField(default=0)
-    total_loss_clean = models.IntegerField(default=0)
-    total_loss_fill = models.IntegerField(default=0)
-    total_openEgg = models.IntegerField(default=0)
-    total_eggUse = models.IntegerField(default=0)
-    total_storeInsert = models.IntegerField(default=0)
-    total_produceStore = models.IntegerField(default=0)
-    total_productAmount = models.IntegerField(default=0)
+    total_loss_openEgg = models.FloatField(default=0)
+    total_loss_insert = models.FloatField(default=0)
+    total_loss_clean = models.FloatField(default=0)
+    total_loss_fill = models.FloatField(default=0)
+    total_openEgg = models.FloatField(default=0)
+    total_eggUse = models.FloatField(default=0)
+    total_storeInsert = models.FloatField(default=0)
+    total_produceStore = models.FloatField(default=0)
+    total_productAmount = models.FloatField(default=0)
     total_productCount = models.IntegerField(default=0)
     delete_state = models.CharField(
         max_length=2,
@@ -75,8 +75,8 @@ class ProductEgg(models.Model):
     )
     code = models.CharField(max_length=10, default='01201')
     codeName = models.CharField(max_length=255, default=CODE_TYPE_CHOICES['01201'])
-    rawTank_amount = models.IntegerField(default=0)
-    pastTank_amount = models.IntegerField(default=0)
+    rawTank_amount = models.FloatField(default=0)
+    pastTank_amount = models.FloatField(default=0)
     loss_insert = models.FloatField(default=0)
     loss_openEgg = models.FloatField(default=0)
     memo = models.TextField(blank=True)
@@ -228,7 +228,7 @@ class ProductAdmin(models.Model):
         ('이동', '이동'),
     )
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
-    amount = models.IntegerField()
+    amount = models.FloatField()
     count = models.IntegerField()
     ymd = models.CharField(max_length=8)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
@@ -246,25 +246,26 @@ class ProductAdmin(models.Model):
 class ProductUnitPrice(TimeStampedModel):
     locationCode = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='location')
     productCode = models.ForeignKey(ProductCode, on_delete=models.CASCADE, related_name='product')
-    price = models.IntegerField()
-
-
-class SetProductMatch(TimeStampedModel):
-    setProductCode = models.CharField(max_length=255)
-    productCode = models.ForeignKey(ProductCode, on_delete=models.CASCADE)
-    price = models.IntegerField()
-    saleLocation = models.ForeignKey(Location, on_delete=models.CASCADE)
+    price = models.IntegerField(default=0)
 
 
 class SetProductCode(Code):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
 
 
+class SetProductMatch(TimeStampedModel):
+    setProductCode = models.ForeignKey(SetProductCode, on_delete=models.CASCADE)
+    productCode = models.ForeignKey(ProductCode, on_delete=models.CASCADE)
+    price = models.IntegerField()
+    count = models.IntegerField(blank=True, null=True)
+    saleLocation = models.ForeignKey(Location, on_delete=models.CASCADE)
+
+
 def productQuery(**kwargs):
     search_value = kwargs.get('search[value]', None)[0]
     start_date = kwargs.get('start_date', None)[0]
     end_date = kwargs.get('end_date', None)[0]
-    queryset = Product.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(delete_state='N')
+    queryset = Product.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(delete_state='N') # TODO delete state Y -> N으로 수정
     total = queryset.count()
 
     if search_value:

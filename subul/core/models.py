@@ -40,8 +40,8 @@ class Code(models.Model):
 
 class Master(models.Model):
     ymd = models.CharField(max_length=8)
-    totalCount = models.IntegerField()
-    totalAmount = models.IntegerField()
+    totalCount = models.IntegerField(default=0)
+    totalAmount = models.FloatField(default=0)
     delete_state = models.CharField(
         max_length=2,
         choices=DELETE_STATE_CHOICES,
@@ -57,7 +57,7 @@ class Detail(models.Model):
     code = models.CharField(max_length=255)
     codeName = models.CharField(max_length=255)
     count = models.IntegerField()
-    amount = models.IntegerField()
+    amount = models.FloatField()
     memo = models.TextField(blank=True)
     delete_state = models.CharField(
         max_length=2,
@@ -129,7 +129,7 @@ class Location(Code):
         choices=CHARACTER_TYPE_CHOICES,
         default='99',
     )
-    location_manager = models.ForeignKey(CustomUser ,on_delete=models.SET_NULL, null=True, blank=True,
+    location_manager = models.ForeignKey(CustomUser ,on_delete=models.SET_NULL, null=True, blank=True, # TODO 담당자
                                          related_name='location_manager')
 
     def __str__(self):

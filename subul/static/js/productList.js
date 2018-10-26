@@ -150,8 +150,8 @@ fetch_data(start_day, end_day);
             {"data": "memo"},
             {
                 "data": null,
-                "defaultContent": '<button class="btn btn-danger btn-sm" href="#"><i class="fa fa-trash-o"></i></button>' +
-                                    '<button class="btn btn-info btn-sm" href="#"><i class="fa fa-edit"></i></button>'
+                "defaultContent": '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="fa fa-trash-o"></i></button>' +
+                                    '<button class="btn btn-info btn-sm MODIFY" href="#"><i class="fa fa-edit"></i></button>'
             }
         ],
         dom: 'Bfrtip',
@@ -242,7 +242,7 @@ $('.datatable tbody').on('click', 'button', function () {
     let data = table.row($(this).parents('tr')).data();
     console.log(data);
     let class_name = $(this).attr('class');
-    if (class_name == 'btn btn-info btn-sm')  // EDIT button
+    if (class_name == 'btn btn-info btn-sm MODIFY')  // EDIT button
     {
         if(data['type'] == "제품생산")
         {
@@ -275,7 +275,7 @@ $('.datatable tbody').on('click', 'button', function () {
             $("#productEggModal").modal();
         }
     }
-    else // DELETE button
+    else if(class_name == 'btn btn-danger btn-sm REMOVE')// DELETE button
     {
         if(data['type'] == "제품생산")
         {

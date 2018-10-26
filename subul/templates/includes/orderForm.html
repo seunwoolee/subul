@@ -1,0 +1,26 @@
+{% load widget_tweaks %}
+{% load mathfilters %}
+
+    {{ orderForm.management_form }}
+
+    {% for field in orderForm %}
+          <tr class="forms-row">
+            <td class="no">{{ forloop.counter }}</td>
+            <td>{% render_field field.ymd %} {% render_field field.package %} {% render_field field.set class="form-control set" %}</td>
+            <td>{% render_field field.type class="form-control type" %}</td>
+            <td>{% render_field field.location class="form-control location" %}</td>
+            <td>{% render_field field.product class="form-control product" style="width : 300px;" %}</td>
+            <td>{% render_field field.amount class="form-control amount" %}</td>
+            <td>{% render_field field.count  class="form-control count" %}</td>
+            <td>{% render_field field.price class="form-control price" %}</td>
+            <td>
+                <div class="input-group">
+                    {% render_field field.memo class="form-control" %}
+                    <div class="input-group-append">
+                        <button class="btn btn-success add-form-row">+</button>
+                    </div>
+                </div>
+            </td>
+    {% endfor %}
+
+    {{ orderForm.media.js }}
