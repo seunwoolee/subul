@@ -98,7 +98,7 @@ function deleteForm(prefix, btn) {
     return false;
 }
 
-AMOUNT_KG = 0.0;
+AMOUNT_KG = {};
 $( ".product" ).change(function() {
 
     parentTR = $(this).parents('tr');
@@ -110,7 +110,8 @@ $( ".product" ).change(function() {
     type: 'get',
     data: data,
     }).done(function(data) { // data는  code, codeName, amount_kg를 담고있다
-        window.AMOUNT_KG = data["amount_kg"];
+        window.AMOUNT_KG = {"parentTR" : parentTR, "AMOUNT_KG" : data["amount_kg"]};
+//        window.AMOUNT_KG = data["amount_kg"];
     }).fail(function() {
         alert('수정 에러 전산실로 문의바랍니다.');
     });
@@ -133,17 +134,23 @@ $(document).on('click', '.remove-form-row', function(e){
 
 $(".amount").focusout(function(){
     parentTR = $(this).parents('tr');
-    amount = $(this).val();
-    count = amount / window.AMOUNT_KG;
-    parentTR.find('.count').val(count);
+    if(AMOUNT_KG['parentTR'][0] == parentTR[0])
+    {
+        amount = $(this).val();
+        count = amount / window.AMOUNT_KG['AMOUNT_KG'];
+        parentTR.find('.count').val(count);
+    }
 });
 
 
 $(".count").focusout(function(){
     parentTR = $(this).parents('tr');
-    count = $(this).val();
-    amount = count * window.AMOUNT_KG;
-    parentTR.find('.amount').val(amount);
+    if(AMOUNT_KG['parentTR'][0] == parentTR[0])
+    {
+        count = $(this).val();
+        amount = count * window.AMOUNT_KG['AMOUNT_KG'];
+        parentTR.find('.amount').val(amount);
+    }
 });
 
 

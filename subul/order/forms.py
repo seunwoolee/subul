@@ -4,7 +4,7 @@ from django.forms import formset_factory
 from core.models import Location
 from django_select2.forms import Select2Widget
 from product.models import ProductCode
-from .models import Order, OrderMaster
+from .models import Order
 
 
 # class MainForm(forms.ModelForm):
@@ -36,12 +36,12 @@ class OrderForm(forms.Form):
         ('패키지', '패키지'),
     )
 
-    set = forms.ChoiceField(choices=SET_TYPE_CHOICES)
+    set = forms.ChoiceField(choices=SET_TYPE_CHOICES, required=False)
     type = forms.ChoiceField(choices=ORDER_TYPE_CHOICES)
     location = forms.ChoiceField(widget=Select2Widget,
                                  choices=list(Location.objects.values_list('code', 'codeName').order_by('code')),
                                  required=False)
-    product = forms.ChoiceField()
+    product = forms.ChoiceField(choices=list(ProductCode.objects.values_list('code', 'codeName'))) # TODO delete_State
     amount = forms.FloatField(min_value=0)
     count = forms.IntegerField(min_value=0)
     price = forms.IntegerField(min_value=0)
@@ -49,8 +49,8 @@ class OrderForm(forms.Form):
         label='',
         widget=forms.Textarea(attrs={'rows': 2}), required=False
     )
-    ymd = forms.CharField(max_length=6, widget=forms.HiddenInput())
-    package = forms.CharField(widget=forms.HiddenInput())
+    ymd = forms.CharField(max_length=8, widget=forms.HiddenInput())
+    package = forms.CharField(widget=forms.HiddenInput(), required=False)
 
 
 OrderFormSet = formset_factory(OrderForm)

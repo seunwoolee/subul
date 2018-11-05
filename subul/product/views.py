@@ -66,10 +66,10 @@ class ProductRegister(LoginRequiredMixin, View):
                     )
                     product.save()
                     productAdmin.save()
-                except:
+                except: #TODO error Log
                     pass
             Product.getLossProductPercent(main)  # 수율
-        return render(request, 'product/productRegister.html')
+        return render(request, 'product/productList.html')
 
     def get(self, request):
         tankValue = list(ProductEgg.objects.values('code', 'codeName').filter(delete_state='N')

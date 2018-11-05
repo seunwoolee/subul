@@ -9,6 +9,9 @@
     $.ajaxSetup({
         headers: { "X-CSRFToken": getCookie("csrftoken") }
     });
+
+    $('#id_form-0-product').find('option').remove(); // HACK 장고 select is_valid 특성상 choices를 보내줘야함
+                                                        // 보기 지저분하니 Front 단에서 삭제
 });
 
 function getCookie(c_name)
@@ -105,14 +108,16 @@ function cloneSetMore(selector, prefix) {
         data: data,
         }).done(function(data) { // data 는  code, codeName, price, count, amount_kg을 담고있다.
 
-           $(selector).find('.location').select2("destroy");
+            parentTR.find('.location').select2("destroy");
+            var newElement = parentTR.clone(true);
+
             for(i=0;i<data.length;i++)
             {
-                var newElement = $(selector).clone(true);
-//                console.log(newElement);
+                var newElement = newElement.clone(true);
                 var no = newElement.find('.no');
                 var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
-                newElement.find(':input').each(function() { // 각각의 input 마다(세로)
+
+                newElement.find(':input:not(:button)').each(function() { // 각각의 input 마다(세로)
                     var name = $(this).attr('name');
                     if(name) {
                         name = name.replace('-' + (total-1) + '-', '-' + total + '-');
@@ -158,6 +163,10 @@ function cloneSetMore(selector, prefix) {
                     }
                 });
 
+                total++;
+                $('#id_' + prefix + '-TOTAL_FORMS').val(total);
+                $(selector).after(newElement);
+
                  newElement.find('button').each(function() {
 
                     var conditionRow = $(this);
@@ -175,14 +184,13 @@ function cloneSetMore(selector, prefix) {
                     }
                  });
 
-                total++;
+
                 no.html(SEQ).css("background-color", "yellow");
                 SEQ++;
-                $('#id_' + prefix + '-TOTAL_FORMS').val(total);
-                $(selector).after(newElement);
             }
             $('.django-select2').djangoSelect2();
-            parentTR.remove();
+            console.log(parentTR.find(':button'));
+            deleteForm('form',parentTR.find(':button'));
         }).fail(function() {
             alert('수정 에러 전산실로 문의바랍니다.');
         });
@@ -221,6 +229,11 @@ function deleteForm(prefix, btn) {
 $(document).on('click', '.add-form-row', function(e){ //일반상품 + 버튼
     e.preventDefault();
     cloneMore('.forms-row:last', 'form');
+//    var parentTR = $(this).closest('.forms-row'); # TODO Readonly 효과 포기
+//    parentTR.find(':input[type!=hidden]:not(:button)').each(function() {
+//        console.log($(this));
+//        $(this).attr('readonly','readonly');
+//    })
     return false;
 });
 
@@ -250,7 +263,7 @@ $(function () {
 })
 
 PRODUCTINFO = [];
-AMOUNT_KG = 0.0;
+AMOUNT_KG = {};
 $( ".location" ).change(function() {
 
     parentTR = $(this).parents('tr');
@@ -259,40 +272,49 @@ $( ".location" ).change(function() {
     product = parentTR.find('.product');
     price = parentTR.find('.price');
 
+
     if(set == '일반')
     {
-        alert('일반');
         url = '/api/OrderProductUnitPrice/'+data;
     }
     else if(set == '패키지')
     {
-        alert('패키지');
         url = '/api/OrderSetProductCode/'+data;
     }
-    $.ajax({
-    url: url,
-    type: 'get',
-    data: data,
-    }).done(function(data) { // data는  price, code, codeName, amount_kg를 담고있다
-        window.PRODUCTINFO = [];
-        product.empty();
-        data.forEach(function(element){
-            var option = $("<option value="+element["code"]+" >"+element["codeName"]+"</option>");
-            product.append(option);
 
-            if(set == '일반')
-            {
-                var temp = { "code" : element["code"], "price" : element["price"], "amount_kg" : element["amount_kg"]  };
-                PRODUCTINFO.push(temp);
-            }
+    if(data)
+    {
+        $.ajax({
+        url: url,
+        type: 'get',
+        data: data,
+        }).done(function(data) { // data는  price, code, codeName, amount_kg를 담고있다
+            window.PRODUCTINFO = [];
+            product.empty();
+            data.forEach(function(element, i){
+                var option = $("<option value="+element["code"]+" >"+element["codeName"]+"</option>");
+                product.append(option);
 
-        })
+                if(i === 0 && set == '일반')
+                {
+                    window.AMOUNT_KG = {"parentTR" : parentTR, "AMOUNT_KG" : element["amount_kg"]};
+                    price.val(element["price"]);
+                }
 
-        $( ".product" ).trigger( "change" );
-
-    }).fail(function() {
-        alert('수정 에러 전산실로 문의바랍니다.');
-    });
+                if(set == '일반')
+                {
+                    var temp = { "code" : element["code"], "price" : element["price"], "amount_kg" : element["amount_kg"]  };
+                    PRODUCTINFO.push(temp);
+                }
+            })
+        }).fail(function() {
+            alert('수정 에러 전산실로 문의바랍니다.');
+        });
+    }
+    else
+    {
+        return false;
+    }
 
 });
 
@@ -304,9 +326,9 @@ $( ".product" ).change(function() {
     PRODUCTINFO.forEach(function(element){
         if(data == element["code"])
         {
-            alert(element["amount_kg"]);
+            AMOUNT_KG = {"parentTR" : parentTR, "AMOUNT_KG" : element["amount_kg"]};
             price.val(element["price"]);
-            window.AMOUNT_KG = element["amount_kg"];
+            window.AMOUNT_KG['AMOUNT_KG'] = element["amount_kg"];
         }
 
     })
@@ -328,35 +350,63 @@ $( ".set" ).change(function() {
 });
 
 
-$(".amount").dblclick(function(){
+$(".amount").focusout(function(){
     parentTR = $(this).parents('tr');
     set = parentTR.find('.set').val();
 
-    if(set == '일반')
+    if(set == '일반' && AMOUNT_KG['parentTR'][0] == parentTR[0]) // 자기자신의 TR만 변경하겠금
     {
         amount = $(this).val();
-        count = amount / window.AMOUNT_KG;
+        count = amount / window.AMOUNT_KG['AMOUNT_KG'];
         parentTR.find('.count').val(count);
     }
 })
 
 
-$(".count").dblclick(function(){
+
+$(".count").focusout(function(){ // 자기 TR만 바꿀수 있어야함
     parentTR = $(this).parents('tr');
     set = parentTR.find('.set').val();
-    if(set == '일반')
+    if(set == '일반' && AMOUNT_KG['parentTR'][0] == parentTR[0])
     {
         count = $(this).val();
-        amount = count * window.AMOUNT_KG;
+        amount = count * window.AMOUNT_KG['AMOUNT_KG'];
         parentTR.find('.amount').val(amount);
+    }
+})
+
+//$("#submitButton").click(function(){
+//    ymd = $('#datepicker').val();
+//    if(ymd)
+//    {
+//        $("input[type=hidden][id*='ymd']").each(function (i, element){
+//            $(element).val(ymd);
+//        });
+//        console.log($('form'));
+//        $("form").submit();
+//    }
+//})
+
+$("form").submit(function(){
+    ymd = $('#datepicker').val();
+    if(ymd)
+    {
+        $("input[type=hidden][id*='ymd']").each(function (i, element){
+            $(element).val(ymd);
+        });
+        console.log($('form'));
+        $("form").submit();
     }
 })
 
 
 function makeSetStyle(parentTR)
 {
-    price = parentTR.find('.price').attr('readonly','readonly');
-    set = parentTR.find('.amount').attr('readonly','readonly');
+    price = parentTR.find('.price').attr('readonly','readonly').val("");
+    amount = parentTR.find('.amount').attr('readonly','readonly').val("");
+    count = parentTR.find('.count').val("");
+    product = parentTR.find('.product').find('option').remove();
+//    location = parentTR.find('.location').find('option:selected').remove(); # TODO 할 수 있다면 location도..
     actonButton = parentTR.find('.input-group-append > button');
     actonButton.attr('class','btn btn-dark add-form-set');
     actonButton.html('<i class="nav-icon icon-star"></i>');
@@ -365,7 +415,9 @@ function makeSetStyle(parentTR)
 function makeNormalStyle(parentTR)
 {
     price = parentTR.find('.price').removeAttr('readonly');
-    set = parentTR.find('.amount').removeAttr('readonly');
+    amount = parentTR.find('.amount').removeAttr('readonly');
+    count = parentTR.find('.count').val("");
+    product = parentTR.find('.product').find('option').remove();
     actonButton = parentTR.find('.input-group-append > button');
     actonButton.attr('class','btn btn-success add-form-row');
     actonButton.html('+');

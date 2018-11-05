@@ -28,8 +28,6 @@ function getCookie(c_name)
     return "";
  }
 
-
-
 Date.prototype.yyyymmdd = function() {
   var mm = this.getMonth() + 1;
   var dd = this.getDate();
@@ -70,11 +68,9 @@ fetch_data(start_day, end_day);
         },
         "columns": [
             {
-                "width" : "5%",
                 "data": "id"
             },
             {
-                "width" : "5%",
                 "data": "master_id"
             },
             {
@@ -102,13 +98,12 @@ fetch_data(start_day, end_day);
                     }
                 }
             },
-            {"width" : "2%","data": "code"},
+            {"data": "code"},
             {"data": "codeName"},
-            {"width" : "2%","data": "ymd"},
-            {"width" : "2%","data": "amount"},
-            {"width" : "2%","data": "count"},
+            {"data": "ymd"},
+            {"data": "amount"},
+            {"data": "count"},
             {
-                "width" : "2%",
                 "data": "rawTank_amount",
                 "render": function(data, type, row, meta){
                     if(data < 0)
@@ -126,7 +121,6 @@ fetch_data(start_day, end_day);
                 }
             },
             {
-                "width" : "2%",
                 "data": "pastTank_amount",
                 "render": function(data, type, row, meta){
                     if(data < 0)
@@ -143,10 +137,10 @@ fetch_data(start_day, end_day);
                     }
                 }
             },
-            {"width" : "2%","data": "loss_insert"},
-            {"width" : "2%","data": "loss_openEgg"},
-            {"width" : "2%","data": "loss_clean"},
-            {"width" : "2%","data": "loss_fill"},
+            {"data": "loss_insert"},
+            {"data": "loss_openEgg"},
+            {"data": "loss_clean"},
+            {"data": "loss_fill"},
             {"data": "memo"},
             {
                 "data": null,
@@ -170,77 +164,13 @@ $('#search').click(function(){
   }
   else
   {
-       alert("Both Date is Required");
+       alert("날짜를 모두 입력해주세요");
   }
  });
 
 
-function cloneMore(selector, prefix) {
-    $(selector).find('select').select2("destroy");
-    var newElement = $(selector).clone(true);
-    var no = newElement.find('.no');
-
-    var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
-    newElement.find(':input').each(function() {
-        var name = $(this).attr('name')
-        if(name) {
-            name = name.replace('-' + (total-1) + '-', '-' + total + '-');
-            var id = 'id_' + name;
-            $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
-        }
-    });
-    total++;
-    no.html(total);
-    $('#id_' + prefix + '-TOTAL_FORMS').val(total);
-    $(selector).after(newElement);
-    var conditionRow = $('.forms-row:not(:last)');
-    conditionRow.find('.btn.add-form-row')
-    .removeClass('btn-success').addClass('btn-danger')
-    .removeClass('add-form-row').addClass('remove-form-row')
-    .html('-');
-
-    $('.django-select2').djangoSelect2();
-    return false;
-}
-
-function updateElementIndex(el, prefix, ndx) {
-    var id_regex = new RegExp('(' + prefix + '-\\d+)');
-    var replacement = prefix + '-' + ndx;
-    if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
-    if (el.id) el.id = el.id.replace(id_regex, replacement);
-    if (el.name) el.name = el.name.replace(id_regex, replacement);
-}
-
-function deleteForm(prefix, btn) {
-    var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-    if (total > 1){
-        btn.closest('.forms-row').remove();
-        var forms = $('.forms-row');
-        $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
-        for (var i=0; i<forms.length; i++) {
-            $(forms.get(i)).find(':input').each(function() {
-                updateElementIndex(this, prefix, i);
-            });
-        }
-    }
-    return false;
-}
-
-$(document).on('click', '.add-form-row', function(e){
-    e.preventDefault();
-    cloneMore('.forms-row:last', 'form');
-    return false;
-});
-
-$(document).on('click', '.remove-form-row', function(e){
-    e.preventDefault();
-    deleteForm('form', $(this));
-    return false;
-});
-
 $('.datatable tbody').on('click', 'button', function () {
     let data = table.row($(this).parents('tr')).data();
-    console.log(data);
     let class_name = $(this).attr('class');
     if (class_name == 'btn btn-info btn-sm MODIFY')  // EDIT button
     {
@@ -249,7 +179,6 @@ $('.datatable tbody').on('click', 'button', function () {
             $('#amount').val(data['amount']);
             $('#count').val(data['count']);
             $('.memo').val(data['memo']);
-//            $('.type').val('edit');
             $('.modal_title').text('EDIT');
             $('.codeName').text(data['codeName']);
             $('.productType').val('product');
@@ -301,8 +230,6 @@ $('form').on('submit', function (e)  // EDIT
     let data = $this.serialize();
     url = makeAjaxUrl($this);
 
-    console.log(data);
-
     $.ajax({
     url: url,
     type: 'patch',
@@ -310,7 +237,6 @@ $('form').on('submit', function (e)  // EDIT
     }).done(function(data) {
         alert('수정완료');
         $(".everyModal").modal('hide');
-    //some code going here if success
     }).fail(function() {
         alert('수정 에러 전산실로 문의바랍니다.');
     });
@@ -319,7 +245,6 @@ $('form').on('submit', function (e)  // EDIT
 function makeAjaxUrl($this)
 {
     let productType = $this.find("input[name='productType']").val();
-    console.log(productType);
     if(productType == 'product')
     {
         url = '/api/product/'+id;
@@ -330,26 +255,3 @@ function makeAjaxUrl($this)
     }
     return url;
 }
-
-
-//$('#delete').on('click', function (e) {
-//    e.preventDefault();
-//    alert();
-//    $this = $(this);
-//    console.log($this);
-//    let data = $this.serialize();
-//    url = makeAjaxUrl($this);
-//    console.log(data);
-//
-//    $.ajax({
-//    url: url,
-//    type: 'PUT',
-//    data: data,
-//    }).done(function(data) {
-//        alert('수정완료');
-//        $("#productModal").modal('hide');
-//    //some code going here if success
-//    }).fail(function() {
-//        alert('수정 에러 전산실로 문의바랍니다.');
-//    });
-//});

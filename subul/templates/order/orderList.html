@@ -54,20 +54,16 @@
                         <thead>
                           <tr>
                             <th>ID</th>
-                            <th>문서번호</th>
-                            <th>생산구분</th>
-                            <th>제품코드</th>
-                            <th>제품명</th>
-                            <th>생산일</th>
-                            <th>생산량</th>
-                            <th>생산수량</th>
-                            <th>RAWTANK</th>
-                            <th>PASTTANK</th>
-                            <th>투입로스량</th>
-                            <th>할란로스량</th>
-                            <th>살균로스량</th>
-                            <th>충진로스량</th>
+                            <th>구분</th>
+                            <th>주문일</th>
+                            <th>거래처명</th>
+                            <th>품명</th>
+                            <th>발주량(kg)</th>
+                            <th>발주량(EA)</th>
+                            <th>단가</th>
+                            <th>금액</th>
                             <th>메모</th>
+                            <th>세트명</th>
                             <th>Actions</th>
                           </tr>
                         </thead>
@@ -132,6 +128,70 @@
             </div>
           </div>
         </div>
+
+
+
+        <!-- Order EDIT Modal -->
+        <div class="modal fade everyModal" id="orderModal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <h5 class="mb-4 codeName"></h5>
+                        <form role="form">
+                            <!--{% csrf_token %}-->
+                            <div class="form-group">
+                                <label for="amount"><i class="nav-icon icon-drop"></i>발주량(KG)</label>
+                                <input type="number" class="form-control" id="amount" name="amount"
+                                       placeholder="생산량을 입력하세요" required="true">
+                            </div>
+                            <div class="form-group">
+                                <label for="count"><i class="nav-icon icon-drop"></i>발주량(EA)</label>
+                                <input type="number" class="form-control" id="count" name="count"
+                                       placeholder="생산수량을 입력하세요" required="true">
+                            </div>
+                            <div class="form-group">
+                                <label for="count"><i class="nav-icon icon-drop"></i>단가</label>
+                                <input type="number" class="form-control" id="price" name="price"
+                                       placeholder="생산수량을 입력하세요" required="true">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="nav-icon icon-note"></i>메모</label>
+                                <input type="text" class="form-control memo"  name="memo"
+                                       placeholder="메모를 입력하세요">
+                            </div>
+                            <button type="submit" class="btn btn-success btn-block">OK</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Order Delete Modal -->
+        <div class="modal fade everyModal" role="dialog" id="confirm">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">데이터를 삭제 하시겠습니까?</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form">
+                            <!--{% csrf_token %}-->
+                            <input type="hidden" class="delete_state" name="delete_state" value="Y">
+                            <button type="submit"  class="btn btn-primary"  >Delete</button>
+                            <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 {% endblock %}
 
 {% block js %}

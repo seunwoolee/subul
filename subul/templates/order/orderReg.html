@@ -21,17 +21,16 @@
                       </a>
                     </div>
                   </div>
-					<form method="post" >
+					<form method="post" class="was-validated">
 					{% csrf_token %}
 				  <div class="card-header">
 					  <div class="form-row " style="padding-left : 32px;">
-						<input type="text" id="datepicker" class="form-control" style="width : 150px;" />
+						<input type="text" id="datepicker" class="form-control" style="width : 150px;"  required/>
 						 <div class="col-auto">
-						  <button type="submit" class="btn btn-primary mb-2" >Submit</button>
+						  <button class="btn btn-primary mb-2" id="submitButton" type="submit">Submit</button>
 						</div>
 					  </div>
-
-					</div>
+				  </div>
 
 
 

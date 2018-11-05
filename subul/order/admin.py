@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Order, OrderMaster
+from .models import Order
 
-myModels = [Order,OrderMaster]
+myModels = [Order]
 
 admin.site.register(myModels)

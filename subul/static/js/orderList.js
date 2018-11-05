@@ -5,6 +5,28 @@
  * --------------------------------------------------------------------------
 
  */
+$(function () {
+    $.ajaxSetup({
+        headers: { "X-CSRFToken": getCookie("csrftoken") }
+    });
+});
+
+function getCookie(c_name)
+{
+    if (document.cookie.length > 0)
+    {
+        c_start = document.cookie.indexOf(c_name + "=");
+        if (c_start != -1)
+        {
+            c_start = c_start + c_name.length + 1;
+            c_end = document.cookie.indexOf(";", c_start);
+            if (c_end == -1) c_end = document.cookie.length;
+            return unescape(document.cookie.substring(c_start,c_end));
+        }
+    }
+    return "";
+}
+
 
 Date.prototype.yyyymmdd = function() {
   var mm = this.getMonth() + 1;
@@ -34,11 +56,11 @@ var end_day = plusSevenDate.yyyymmdd();
 fetch_data(start_day, end_day);
  function fetch_data(start_date='', end_date='')
  {
-    let table = $('.datatable').DataTable({
+    table = $('.datatable').DataTable({
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": "/api/",
+            "url": "/api/order/",
             "type": "GET",
             "data": {
                 start_date:start_date, end_date:end_date
@@ -46,88 +68,47 @@ fetch_data(start_day, end_day);
         },
         "columns": [
             {
-                "width" : "5%",
+
                 "data": "id"
-            },
-            {
-                "width" : "5%",
-                "data": "master_id"
             },
             {
                 "data": "type",
                 "render" : function(data, type, row, meta){
-                    if(data == '할란')
+                    if(data == '판매')
                     {
                         return '<button class="btn btn-danger btn-sm">'+ data +'</button>'
                     }
-                    else if(data == '할란사용')
+                    else if(data == '샘플')
                     {
                         return '<button class="btn btn-warning btn-sm">'+ data +'</button>'
                     }
-                    else if(data == '공정품투입')
+                    else if(data == '증정')
                     {
                         return '<button class="btn btn-success btn-sm">'+ data +'</button>'
                     }
-                    else if(data == '공정품발생')
+                    else if(data == '자손')
                     {
                         return '<button class="btn btn-primary btn-sm ">'+ data +'</button>'
                     }
-                    else if(data == '제품생산')
+                    else if(data == '생산요청')
                     {
                         return '<button class="btn btn-dark btn-sm">'+ data +'</button>'
                     }
                 }
             },
-            {"width" : "2%","data": "code"},
+            {"data": "ymd"},
+            {"data": "orderLocationName"},
             {"data": "codeName"},
-            {"width" : "2%","data": "ymd"},
-            {"width" : "2%","data": "amount"},
-            {"width" : "2%","data": "count"},
-            {
-                "width" : "2%",
-                "data": "rawTank_amount",
-                "render": function(data, type, row, meta){
-                    if(data < 0)
-                    {
-                        return '<span class="text-danger">'+ data +'</span>'
-                    }
-                    else if(data > 0)
-                    {
-                        return '<span>'+ data +'</span>'
-                    }
-                    else
-                    {
-                        return ""
-                    }
-                }
-            },
-            {
-                "width" : "2%",
-                "data": "pastTank_amount",
-                "render": function(data, type, row, meta){
-                    if(data < 0)
-                    {
-                        return '<span class="text-danger">'+ data +'</span>'
-                    }
-                    else if(data > 0)
-                    {
-                        return '<span>'+ data +'</span>'
-                    }
-                    else
-                    {
-                        return ""
-                    }
-                }
-            },
-            {"width" : "2%","data": "loss_insert"},
-            {"width" : "2%","data": "loss_openEgg"},
-            {"width" : "2%","data": "loss_clean"},
-            {"width" : "2%","data": "loss_fill"},
+            {"data": "amount"},
+            {"data": "count"},
+            {"data": "price"},
+            {"data": "totalPrice"},
             {"data": "memo"},
+            {"data": "setProduct"},
             {
                 "data": null,
-                "defaultContent": '<a class="btn btn-danger btn-sm" href="#"><i class="fa fa-trash-o"></i></a>' +
-                                    '<a class="btn btn-info btn-sm" href="#"><i class="fa fa-edit"></i></a>'
+                "defaultContent": '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="fa fa-trash-o"></i></button>' +
+                                    '<button class="btn btn-info btn-sm MODIFY" href="#"><i class="fa fa-edit"></i></button>'
             }
         ],
         dom: 'Bfrtip',
@@ -146,71 +127,53 @@ $('#search').click(function(){
   }
   else
   {
-       alert("Both Date is Required");
+       alert("날짜를 모두 입력해주세요");
   }
  });
 
 
-function cloneMore(selector, prefix) {
-    $(selector).find('select').select2("destroy");
-    var newElement = $(selector).clone(true);
-    var no = newElement.find('.no');
-
-    var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
-    newElement.find(':input').each(function() {
-        var name = $(this).attr('name')
-        if(name) {
-            name = name.replace('-' + (total-1) + '-', '-' + total + '-');
-            var id = 'id_' + name;
-            $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
-        }
-    });
-    total++;
-    no.html(total);
-    $('#id_' + prefix + '-TOTAL_FORMS').val(total);
-    $(selector).after(newElement);
-    var conditionRow = $('.forms-row:not(:last)');
-    conditionRow.find('.btn.add-form-row')
-    .removeClass('btn-success').addClass('btn-danger')
-    .removeClass('add-form-row').addClass('remove-form-row')
-    .html('-');
-
-    $('.django-select2').djangoSelect2();
-    return false;
-}
-
-function updateElementIndex(el, prefix, ndx) {
-    var id_regex = new RegExp('(' + prefix + '-\\d+)');
-    var replacement = prefix + '-' + ndx;
-    if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
-    if (el.id) el.id = el.id.replace(id_regex, replacement);
-    if (el.name) el.name = el.name.replace(id_regex, replacement);
-}
-
-function deleteForm(prefix, btn) {
-    var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-    if (total > 1){
-        btn.closest('.forms-row').remove();
-        var forms = $('.forms-row');
-        $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
-        for (var i=0; i<forms.length; i++) {
-            $(forms.get(i)).find(':input').each(function() {
-                updateElementIndex(this, prefix, i);
-            });
-        }
+$('.datatable tbody').on('click', 'button', function () {
+    let data = table.row($(this).parents('tr')).data();
+    let class_name = $(this).attr('class');
+    if (class_name == 'btn btn-info btn-sm MODIFY')  // EDIT button
+    {
+        $('#amount').val(data['amount']);
+        $('#count').val(data['count']);
+        $('#price').val(data['price']);
+        $('.memo').val(data['memo']);
+        $('.modal_title').text('EDIT');
+        $('.codeName').text(data['codeName']);
+        $("#orderModal").modal();
     }
-    return false;
-}
+    else if(class_name == 'btn btn-danger btn-sm REMOVE')// DELETE button
+    {
+        $('#modal_title').text('DELETE');
+        $("#confirm").modal();
+    }
 
-$(document).on('click', '.add-form-row', function(e){
-    e.preventDefault();
-    cloneMore('.forms-row:last', 'form');
-    return false;
+    id = data['id'];
+
 });
 
-$(document).on('click', '.remove-form-row', function(e){
+
+$('form').on('submit', function (e)
+{
     e.preventDefault();
-    deleteForm('form', $(this));
-    return false;
+    $this = $(this);
+    let data = $this.serialize();
+    url = '/api/order/'+id;
+
+    $.ajax({
+    url: url,
+    type: 'patch',
+    data: data,
+    }).done(function(data) {
+        console.log(data);
+        alert('수정완료');
+        $(".everyModal").modal('hide');
+    }).fail(function() {
+        alert('수정 에러 전산실로 문의바랍니다.');
+    });
 });
+
 

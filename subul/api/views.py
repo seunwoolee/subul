@@ -4,7 +4,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import mixins
 
+from api.orderSerializers import OrderSerializer
 from core.models import Location
+from order.models import orderQuery, Order
 from product.models import ProductMaster, Product, ProductEgg, productEggQuery, productQuery, ProductUnitPrice, \
     SetProductMatch, SetProductCode, ProductCode
 from .serializers import ProductSerializer, ProductEggSerializer, ProductUnitPriceSerializer, SetProductCodeSerializer, \
@@ -15,9 +17,6 @@ from .serializers import ProductSerializer, ProductEggSerializer, ProductUnitPri
 
 
 class ProductsAPIView(APIView):
-    '''
-    List Custom Product
-    '''
 
     def get(self, request, format=None):
 
@@ -68,6 +67,23 @@ class ProductsAPIView(APIView):
         return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
 
 
+class OrdersAPIView(APIView):
+
+    def get(self, request, format=None):
+        try:
+            orders = orderQuery(**request.query_params)
+            orderSerializer = OrderSerializer(orders['items'], many=True)
+            result = dict()
+            result['data'] = orderSerializer.data
+            result['draw'] = orders['draw']
+            result['recordsTotal'] = orders['total']
+            result['recordsFiltered'] = orders['count']
+            print(result)
+            return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+        except Exception as e:
+            return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+
+
 class ProductUpdate(mixins.CreateModelMixin,
                     generics.UpdateAPIView):
     '''
@@ -81,12 +97,10 @@ class ProductUpdate(mixins.CreateModelMixin,
         return self.create(request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
-
         instance = Product.objects.get(pk=kwargs['pk'])
         self.partial_update(request, *args, **kwargs)
         Product.getLossProductPercent(instance.master_id)
         return Response(status=status.HTTP_200_OK)
-
 
 
 class ProductCodes(APIView):
@@ -104,7 +118,6 @@ class ProductCodes(APIView):
         productCode = self.get_object(code)
         serializer = ProductCodeSerializer(productCode)
         return Response(serializer.data)
-
 
 
 class ProductEggUpdate(mixins.CreateModelMixin,
@@ -136,7 +149,7 @@ class OrderProductUnitPrice(APIView):
             return ProductUnitPrice.objects.filter(locationCode=location)
             # return ProductUnitPrice.objects.all
         except ProductUnitPrice.DoesNotExist:
-            raise Http404 # TODO 없으면 그냥 None
+            raise Http404  # TODO 없으면 그냥 None
 
     def get(self, request, code, format=None):
         productUnitPrice = self.get_object(code)
@@ -155,7 +168,7 @@ class OrderSetProductCode(APIView):
             return SetProductCode.objects.filter(location=location).filter(delete_state='Y')
             # return ProductUnitPrice.objects.all
         except SetProductCode.DoesNotExist:
-            raise Http404 # TODO 없으면 그냥 None
+            raise Http404  # TODO 없으면 그냥 None
 
     def get(self, request, code, format=None):
         setProductCode = self.get_object(code)
@@ -179,3 +192,15 @@ class OrderSetProductMatch(APIView):
         setProductMatch = self.get_object(code)
         serializer = SetProductMatchSerializer(setProductMatch, many=True)
         return Response(serializer.data)
+
+
+class OrderUpdate(generics.UpdateAPIView):
+    '''
+    주문내역 조회에서 Update를 칠때 Patch
+    '''
+
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
