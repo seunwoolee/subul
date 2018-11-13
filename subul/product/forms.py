@@ -256,6 +256,7 @@ class StepFourForm(forms.Form):
                                 choices=list(ProductCode.objects.values_list('code', 'codeName').order_by('code')),
                                 required=False)
     amount = forms.FloatField(min_value=0)
+    amount_kg = forms.FloatField(min_value=0, widget=forms.HiddenInput())
     count = forms.IntegerField(min_value=0)
     memo = forms.CharField(
         label='',

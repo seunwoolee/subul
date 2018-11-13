@@ -36,20 +36,6 @@ class Order(Detail):
 
 def orderQuery(**kwargs):
 
-    ORDER_COLUMN_CHOICES = Choices(
-        ('0', 'id'),
-        ('1', 'type'),
-        ('2', 'ymd'),
-        ('3', 'orderLocationName'),
-        ('4', 'codeName'),
-        ('5', 'amount'),
-        ('6', 'count'),
-        ('7', 'price'),
-        ('8', 'totalPrice'),
-        ('9', 'memo'),
-        ('10', 'setProduct'),
-    )
-
     draw = int(kwargs.get('draw', None)[0])
     start = int(kwargs.get('start', None)[0])
     length = int(kwargs.get('length', None)[0])
@@ -58,6 +44,33 @@ def orderQuery(**kwargs):
     end_date = kwargs.get('end_date', None)[0]
     order_column = kwargs.get('order[0][column]', None)[0]
     order = kwargs.get('order[0][dir]', None)[0]
+
+    if start and length:  # 주문내역출고등록에서 Pageing False
+        ORDER_COLUMN_CHOICES = Choices(
+            ('0', 'id'),
+            ('1', 'type'),
+            ('2', 'ymd'),
+            ('3', 'orderLocationName'),
+            ('4', 'codeName'),
+            ('5', 'amount'),
+            ('6', 'count'),
+            ('7', 'price'),
+            ('8', 'totalPrice'),
+            ('9', 'memo'),
+            ('10', 'setProduct'),
+        )
+    else:
+        ORDER_COLUMN_CHOICES = Choices(
+            ('0', 'id'),
+            ('1', 'type'),
+            ('2', 'ymd'),
+            ('3', 'orderLocationName'),
+            ('4', 'codeName'),
+            ('5', 'amount'),
+            ('6', 'count'),
+            ('7', 'memo'),
+        )
+
     order_column = ORDER_COLUMN_CHOICES[order_column]
 
     # django orm '-' -> desc
@@ -74,7 +87,35 @@ def orderQuery(**kwargs):
                                    Q(memo__icontains=search_value))
 
     count = queryset.count()
-    queryset = queryset.order_by(order_column)[start:start + length]
+
+    if start and length:
+        ORDER_COLUMN_CHOICES = Choices(
+            ('0', 'id'),
+            ('1', 'type'),
+            ('2', 'ymd'),
+            ('3', 'orderLocationName'),
+            ('4', 'codeName'),
+            ('5', 'amount'),
+            ('6', 'count'),
+            ('7', 'price'),
+            ('8', 'totalPrice'),
+            ('9', 'memo'),
+            ('10', 'setProduct'),
+        )
+        queryset = queryset.order_by(order_column)[start:start + length]
+    else:
+        ORDER_COLUMN_CHOICES = Choices(
+            ('0', 'id'),
+            ('1', 'type'),
+            ('2', 'ymd'),
+            ('3', 'orderLocationName'),
+            ('4', 'codeName'),
+            ('5', 'amount'),
+            ('6', 'count'),
+            ('7', 'memo'),
+        )
+        queryset = queryset.filter(release_id=None).order_by(order_column) # 출고가능한 ORDER
+
     return {
         'items': queryset,
         'count': count,

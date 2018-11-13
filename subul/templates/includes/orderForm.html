@@ -6,7 +6,12 @@
     {% for field in orderForm %}
           <tr class="forms-row">
             <td class="no">{{ forloop.counter }}</td>
-            <td>{% render_field field.ymd %} {% render_field field.package %} {% render_field field.set class="form-control set" %}</td>
+            <td>
+                {% render_field field.ymd %}
+                {% render_field field.amount_kg class="amount_kg" %}
+                {% render_field field.package %}
+                {% render_field field.set class="form-control set" %}
+            </td>
             <td>{% render_field field.type class="form-control type" %}</td>
             <td>{% render_field field.location class="form-control location" required="True"%}</td>
             <td>{% render_field field.product class="form-control product" style="width : 300px;" required="True" %}</td>

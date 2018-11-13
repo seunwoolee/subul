@@ -14,39 +14,6 @@
                                                         // 보기 지저분하니 Front 단에서 삭제
 });
 
-function getCookie(c_name)
-{
-    if (document.cookie.length > 0)
-    {
-        c_start = document.cookie.indexOf(c_name + "=");
-        if (c_start != -1)
-        {
-            c_start = c_start + c_name.length + 1;
-            c_end = document.cookie.indexOf(";", c_start);
-            if (c_end == -1) c_end = document.cookie.length;
-            return unescape(document.cookie.substring(c_start,c_end));
-        }
-    }
-    return "";
- }
-
-
-var t = $('.datatable').DataTable({
-        "language": {
-            "lengthMenu": "_MENU_ 페이지당 개수",
-            "zeroRecords": "결과 없음",
-            "info": "page _PAGE_ of _PAGES_",
-            "infoEmpty": "No records available",
-            "infoFiltered": "(검색된결과 from _MAX_ total records)"
-        }
-});
-
-	
-hotkeys('BackSpace,f5', function(event, handler) {
-  // Prevent the default refresh event under WINDOWS system
-  event.preventDefault();
-});
-
 SEQ = 2;
 function cloneMore(selector, prefix) {
 
@@ -229,11 +196,6 @@ function deleteForm(prefix, btn) {
 $(document).on('click', '.add-form-row', function(e){ //일반상품 + 버튼
     e.preventDefault();
     cloneMore('.forms-row:last', 'form');
-//    var parentTR = $(this).closest('.forms-row'); # TODO Readonly 효과 포기
-//    parentTR.find(':input[type!=hidden]:not(:button)').each(function() {
-//        console.log($(this));
-//        $(this).attr('readonly','readonly');
-//    })
     return false;
 });
 
@@ -249,18 +211,6 @@ $(document).on('click', '.remove-form-row', function(e){ // 삭제 - 버튼
     return false;
 });
 
-
-$(function () {
-  $("#datepicker").datepicker({
-        autoclose: true,
-        todayHighlight: true,
-        format:'yyyymmdd'
-  });
-});
-
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})
 
 PRODUCTINFO = [];
 AMOUNT_KG = {};
@@ -359,6 +309,8 @@ $(".amount").focusout(function(){
         amount = $(this).val();
         count = amount / window.AMOUNT_KG['AMOUNT_KG'];
         parentTR.find('.count').val(count);
+        parentTR.find('.amount_kg').val(window.AMOUNT_KG['AMOUNT_KG']);
+
     }
 })
 
@@ -371,21 +323,11 @@ $(".count").focusout(function(){ // 자기 TR만 바꿀수 있어야함
     {
         count = $(this).val();
         amount = count * window.AMOUNT_KG['AMOUNT_KG'];
+        amount = Math.round(amount * 100) / 100;
         parentTR.find('.amount').val(amount);
+        parentTR.find('.amount_kg').val(window.AMOUNT_KG['AMOUNT_KG']);
     }
 })
-
-//$("#submitButton").click(function(){
-//    ymd = $('#datepicker').val();
-//    if(ymd)
-//    {
-//        $("input[type=hidden][id*='ymd']").each(function (i, element){
-//            $(element).val(ymd);
-//        });
-//        console.log($('form'));
-//        $("form").submit();
-//    }
-//})
 
 $("form").submit(function(){
     ymd = $('#datepicker').val();
@@ -394,7 +336,6 @@ $("form").submit(function(){
         $("input[type=hidden][id*='ymd']").each(function (i, element){
             $(element).val(ymd);
         });
-        console.log($('form'));
         $("form").submit();
     }
 })
@@ -406,7 +347,6 @@ function makeSetStyle(parentTR)
     amount = parentTR.find('.amount').attr('readonly','readonly').val("");
     count = parentTR.find('.count').val("");
     product = parentTR.find('.product').find('option').remove();
-//    location = parentTR.find('.location').find('option:selected').remove(); # TODO 할 수 있다면 location도..
     actonButton = parentTR.find('.input-group-append > button');
     actonButton.attr('class','btn btn-dark add-form-set');
     actonButton.html('<i class="nav-icon icon-star"></i>');
@@ -422,3 +362,15 @@ function makeNormalStyle(parentTR)
     actonButton.attr('class','btn btn-success add-form-row');
     actonButton.html('+');
 }
+
+$(function () {
+  $("#datepicker").datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        format:'yyyymmdd'
+  });
+});
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})

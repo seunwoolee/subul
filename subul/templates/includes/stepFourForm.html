@@ -7,7 +7,9 @@
           <tr class="forms-row">
             <td class="no">{{ forloop.counter }}</td>
             <td>{% render_field field.product style="width : 300px;" class="product"%}</td>
-            <td>{% render_field field.amount class="form-control amount" %}</td>
+            <td>{% render_field field.amount class="form-control amount" %}
+                {% render_field field.amount_kg class="amount_kg" %}
+            </td>
             <td>{% render_field field.count  class="form-control count" %}</td>
             <td>
                 <div class="input-group">

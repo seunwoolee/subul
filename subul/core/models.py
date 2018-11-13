@@ -58,6 +58,7 @@ class Detail(models.Model):
     codeName = models.CharField(max_length=255)
     count = models.IntegerField()
     amount = models.FloatField()
+    amount_kg = models.FloatField(blank=True, null=True)
     memo = models.TextField(blank=True)
     delete_state = models.CharField(
         max_length=2,

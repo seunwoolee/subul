@@ -42,33 +42,47 @@ class ProductRegister(LoginRequiredMixin, View):
             for form in formset:
                 code = form.cleaned_data.get('product')
                 amount = form.cleaned_data.get('amount')
+                amount_kg = form.cleaned_data.get('amount_kg')
                 count = form.cleaned_data.get('count')
                 memo = form.cleaned_data.get('memo')
                 codeName = ProductCode.objects.filter(code=code)
-                try:
-                    product = Product.objects.create(
-                        master_id=main,
-                        ymd=main.ymd,
-                        code=code,
-                        codeName=codeName[0].codeName,
-                        amount=amount,
-                        count=count,
-                        memo=memo
-                    )
-                    # ProductAdmin도 insert 해줘야...
-                    location = Location.objects.get(code=301)
-                    productAdmin = ProductAdmin.objects.create(
-                        product_id=product,
-                        amount=amount,
-                        count=count,
-                        ymd=main.ymd,
-                        location=location,
-                    )
-                    product.save()
-                    productAdmin.save()
-                except: #TODO error Log
-                    pass
-            Product.getLossProductPercent(main)  # 수율
+                productExist = Product.objects.filter(code=code).filter(ymd=main.ymd).first()
+                KCFRESH_LOCATION_CODE = '00301'
+                location = Location.objects.get(code=KCFRESH_LOCATION_CODE)  # kcfresh 본사
+
+                if amount_kg * count == amount:
+                    print('############')
+                    if not productExist:
+                        product = Product.objects.create(
+                            master_id=main,
+                            ymd=main.ymd,
+                            code=code,
+                            codeName=codeName[0].codeName,
+                            amount=amount,
+                            amount_kg=amount_kg,
+                            count=count,
+                            memo=memo
+                        )
+
+                        productAdmin = ProductAdmin.objects.create(
+                            product_id=product,
+                            amount=amount,
+                            count=count,
+                            ymd=main.ymd,
+                            location=location,
+                        )
+                        product.save()
+                        productAdmin.save()
+                    else:
+                        productExist.amount += amount
+                        productExist.count += count
+                        productExistAdmin = ProductAdmin.objects.filter(releaseType='생성')\
+                                                                .filter(product_id=productExist).first()
+                        productExistAdmin.amount += amount
+                        productExistAdmin.count += count
+                        productExist.save()
+                        productExistAdmin.save()
+            Product.getLossProductPercent(main)
         return render(request, 'product/productList.html')
 
     def get(self, request):
@@ -100,8 +114,3 @@ class ProductList(LoginRequiredMixin, PermissionRequiredMixin, View):
 
     def get(self, request):
         return render(request, 'product/productList.html')
-
-# def listData(request):
-#     product = Product.objects.get(code = 102)
-#     json = serializers.serialize('json', product)
-#     return HttpResponse(product, content_type='application/json; encoding=utf-8')

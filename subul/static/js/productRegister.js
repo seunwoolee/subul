@@ -5,27 +5,6 @@
  * --------------------------------------------------------------------------
  */
 
- $(function () {
-    $.ajaxSetup({
-        headers: { "X-CSRFToken": getCookie("csrftoken") }
-    });
-});
-
-function getCookie(c_name)
-{
-    if (document.cookie.length > 0)
-    {
-        c_start = document.cookie.indexOf(c_name + "=");
-        if (c_start != -1)
-        {
-            c_start = c_start + c_name.length + 1;
-            c_end = document.cookie.indexOf(";", c_start);
-            if (c_end == -1) c_end = document.cookie.length;
-            return unescape(document.cookie.substring(c_start,c_end));
-        }
-    }
-    return "";
- }
 
 
 var t = $('.datatable').DataTable({
@@ -36,12 +15,6 @@ var t = $('.datatable').DataTable({
             "infoEmpty": "No records available",
             "infoFiltered": "(검색된결과 from _MAX_ total records)"
         }
-});
-
-	
-hotkeys('BackSpace,f5', function(event, handler) {
-  // Prevent the default refresh event under WINDOWS system
-  event.preventDefault();
 });
 
 SEQ = 2;
@@ -138,7 +111,9 @@ $(".amount").focusout(function(){
     {
         amount = $(this).val();
         count = amount / window.AMOUNT_KG['AMOUNT_KG'];
+        count = Math.round(count * 100) / 100;
         parentTR.find('.count').val(count);
+        parentTR.find('.amount_kg').val(window.AMOUNT_KG['AMOUNT_KG']);
     }
 });
 
@@ -149,7 +124,9 @@ $(".count").focusout(function(){
     {
         count = $(this).val();
         amount = count * window.AMOUNT_KG['AMOUNT_KG'];
+        amount = Math.round(amount * 100) / 100;
         parentTR.find('.amount').val(amount);
+        parentTR.find('.amount_kg').val(window.AMOUNT_KG['AMOUNT_KG']);
     }
 });
 
@@ -165,13 +142,3 @@ $(function () {
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
-
-
-
-
-// $('#select2-3').select2({
-  // theme: 'bootstrap',
-  // placeholder: 'Your Favorite Football Team',
-  // allowClear: true
-// });
-//# sourceMappingURL=datatables.js.map

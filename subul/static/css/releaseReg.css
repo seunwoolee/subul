@@ -1,0 +1,9 @@
+.datatable td, #orderDatatable td
+{
+    cursor : pointer;
+}
+
+.modal-dialog
+{
+    max-width : 1200px !important;
+}

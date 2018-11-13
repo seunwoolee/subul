@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.views import View
-
 from core.models import Location
 from order.forms import OrderFormSet
 from order.models import Order
@@ -25,6 +24,7 @@ class OrderReg(View):
                     codeName = productCode.codeName
                     count = form.cleaned_data.get('count')
                     amount = form.cleaned_data.get('amount')
+                    amount_kg = form.cleaned_data.get('amount_kg')
                     memo = form.cleaned_data.get('memo')
                     price = form.cleaned_data.get('price')
                     type = form.cleaned_data.get('type')
@@ -33,23 +33,24 @@ class OrderReg(View):
                     if form.cleaned_data.get('package'):
                         setProduct = SetProductCode.objects.get(code=form.cleaned_data.get('package'))
 
-                    order = Order.objects.create(
-                        ymd=ymd,
-                        code=code,
-                        codeName=codeName,
-                        amount=amount,
-                        count=count,
-                        price=price,
-                        memo=memo,
-                        orderLocationCode=location,
-                        orderLocationName=location.codeName,
-                        type=type,
-                    )
+                    if amount_kg * count == amount:
+                        order = Order.objects.create(
+                            ymd=ymd,
+                            code=code,
+                            codeName=codeName,
+                            amount=amount,
+                            count=count,
+                            amount_kg=amount_kg,
+                            price=price,
+                            memo=memo,
+                            orderLocationCode=location,
+                            orderLocationName=location.codeName,
+                            type=type,
+                        )
 
-                    if setProduct:
-                        print(setProduct)
-                        order.setProduct = setProduct
-                        order.save()
+                        if setProduct:
+                            order.setProduct = setProduct
+                            order.save()
 
             else:
                 print(formset.errors)
