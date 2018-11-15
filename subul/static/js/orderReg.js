@@ -74,7 +74,7 @@ function cloneSetMore(selector, prefix) {
         type: 'get',
         data: data,
         }).done(function(data) { // data 는  code, codeName, price, count, amount_kg을 담고있다.
-
+            console.log(data);
             parentTR.find('.location').select2("destroy");
             var newElement = parentTR.clone(true);
 
@@ -92,6 +92,10 @@ function cloneSetMore(selector, prefix) {
                         if(name.indexOf("set") >= 0)
                         {
                             $(this).attr({'name': name, 'id': id});
+                        }
+                       else if(name.indexOf("amount_kg") >= 0 )
+                        {
+                            $(this).attr({'name': name, 'id': id}).val(data[i]['amount_kg']);
                         }
                         else if(name.indexOf("type") >= 0 )
                         {

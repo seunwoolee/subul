@@ -89,10 +89,11 @@ class ProductCodeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductCode
-        fields = ('code','codeName','amount_kg')
+        fields = ('code', 'codeName', 'amount_kg')
 
 
 class SetProductMatchSerializer(serializers.ModelSerializer):
+    # orderLocationCode = serializers.SlugRelatedField(read_only=True, slug_field='code')
     code = serializers.SerializerMethodField()
     codeName = serializers.SerializerMethodField()
     amount_kg = serializers.SerializerMethodField()

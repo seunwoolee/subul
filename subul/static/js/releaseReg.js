@@ -148,6 +148,7 @@ $(document).on('click', ".datatable tbody tr", function() {
     $('#id_memo').val("");
     $('#id_count').val("");
     $('#id_releaseOrder').val(0);
+    $('#id_amount_kg').val(data['amount_kg']);
     $('#datepicker').val("");
     $("#Modal").modal();
 });
@@ -212,6 +213,8 @@ $(document).on('click', "#orderDatatable tbody tr", function() {
                             <input type="hidden" name="ymd">
                             <input type="hidden" name="price">
                             <input type="hidden" name="releaseOrder">
+                            <input type="hidden" name="amount_kg">
+                            <input type="hidden" name="setProductCode">
                             <input type="hidden" name="memo">
                             ${data['codeName']}
                          </td>
@@ -271,6 +274,8 @@ function insertInputValue($TR, row, data)
     $TR.find('input[name="ymd"]').val(data['ymd']);
     $TR.find('input[name="price"]').val(data['price']);
     $TR.find('input[name="releaseOrder"]').val(data['id']);
+    $TR.find('input[name="amount_kg"]').val(data['amount_kg']);
+    $TR.find('input[name="setProductCode"]').val(data['setProductCode']);
     $TR.find('input[name="memo"]').val("");
 }
 
@@ -354,7 +359,6 @@ $('#orderRelease').on('submit', function (e)
 //                    alert('출고 등록 완료');
                     $(".everyModal").modal('hide');
                     $('#orderDatatable').DataTable().search($("input[type='search']").val()).draw();
-//                }
             }).fail(function() {
                 alert('수정 에러 전산실로 문의바랍니다.');
             });

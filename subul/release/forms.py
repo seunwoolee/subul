@@ -23,6 +23,8 @@ class ReleaseForm(forms.Form):
     productYmd = forms.CharField(widget=forms.HiddenInput())
     productId = forms.IntegerField(widget=forms.HiddenInput())
     releaseOrder = forms.IntegerField(widget=forms.HiddenInput())
+    amount_kg = forms.FloatField(min_value=0, widget=forms.HiddenInput())
+    setProductCode = forms.CharField(widget=forms.HiddenInput())
 
     type = forms.ChoiceField(choices=RELEASE_TYPE_CHOICES)
     location = forms.ChoiceField(widget=Select2Widget,

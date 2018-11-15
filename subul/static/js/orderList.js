@@ -36,10 +36,7 @@ fetch_data(start_day, end_day);
             }
         },
         "columns": [
-            {
-
-                "data": "id"
-            },
+            {"data": "id"},
             {
                 "data": "type",
                 "render" : function(data, type, row, meta){

@@ -199,6 +199,9 @@ class Product(Detail):  # TODO 주문 나갈때 Tag 붙이는 필드 필요
     purchaseLocation = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='purchase_locationCode',
                                          blank=True, null=True)
     purchaseLocationName = models.CharField(max_length=255, blank=True, null=True)
+    productCode = models.ForeignKey(ProductCode, on_delete=models.CASCADE,
+                                    blank=True, null=True, related_name='productInfo')
+
     def __str__(self):
         return self.codeName + '(' + self.ymd + ')'
 
@@ -337,6 +340,8 @@ class SetProductMatch(TimeStampedModel):
     count = models.IntegerField(blank=True, null=True)
     saleLocation = models.ForeignKey(Location, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"{self.setProductCode.codeName}_{self.saleLocation.codeName}_{self.productCode.codeName}"
 
 def productQuery(**kwargs):
     search_value = kwargs.get('search[value]', None)[0]

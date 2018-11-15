@@ -35,12 +35,8 @@ fetch_data(start_day, end_day);
             }
         },
         "columns": [
-            {
-                "data": "id"
-            },
-            {
-                "data": "master_id"
-            },
+            {"data": "id"},
+            {"data": "master_id", "visible": false},
             {
                 "data": "type",
                 "render" : function(data, type, row, meta){
@@ -109,7 +105,23 @@ fetch_data(start_day, end_day);
             {"data": "loss_openEgg"},
             {"data": "loss_clean"},
             {"data": "loss_fill"},
-            {"data": "memo"},
+            {
+                "data": "memo",
+                "render": function(data, type, row, meta){
+                        if(data)
+                        {
+                            return `<span style="font-size : 1rem;">
+                                        <i class="fas fa-file-alt" data-toggle="tooltip" data-placement="top"
+                                         title=${data}>
+                                         </i>
+                                     </span>`
+                        }
+                        else
+                        {
+                            return ""
+                        }
+                }
+            },
             {
                 "data": null,
                 "defaultContent": '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="fa fa-trash-o"></i></button>' +
@@ -118,7 +130,10 @@ fetch_data(start_day, end_day);
         ],
         dom: 'Bfrtip',
         buttons: ['pageLength', 'colvis','copy', 'excel', 'pdf', 'print'],
-        lengthMenu : [[30, 50, -1], [30, 50, "All"]]
+        lengthMenu : [[30, 50, -1], [30, 50, "All"]],
+        drawCallback: function(settings) {
+                $('[data-toggle="tooltip"]').tooltip();
+            }
     });
  }
 
@@ -190,7 +205,6 @@ $('.datatable tbody').on('click', 'button', function () {
 
 });
 
-
 $('form').on('submit', function (e)  // EDIT
 {
     e.preventDefault();
@@ -223,3 +237,7 @@ function makeAjaxUrl($this)
     }
     return url;
 }
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip();
+})

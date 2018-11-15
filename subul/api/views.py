@@ -5,11 +5,12 @@ from rest_framework.views import APIView
 from rest_framework import mixins
 
 from api.orderSerializers import OrderSerializer
-from api.releaseSerializers import ProductAdminSerializer
+from api.releaseSerializers import ProductAdminSerializer, ReleaseSerializer
 from core.models import Location
-from order.models import orderQuery, Order
+from order.models import Order
 from product.models import ProductMaster, Product, ProductEgg, productEggQuery, productQuery, ProductUnitPrice, \
     SetProductMatch, SetProductCode, ProductCode, ProductAdmin
+from release.models import Release
 from .serializers import ProductSerializer, ProductEggSerializer, ProductUnitPriceSerializer, SetProductCodeSerializer, \
     ProductCodeSerializer, SetProductMatchSerializer
 
@@ -72,7 +73,7 @@ class OrdersAPIView(APIView):
 
     def get(self, request, format=None):
         try:
-            orders = orderQuery(**request.query_params)
+            orders = Order.orderQuery(**request.query_params)
             orderSerializer = OrderSerializer(orders['items'], many=True)
             result = dict()
             result['data'] = orderSerializer.data
@@ -212,9 +213,7 @@ class ProductAdminsAPIView(APIView):
         if self.checkOrderOrRelease(**request.query_params):
             try:
                 productAdmins = ProductAdmin.productAdminQuery(**request.query_params)
-                # productAdminsSerializer = ProductAdminSerializer(productAdmins['items'], many=True)
                 result = dict()
-                # result['data'] = productAdminsSerializer.data
                 result['data'] = productAdmins['items']
                 result['draw'] = productAdmins['draw']
                 result['recordsTotal'] = productAdmins['total']
@@ -223,14 +222,9 @@ class ProductAdminsAPIView(APIView):
             except Exception as e:
                 return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
         else:
-            # print(request.query_params)
             storedLocationCode = request.query_params['storedLocation']
             productCode = request.query_params['code']
             productAdmins = ProductAdmin.productAdminOrderQuery(productCode, storedLocationCode)
-            # productAdminsSerializer = ProductAdminSerializer(productAdmins, many=True)
-            # print(productAdmins)
-            # print('###########뭐가다름?##############')
-            # print(productAdminsSerializer.data)
             return Response(productAdmins, status=status.HTTP_200_OK, template_name=None, content_type=None)
 
     def checkOrderOrRelease(self, **kwargs):
@@ -240,3 +234,21 @@ class ProductAdminsAPIView(APIView):
         else:
             return None
 
+
+class ReleasesAPIView(APIView):
+
+    def get(self, request, format=None):
+        try:
+            releases = Release.releaseQuery(**request.query_params)
+            releaseSerializer = ReleaseSerializer(releases['items'], many=True)
+            print('########## 시리얼 라이징 ###########')
+            print(releaseSerializer)
+            print(releaseSerializer.data)
+            result = dict()
+            result['data'] = releaseSerializer.data
+            result['draw'] = releases['draw']
+            result['recordsTotal'] = releases['total']
+            result['recordsFiltered'] = releases['count']
+            return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+        except Exception as e:
+            return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)

@@ -45,7 +45,8 @@ class ProductRegister(LoginRequiredMixin, View):
                 amount_kg = form.cleaned_data.get('amount_kg')
                 count = form.cleaned_data.get('count')
                 memo = form.cleaned_data.get('memo')
-                codeName = ProductCode.objects.filter(code=code)
+                # codeName = ProductCode.objects.filter(code=code)
+                productCode = ProductCode.objects.get(code=code)
                 productExist = Product.objects.filter(code=code).filter(ymd=main.ymd).first()
                 KCFRESH_LOCATION_CODE = '00301'
                 location = Location.objects.get(code=KCFRESH_LOCATION_CODE)  # kcfresh 본사
@@ -57,7 +58,8 @@ class ProductRegister(LoginRequiredMixin, View):
                             master_id=main,
                             ymd=main.ymd,
                             code=code,
-                            codeName=codeName[0].codeName,
+                            codeName=productCode.codeName,
+                            productCode=productCode,
                             amount=amount,
                             amount_kg=amount_kg,
                             count=count,
