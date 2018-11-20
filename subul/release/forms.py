@@ -15,6 +15,9 @@ class ReleaseForm(forms.Form):
         ('자손', '자손'),
         ('생산요청', '생산요청'),
         ('반품', '반품'),
+        ('이동', '이동'),
+        ('미출고품', '미출고품'),
+        ('재고조정', '재고조정'),
     )
 
     #Hidden fields
@@ -25,8 +28,9 @@ class ReleaseForm(forms.Form):
     releaseOrder = forms.IntegerField(widget=forms.HiddenInput())
     amount_kg = forms.FloatField(min_value=0, widget=forms.HiddenInput())
     setProductCode = forms.CharField(widget=forms.HiddenInput())
+    totalCount = forms.CharField(widget=forms.HiddenInput(), disabled=True)
 
-    type = forms.ChoiceField(choices=RELEASE_TYPE_CHOICES)
+    type = forms.ChoiceField(choices=RELEASE_TYPE_CHOICES, widget=Select2Widget)
     location = forms.ChoiceField(widget=Select2Widget,
                                  choices=list(Location.objects.values_list('code', 'codeName').order_by('code')))
     ymd = forms.CharField(max_length=8)

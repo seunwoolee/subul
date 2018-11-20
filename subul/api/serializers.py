@@ -66,7 +66,7 @@ class ProductUnitPriceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductUnitPrice
-        fields = ('id', 'price', 'code', 'codeName', 'amount_kg')
+        fields = ('id', 'price', 'code', 'codeName', 'amount_kg', 'specialPrice')
 
     def get_codeName(self, obj):
         return obj.productCode.codeName

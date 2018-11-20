@@ -7,16 +7,6 @@
 
 
 
-var t = $('.datatable').DataTable({
-        "language": {
-            "lengthMenu": "_MENU_ 페이지당 개수",
-            "zeroRecords": "결과 없음",
-            "info": "page _PAGE_ of _PAGES_",
-            "infoEmpty": "No records available",
-            "infoFiltered": "(검색된결과 from _MAX_ total records)"
-        }
-});
-
 SEQ = 2;
 function cloneMore(selector, prefix) {
 
@@ -73,7 +63,6 @@ function deleteForm(prefix, btn) {
 
 AMOUNT_KG = {};
 $( ".product" ).change(function() {
-
     parentTR = $(this).parents('tr');
     data = parentTR.find('.product').val();
     url = '/api/productCodes/'+data;
@@ -82,15 +71,13 @@ $( ".product" ).change(function() {
     url: url,
     type: 'get',
     data: data,
-    }).done(function(data) { // data는  code, codeName, amount_kg를 담고있다
+    }).done(function(data) {
         window.AMOUNT_KG = {"parentTR" : parentTR, "AMOUNT_KG" : data["amount_kg"]};
-//        window.AMOUNT_KG = data["amount_kg"];
     }).fail(function() {
         alert('수정 에러 전산실로 문의바랍니다.');
     });
 
 });
-
 
 $(document).on('click', '.add-form-row', function(e){
     e.preventDefault();
@@ -104,41 +91,6 @@ $(document).on('click', '.remove-form-row', function(e){
     return false;
 });
 
+$(".amount").focusout(function(){ if(AMOUNT_KG['parentTR'][0] == parentTR[0]) { setAutoCountValue($(this)); }});
+$(".count").focusout(function(){ if(AMOUNT_KG['parentTR'][0] == parentTR[0]) { setAutoAmountValue($(this)); }});
 
-$(".amount").focusout(function(){
-    parentTR = $(this).parents('tr');
-    if(AMOUNT_KG['parentTR'][0] == parentTR[0])
-    {
-        amount = $(this).val();
-        count = amount / window.AMOUNT_KG['AMOUNT_KG'];
-        count = Math.round(count * 100) / 100;
-        parentTR.find('.count').val(count);
-        parentTR.find('.amount_kg').val(window.AMOUNT_KG['AMOUNT_KG']);
-    }
-});
-
-
-$(".count").focusout(function(){
-    parentTR = $(this).parents('tr');
-    if(AMOUNT_KG['parentTR'][0] == parentTR[0])
-    {
-        count = $(this).val();
-        amount = count * window.AMOUNT_KG['AMOUNT_KG'];
-        amount = Math.round(amount * 100) / 100;
-        parentTR.find('.amount').val(amount);
-        parentTR.find('.amount_kg').val(window.AMOUNT_KG['AMOUNT_KG']);
-    }
-});
-
-
-$(function () {
-  $("#datepicker").datepicker({
-        autoclose: true,
-        todayHighlight: true,
-        format:'yyyymmdd'
-  });
-});
-
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})

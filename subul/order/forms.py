@@ -23,8 +23,12 @@ class OrderForm(forms.Form):
         ('패키지', '패키지'),
     )
 
+    SPECIALTAG_TYPE_CHOICES = (
+        ('일반', '일반'),
+        ('특인가', '특인가'),
+    )
 
-    set = forms.ChoiceField(choices=SET_TYPE_CHOICES, required=False)
+    set = forms.ChoiceField(choices=SET_TYPE_CHOICES)
     type = forms.ChoiceField(choices=ORDER_TYPE_CHOICES)
     location = forms.ChoiceField(widget=Select2Widget,
                                  choices=list(Location.objects.values_list('code', 'codeName').order_by('code')),
@@ -40,6 +44,5 @@ class OrderForm(forms.Form):
     )
     ymd = forms.CharField(max_length=8, widget=forms.HiddenInput())
     package = forms.CharField(widget=forms.HiddenInput(), required=False)
-
-
+    specialTag = forms.ChoiceField(choices=SPECIALTAG_TYPE_CHOICES)
 OrderFormSet = formset_factory(OrderForm)

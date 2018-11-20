@@ -12,6 +12,14 @@ class Release(Detail):
         ('증정', '증정'),
         ('자손', '자손'),
         ('반품', '반품'),
+        ('이동', '이동'),
+        ('미출고품', '미출고품'),
+        ('재고조정', '재고조정'),
+    )
+
+    SPECIALTAG_TYPE_CHOICES = (
+        ('일반', '일반'),
+        ('특인가', '특인가'),
     )
 
     type = models.CharField(
@@ -28,6 +36,11 @@ class Release(Detail):
     releaseStoreLocation = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='release_releaseStoreLocation')
     releaseSetProductCode = models.ForeignKey('product.SetProductCode', on_delete=models.CASCADE, null=True, blank=True)
     releaseVat = models.IntegerField()
+    specialTag = models.CharField(
+        max_length=10,
+        choices=SPECIALTAG_TYPE_CHOICES,
+        default='',
+    )
 
     def __str__(self):
         return f"{self.codeName}_{self.type}_{self.releaseLocationName}"
@@ -39,23 +52,24 @@ class Release(Detail):
             ('1', 'ymd'),
             ('2', 'releaseLocationName'),
             ('3', 'contentType'),
-            ('4', 'code'),
-            ('5', 'codeName'),
-            ('6', 'amount'),
-            ('7', 'count'),
-            ('8', 'kgPrice'),
-            ('9', 'totalPrice'),
-            ('10', 'supplyPrice'),
-            ('11', 'releaseVat'),
-            ('12', 'eaPrice'),
-            ('13', 'productYmd'),
-            ('14', 'type'),
-            ('15', 'releaseStoreLocationCodeName'),
-            ('16', 'orderMemo'),
-            ('17', 'locationType'),
-            ('18', 'locationManagerName'),
-            ('19', 'releaseSetProduct'),
-            ('20', 'releaseSetProductCodeName'),
+            ('4', 'specialTag'),
+            ('5', 'code'),
+            ('6', 'codeName'),
+            ('7', 'amount'),
+            ('8', 'count'),
+            ('9', 'kgPrice'),
+            ('10', 'totalPrice'),
+            ('11', 'supplyPrice'),
+            ('12', 'releaseVat'),
+            ('13', 'eaPrice'),
+            ('14', 'productYmd'),
+            ('15', 'type'),
+            ('16', 'releaseStoreLocationCodeName'),
+            ('17', 'orderMemo'),
+            ('18', 'locationType'),
+            ('19', 'locationManagerName'),
+            ('20', 'releaseSetProduct'),
+            ('21', 'releaseSetProductCodeName'),
         )
         draw = int(kwargs.get('draw', None)[0])
         start = int(kwargs.get('start', None)[0])
@@ -68,7 +82,7 @@ class Release(Detail):
         order = kwargs.get('order[0][dir]', None)[0]
 
         queryset = Release.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(delete_state='N')\
-                          .annotate(kgPrice=ExpressionWrapper(F('count')+F('amount'), output_field=FloatField())) \
+                          .annotate(kgPrice=ExpressionWrapper(F('price') / F('amount'), output_field=FloatField())) \
                           .annotate(contentType=F('product_id__productCode__type'))\
                           .annotate(totalPrice=F('price')) \
                           .annotate(supplyPrice=ExpressionWrapper(F('price') + F('releaseVat'), output_field=FloatField()))\

@@ -42,3 +42,66 @@ Date.prototype.yyyymmdd = function() {
           (dd>9 ? '' : '0') + dd
          ].join('');
 };
+
+var date = new Date();
+var days = 7;
+var plusSevenDate = new Date(date.getTime() + (days * 24 * 60 * 60 * 1000));
+var start_day = date.yyyymmdd();
+var end_day = plusSevenDate.yyyymmdd();
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
+function setDataTableActionButton()
+{
+    return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="fa fa-trash-o"></i></button>' +
+            '<button class="btn btn-info btn-sm MODIFY" href="#"><i class="fa fa-edit"></i></button>';
+}
+
+
+ $('.input-daterange').datepicker({
+  todayBtn:'linked',
+  format: "yyyymmdd",
+  autoclose: true
+ });
+
+
+function setAutoCountValue($this)
+{
+    if($this.val().length > 0)
+    {
+        parentTR = $this.parents('tr');
+        amount = $this.val();
+        count = amount / window.AMOUNT_KG['AMOUNT_KG'];
+        count = Math.round(count * 100) / 100;
+        parentTR.find('.count').val(count);
+        parentTR.find('.amount_kg').val(window.AMOUNT_KG['AMOUNT_KG']);
+    }
+}
+
+function setAutoAmountValue($this)
+{
+    if($this.val().length > 0)
+    {
+        parentTR = $this.parents('tr');
+        count = $this.val();
+        amount = count * window.AMOUNT_KG['AMOUNT_KG'];
+        amount = Math.round(amount * 100) / 100;
+        parentTR.find('.amount').val(amount);
+        parentTR.find('.amount_kg').val(window.AMOUNT_KG['AMOUNT_KG']);
+    }
+}
+
+function setSpecialTagButton(data)
+{
+    if(data == "특인가")
+    {
+        return '<button class="btn btn-danger btn-sm">'+ data +'</button>'
+    }
+    else
+    {
+//        return '<button class="btn btn-primary btn-sm">'+ data +'</button>'
+        return ''
+    }
+}

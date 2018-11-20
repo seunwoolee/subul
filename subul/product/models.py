@@ -231,8 +231,10 @@ class ProductAdmin(models.Model):
         ('샘플', '샘플'),
         ('증정', '증정'),
         ('자손', '자손'),
-        ('이동', '이동'),
         ('반품', '반품'),  # TODO 반품 처리
+        ('이동', '이동'),
+        ('미출고품', '미출고품'),
+        ('재고조정', '재고조정'),
     )
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
     amount = models.FloatField()
@@ -313,9 +315,9 @@ class ProductAdmin(models.Model):
                                                storedLocationCodeName=F('location__codeName')) \
             .annotate(totalCount=Sum('count')) \
             .annotate(totalAmount=Sum('amount')) \
-            .filter(storedLocationCode=storedLocationCode)\
-            .filter(productCode=productCode)\
-            .filter(totalCount__gt=0)\
+            .filter(storedLocationCode=storedLocationCode) \
+            .filter(productCode=productCode) \
+            .filter(totalCount__gt=0) \
             .order_by('productYmd')
         return queryset
 
@@ -324,7 +326,7 @@ class ProductUnitPrice(TimeStampedModel):
     locationCode = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='location')
     productCode = models.ForeignKey(ProductCode, on_delete=models.CASCADE, related_name='product')
     price = models.IntegerField(default=0)
-
+    specialPrice = models.IntegerField(default=0)
 
 class SetProductCode(Code):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)

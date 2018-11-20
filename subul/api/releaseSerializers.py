@@ -34,7 +34,7 @@ class ReleaseSerializer(serializers.ModelSerializer):
         fields = ('id', 'ymd', 'releaseLocationName', 'contentType', 'code', 'codeName', 'amount', 'count',
                   'kgPrice', 'totalPrice', 'supplyPrice', 'eaPrice', 'releaseVat', 'productYmd', 'type',
                   'releaseStoreLocationCodeName', 'orderMemo', 'locationType', 'locationManagerName',
-                  'releaseSetProduct', 'releaseSetProductCodeName')
+                  'releaseSetProduct', 'releaseSetProductCodeName', 'specialTag')
 
     def get_locationType(self, obj):
         CHARACTER_TYPE_CHOICES = {

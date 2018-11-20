@@ -4,5 +4,6 @@ from . import views
 
 urlpatterns = [
     path('', views.ReleaseReg.as_view(), name='releaseReg'),
+    path('adjustment', views.ReleaseAdjustment.as_view(), name='releaseAdjustment'),
     path('list', views.ReleaseList.as_view(), name='releaseList'),
 ]

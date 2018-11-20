@@ -196,9 +196,9 @@ class OrderSetProductMatch(APIView):
 
 
 class OrderUpdate(generics.UpdateAPIView):
-    '''
+    """
     주문내역 조회에서 Update를 칠때 Patch
-    '''
+    """
 
     queryset = Order.objects.all()
     serializer_class = OrderSerializer

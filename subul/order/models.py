@@ -17,7 +17,12 @@ class Order(Detail):
         ('자손', '자손'),
         ('생산요청', '생산요청'),
     )
-    # master_id = models.ForeignKey(OrderMaster, on_delete=models.CASCADE)
+
+    SPECIALTAG_TYPE_CHOICES = (
+        ('일반', '일반'),
+        ('특인가', '특인가'),
+    )
+
     orderLocationCode = models.ForeignKey(Location, on_delete=models.CASCADE)
     orderLocationName = models.CharField(max_length=255)
     type = models.CharField(
@@ -28,14 +33,17 @@ class Order(Detail):
     price = models.IntegerField()
     setProduct = models.ForeignKey('product.SetProductCode',on_delete=models.CASCADE, null=True, blank=True)
     release_id = models.ForeignKey('release.Release',on_delete=models.CASCADE, null=True, blank=True)
-
+    specialTag = models.CharField(
+        max_length=10,
+        choices=SPECIALTAG_TYPE_CHOICES,
+        default='일반',
+    )
 
     def __str__(self):
         return f"{self.ymd}_{self.orderLocationName}_{self.codeName}"
 
     @staticmethod
     def orderQuery(**kwargs):
-
         draw = int(kwargs.get('draw', None)[0])
         start = int(kwargs.get('start', None)[0])
         length = int(kwargs.get('length', None)[0])
@@ -45,30 +53,32 @@ class Order(Detail):
         order_column = kwargs.get('order[0][column]', None)[0]
         order = kwargs.get('order[0][dir]', None)[0]
 
-        if length:  # 주문내역출고등록에서 Pageing False
+        if length != -1:
             ORDER_COLUMN_CHOICES = Choices(
                 ('0', 'id'),
                 ('1', 'type'),
-                ('2', 'ymd'),
-                ('3', 'orderLocationName'),
-                ('4', 'codeName'),
-                ('5', 'amount'),
-                ('6', 'count'),
-                ('7', 'price'),
-                ('8', 'totalPrice'),
-                ('9', 'memo'),
-                ('10', 'setProduct'),
+                ('2', 'specialTag'),
+                ('3', 'ymd'),
+                ('4', 'orderLocationName'),
+                ('5', 'codeName'),
+                ('6', 'amount'),
+                ('7', 'count'),
+                ('8', 'price'),
+                ('9', 'totalPrice'),
+                ('10', 'memo'),
+                ('11', 'setProduct'),
             )
-        else:
+        else: # 주문내역출고등록
             ORDER_COLUMN_CHOICES = Choices(
                 ('0', 'id'),
                 ('1', 'type'),
-                ('2', 'ymd'),
-                ('3', 'orderLocationName'),
-                ('4', 'codeName'),
-                ('5', 'amount'),
-                ('6', 'count'),
-                ('7', 'memo'),
+                ('2', 'specialTag'),
+                ('3', 'ymd'),
+                ('4', 'orderLocationName'),
+                ('5', 'codeName'),
+                ('6', 'amount'),
+                ('7', 'count'),
+                ('8', 'memo'),
             )
         order_column = ORDER_COLUMN_CHOICES[order_column]
 
@@ -79,16 +89,15 @@ class Order(Detail):
         queryset = Order.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date)\
                                 .filter(delete_state='N').annotate(totalPrice=Sum(F('count') * F('price'))) \
                                 .annotate(setProductCode=F('setProduct__code'))
-        total = queryset.count()
 
+        total = queryset.count()
         if search_value:
             queryset = queryset.filter(Q(code__icontains=search_value) |
                                        Q(codeName__icontains=search_value) |
                                        Q(memo__icontains=search_value))
-
         count = queryset.count()
 
-        if start and length:
+        if length != -1:
             queryset = queryset.order_by(order_column)[start:start + length]
         else:
             queryset = queryset.filter(release_id=None).order_by(order_column) # 출고가능한 ORDER

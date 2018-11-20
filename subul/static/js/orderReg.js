@@ -22,49 +22,60 @@ function cloneMore(selector, prefix) {
     var no = newElement.find('.no');
     var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
 
-    newElement.find(':input').each(function() {
-        var name = $(this).attr('name')
-        if(name) {
-            name = name.replace('-' + (total-1) + '-', '-' + total + '-');
-            var id = 'id_' + name;
-
-            if(name.indexOf("type") >= 0 || name.indexOf("set") >= 0) // 타입,세트는 판매로 고정한다(사용자 편의)
-            {
-                $(this).attr({'name': name, 'id': id});
-            }
-            else if(name.indexOf("product") >= 0) // 이전의 제품 option 값 지우기
-            {
-                $(this).attr({'name': name, 'id': id}).find('option').remove();
-            }
-            else
-            {
-                $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
-            }
-        }
-    });
+    newElement.find(':input').each(function() { setNewElementInputInfo($(this), total); });
     total++;
     no.html(SEQ).css("background-color", "");
     SEQ++;
     $('#id_' + prefix + '-TOTAL_FORMS').val(total);
     $(selector).after(newElement);
     var conditionRow = $('.forms-row:not(:last)');
-    conditionRow.find('.btn.add-form-row')
-    .removeClass('btn-success').addClass('btn-danger')
-    .removeClass('add-form-row').addClass('remove-form-row')
-    .html('-');
-
+    minusConditionRow(conditionRow, 'normal');
     $('.django-select2').djangoSelect2();
     return false;
 }
 
-function cloneSetMore(selector, prefix) {
+function setNewElementInputInfo($this, total)
+{
+    var name = $this.attr('name');
+    if(name) {
+        name = name.replace('-' + (total-1) + '-', '-' + total + '-');
+        var id = 'id_' + name;
 
+        if(name.indexOf("type") >= 0 || name.indexOf("set") >= 0 || name.indexOf("specialTag") >= 0)
+        {  // 타입,일반/특인,세트는 판매로 고정한다(사용자 편의)
+            $this.attr({'name': name, 'id': id});
+        }
+        else if(name.indexOf("product") >= 0) // 이전의 제품 option 값 지우기
+        {
+            $this.attr({'name': name, 'id': id}).find('option').remove();
+        }
+        else
+        {
+            $this.attr({'name': name, 'id': id}).val('').removeAttr('checked');
+        }
+    }
+}
+
+function minusConditionRow(conditionRow, type)
+{
+    if(type == "normal"){ conditionRow = conditionRow.find('.btn.add-form-row'); }
+    conditionRow.removeClass('btn-success').removeClass('btn-dark').addClass('btn-danger')
+    .removeClass('add-form-row').removeClass('add-form-set').addClass('remove-form-row')
+    .html('-');
+}
+
+function plusConditionRow(conditionRow)
+{
+    conditionRow.removeClass('btn-dark').removeClass('btn-danger')
+                .addClass('btn-success')
+                .removeClass('remove-form-row').removeClass('add-form-set')
+                .addClass('add-form-row').html('+');
+}
+
+function cloneSetMore(selector, prefix) {
     parentTR = $(selector);
     PRODUCT = parentTR.find('.product').val();
     COUNT = parentTR.find('.count').val();
-    SET = parentTR.find('.set').val();
-    TYPE = parentTR.find('.type').val();
-    LOCATION = parentTR.find('.location').val();
 
     if(COUNT > 0)
     {
@@ -73,8 +84,7 @@ function cloneSetMore(selector, prefix) {
         url: url,
         type: 'get',
         data: data,
-        }).done(function(data) { // data 는  code, codeName, price, count, amount_kg을 담고있다.
-            console.log(data);
+        }).done(function(data) {
             parentTR.find('.location').select2("destroy");
             var newElement = parentTR.clone(true);
 
@@ -83,84 +93,20 @@ function cloneSetMore(selector, prefix) {
                 var newElement = newElement.clone(true);
                 var no = newElement.find('.no');
                 var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
-
-                newElement.find(':input:not(:button)').each(function() { // 각각의 input 마다(세로)
-                    var name = $(this).attr('name');
-                    if(name) {
-                        name = name.replace('-' + (total-1) + '-', '-' + total + '-');
-                        var id = 'id_' + name;
-                        if(name.indexOf("set") >= 0)
-                        {
-                            $(this).attr({'name': name, 'id': id});
-                        }
-                       else if(name.indexOf("amount_kg") >= 0 )
-                        {
-                            $(this).attr({'name': name, 'id': id}).val(data[i]['amount_kg']);
-                        }
-                        else if(name.indexOf("type") >= 0 )
-                        {
-                            $(this).attr({'name': name, 'id': id}).val(TYPE);
-                        }
-                        else if(name.indexOf("location") >= 0)
-                        {
-                            $(this).attr({'name': name, 'id': id}).val(LOCATION);
-                        }
-                        else if(name.indexOf("product") >= 0) //제품명 option 낑가넣기
-                        {
-                            var option = $("<option value="+data[i]["code"]+" selected>"+data[i]["codeName"]+"</option>");
-                            $(this).attr({'name': name, 'id': id}).find('option').remove();
-                            $(this).append(option);
-                        }
-                        else if(name.indexOf("amount") >= 0)
-                        {
-                            $(this).attr({'name': name, 'id': id}).val(data[i]["amount"] * COUNT).removeAttr('readonly');
-                        }
-                        else if(name.indexOf("count") >= 0)
-                        {
-                            $(this).attr({'name': name, 'id': id}).val(data[i]["count"] * COUNT);
-                        }
-                        else if(name.indexOf("price") >= 0)
-                        {
-                            $(this).attr({'name': name, 'id': id}).val(data[i]["price"]).removeAttr('readonly');
-                        }
-                        else if(name.indexOf("package") >= 0)
-                        {
-                            $(this).attr({'name': name, 'id': id}).val(PRODUCT);
-                        }
-                        else // hidden fields
-                        {
-                            $(this).attr({'name': name, 'id': id});
-                        }
-                    }
+                newElement.find(':input:not(:button)').each(function() {
+                    setPackageElementInputInfo(parentTR, $(this), data, total);
                 });
-
                 total++;
                 $('#id_' + prefix + '-TOTAL_FORMS').val(total);
                 $(selector).after(newElement);
-
                  newElement.find('button').each(function() {
-
                     var conditionRow = $(this);
-                    if(i == data.length -1)
-                    {
-                        conditionRow.removeClass('btn-dark').removeClass('btn-danger')
-                                    .addClass('btn-success')
-                                    .removeClass('remove-form-row').removeClass('add-form-set')
-                                    .addClass('add-form-row').html('+');
-                    }
-                    else
-                    {
-                        conditionRow.removeClass('btn-dark').addClass('btn-danger')
-                                    .removeClass('add-form-set').addClass('remove-form-row').html('-');
-                    }
+                    (i == data.length -1) ? plusConditionRow(conditionRow) : minusConditionRow(conditionRow, 'package');
                  });
-
-
                 no.html(SEQ).css("background-color", "yellow");
                 SEQ++;
             }
             $('.django-select2').djangoSelect2();
-            console.log(parentTR.find(':button'));
             deleteForm('form',parentTR.find(':button'));
         }).fail(function() {
             alert('수정 에러 전산실로 문의바랍니다.');
@@ -173,6 +119,68 @@ function cloneSetMore(selector, prefix) {
     }
 }
 
+function setPackageElementInputInfo(parentTR, $this, data, total)
+{
+    PRODUCT = parentTR.find('.product').val();
+    COUNT = parentTR.find('.count').val();
+    SET = parentTR.find('.set').val();
+    TYPE = parentTR.find('.type').val();
+    LOCATION = parentTR.find('.location').val();
+
+    var name = $this.attr('name');
+    if(name)
+    {
+        name = name.replace('-' + (total-1) + '-', '-' + total + '-');
+        var id = 'id_' + name;
+        if(name.indexOf("set") >= 0)
+        {
+            $this.attr({'name': name, 'id': id});
+        }
+       else if(name.indexOf("amount_kg") >= 0 )
+        {
+            $this.attr({'name': name, 'id': id}).val(data[i]['amount_kg']);
+        }
+        else if(name.indexOf("type") >= 0 )
+        {
+            $this.attr({'name': name, 'id': id}).val(TYPE);
+        }
+        else if(name.indexOf("location") >= 0)
+        {
+            $this.attr({'name': name, 'id': id}).val(LOCATION);
+        }
+        else if(name.indexOf("product") >= 0) //제품명 option 낑가넣기
+        {
+            var option = $("<option value="+data[i]["code"]+" selected>"+data[i]["codeName"]+"</option>");
+            $this.attr({'name': name, 'id': id}).find('option').remove();
+            $this.append(option);
+        }
+        else if(name.indexOf("amount") >= 0)
+        {
+            $this.attr({'name': name, 'id': id}).val(data[i]["amount"] * COUNT).removeAttr('readonly');
+        }
+        else if(name.indexOf("count") >= 0)
+
+        {
+            $this.attr({'name': name, 'id': id}).val(data[i]["count"] * COUNT);
+        }
+        else if(name.indexOf("price") >= 0)
+        {
+            $this.attr({'name': name, 'id': id}).val(data[i]["price"]).removeAttr('readonly');
+        }
+        else if(name.indexOf("package") >= 0)
+        {
+            $this.attr({'name': name, 'id': id}).val(PRODUCT);
+        }
+        else if(name.indexOf("specialTag") >= 0)
+        {
+            $this.attr({'name': name, 'id': id}).removeAttr('disabled');
+        }
+        else // hidden fields
+        {
+            $this.attr({'name': name, 'id': id});
+        }
+    }
+}
 
 function updateElementIndex(el, prefix, ndx) {
     var id_regex = new RegExp('(' + prefix + '-\\d+)');
@@ -225,16 +233,8 @@ $( ".location" ).change(function() {
     set = parentTR.find('.set').val();
     product = parentTR.find('.product');
     price = parentTR.find('.price');
-
-
-    if(set == '일반')
-    {
-        url = '/api/OrderProductUnitPrice/'+data;
-    }
-    else if(set == '패키지')
-    {
-        url = '/api/OrderSetProductCode/'+data;
-    }
+    specialTag = parentTR.find('.specialTag').val();
+    (set == '일반') ? url = '/api/OrderProductUnitPrice/'+data : url = '/api/OrderSetProductCode/'+data;
 
     if(data)
     {
@@ -242,7 +242,8 @@ $( ".location" ).change(function() {
         url: url,
         type: 'get',
         data: data,
-        }).done(function(data) { // data는  price, code, codeName, amount_kg를 담고있다
+        }).done(function(data) {
+            console.log(data);
             window.PRODUCTINFO = [];
             product.empty();
             data.forEach(function(element, i){
@@ -252,12 +253,15 @@ $( ".location" ).change(function() {
                 if(i === 0 && set == '일반')
                 {
                     window.AMOUNT_KG = {"parentTR" : parentTR, "AMOUNT_KG" : element["amount_kg"]};
-                    price.val(element["price"]);
+                    (specialTag == "일반") ? price.val(element["price"]) : price.val(element["specialPrice"]);
                 }
 
                 if(set == '일반')
                 {
-                    var temp = { "code" : element["code"], "price" : element["price"], "amount_kg" : element["amount_kg"]  };
+                    var temp = { "code" : element["code"],
+                                 "amount_kg" : element["amount_kg"],
+                                 "price" : element["price"],
+                                 "specialPrice" : element["specialPrice"]};
                     PRODUCTINFO.push(temp);
                 }
             })
@@ -272,65 +276,50 @@ $( ".location" ).change(function() {
 
 });
 
-
 $( ".product" ).change(function() {
     parentTR = $(this).parents('tr');
     data = parentTR.find('.product').val();
     price = parentTR.find('.price');
+    specialTag = parentTR.find('.specialTag').val();
     PRODUCTINFO.forEach(function(element){
         if(data == element["code"])
         {
-            AMOUNT_KG = {"parentTR" : parentTR, "AMOUNT_KG" : element["amount_kg"]};
-            price.val(element["price"]);
+            window.AMOUNT_KG = {"parentTR" : parentTR, "AMOUNT_KG" : element["amount_kg"]};
             window.AMOUNT_KG['AMOUNT_KG'] = element["amount_kg"];
+            (specialTag == "일반") ? price.val(element["price"]) : price.val(element["specialPrice"]);
         }
-
     })
 });
 
+$( ".specialTag" ).change(function() {
+    parentTR = $(this).parents('tr');
+    data = parentTR.find('.product').val();
+    specialTag = parentTR.find('.specialTag').val();
+    set = parentTR.find('.set').val();
+    PRODUCTINFO.forEach(function(element){
+        if(data == element["code"] && AMOUNT_KG['parentTR'][0] == parentTR[0])
+        {
+            window.AMOUNT_KG = {"parentTR" : parentTR, "AMOUNT_KG" : element["amount_kg"]};
+            window.AMOUNT_KG['AMOUNT_KG'] = element["amount_kg"];
+            (specialTag == "일반") ? price.val(element["price"]) : price.val(element["specialPrice"]);
+        }
+    })
+});
 
 $( ".set" ).change(function() {
     parentTR = $(this).parents('tr');
     set = parentTR.find('.set').val();
-    if(set == '패키지')
-    {
-        makeSetStyle(parentTR);
-    }
-    else
-    {
-        makeNormalStyle(parentTR);
-    }
-
+    (set == '패키지') ? makeSetStyle(parentTR) : makeNormalStyle(parentTR);
 });
 
-
 $(".amount").focusout(function(){
-    parentTR = $(this).parents('tr');
     set = parentTR.find('.set').val();
-
-    if(set == '일반' && AMOUNT_KG['parentTR'][0] == parentTR[0]) // 자기자신의 TR만 변경하겠금
-    {
-        amount = $(this).val();
-        count = amount / window.AMOUNT_KG['AMOUNT_KG'];
-        parentTR.find('.count').val(count);
-        parentTR.find('.amount_kg').val(window.AMOUNT_KG['AMOUNT_KG']);
-
-    }
+    if(set == '일반' && AMOUNT_KG['parentTR'][0] == parentTR[0]) { setAutoCountValue($(this)); }
 })
 
-
-
-$(".count").focusout(function(){ // 자기 TR만 바꿀수 있어야함
-    parentTR = $(this).parents('tr');
+$(".count").focusout(function(){
     set = parentTR.find('.set').val();
-    if(set == '일반' && AMOUNT_KG['parentTR'][0] == parentTR[0])
-    {
-        count = $(this).val();
-        amount = count * window.AMOUNT_KG['AMOUNT_KG'];
-        amount = Math.round(amount * 100) / 100;
-        parentTR.find('.amount').val(amount);
-        parentTR.find('.amount_kg').val(window.AMOUNT_KG['AMOUNT_KG']);
-    }
+    if(set == '일반' && AMOUNT_KG['parentTR'][0] == parentTR[0]) { setAutoAmountValue($(this)); }
 })
 
 $("form").submit(function(){
@@ -344,7 +333,6 @@ $("form").submit(function(){
     }
 })
 
-
 function makeSetStyle(parentTR)
 {
     price = parentTR.find('.price').attr('readonly','readonly').val("");
@@ -354,6 +342,7 @@ function makeSetStyle(parentTR)
     actonButton = parentTR.find('.input-group-append > button');
     actonButton.attr('class','btn btn-dark add-form-set');
     actonButton.html('<i class="nav-icon icon-star"></i>');
+    parentTR.find('.specialTag').prop('disabled',true).val("일반");
 }
 
 function makeNormalStyle(parentTR)
@@ -365,16 +354,5 @@ function makeNormalStyle(parentTR)
     actonButton = parentTR.find('.input-group-append > button');
     actonButton.attr('class','btn btn-success add-form-row');
     actonButton.html('+');
+    parentTR.find('.specialTag').prop('disabled',false);
 }
-
-$(function () {
-  $("#datepicker").datepicker({
-        autoclose: true,
-        todayHighlight: true,
-        format:'yyyymmdd'
-  });
-});
-
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})

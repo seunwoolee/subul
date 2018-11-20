@@ -29,13 +29,13 @@ class OrderReg(View):
                     price = form.cleaned_data.get('price')
                     type = form.cleaned_data.get('type')
                     location = Location.objects.get(code=form.cleaned_data.get('location'))
+                    specialTag = form.cleaned_data.get('specialTag')
 
 
                     if form.cleaned_data.get('package'):
                         setProduct = SetProductCode.objects.get(code=form.cleaned_data.get('package'))
 
                     if amount_kg * count == amount:
-                        print('#############')
                         order = Order.objects.create(
                             ymd=ymd,
                             code=code,
@@ -48,10 +48,10 @@ class OrderReg(View):
                             orderLocationCode=location,
                             orderLocationName=location.codeName,
                             type=type,
+                            specialTag=specialTag,
                         )
 
                         if setProduct:
-                            print('중요')
                             order.setProduct = setProduct
                             order.save()
 
