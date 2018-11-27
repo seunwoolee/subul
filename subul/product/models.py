@@ -1,9 +1,10 @@
 from django.db import models
+from django.db.models.functions import Cast
 from model_utils import Choices
 
 from core.models import Code, Detail, Location, Out, TimeStampedModel
 from release.models import Release
-from django.db.models import Sum, Q, F
+from django.db.models import Sum, Q, F, DecimalField
 import datetime
 
 DELETE_STATE_CHOICES = (
@@ -147,6 +148,34 @@ class ProductEgg(models.Model):
         except ZeroDivisionError:
             pass
 
+    @staticmethod
+    def productEggQuery(**kwargs):
+        checkBoxFilter = kwargs.get('checkBoxFilter', None)[0]
+        if checkBoxFilter:
+            checkBoxFilter = checkBoxFilter.split(',')
+            checkBoxFilter = [name for name in checkBoxFilter if name != '제품생산']
+
+        # print(checkBoxFilter)
+        search_value = kwargs.get('search[value]', None)[0]
+        start_date = kwargs.get('start_date', None)[0]
+        end_date = kwargs.get('end_date', None)[0]
+        queryset = ProductEgg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(delete_state='N')
+        total = queryset.count()
+
+        if search_value:
+            queryset = queryset.filter(Q(codeName__icontains=search_value) |
+                                       Q(memo__icontains=search_value))
+
+        if checkBoxFilter:
+            queryset = queryset.filter(type__in=checkBoxFilter)
+
+        count = queryset.count()
+        return {
+            'items': queryset,
+            'count': count,
+            'total': total
+        }
+
 
 class ProductCode(Code):
     CONTENT_TYPE_CHOICES = (
@@ -223,6 +252,27 @@ class Product(Detail):  # TODO 주문 나갈때 Tag 붙이는 필드 필요
         except ZeroDivisionError:
             pass
 
+    @staticmethod
+    def productQuery(**kwargs):
+        search_value = kwargs.get('search[value]', None)[0]
+        start_date = kwargs.get('start_date', None)[0]
+        end_date = kwargs.get('end_date', None)[0]
+        queryset = Product.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(
+            delete_state='N')  # TODO delete state Y -> N으로 수정
+        total = queryset.count()
+
+        if search_value:
+            queryset = queryset.filter(Q(code__icontains=search_value) |
+                                       Q(codeName__icontains=search_value) |
+                                       Q(memo__icontains=search_value))
+
+        count = queryset.count()
+        return {
+            'items': queryset,
+            'count': count,
+            'total': total
+        }
+
 
 class ProductAdmin(models.Model):
     RELEASE_TYPE_CHOICES = (
@@ -280,8 +330,9 @@ class ProductAdmin(models.Model):
                                                amount_kg=F('product_id__amount_kg'),
                                                storedLocationCodeName=F('location__codeName')) \
             .annotate(totalCount=Sum('count')) \
-            .annotate(totalAmount=Sum('amount')) \
+            .annotate(totalAmount=Cast(Sum('amount'), DecimalField(max_digits=20, decimal_places=2))) \
             .filter(totalCount__gt=0)
+
 
         # django orm '-' -> desc
         if order == 'desc':
@@ -314,7 +365,7 @@ class ProductAdmin(models.Model):
                                                amount_kg=F('product_id__amount_kg'),
                                                storedLocationCodeName=F('location__codeName')) \
             .annotate(totalCount=Sum('count')) \
-            .annotate(totalAmount=Sum('amount')) \
+            .annotate(totalAmount=Cast(Sum('amount'), DecimalField(max_digits=20, decimal_places=2))) \
             .filter(storedLocationCode=storedLocationCode) \
             .filter(productCode=productCode) \
             .filter(totalCount__gt=0) \
@@ -345,42 +396,5 @@ class SetProductMatch(TimeStampedModel):
     def __str__(self):
         return f"{self.setProductCode.codeName}_{self.saleLocation.codeName}_{self.productCode.codeName}"
 
-def productQuery(**kwargs):
-    search_value = kwargs.get('search[value]', None)[0]
-    start_date = kwargs.get('start_date', None)[0]
-    end_date = kwargs.get('end_date', None)[0]
-    queryset = Product.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(
-        delete_state='N')  # TODO delete state Y -> N으로 수정
-    total = queryset.count()
-
-    if search_value:
-        queryset = queryset.filter(Q(code__icontains=search_value) |
-                                   Q(codeName__icontains=search_value) |
-                                   Q(memo__icontains=search_value))
-
-    count = queryset.count()
-    return {
-        'items': queryset,
-        'count': count,
-        'total': total
-    }
 
 
-def productEggQuery(**kwargs):
-    search_value = kwargs.get('search[value]', None)[0]
-    start_date = kwargs.get('start_date', None)[0]
-    end_date = kwargs.get('end_date', None)[0]
-    queryset = ProductEgg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(delete_state='N')
-    total = queryset.count()
-
-    if search_value:
-        queryset = queryset.filter(Q(code__icontains=search_value) |
-                                   Q(codeName__icontains=search_value) |
-                                   Q(memo__icontains=search_value))
-
-    count = queryset.count()
-    return {
-        'items': queryset,
-        'count': count,
-        'total': total
-    }

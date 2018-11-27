@@ -91,6 +91,15 @@ $(document).on('click', '.remove-form-row', function(e){
     return false;
 });
 
+//$("form").submit(function(){
+//    e.preventDefault();
+//    $('input[type=date]').attr("pattern","[0-9]{4}-[0-9]{2}-[0-9]{2}")
+//    ymd = set_yyyymmdd($('input[type=date]').val());
+//    $('input[type=date]').val(ymd);
+////    $("form").submit();
+//})
+
+
 $(".amount").focusout(function(){ if(AMOUNT_KG['parentTR'][0] == parentTR[0]) { setAutoCountValue($(this)); }});
 $(".count").focusout(function(){ if(AMOUNT_KG['parentTR'][0] == parentTR[0]) { setAutoAmountValue($(this)); }});
 

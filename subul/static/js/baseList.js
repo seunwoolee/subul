@@ -23,5 +23,5 @@ $('#search').click(function(){
     {
         deleteButtonClick(data);
     }
-    id = data['id'];
+        id = data['id'];
 });

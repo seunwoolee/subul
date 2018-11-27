@@ -97,7 +97,6 @@ class ProductRegister(LoginRequiredMixin, View):
             elif "Past" in tank["codeName"]:
                 tank["amount"] = tank["pastSum"]
 
-        print(tankValue)
         stepOneForm = StepOneForm(auto_id=False)
         stepTwoForm = StepTwoForm(auto_id=False)
         stepThreeForm = StepThreeForm(auto_id=False)

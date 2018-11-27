@@ -8,7 +8,7 @@ from api.orderSerializers import OrderSerializer
 from api.releaseSerializers import ProductAdminSerializer, ReleaseSerializer
 from core.models import Location
 from order.models import Order
-from product.models import ProductMaster, Product, ProductEgg, productEggQuery, productQuery, ProductUnitPrice, \
+from product.models import ProductMaster, Product, ProductEgg, ProductUnitPrice, \
     SetProductMatch, SetProductCode, ProductCode, ProductAdmin
 from release.models import Release
 from .serializers import ProductSerializer, ProductEggSerializer, ProductUnitPriceSerializer, SetProductCodeSerializer, \
@@ -45,27 +45,41 @@ class ProductsAPIView(APIView):
         start = int(request.query_params['start'])
         length = int(request.query_params['length'])
         draw = request.query_params['draw']
-
         order = request.query_params['order[0][dir]']
+        checkBoxFilter = request.query_params['checkBoxFilter']
+        mergedProductInfo = {}
 
-        product = productQuery(**request.query_params)
-        productSerializer = ProductSerializer(product['items'], many=True)
-        productEgg = productEggQuery(**request.query_params)
-        productEggSerializer = ProductEggSerializer(productEgg['items'], many=True)
-        mergedProductInfo = productEggSerializer.data + productSerializer.data
+        if checkBoxFilter == "제품생산":
+            product = Product.productQuery(**request.query_params)
+            productSerializer = ProductSerializer(product['items'], many=True)
+            mergedProductInfo['total'] = product['total']
+            mergedProductInfo['count'] = product['count']
+            mergedProductInfo['data'] = productSerializer.data
+        elif (checkBoxFilter and "제품생산" in checkBoxFilter) or not checkBoxFilter:
+            productEgg = ProductEgg.productEggQuery(**request.query_params)
+            productEggSerializer = ProductEggSerializer(productEgg['items'], many=True)
+            product = Product.productQuery(**request.query_params)
+            productSerializer = ProductSerializer(product['items'], many=True)
+            mergedProductInfo['total'] = product['total'] + productEgg['total']
+            mergedProductInfo['count'] = product['count'] + productEgg['count']
+            mergedProductInfo['data'] = productEggSerializer.data + productSerializer.data
+        else: # 제품생산을 제외한 체크박스
+            productEgg = ProductEgg.productEggQuery(**request.query_params)
+            productEggSerializer = ProductEggSerializer(productEgg['items'], many=True)
+            mergedProductInfo['total'] = productEgg['total']
+            mergedProductInfo['count'] = productEgg['count']
+            mergedProductInfo['data'] = productEggSerializer.data
 
         if order == 'desc':
-            mergedProductInfo = sorted(mergedProductInfo, key=lambda k: k[order_column] if k[order_column] != None
-            else 0, reverse=True)  # ORDER BY
+            mergedProductInfo['data'] = sorted(mergedProductInfo['data'], key=lambda k: k[order_column],
+                                               reverse=True)  # ORDER BY
         else:
-            mergedProductInfo = sorted(mergedProductInfo, key=lambda k: k[order_column] if k[order_column] != None
-            else 0)  # ORDER BY
-
+            mergedProductInfo['data'] = sorted(mergedProductInfo['data'], key=lambda k: k[order_column])  # ORDER BY
         result = dict()
-        result['data'] = mergedProductInfo[start:start + length]  # 페이징
+        result['data'] = mergedProductInfo['data'][start:start + length]  # 페이징
         result['draw'] = draw
-        result['recordsTotal'] = product['total'] + productEgg['total']
-        result['recordsFiltered'] = product['count'] + productEgg['count']
+        result['recordsTotal'] = mergedProductInfo['total']
+        result['recordsFiltered'] = mergedProductInfo['count']
         return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
 
 
@@ -195,16 +209,22 @@ class OrderSetProductMatch(APIView):
         return Response(serializer.data)
 
 
-class OrderUpdate(generics.UpdateAPIView):
+class OrderUpdate(generics.RetrieveUpdateDestroyAPIView):
     """
-    주문내역 조회에서 Update를 칠때 Patch
+    주문내역 조회에서 Update , Delete 할때 Delete 실행 시 주문에 물려있는 출고, 출고에 물려있는 재고(ProductAdmin) 삭제
     """
 
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
-    def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)
+
+class ReleaseUpdate(generics.RetrieveUpdateDestroyAPIView):
+    """
+    출고조회에서 Update , Delete 할때 Delete 실행 시 재고 TODO 정의필요
+    """
+
+    queryset = Release.objects.all()
+    serializer_class = ReleaseSerializer
 
 
 class ProductAdminsAPIView(APIView):
@@ -239,13 +259,16 @@ class ReleasesAPIView(APIView):
 
     def get(self, request, format=None):
         try:
-            releases = Release.releaseQuery(**request.query_params)
-            releaseSerializer = ReleaseSerializer(releases['items'], many=True)
-            print('########## 시리얼 라이징 ###########')
-            print(releaseSerializer)
-            print(releaseSerializer.data)
+            groupByFilter = request.query_params['groupByFilter']
+            print(groupByFilter)
             result = dict()
-            result['data'] = releaseSerializer.data
+            if groupByFilter == 'stepOne':
+                releases = Release.releaseQuery(**request.query_params)
+                releaseSerializer = ReleaseSerializer(releases['items'], many=True)
+                result['data'] = releaseSerializer.data
+            else:
+                releases = Release.releaseQuery(**request.query_params)
+                result['data'] = releases['items']
             result['draw'] = releases['draw']
             result['recordsTotal'] = releases['total']
             result['recordsFiltered'] = releases['count']

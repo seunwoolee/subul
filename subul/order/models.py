@@ -54,6 +54,8 @@ class Order(Detail):
         order = kwargs.get('order[0][dir]', None)[0]
 
         if length != -1:
+            checkBoxFilter = kwargs.get('checkBoxFilter', None)[0]
+            if checkBoxFilter: checkBoxFilter = checkBoxFilter.split(',')
             ORDER_COLUMN_CHOICES = Choices(
                 ('0', 'id'),
                 ('1', 'type'),
@@ -92,12 +94,15 @@ class Order(Detail):
 
         total = queryset.count()
         if search_value:
-            queryset = queryset.filter(Q(code__icontains=search_value) |
+            queryset = queryset.filter(Q(orderLocationName__icontains=search_value) |
                                        Q(codeName__icontains=search_value) |
                                        Q(memo__icontains=search_value))
         count = queryset.count()
 
         if length != -1:
+            if checkBoxFilter: #TODO 담당자 검색
+                queryset = queryset.filter(orderLocationCode__type__in=checkBoxFilter)
+
             queryset = queryset.order_by(order_column)[start:start + length]
         else:
             queryset = queryset.filter(release_id=None).order_by(order_column) # 출고가능한 ORDER

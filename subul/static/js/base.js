@@ -36,12 +36,14 @@ hotkeys('BackSpace,f5', function(event, handler) {
 Date.prototype.yyyymmdd = function() {
   var mm = this.getMonth() + 1;
   var dd = this.getDate();
-
-  return [this.getFullYear(),
-          (mm>9 ? '' : '0') + mm,
-          (dd>9 ? '' : '0') + dd
-         ].join('');
+  return [this.getFullYear(), (mm>9 ? '' : '0') + mm,  (dd>9 ? '' : '0') + dd ].join('-');
 };
+
+function set_yyyymmdd(yyyy_mm_dd)
+{
+    temp = yyyy_mm_dd.split('-');
+    return yyyyymmdd = temp[0]+temp[1]+temp[2];
+}
 
 var date = new Date();
 var days = 7;
@@ -60,7 +62,7 @@ function setDataTableActionButton()
 }
 
 
- $('.input-daterange').datepicker({
+ $('.input-daterange input:text').datepicker({
   todayBtn:'linked',
   format: "yyyymmdd",
   autoclose: true

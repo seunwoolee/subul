@@ -4,14 +4,19 @@
  fetch_data(start_day, end_day);
  function fetch_data(start_date='', end_date='')
  {
+    start_date = set_yyyymmdd(start_date);
+    end_date = set_yyyymmdd(end_date);
+    let checkBoxFilter = $('.type_filter input:checkbox:checked').map(function(){ return $(this).val(); }).get().join(',');
     table = $('.datatable').DataTable({
+        "language": {searchPlaceholder: "제품명, 메모"},
         "processing": true,
         "serverSide": true,
+        "order" : [[5, "asc"]],
         "ajax": {
             "url": "/api/product/",
             "type": "GET",
             "data": {
-                start_date:start_date, end_date:end_date
+                start_date:start_date, end_date:end_date, checkBoxFilter:checkBoxFilter
             }
         },
         "columns": [
@@ -21,19 +26,52 @@
             {"data": "code"},
             {"data": "codeName"},
             {"data": "ymd"},
-            {"data": "amount"},
-            {"data": "count"},
+            {"data": "amount" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {"data": "count" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "rawTank_amount", "render":function(data, type, row, meta){return setTankAmountStyle(data);}},
             {"data": "pastTank_amount","render": function(data, type, row, meta){return setTankAmountStyle(data);}},
-            {"data": "loss_insert"},
-            {"data": "loss_openEgg"},
-            {"data": "loss_clean"},
-            {"data": "loss_fill"},
+            {"data": "loss_insert" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {"data": "loss_openEgg" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {"data": "loss_clean" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {"data": "loss_fill" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {"data": "memo", "render": function(data, type, row, meta){return setMemoStyle(data);}},
             {"data": null, "render": function(data, type, row, meta){return setDataTableActionButton();}}
         ],
+
         dom: 'Bfrtip',
-        buttons: ['pageLength', 'colvis','copy', 'excel', 'pdf', 'print'],
+        buttons: [
+                    {
+                        extend: 'pageLength',
+                        className:'btn btn-light',
+                        text : '<i class="fas fa-list-ol fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    },
+                    {
+                        extend: 'colvis',
+                        className:'btn btn-light',
+                        text : '<i class="far fa-eye fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    },
+                    {
+                        extend: 'copy',
+                        className:'btn btn-light',
+                        text : '<i class="fas fa-copy fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        className:'btn btn-light',
+                        text : '<i class="far fa-file-excel fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    }],
         lengthMenu : [[30, 50, -1], [30, 50, "All"]],
         drawCallback: function(settings) {
                 $('[data-toggle="tooltip"]').tooltip();

@@ -27,8 +27,8 @@ function fetch_data()
             {"data": "productCodeName"},
             {"data": "productYmd"},
             {"data": "storedLocationCodeName"},
-            {"data": "totalAmount"},
-            {"data": "totalCount"},
+            {"data": "totalAmount" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {"data": "totalCount" , "render": $.fn.dataTable.render.number( ',')},
         ],
         dom: 'Bfrtip',
     });
@@ -39,6 +39,8 @@ function fetch_data()
 order_fetch_data(start_day, end_day);
 function order_fetch_data(start_date='', end_date='')
 {
+    start_date = set_yyyymmdd(start_date);
+    end_date = set_yyyymmdd(end_date);
     orderTable = $('#orderDatatable').DataTable({
         "paging": false,
         "processing": true,
@@ -66,8 +68,8 @@ function order_fetch_data(start_date='', end_date='')
             {"data": "ymd"},
             {"data": "orderLocationName"},
             {"data": "codeName"},
-            {"data": "amount"},
-            {"data": "count"},
+            {"data": "amount" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {"data": "count" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "memo"},
         ],
         dom: 'Bfrtip',

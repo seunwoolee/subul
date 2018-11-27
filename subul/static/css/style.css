@@ -25,6 +25,17 @@
     padding : 0.2rem, 0.3rem, 0.2rem, 0.3rem;
 }
 
+.input-daterange .input-group-prepend{
+    height : 35px;
+}
+
+.form-check-inline {
+    margin-right:0px !important;
+}
+
+.tab-content .tab-pane {
+    overflow-x : scroll;
+}
 /* Mobile Card View Form */
 @media only screen and (max-width: 800px) {
 

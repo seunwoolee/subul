@@ -5,6 +5,7 @@ from .models import ProductCode, ProductEgg, ProductMaster
 
 
 class MainForm(forms.ModelForm):
+    # ymd = forms.DateField(widget=forms.DateInput(attrs={'type':'date'}))
     ymd = forms.CharField(max_length=8, widget=forms.TextInput(attrs=
     {
         'id': 'datepicker',

@@ -7,8 +7,6 @@ from product.models import ProductCode
 from .models import Order
 
 
-
-
 class OrderForm(forms.Form):
     ORDER_TYPE_CHOICES = (
         ('판매', '판매'),
@@ -33,7 +31,7 @@ class OrderForm(forms.Form):
     location = forms.ChoiceField(widget=Select2Widget,
                                  choices=list(Location.objects.values_list('code', 'codeName').order_by('code')),
                                  required=False)
-    product = forms.ChoiceField(choices=list(ProductCode.objects.values_list('code', 'codeName'))) # TODO delete_State
+    product = forms.ChoiceField(choices=list(ProductCode.objects.values_list('code', 'codeName')))  # TODO delete_State
     amount = forms.FloatField(min_value=0)
     amount_kg = forms.FloatField(min_value=0, widget=forms.HiddenInput())
     count = forms.IntegerField(min_value=0)
@@ -45,4 +43,7 @@ class OrderForm(forms.Form):
     ymd = forms.CharField(max_length=8, widget=forms.HiddenInput())
     package = forms.CharField(widget=forms.HiddenInput(), required=False)
     specialTag = forms.ChoiceField(choices=SPECIALTAG_TYPE_CHOICES)
+    modifyYmd = forms.CharField(max_length=8, required=False) # 수정 Modal Ymd
+
+
 OrderFormSet = formset_factory(OrderForm)

@@ -323,7 +323,7 @@ $(".count").focusout(function(){
 })
 
 $("form").submit(function(){
-    ymd = $('#datepicker').val();
+    ymd = set_yyyymmdd($('input[type=date]').val());
     if(ymd)
     {
         $("input[type=hidden][id*='ymd']").each(function (i, element){

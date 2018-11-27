@@ -17,22 +17,22 @@ class ProductAdminSerializer(serializers.Serializer):
 
 
 class ReleaseSerializer(serializers.ModelSerializer):
-    contentType = serializers.CharField()
-    kgPrice = serializers.FloatField()
-    totalPrice = serializers.FloatField()
-    supplyPrice = serializers.FloatField()
-    eaPrice = serializers.IntegerField()
-    releaseStoreLocationCodeName = serializers.CharField()
-    orderMemo = serializers.CharField()
-    locationType = serializers.SerializerMethodField()
-    locationManagerName = serializers.CharField()
-    releaseSetProduct = serializers.CharField()
-    releaseSetProductCodeName = serializers.CharField()
+    contentType = serializers.CharField(read_only=True)
+    kgPrice = serializers.FloatField(read_only=True)
+    totalPrice = serializers.FloatField(read_only=True)
+    supplyPrice = serializers.FloatField(read_only=True)
+    eaPrice = serializers.IntegerField(read_only=True)
+    releaseStoreLocationCodeName = serializers.CharField(read_only=True)
+    orderMemo = serializers.CharField(read_only=True)
+    locationType = serializers.SerializerMethodField(read_only=True)
+    locationManagerName = serializers.CharField(read_only=True)
+    releaseSetProduct = serializers.CharField(read_only=True)
+    releaseSetProductCodeName = serializers.CharField(read_only=True)
 
     class Meta:
         model = Release
-        fields = ('id', 'ymd', 'releaseLocationName', 'contentType', 'code', 'codeName', 'amount', 'count',
-                  'kgPrice', 'totalPrice', 'supplyPrice', 'eaPrice', 'releaseVat', 'productYmd', 'type',
+        fields = ('id', 'ymd', 'releaseLocationName', 'contentType', 'code', 'codeName', 'amount', 'count', 'amount_kg',
+                  'kgPrice', 'price', 'totalPrice', 'supplyPrice', 'eaPrice', 'releaseVat', 'productYmd', 'type',
                   'releaseStoreLocationCodeName', 'orderMemo', 'locationType', 'locationManagerName',
                   'releaseSetProduct', 'releaseSetProductCodeName', 'specialTag')
 
