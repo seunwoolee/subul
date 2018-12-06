@@ -7,7 +7,10 @@ from .forms import StepOneForm, StepTwoForm, StepThreeForm, StepFourForm, StepFo
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
-class ProductRegister(LoginRequiredMixin, View):
+class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = '/'
+    permission_required = 'product.add_product'
+
     def post(self, request):
         form0 = MainForm(request.POST)
         form1 = StepOneForm(request.POST)
@@ -19,7 +22,6 @@ class ProductRegister(LoginRequiredMixin, View):
             main = form0.save()
 
         if form1.is_valid():
-            print(form1.cleaned_data)
             stepOneProductEgg = [[key, value] for key, value in form1.cleaned_data.items()]
             memo = [stepOneProductEgg[i][1] for i in range(2, len(stepOneProductEgg), 3)]  # 메모만 가져오기
             validStepOne = ProductEgg.makeVaildinfo(stepOneProductEgg, memo)
@@ -111,8 +113,8 @@ class ProductRegister(LoginRequiredMixin, View):
 
 
 class ProductList(LoginRequiredMixin, PermissionRequiredMixin, View):
-    # login_url = '/'
-    permission_required = 'articles.add_article'
+    login_url = '/'
+    permission_required = 'product.change_product'
 
     def get(self, request):
         return render(request, 'product/productList.html')

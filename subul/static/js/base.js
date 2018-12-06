@@ -55,19 +55,24 @@ $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
 
+function setDataTableActionButtonWithPdf()
+{
+    return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="fa fa-trash-o"></i></button>' +
+            '<button class="btn btn-info btn-sm MODIFY" href="#"><i class="fa fa-edit"></i></button>'+
+            '<button class="btn btn-warning btn-sm PDF" href="#"><i class="fas fa-file-pdf"></i></button>';
+}
+
 function setDataTableActionButton()
 {
     return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="fa fa-trash-o"></i></button>' +
             '<button class="btn btn-info btn-sm MODIFY" href="#"><i class="fa fa-edit"></i></button>';
 }
 
-
  $('.input-daterange input:text').datepicker({
   todayBtn:'linked',
   format: "yyyymmdd",
   autoclose: true
  });
-
 
 function setAutoCountValue($this)
 {
@@ -99,11 +104,10 @@ function setSpecialTagButton(data)
 {
     if(data == "특인가")
     {
-        return '<button class="btn btn-danger btn-sm">'+ data +'</button>'
+        return '<button class="btn btn-danger btn-sm">'+ data +'</button>';
     }
     else
     {
-//        return '<button class="btn btn-primary btn-sm">'+ data +'</button>'
-        return ''
+        return '';
     }
 }

@@ -120,6 +120,7 @@ class Location(Code):
     location_address = models.CharField(max_length=255,blank=True,null=True)
     location_phone = models.CharField(max_length=255,blank=True,null=True)
     location_companyNumber = models.CharField(max_length=255,blank=True,null=True)
+    location_owner = models.CharField(max_length=255,blank=True,null=True)
     location_shoppingmall = models.CharField(
         max_length=2,
         choices=SHOPPINGMALL_TYPE_CHOICES,

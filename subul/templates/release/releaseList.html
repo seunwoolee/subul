@@ -55,24 +55,6 @@
                                 </select>
                             </div>
                         </div>
-                        <!--제품 타입 끝-->
-                        <!--집계 그룹바이 시작-->
-                        <!--<div class="form-check form-check-inline" id="groupBy">-->
-                            <!--<div class="input-group mb-2 mr-sm-2 ">-->
-                                <!--<div class="input-group-prepend">-->
-                                    <!--<div class="input-group-text"><i class="fas fa-circle"></i></div>-->
-                                <!--</div>-->
-                                <!--<select class="form-control">-->
-                                    <!--<option value="전체">전체</option>-->
-                                    <!--<option value="제품">제품별</option>-->
-                                    <!--<option value="제품거-->
-                                    <!--'래">거래처/제품별-->
-                                    <!--</option>-->
-                                    <!--<option value="거래">거래처별 금액</option>-->
-                                <!--</select>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--집계 그룹바이 끝-->
                     </div>
 
                     <div class="col-md-8">
@@ -138,7 +120,7 @@
                                             </div>
                                         </div>
                                         <input type="date" name="start_date" id="start_date"
-                                               class="form-control" pattern="[0-9]{4}[0-9]{2}[0-9]{2}"/>
+                                               class="form-control" />
                                     </div>
                                     <div class="col input-group mb-2 mr-sm-2">
                                         <div class="input-group-prepend">
@@ -202,9 +184,10 @@
                                 <th>EA단가</th>
                                 <th>생산일</th>
                                 <th>출고구분</th>
-                                <th>판매장소</th>
+                                <th>보관장소</th>
                                 <!--컬럼 숨김 필요-->
                                 <th>주문메모</th>
+                                <th>출고메모</th>
                                 <th>장소타입</th>
                                 <th>담당자</th>
                                 <th>세트</th>
@@ -223,6 +206,7 @@
                             <thead>
                             <tr>
                                 <th>제품코드</th>
+                                <th>특인</th>
                                 <th>제품명</th>
                                 <th>출고구분</th>
                                 <th>액란구분</th>
@@ -233,7 +217,7 @@
                                 <th>공급가</th>
                                 <th>부가세</th>
                                 <th>EA단가</th>
-                                <th>판매장소</th>
+                                <th>보관장소</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -246,6 +230,7 @@
                             <thead>
                             <tr>
                                 <th>제품코드</th>
+                                <th>특인</th>
                                 <th>제품명</th>
                                 <th>출고구분</th>
                                 <th>거래처명</th>
@@ -257,7 +242,7 @@
                                 <th>공급가</th>
                                 <th>부가세</th>
                                 <th>EA단가</th>
-                                <th>판매장소</th>
+                                <th>보관장소</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -294,7 +279,7 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title"></h4>
+                <h4 class="modal-title">수정</h4>
             </div>
             <div class="modal-body">
                 <h5 class="mb-4 codeName"></h5>
@@ -329,6 +314,29 @@
         </div>
     </div>
 </div>
+
+<!-- Release Recall Modal -->
+<div class="modal fade everyModal" id="releaseRecallModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">반품</h4>
+            </div>
+            <div class="modal-body">
+                <h5 class="mb-4 codeName"></h5>
+                <form role="form">
+                    {% include 'includes/modal/releaseRecallForm.html' %}
+                    <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="post"/>
+                    <input type="hidden" name="type" value="반품"/>
+                    <button type="submit" class="btn btn-primary">OK</button>
+                    <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 {% endblock %}
 

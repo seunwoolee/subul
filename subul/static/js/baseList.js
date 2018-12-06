@@ -14,6 +14,7 @@ $('#search').click(function(){
 
  $('.datatable tbody').on('click', 'button', function () {
     let data = table.row($(this).parents('tr')).data();
+    console.log(data);
     let class_name = $(this).attr('class');
     if (class_name == 'btn btn-info btn-sm MODIFY')
     {
@@ -22,6 +23,15 @@ $('#search').click(function(){
     else if(class_name == 'btn btn-danger btn-sm REMOVE')
     {
         deleteButtonClick(data);
+    }
+    else if(class_name == 'btn btn-warning btn-sm PDF')
+    {
+        pdfButtonClick(data);
+    }
+    else if(class_name == 'btn btn-success btn-sm RECALL')
+    {
+//         alert();
+        recallButtonClick(data);
     }
         id = data['id'];
 });

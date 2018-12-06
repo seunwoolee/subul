@@ -2,8 +2,6 @@
     padding : 0.2rem, 0.3rem, 0.2rem, 0.3rem;
 }
 
-/*
-#DataTables_Table_0 > tbody > tr > td:nth-child(3), #DataTables_Table_0 > tbody > tr > td:nth-child(16) {
-    text-align:center;
+.nav-fill .nav-link.active{
+    border-top : 2px solid #4caf50;
 }
-*/

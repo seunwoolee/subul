@@ -253,7 +253,7 @@ $( ".location" ).change(function() {
                 if(i === 0 && set == '일반')
                 {
                     window.AMOUNT_KG = {"parentTR" : parentTR, "AMOUNT_KG" : element["amount_kg"]};
-                    (specialTag == "일반") ? price.val(element["price"]) : price.val(element["specialPrice"]);
+                    (specialTag == "") ? price.val(element["price"]) : price.val(element["specialPrice"]);
                 }
 
                 if(set == '일반')
@@ -286,7 +286,7 @@ $( ".product" ).change(function() {
         {
             window.AMOUNT_KG = {"parentTR" : parentTR, "AMOUNT_KG" : element["amount_kg"]};
             window.AMOUNT_KG['AMOUNT_KG'] = element["amount_kg"];
-            (specialTag == "일반") ? price.val(element["price"]) : price.val(element["specialPrice"]);
+            (specialTag == "") ? price.val(element["price"]) : price.val(element["specialPrice"]);
         }
     })
 });

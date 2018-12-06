@@ -28,13 +28,15 @@ class ReleaseSerializer(serializers.ModelSerializer):
     locationManagerName = serializers.CharField(read_only=True)
     releaseSetProduct = serializers.CharField(read_only=True)
     releaseSetProductCodeName = serializers.CharField(read_only=True)
+    releaseLocationCode = serializers.SerializerMethodField()
 
     class Meta:
         model = Release
         fields = ('id', 'ymd', 'releaseLocationName', 'contentType', 'code', 'codeName', 'amount', 'count', 'amount_kg',
                   'kgPrice', 'price', 'totalPrice', 'supplyPrice', 'eaPrice', 'releaseVat', 'productYmd', 'type',
                   'releaseStoreLocationCodeName', 'orderMemo', 'locationType', 'locationManagerName',
-                  'releaseSetProduct', 'releaseSetProductCodeName', 'specialTag')
+                  'releaseSetProduct', 'releaseSetProductCodeName', 'specialTag', 'memo', 'releaseLocationCode',
+                  'product_id')
 
     def get_locationType(self, obj):
         CHARACTER_TYPE_CHOICES = {
@@ -50,3 +52,6 @@ class ReleaseSerializer(serializers.ModelSerializer):
             '99': '기타',
         }
         return CHARACTER_TYPE_CHOICES[obj.releaseLocationCode.location_character]
+
+    def get_releaseLocationCode(self, obj):
+        return obj.releaseLocationCode.code

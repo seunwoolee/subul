@@ -126,6 +126,7 @@ $(document).on('click', ".datatable tbody tr", function()
 
 function manualReleaseModal(data)
 {
+    console.log(data);
     window.AMOUNT_KG = { "AMOUNT_KG" : data["amount_kg"]};
     $('#id_productId').val(data['productId']);
     $('#id_productYmd').val(data['productYmd']);
@@ -135,6 +136,7 @@ function manualReleaseModal(data)
     $('#id_price').val("");
     $('#id_memo').val("");
     $('#id_count').val("");
+    $("#id_type").val("판매").change();
     $('#id_releaseOrder').val(0);
     $('#id_amount_kg').val(data['amount_kg']);
     $('#id_totalCount').val(data['totalCount']);
@@ -325,31 +327,25 @@ $('#orderRelease').on('submit', function (e)
     url = '/release/';
     for(var i=0; i<len; i++)
     {
-//        var amount = $("#orderRelease tbody tr:eq("+i+")").find('input[name="amount"]').val();
-//        var count = $("#orderRelease tbody tr:eq("+i+")").find('input[name="count"]').val();
-//        if( amount > 0 && count > 0)
-//        {
             var data = $("#orderRelease tbody tr:eq("+i+") :input").serialize();
-            $.ajax({
+            var request = $.ajax({
             url: url,
             type: 'post',
             data: data,
             }).done(function(data) {
-//                if(lastCount == count) # TODO 시간남을떄!
-//                {
-//                    alert('출고 등록 완료');
                     $(".everyModal").modal('hide');
                     $('#orderDatatable').DataTable().search($("input[type='search']").val()).draw();
             }).fail(function() {
                 alert('수정 에러 전산실로 문의바랍니다.');
             });
-//        }
-//        else
-//        {
-//            alert('출하량이 0보다 커야합니다');
-//        }
     }
 });
+
+
+function testest(i)
+{
+    alert(i);
+}
 
 function setDatePicker()
 {

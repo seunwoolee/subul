@@ -74,14 +74,15 @@ function setStepOneDataTable(args)
             {'data': 'releaseVat' , "render": $.fn.dataTable.render.number( ',')},
             {"data": "eaPrice" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "productYmd"},
-            {"data": "type"},
+            {"data": "type" , "render": function(data, type, row, meta){return setTypeButton(data);}},
             {"data": "releaseStoreLocationCodeName"},
             {"data": "orderMemo"},
+            {"data": "memo"},
             {"data": "locationType"},
             {"data": "locationManagerName"},
             {'data': 'releaseSetProduct', "visible": false},
             {'data': 'releaseSetProductCodeName', "visible": false},
-            {"data": null, "render": function(data, type, row, meta){return setDataTableActionButton();}}
+            {"data": null, "render": function(data, type, row, meta){return setDataTableActionButtonWithPdfRecall();}}
         ],
         dom: 'Bfrtip',
         buttons: [
@@ -140,6 +141,7 @@ function setStepTwoDataTable(args)
         },
         "columns": [
             {'data': 'code'},
+            {"data": "specialTag", "render" : function(data, type, row, meta){return setSpecialTagButton(data);}},
             {'data': 'codeName'},
             {"data": "type"},
             {'data': 'contentType'},
@@ -209,6 +211,7 @@ function setStepThreeDataTable(args)
         },
         "columns": [
             {'data': 'code'},
+            {"data": "specialTag", "render" : function(data, type, row, meta){return setSpecialTagButton(data);}},
             {'data': 'codeName'},
             {"data": "type"},
             {'data': 'releaseLocationName'},
@@ -323,6 +326,36 @@ function setStepFourDataTable(args)
     });
 }
 
+function setDataTableActionButtonWithPdfRecall()
+{
+    return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="fa fa-trash-o"></i></button>' +
+            '<button class="btn btn-info btn-sm MODIFY" href="#"><i class="fa fa-edit"></i></button>'+
+            '<button class="btn btn-warning btn-sm PDF" href="#"><i class="fas fa-file-pdf"></i></button>' +
+            '<button class="btn btn-success btn-sm RECALL" href="#"><i class="fas fa-undo-alt"></i></button>';
+}
+
+function setTypeButton(data)
+{
+    switch(data)
+    {
+        case '판매':
+            return '<button class="btn btn-dark btn-sm">'+ data +'</button>'
+            break;
+        case '샘플':
+            return '<button class="btn btn-warning btn-sm">'+ data +'</button>'
+            break;
+        case '증정':
+            return '<button class="btn btn-success btn-sm">'+ data +'</button>'
+            break;
+        case '자손':
+            return '<button class="btn btn-primary btn-sm ">'+ data +'</button>'
+            break;
+        case '생산요청':
+            return '<button class="btn btn-danger btn-sm">'+ data +'</button>'
+            break;
+        default : return '<button class="btn btn-primary btn-sm ">'+ data +'</button>';
+    }
+}
 
 var AMOUNT_KG = {};
 function editButtonClick(data)
@@ -333,14 +366,10 @@ function editButtonClick(data)
     $('#id_amount').val(data['amount']);
     $('#id_count').val(data['count']);
     $('#id_price').val(data['price']);
-//    $('#id_memo').val(data['memo']); # TODO 메모 있어야댐
-    $('.modal_title').text('EDIT');
+    $('#id_memo').val(data['memo']);
     $('.codeName').text(data['codeName']);
     $("#releaseModal").modal();
 }
-
-$(".amount").focusout(function(){ setAutoCountValue($(this)); });
-$(".count").focusout(function(){ setAutoAmountValue($(this)); });
 
 function deleteButtonClick(data)
 {
@@ -348,14 +377,54 @@ function deleteButtonClick(data)
     $("#confirm").modal();
 }
 
+function pdfButtonClick(data)
+{
+    let ymd = data['ymd'];
+    let releaseLocationCode = data['releaseLocationCode'];
+    window.open('/release/pdf?ymd=' + ymd + '&releaseLocationCode=' + releaseLocationCode, '_blank');
+}
+
+function recallButtonClick(data)
+{
+    window.AMOUNT_KG = { "AMOUNT_KG" : data["amount_kg"], "EA_PRICE" : data["eaPrice"]};
+    $('#id_ymd_recall').val(data['ymd']);
+    $('#id_amount_recall').val(data['amount']).attr("max",data['amount']);
+    $('#id_count_recall').val(data['count']).attr("max",data['count']);
+    $('#id_price_recall').val(data['price']);
+    // hiddenFiled
+    $('#id_productCode_recall').val(data['code']);
+    $('#id_storedLocationCode_recall').val(data['releaseLocationCode']);
+    $('#id_productYmd_recall').val(data['productYmd']);
+    $('#id_productId_recall').val(data['product_id']);
+    $('#id_amount_kg_recall').val(data["amount_kg"]);
+    // hiddenFiled
+    $('.codeName').text(data['codeName']);
+    $("#releaseRecallModal").modal();
+}
+$("#id_price_recall").click(function(){
+    recallCount = $(this).parents('form').find('tr').eq(1).find('#id_count_recall').val();
+    $(this).val(window.AMOUNT_KG['EA_PRICE'] * recallCount);
+});
+$(".amount").focusout(function(){ setAutoCountValue($(this)); });
+$(".count").focusout(function(){ setAutoAmountValue($(this)); });
+
 $('form').on('submit', function (e)
 {
     e.preventDefault();
     $this = $(this);
     let type = $this.find('.ajaxUrlType').val();
     let data = $this.serialize();
-    url = '/api/release/'+id;
+
     console.log(data);
+
+    if(type != 'post')
+    {
+        url = '/api/release/'+id;
+    }
+    else
+    {
+        url =  '/release/adjustment';
+    }
 
     $.ajax({
     url: url,

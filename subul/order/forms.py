@@ -22,7 +22,7 @@ class OrderForm(forms.Form):
     )
 
     SPECIALTAG_TYPE_CHOICES = (
-        ('일반', '일반'),
+        ('', '일반'),
         ('특인가', '특인가'),
     )
 
@@ -42,7 +42,7 @@ class OrderForm(forms.Form):
     )
     ymd = forms.CharField(max_length=8, widget=forms.HiddenInput())
     package = forms.CharField(widget=forms.HiddenInput(), required=False)
-    specialTag = forms.ChoiceField(choices=SPECIALTAG_TYPE_CHOICES)
+    specialTag = forms.ChoiceField(choices=SPECIALTAG_TYPE_CHOICES, required=False) # TODO 이게맞나?
     modifyYmd = forms.CharField(max_length=8, required=False) # 수정 Modal Ymd
 
 

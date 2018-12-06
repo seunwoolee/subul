@@ -260,7 +260,6 @@ class ReleasesAPIView(APIView):
     def get(self, request, format=None):
         try:
             groupByFilter = request.query_params['groupByFilter']
-            print(groupByFilter)
             result = dict()
             if groupByFilter == 'stepOne':
                 releases = Release.releaseQuery(**request.query_params)
