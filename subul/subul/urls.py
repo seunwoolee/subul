@@ -25,6 +25,8 @@ urlpatterns = [
     path('release/', include('release.urls')),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
+    path('eggs/', include('eggs.urls')),
+    path('packing/', include('packing.urls')),
     path('migration/', include('core.urls')),
     path('', views.MainList.as_view(), name='index'),
 ]

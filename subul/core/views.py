@@ -3,17 +3,21 @@ import csv
 from django.shortcuts import render
 from django.views import View
 
+from eggs.models import EggCode
+from packing.models import PackingCode
 from product.models import ProductCode, ProductUnitPrice, SetProductCode, SetProductMatch
 from .models import Location
 
 import cx_Oracle
 import os
 
-#cx_Oracle 한글처리 시작
+# cx_Oracle 한글처리 시작
 os.environ["NLS_LANG"] = ".AL32UTF8"
 START_VALUE = u"Unicode \u3042 3".encode('utf-8')
 END_VALUE = u"Unicode \u3042 6".encode('utf-8')
-#cx_Oracle 한글처리 끝
+
+
+# cx_Oracle 한글처리 끝
 
 
 class LocationMigrate(View):
@@ -44,7 +48,7 @@ class LocationMigrate(View):
                     location_companyNumber=row[5],
                     location_shoppingmall=row[6],
                     location_character=row[7],
-                    delete_state = row[8]
+                    delete_state=row[8]
                 )
             except Exception as e:
                 print(e)
@@ -76,7 +80,7 @@ class ProductCodeMigrate(View):
 
                 delete_state = row[8]
                 if delete_state is None:
-                    delete_state = 'N'
+                    delete_state = 'Y'
 
                 location = ProductCode.objects.create(
                     code=row[0],
@@ -87,7 +91,7 @@ class ProductCodeMigrate(View):
                     store_type=row[5],
                     vat=row[6],
                     expiration=row[7],
-                    delete_state = delete_state
+                    delete_state=delete_state
                 )
             except Exception as e:
                 print(e)
@@ -112,7 +116,7 @@ class ProductUnitPriceMigrate(View):
                     locationCode=location,
                     productCode=product,
                     price=price,
-                    delete_state = delete_state
+                    delete_state=delete_state
                 )
             except Exception as e:
                 print(e)
@@ -133,8 +137,8 @@ class SetProductCodeMigrate(View):
                     code=row[0],
                     codeName=row[1],
                     type='세트상품',
-                    location = location,
-                    delete_state = row[3]
+                    location=location,
+                    delete_state=row[3]
                 )
             except Exception as e:
                 print(e)
@@ -158,9 +162,50 @@ class SetProductMatchMigrate(View):
                     productCode=product,
                     count=row[3],
                     price=row[2],
-                    saleLocation = location,
-                    delete_state = row[6]
+                    saleLocation=location,
+                    delete_state=row[6]
                 )
             except Exception as e:
                 print(e)
 
+
+class EggCodeMigrate(View):
+    def get(self, request):
+        con = cx_Oracle.connect('system/kcerp@155.1.19.2/kcerp')
+        cursor = con.cursor()
+        query = " select * FROM KCFEED.FRESHCD2 "
+        cursor.execute(query)
+
+        for row in cursor:
+            delete_state = row[6]
+            if delete_state is None:
+                delete_state = 'Y'
+
+            EggCode.objects.create(
+                code=row[0],
+                codeName=row[1],
+                type=row[2],
+                size=row[3],
+                delete_state=delete_state
+            )
+
+
+class PackingCodeMigrate(View):
+    def get(self, request):
+        con = cx_Oracle.connect('system/kcerp@155.1.19.2/kcerp')
+        cursor = con.cursor()
+        query = " select * FROM KCFEED.FRESHCD "
+        cursor.execute(query)
+
+        for row in cursor:
+            delete_state = row[6]
+            if delete_state is None:
+                delete_state = 'Y'
+
+            PackingCode.objects.create(
+                code=row[0],
+                codeName=row[3],
+                type=row[2],
+                size=row[4],
+                delete_state=delete_state
+            )

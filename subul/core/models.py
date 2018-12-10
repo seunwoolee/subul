@@ -20,6 +20,7 @@ class TimeStampedModel(models.Model):
         choices=DELETE_STATE_CHOICES,
         default='N',
     )
+
     class Meta:
         abstract = True
 
@@ -66,7 +67,6 @@ class Detail(models.Model):
         default='N',
     )
 
-
     class Meta:
         abstract = True
 
@@ -86,7 +86,7 @@ class Out(models.Model):
 
 
 class Location(Code):
-    LOCATION_TYPE_CHOICES= (
+    LOCATION_TYPE_CHOICES = (
         ('01', '포장재입고'),
         ('03', '원란입고'),
         ('05', '판매'),
@@ -117,10 +117,10 @@ class Location(Code):
         choices=LOCATION_TYPE_CHOICES,
         default='05',
     )
-    location_address = models.CharField(max_length=255,blank=True,null=True)
-    location_phone = models.CharField(max_length=255,blank=True,null=True)
-    location_companyNumber = models.CharField(max_length=255,blank=True,null=True)
-    location_owner = models.CharField(max_length=255,blank=True,null=True)
+    location_address = models.CharField(max_length=255, blank=True, null=True)
+    location_phone = models.CharField(max_length=255, blank=True, null=True)
+    location_companyNumber = models.CharField(max_length=255, blank=True, null=True)
+    location_owner = models.CharField(max_length=255, blank=True, null=True)
     location_shoppingmall = models.CharField(
         max_length=2,
         choices=SHOPPINGMALL_TYPE_CHOICES,
@@ -131,7 +131,7 @@ class Location(Code):
         choices=CHARACTER_TYPE_CHOICES,
         default='99',
     )
-    location_manager = models.ForeignKey(CustomUser ,on_delete=models.SET_NULL, null=True, blank=True, # TODO 담당자
+    location_manager = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True,  # TODO 담당자
                                          related_name='location_manager')
 
     def __str__(self):

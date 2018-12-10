@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'release',
     'order',
     'api',
+    'eggs',
+    'packing',
 ]
 
 MIDDLEWARE = [
@@ -158,4 +160,4 @@ TIME_ZONE = 'Asia/Seoul'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-SESSION_COOKIE_AGE = 600
+SESSION_COOKIE_AGE = 3000

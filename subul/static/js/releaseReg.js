@@ -341,12 +341,6 @@ $('#orderRelease').on('submit', function (e)
     }
 });
 
-
-function testest(i)
-{
-    alert(i);
-}
-
 function setDatePicker()
 {
     $(".datepicker").datepicker({
