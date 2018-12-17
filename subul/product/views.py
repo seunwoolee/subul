@@ -2,7 +2,7 @@ from django.db.models import Sum
 from django.shortcuts import render
 from django.views.generic.base import View
 from core.models import Location
-from product.models import ProductEgg, Product, ProductCode, ProductAdmin
+from product.models import ProductEgg, Product, ProductCode, ProductAdmin, ProductMaster
 from .forms import StepOneForm, StepTwoForm, StepThreeForm, StepFourForm, StepFourFormSet, MainForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
@@ -19,7 +19,13 @@ class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
         formset = StepFourFormSet(request.POST)
 
         if form0.is_valid():
-            main = form0.save()
+            ymd = form0.cleaned_data.get('ymd', None)
+            productMaster = ProductMaster.objects.filter(ymd=ymd).first()
+
+            if productMaster:
+                main = productMaster
+            else:
+                main = form0.save()
 
         if form1.is_valid():
             stepOneProductEgg = [[key, value] for key, value in form1.cleaned_data.items()]
@@ -79,8 +85,8 @@ class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
                         else:
                             productExist.amount += amount
                             productExist.count += count
-                            productExistAdmin = ProductAdmin.objects.filter(releaseType='생성')\
-                                                                    .filter(product_id=productExist).first()
+                            productExistAdmin = ProductAdmin.objects.filter(releaseType='생성') \
+                                .filter(product_id=productExist).first()
                             productExistAdmin.amount += amount
                             productExistAdmin.count += count
                             productExist.save()
@@ -90,8 +96,8 @@ class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
         return render(request, 'product/productList.html')
 
     def get(self, request):
-        tankValue = list(ProductEgg.objects.values('code', 'codeName')\
-                         .filter(delete_state='N').annotate(rawSum=Sum('rawTank_amount'))\
+        tankValue = list(ProductEgg.objects.values('code', 'codeName') \
+                         .filter(delete_state='N').annotate(rawSum=Sum('rawTank_amount')) \
                          .annotate(pastSum=Sum('pastTank_amount')).order_by('code'))
         for tank in tankValue:
             if "RAW" in tank["codeName"]:
@@ -117,4 +123,15 @@ class ProductList(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = 'product.change_product'
 
     def get(self, request):
+        product = Product.objects.first()
+
+        # log(
+        #     user=request.user,
+        #     action="추가",
+        #     obj=product,
+        #     extra={
+        #         "name":product.codeName,
+        #         "amount":product.amount
+        #     }
+        # )
         return render(request, 'product/productList.html')

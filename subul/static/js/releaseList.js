@@ -1,4 +1,3 @@
-
  $('#start_date').val(start_day);
  $('#end_date').val(end_day);
 fetch_data(start_day, end_day);
@@ -21,12 +20,13 @@ fetch_data(start_day, end_day);
           }
      };
 
-     let groupByFilter = $('.card-body .tab-content .active').attr('id');
+     let groupByFilter = $('#tabnavigator a.nav-link.active').attr('href');
+     groupByFilter = groupByFilter.substring(1);
      let releaseTypeFilter = $('.type_filter #releaseType select').val();
      let productTypeFilter = $('.type_filter #productType select').val();
      let checkBoxFilter = $('.type_filter input:checkbox:checked').map(function(){ return $(this).val(); })
                                                                   .get().join(',');
-     table = $('#'+groupByFilter +' .datatable');
+     let table = $('#'+groupByFilter +' .datatable');
      args={ 'table' : table,
             'start_date' : start_date,
             'end_date' : end_date,
@@ -34,6 +34,7 @@ fetch_data(start_day, end_day);
             'productTypeFilter':productTypeFilter,
             'checkBoxFilter':checkBoxFilter,
             'groupByFilter':groupByFilter };
+    table.DataTable().destroy();
     LOOKUP_TABLE[groupByFilter](args);
  }
 
@@ -124,7 +125,7 @@ function setStepOneDataTable(args)
 
 function setStepTwoDataTable(args)
 {
-    table = args['table'].DataTable({
+    args['table'].DataTable({
         "processing": true,
         "serverSide": true,
         "ajax": {
@@ -194,7 +195,7 @@ function setStepTwoDataTable(args)
 
 function setStepThreeDataTable(args)
 {
-    table = args['table'].DataTable({
+    args['table'].DataTable({
         "processing": true,
         "serverSide": true,
         "ajax": {
@@ -265,7 +266,7 @@ function setStepThreeDataTable(args)
 
 function setStepFourDataTable(args)
 {
-    table = args['table'].DataTable({
+    args['table'].DataTable({
         "processing": true,
         "serverSide": true,
         "ajax": {

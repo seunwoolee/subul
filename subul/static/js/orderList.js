@@ -5,30 +5,32 @@ fetch_data(start_day, end_day);
  {
     start_date = set_yyyymmdd(start_date);
     end_date = set_yyyymmdd(end_date);
-    var LOOKUP_TABLE = {
+    let LOOKUP_TABLE = {
         "stepOne": function(args) {
             return setStepOneDataTable(args);
         },
-        "stepTwo": function() {
+        "stepTwo": function(args) {
             return setStepTwoDataTable(args);
         },
-        "stepThree":  function() {
-            return setStepThreeDataTable(args);
-        }
+        "stepThree": function(args) {
+            return setStepOneDataTable(args);
+        },
     };
-    let gubunFilter = $('.card-body .tab-content .active').attr('id');
+
+    let gubunFilter = $('#tabnavigator a.nav-link.active').attr('href');
+    gubunFilter = gubunFilter.substring(1);
     let eggTypeFilter = $('.type_filter #releaseType select').val();
     let checkBoxFilter = $('.type_filter input:checkbox:checked').map(function(){ return $(this).val(); })
                                                                       .get().join(',');
-    table = $('#'+gubunFilter +' .datatable');
-    console.log(table);
-    args={
+    let table = $('#'+gubunFilter +' .datatable');
+    var args={
             'table' : table,
             'start_date' : start_date,
             'end_date' : end_date,
             'eggTypeFilter':eggTypeFilter,
             'checkBoxFilter':checkBoxFilter,
             'gubunFilter':gubunFilter };
+    table.DataTable().destroy();
     LOOKUP_TABLE[gubunFilter](args);
  }
 
@@ -118,7 +120,7 @@ function setStepOneDataTable(args)
 
 function setStepTwoDataTable(args)
 {
-    table = args['table'].DataTable({
+    args['table'].DataTable({
         "language": {searchPlaceholder: "거래처, 제품명"},
         "processing": true,
         "serverSide": true,
@@ -207,7 +209,7 @@ function setStepTwoDataTable(args)
 
 function setStepThreeDataTable(args)
 {
-    table = args['table'].DataTable({
+    args['table'].DataTable({
         "processing": true,
         "serverSide": true,
         "ajax": {

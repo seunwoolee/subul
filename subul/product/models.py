@@ -139,7 +139,7 @@ class ProductEgg(models.Model):
         try:
             for egg in eggs:
                 percent = egg.rawTank_amount / total_rawTank_amount
-                print(egg.rawTank_amount, percent, total_rawTank_amount, masterInstance.total_loss_openEgg)
+                # print(egg.rawTank_amount, percent, total_rawTank_amount, masterInstance.total_loss_openEgg)
                 openEgglossPercent = round(masterInstance.total_loss_openEgg * percent, 2)
                 insertlossPercent = round(masterInstance.total_loss_insert * percent, 2)
                 egg.loss_openEgg = openEgglossPercent
@@ -155,7 +155,6 @@ class ProductEgg(models.Model):
             checkBoxFilter = checkBoxFilter.split(',')
             checkBoxFilter = [name for name in checkBoxFilter if name != '제품생산']
 
-        # print(checkBoxFilter)
         search_value = kwargs.get('search[value]', None)[0]
         start_date = kwargs.get('start_date', None)[0]
         end_date = kwargs.get('end_date', None)[0]
@@ -281,7 +280,7 @@ class ProductAdmin(models.Model):
         ('샘플', '샘플'),
         ('증정', '증정'),
         ('자손', '자손'),
-        ('반품', '반품'),  # TODO 반품 처리
+        ('반품', '반품'),
         ('이동', '이동'),
         ('미출고품', '미출고품'),
         ('재고조정', '재고조정'),

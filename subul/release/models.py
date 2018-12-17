@@ -139,15 +139,16 @@ class Release(Detail):
                 ('1', 'specialTag'),
                 ('2', 'codeName'),
                 ('3', "type"),
-                ('4', 'contentType'),
-                ('5', 'amount'),
-                ('6', 'count'),
-                ('7', 'totalPrice'),
-                ('8', 'kgPrice'),
-                ('9', 'supplyPrice'),
-                ('10', 'releaseVat'),
-                ('11', "eaPrice"),
-                ('12', "releaseStoreLocationCodeName")
+                ('4', "releaseLocationName"),
+                ('5', 'contentType'),
+                ('6', 'amount'),
+                ('7', 'count'),
+                ('8', 'totalPrice'),
+                ('9', 'kgPrice'),
+                ('10', 'supplyPrice'),
+                ('11', 'releaseVat'),
+                ('12', "eaPrice"),
+                ('13', "releaseStoreLocationCodeName")
             )
             order_column = RELEASE_COLUMN_CHOICES[order_column]
             queryset = Release.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(delete_state='N') \
@@ -164,29 +165,22 @@ class Release(Detail):
                 .annotate(releaseStoreLocationCodeName=F('releaseStoreLocation__codeName'))
         elif groupByFilter == 'stepFour':
             RELEASE_COLUMN_CHOICES = Choices(
-                ('0', 'code'),
-                ('1', 'codeName'),
-                ('2', "type"),
-                ('3', 'contentType'),
-                ('4', 'amount'),
-                ('5', 'count'),
-                ('6', 'totalPrice'),
-                ('7', 'kgPrice'),
-                ('8', 'supplyPrice'),
-                ('9', 'releaseVat'),
-                ('10', "eaPrice"),
-                ('11', "releaseStoreLocationCodeName")
+                ('0', 'releaseLocationName'),
+                ('1', 'amount'),
+                ('2', "count"),
+                ('3', 'totalPrice'),
+                ('4', 'supplyPrice'),
+                ('5', 'releaseVat'),
             )
             order_column = RELEASE_COLUMN_CHOICES[order_column]
-            queryset = Release.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(
-                delete_state='N') \
+            queryset = Release.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date)\
+                .filter(delete_state='N') \
                 .values('releaseLocationName') \
                 .annotate(amount=Sum('amount')) \
                 .annotate(count=Sum('count')) \
                 .annotate(totalPrice=Sum('price')) \
-                .annotate(supplyPrice=ExpressionWrapper(F('totalPrice') - F('releaseVat'), output_field=FloatField())) \
-                .annotate(releaseVat=F('releaseVat'))
-
+                .annotate(releaseVat=Sum('releaseVat')) \
+                .annotate(supplyPrice=F('totalPrice') - F('releaseVat'))
         total = queryset.count()
 
         if releaseTypeFilter != '전체':

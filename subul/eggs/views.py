@@ -3,17 +3,17 @@ from django.views import View
 
 from core.models import Location
 from order.forms import OrderForm
+from .forms import EggForm
 from .models import Egg, EggCode
 from .forms import EggFormSet
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
-# class OrderList(LoginRequiredMixin, View):
-#
-#     def get(self, request):
-#         print(request.user.has_perm('order.delete_order')) # TODO 권한 문제!!
-#         form = OrderForm()
-#         return render(request, 'order/orderList.html', {'form': form})
+class EggList(View):
+
+    def get(self, request):
+        releaseLocationForm = EggForm()
+        return render(request, 'eggs/eggsList.html', {'releaseLocationForm': releaseLocationForm})
 
 
 class EggReg(LoginRequiredMixin, View):

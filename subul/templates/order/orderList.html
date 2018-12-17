@@ -129,7 +129,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <ul class="nav nav-tabs nav-fill" role="tablist">
+                <ul class="nav nav-tabs nav-fill" role="tablist" id="tabnavigator">
                     <li class="nav-item">
                         <a class="nav-link active" data-toggle="tab" href="#stepOne" role="tab" aria-controls="stepOne">주문내역조회</a>
                     </li>
@@ -225,14 +225,14 @@
 
 <!-- Order EDIT Modal -->
 <div class="modal fade everyModal" id="orderModal" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-primary">
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title"></h4>
+                <h4 class="modal-title codeName"></h4>
             </div>
             <div class="modal-body">
-                <h5 class="mb-4 codeName"></h5>
+                <!--<h5 class="mb-4 "></h5>-->
                 <form role="form">
                     {% include 'includes/modal/orderModifyForm.html' %}
                     <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="patch"/>
@@ -246,7 +246,7 @@
 
 <!--Order Delete Modal -->
 <div class="modal fade everyModal" role="dialog" id="confirm">
-    <div class="modal-dialog">
+    <div class="modal-dialog  modal-danger">
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
@@ -256,7 +256,7 @@
                 <form role="form">
                     <!--{% csrf_token %}-->
                     <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="delete"/>
-                    <button type="submit" class="btn btn-primary">Delete</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
                     <button type="button" data-dismiss="modal" class="btn">Cancel</button>
                 </form>
 

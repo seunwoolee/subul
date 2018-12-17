@@ -5,6 +5,13 @@ from product.models import ProductMaster, Product, ProductEgg, ProductUnitPrice,
     ProductCode
 
 
+class ProductMasterSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProductMaster
+        fields = ('ymd', 'total_loss_openEgg', 'total_loss_insert', 'total_loss_clean', 'total_loss_fill')
+
+
 class ProductSerializer(serializers.ModelSerializer):
     loss_insert = serializers.SerializerMethodField()
     loss_openEgg = serializers.SerializerMethodField()
@@ -15,7 +22,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ('id', 'master_id', 'ymd', 'code', 'codeName', 'amount', 'count', 'memo', 'loss_clean',
-                  'loss_fill', 'delete_state',
+                  'loss_fill', 'delete_state', 'amount_kg',
                   'loss_insert', 'loss_openEgg', 'pastTank_amount', 'rawTank_amount', 'type')  # 가짜 데이터
 
     def get_loss_insert(self, obj):

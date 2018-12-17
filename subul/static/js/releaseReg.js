@@ -41,6 +41,7 @@ function order_fetch_data(start_date='', end_date='')
 {
     start_date = set_yyyymmdd(start_date);
     end_date = set_yyyymmdd(end_date);
+    $('#orderDatatable').DataTable().destroy();
     orderTable = $('#orderDatatable').DataTable({
         "paging": false,
         "processing": true,
@@ -100,12 +101,11 @@ function setTypeButton(data)
     }
 }
 
-$('#search').click(function(){ //TODO 합칠수있으면 합치자
+$('#search').click(function(){
     var start_date = $('#start_date').val();
     var end_date = $('#end_date').val();
     if(start_date != '' && end_date !='')
     {
-       $('#orderDatatable').DataTable().destroy();
        order_fetch_data(start_date, end_date);
     }
     else

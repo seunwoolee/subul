@@ -1,4 +1,3 @@
-
  $('#start_date').val(start_day);
  $('#end_date').val(end_day);
  fetch_data(start_day, end_day);
@@ -7,6 +6,7 @@
     start_date = set_yyyymmdd(start_date);
     end_date = set_yyyymmdd(end_date);
     let checkBoxFilter = $('.type_filter input:checkbox:checked').map(function(){ return $(this).val(); }).get().join(',');
+    $('.datatable').DataTable().destroy();
     table = $('.datatable').DataTable({
         "language": {searchPlaceholder: "제품명, 메모"},
         "processing": true,
@@ -133,10 +133,13 @@ function setMemoStyle(data)
     }
 }
 
+var AMOUNT_KG = {};
 function editButtonClick(data)
 {
     if(data['type'] == "제품생산")
     {
+        window.AMOUNT_KG = { "AMOUNT_KG" : data["amount_kg"]};
+        console.log(window.AMOUNT_KG);
         $('#amount').val(data['amount']);
         $('#count').val(data['count']);
         $('.memo').val(data['memo']);
@@ -193,6 +196,7 @@ $('form').on('submit', function (e)  // EDIT
     data: data,
     }).done(function(data) {
         alert('수정완료');
+        $('.datatable').DataTable().search($("input[type='search']").val()).draw();
         $(".everyModal").modal('hide');
     }).fail(function() {
         alert('수정 에러 전산실로 문의바랍니다.');
@@ -212,3 +216,6 @@ function makeAjaxUrl($this)
     }
     return url;
 }
+
+$(".amount").focusout(function(){ setAutoCountValue($(this)); });
+$(".count").focusout(function(){ setAutoAmountValue($(this)); });

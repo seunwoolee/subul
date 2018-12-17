@@ -5,15 +5,7 @@ from .models import ProductCode, ProductEgg, ProductMaster
 
 
 class MainForm(forms.ModelForm):
-    # ymd = forms.DateField(widget=forms.DateInput(attrs={'type':'date'}))
-    ymd = forms.CharField(max_length=8, widget=forms.TextInput(attrs=
-    {
-        'id': 'datepicker',
-        'placeholder': '생산일자',
-        'data-toggle': 'tooltip',
-        'data-placement': 'top',
-        'title': '생산일자 입력'
-    }))
+    ymd = forms.CharField(max_length=8, widget=forms.HiddenInput())
     total_loss_openEgg = forms.IntegerField(widget=forms.NumberInput(attrs=
     {
         'placeholder': '투입',

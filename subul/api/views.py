@@ -12,7 +12,7 @@ from product.models import ProductMaster, Product, ProductEgg, ProductUnitPrice,
     SetProductMatch, SetProductCode, ProductCode, ProductAdmin
 from release.models import Release
 from .serializers import ProductSerializer, ProductEggSerializer, ProductUnitPriceSerializer, SetProductCodeSerializer, \
-    ProductCodeSerializer, SetProductMatchSerializer
+    ProductCodeSerializer, SetProductMatchSerializer, ProductMasterSerializer
 
 
 # Create your views here.
@@ -37,8 +37,7 @@ class ProductsAPIView(APIView):
             '11': 'loss_openEgg',
             '12': 'loss_clean',
             '13': 'loss_fill',
-            '14': 'memo',
-            '15': 'total_loss_insert'
+            '14': 'memo'
         }
         order_column = request.query_params['order[0][column]']
         order_column = ORDER_COLUMN_CHOICES[order_column]
@@ -63,7 +62,7 @@ class ProductsAPIView(APIView):
             mergedProductInfo['total'] = product['total'] + productEgg['total']
             mergedProductInfo['count'] = product['count'] + productEgg['count']
             mergedProductInfo['data'] = productEggSerializer.data + productSerializer.data
-        else: # 제품생산을 제외한 체크박스
+        else:  # 제품생산을 제외한 체크박스
             productEgg = ProductEgg.productEggQuery(**request.query_params)
             productEggSerializer = ProductEggSerializer(productEgg['items'], many=True)
             mergedProductInfo['total'] = productEgg['total']
@@ -71,10 +70,11 @@ class ProductsAPIView(APIView):
             mergedProductInfo['data'] = productEggSerializer.data
 
         if order == 'desc':
-            mergedProductInfo['data'] = sorted(mergedProductInfo['data'], key=lambda k: k[order_column],
-                                               reverse=True)  # ORDER BY
+            mergedProductInfo['data'] = sorted(mergedProductInfo['data'], key=lambda k: k[order_column] if k[order_column] != None
+            else 0, reverse=True)
         else:
-            mergedProductInfo['data'] = sorted(mergedProductInfo['data'], key=lambda k: k[order_column])  # ORDER BY
+            mergedProductInfo['data'] = sorted(mergedProductInfo['data'], key=lambda k: k[order_column] if k[order_column] != None
+            else 0)
         result = dict()
         result['data'] = mergedProductInfo['data'][start:start + length]  # 페이징
         result['draw'] = draw
@@ -115,6 +115,28 @@ class ProductUpdate(mixins.CreateModelMixin,
         instance = Product.objects.get(pk=kwargs['pk'])
         self.partial_update(request, *args, **kwargs)
         Product.getLossProductPercent(instance.master_id)
+        productAdmin = ProductAdmin.objects.filter(product_id=instance).filter(releaseType='생성').first()
+        productAdmin.amount = request.data['amount']
+        productAdmin.count = request.data['count']
+        productAdmin.save()
+        return Response(status=status.HTTP_200_OK)
+
+
+class ProductMasterUpdate(mixins.CreateModelMixin,
+                          generics.UpdateAPIView):
+    '''
+    생산등록에서 마스터 Update를 칠때 Patch
+    '''
+
+    queryset = ProductMaster.objects.all()
+    serializer_class = ProductMasterSerializer
+    lookup_field = 'ymd'
+
+    def patch(self, request, *args, **kwargs):
+        self.partial_update(request, *args, **kwargs, pk=None)
+        instance = ProductMaster.objects.filter(ymd=kwargs['ymd']).first()
+        Product.getLossProductPercent(instance)
+        ProductEgg.getLossOpenEggPercent(instance)
         return Response(status=status.HTTP_200_OK)
 
 

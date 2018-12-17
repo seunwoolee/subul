@@ -91,14 +91,48 @@ $(document).on('click', '.remove-form-row', function(e){
     return false;
 });
 
-//$("form").submit(function(){
-//    e.preventDefault();
-//    $('input[type=date]').attr("pattern","[0-9]{4}-[0-9]{2}-[0-9]{2}")
-//    ymd = set_yyyymmdd($('input[type=date]').val());
-//    $('input[type=date]').val(ymd);
-////    $("form").submit();
-//})
+$('.switch-slider').bind('click', myHandlerFunction);
+var first = true;
 
+function myHandlerFunction(e) {
+    if(first){
+        $(this).parents('.form-row').find('input[type=number]').attr("readonly", true).val(0);
+    }else{
+        $(this).parents('.form-row').find('input[type=number]').attr("readonly", false).val("");
+    }
+    first = !first;
+}
+
+$(document).on('click', '#submitButton', function(e){
+    ymd = set_yyyymmdd($('input[name=fakeYmd]').val());
+    $('input[name=ymd]').val(ymd);
+});
+
+$(document).on('click', '#changeButton', function(e){
+    e.preventDefault();
+    ymd = set_yyyymmdd($('input[name=fakeYmd]').val());
+    $('input[name=ymd]').val(ymd);
+    $this = $("#mainForm input[type!=date]"); // form
+    let data = $this.serialize();
+    let url = '/api/productMaster/'+ymd;
+
+    if($this.eq(1).val() > 0 && $this.eq(2).val() && $this.eq(3).val() && $this.eq(4).val())
+    {
+        $.ajax({
+        url: url,
+        type: 'patch',
+        data: data,
+        }).done(function(data) {
+            alert('로스량 변경 완료.');
+        }).fail(function() {
+            alert('해당일자에 등록된 생산이 없습니다. 생산을 등록해주세요');
+        });
+    }
+    else
+    {
+        alert("로스량을 모두 0보다 크게 입력해주세요.");
+    }
+});
 
 $(".amount").focusout(function(){ if(AMOUNT_KG['parentTR'][0] == parentTR[0]) { setAutoCountValue($(this)); }});
 $(".count").focusout(function(){ if(AMOUNT_KG['parentTR'][0] == parentTR[0]) { setAutoAmountValue($(this)); }});

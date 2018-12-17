@@ -3,7 +3,6 @@ $('#search').click(function(){
   var end_date = $('#end_date').val();
   if(start_date != '' && end_date !='')
   {
-       $('.datatable').DataTable().destroy();
        fetch_data(start_date, end_date);
   }
   else
@@ -30,7 +29,6 @@ $('#search').click(function(){
     }
     else if(class_name == 'btn btn-success btn-sm RECALL')
     {
-//         alert();
         recallButtonClick(data);
     }
         id = data['id'];
