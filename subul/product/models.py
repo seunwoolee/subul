@@ -184,6 +184,11 @@ class ProductCode(Code):
         ('X', '없음'),
     )
 
+    OEM_TYPE_CHOICES = (
+        ('N', 'N'),
+        ('Y', 'Y'),
+    )
+
     STORE_TYPE_CHOICES = (
         ('AP', 'AP'),
         ('BIB', 'BIB'),
@@ -211,6 +216,11 @@ class ProductCode(Code):
     )
     vat = models.IntegerField(default=0)
     expiration = models.IntegerField(default=0)
+    oem = models.CharField(
+        max_length=10,
+        choices=OEM_TYPE_CHOICES,
+        default='N'
+    )
 
     def __str__(self):
         return self.codeName + '(' + self.code + ')'

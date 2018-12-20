@@ -5,7 +5,8 @@
               <td>
                   <div class="form-group">
                       <label><i class="nav-icon icon-drop"></i>출고일</label>
-                        {% render_field form.ymd class="form-control ymd" id="id_ymd" required="True" %}
+                        {% render_field form.ymd class="form-control ymd" id="id_ymd" required="True" type="hidden"%}
+                        {% render_field form.fakeYmd class="form-control fakeYmd" id="id_fakeYmd" required="True"%}
                   </div>
               </td>
               <td>

@@ -37,6 +37,52 @@ fetch_data(start_day, end_day);
 function setStepOneDataTable(args)
 {
     table = args['table'].DataTable({
+    	"footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
+            let numberFormat = $.fn.dataTable.render.number( ',').display;
+
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+
+            let pageTotal_amount = api
+                .column( 6, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_count = api
+                .column( 7, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_pricePerEa = api
+                .column( 8, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_price = api
+                .column( 9, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            // Update footer
+            $( api.column( 6 ).footer() ).html( numberFormatWithDot(pageTotal_amount) + '(KG)' );
+            $( api.column( 7 ).footer() ).html( numberFormat(pageTotal_count) + '(EA)' );
+            $( api.column( 8 ).footer() ).html( numberFormat(pageTotal_pricePerEa) );
+            $( api.column( 9 ).footer() ).html( numberFormat(pageTotal_price) );
+        },
         "language": {searchPlaceholder: "거래처, 제품명, 메모"},
         "processing": true,
         "serverSide": true,
@@ -78,7 +124,16 @@ function setStepOneDataTable(args)
             {"data": "totalPrice" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "memo"},
             {"data": "setProduct"},
-            {"data": null, "render": function(data, type, row, meta){return setDataTableActionButtonWithPdf();}}
+            {"data": "release_id", "render": function(data, type, row, meta){
+                    if(data > 0)
+                    {
+                        return setDataTableActionButtonWithoutEdit();
+                    }
+                    else
+                    {
+                        return setDataTableActionButtonWithPdf();
+                    }
+            }}
         ],
         dom: 'Bfrtip',
         buttons: [
@@ -121,6 +176,60 @@ function setStepOneDataTable(args)
 function setStepTwoDataTable(args)
 {
     args['table'].DataTable({
+    	"footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
+            let numberFormat = $.fn.dataTable.render.number( ',').display;
+
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+
+            let pageTotal_amount = api
+                .column( 6, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_count = api
+                .column( 7, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_release_amount = api
+                .column( 12, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_release_count = api
+                .column( 13, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_release_price = api
+                .column( 14, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            // Update footer
+            $( api.column( 6 ).footer() ).html( numberFormatWithDot(pageTotal_amount) + '(KG)' );
+            $( api.column( 7 ).footer() ).html( numberFormat(pageTotal_count) + '(EA)' );
+            $( api.column( 12 ).footer() ).html( numberFormatWithDot(pageTotal_release_amount) + '(KG)' );
+            $( api.column( 13 ).footer() ).html( numberFormat(pageTotal_release_count) + '(EA)' );
+            $( api.column( 14 ).footer() ).html( numberFormat(pageTotal_release_price) );
+        },
         "language": {searchPlaceholder: "거래처, 제품명"},
         "processing": true,
         "serverSide": true,
@@ -323,8 +432,10 @@ function editButtonClick(data)
     }
     else
     {
+        let fakeYmd = set_yyyy_mm_dd(data['ymd']);
         window.AMOUNT_KG = { "AMOUNT_KG" : data["amount_kg"]};
-        $('#id_modifyYmd').val(data['ymd']);
+        $('#id_ymd').val(data['ymd']);
+        $('#id_fakeYmd').val(fakeYmd);
         $('#id_type').val(data['type']);
         $('#id_specialTag').val(data['specialTag']);
         $('#id_amount').val(data['amount']);
@@ -340,6 +451,10 @@ function editButtonClick(data)
 
 $(".amount").focusout(function(){ setAutoCountValue($(this)); });
 $(".count").focusout(function(){ setAutoAmountValue($(this)); });
+$(".fakeYmd").focusout(function(){
+    ymd = set_yyyymmdd($('input[name=fakeYmd]').val());
+    $('input[name=ymd]').val(ymd);
+});
 
 function deleteButtonClick(data)
 {

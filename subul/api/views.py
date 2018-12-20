@@ -7,6 +7,7 @@ from rest_framework import mixins
 from api.orderSerializers import OrderSerializer
 from api.releaseSerializers import ProductAdminSerializer, ReleaseSerializer
 from core.models import Location
+from eventlog.models import log
 from order.models import Order
 from product.models import ProductMaster, Product, ProductEgg, ProductUnitPrice, \
     SetProductMatch, SetProductCode, ProductCode, ProductAdmin
@@ -70,11 +71,13 @@ class ProductsAPIView(APIView):
             mergedProductInfo['data'] = productEggSerializer.data
 
         if order == 'desc':
-            mergedProductInfo['data'] = sorted(mergedProductInfo['data'], key=lambda k: k[order_column] if k[order_column] != None
-            else 0, reverse=True)
+            mergedProductInfo['data'] = sorted(mergedProductInfo['data'],
+                                               key=lambda k: k[order_column] if k[order_column] != None
+                                               else 0, reverse=True)
         else:
-            mergedProductInfo['data'] = sorted(mergedProductInfo['data'], key=lambda k: k[order_column] if k[order_column] != None
-            else 0)
+            mergedProductInfo['data'] = sorted(mergedProductInfo['data'],
+                                               key=lambda k: k[order_column] if k[order_column] != None
+                                               else 0)
         result = dict()
         result['data'] = mergedProductInfo['data'][start:start + length]  # 페이징
         result['draw'] = draw
@@ -99,8 +102,7 @@ class OrdersAPIView(APIView):
             return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
 
 
-class ProductUpdate(mixins.CreateModelMixin,
-                    generics.UpdateAPIView):
+class ProductUpdate(generics.RetrieveUpdateDestroyAPIView):
     '''
     생산내역 조회에서 Update를 칠때 Patch
     '''
@@ -108,17 +110,30 @@ class ProductUpdate(mixins.CreateModelMixin,
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
     def patch(self, request, *args, **kwargs):
         instance = Product.objects.get(pk=kwargs['pk'])
+        log(
+            user=request.user,
+            action="제품수정",
+            obj=instance,
+            extra={
+                "name": instance.codeName,
+                "amount": instance.amount,
+                "count": instance.count
+            }
+        )
         self.partial_update(request, *args, **kwargs)
         Product.getLossProductPercent(instance.master_id)
         productAdmin = ProductAdmin.objects.filter(product_id=instance).filter(releaseType='생성').first()
         productAdmin.amount = request.data['amount']
         productAdmin.count = request.data['count']
         productAdmin.save()
+        return Response(status=status.HTTP_200_OK)
+
+    def delete(self, request, *args, **kwargs):
+        instance = Product.objects.get(pk=kwargs['pk'])
+        self.destroy(request, *args, **kwargs)
+        Product.getLossProductPercent(instance.master_id)
         return Response(status=status.HTTP_200_OK)
 
 
@@ -157,20 +172,22 @@ class ProductCodes(APIView):
         return Response(serializer.data)
 
 
-class ProductEggUpdate(mixins.CreateModelMixin,
-                       generics.UpdateAPIView):
+class ProductEggUpdate(generics.RetrieveUpdateDestroyAPIView):
     '''
-    생산내역 조회에서 Update를 칠때 Patch
+    생산내역 조회에서 Update, Delete를 칠때
     '''
     queryset = ProductEgg.objects.all()
     serializer_class = ProductEggSerializer
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
     def patch(self, request, *args, **kwargs):
         instance = ProductEgg.objects.get(pk=kwargs['pk'])
         self.partial_update(request, *args, **kwargs)
+        ProductEgg.getLossOpenEggPercent(instance.master_id)
+        return Response(status=status.HTTP_200_OK)
+
+    def delete(self, request, *args, **kwargs):
+        instance = ProductEgg.objects.get(pk=kwargs['pk'])
+        self.destroy(request, *args, **kwargs)
         ProductEgg.getLossOpenEggPercent(instance.master_id)
         return Response(status=status.HTTP_200_OK)
 
@@ -257,6 +274,7 @@ class ProductAdminsAPIView(APIView):
                 productAdmins = ProductAdmin.productAdminQuery(**request.query_params)
                 result = dict()
                 result['data'] = productAdmins['items']
+                print(result['data'])
                 result['draw'] = productAdmins['draw']
                 result['recordsTotal'] = productAdmins['total']
                 result['recordsFiltered'] = productAdmins['count']

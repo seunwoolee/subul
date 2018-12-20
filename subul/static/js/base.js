@@ -45,6 +45,14 @@ function set_yyyymmdd(yyyy_mm_dd)
     return yyyyymmdd = temp[0]+temp[1]+temp[2];
 }
 
+function set_yyyy_mm_dd(yyyymmdd)
+{
+    let yyyy = yyyymmdd.substring(0, 4);
+    let mm = yyyymmdd.substring(4, 6);
+    let dd = yyyymmdd.substring(6, 8);
+    return fakeYmd = yyyy + '-' + mm + '-' + dd;;
+}
+
 var date = new Date();
 var days = 7;
 var plusSevenDate = new Date(date.getTime() + (days * 24 * 60 * 60 * 1000));
@@ -59,6 +67,12 @@ function setDataTableActionButtonWithPdf()
 {
     return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="fa fa-trash-o"></i></button>' +
             '<button class="btn btn-info btn-sm MODIFY" href="#"><i class="fa fa-edit"></i></button>'+
+            '<button class="btn btn-warning btn-sm PDF" href="#"><i class="fas fa-file-pdf"></i></button>';
+}
+
+function setDataTableActionButtonWithoutEdit()
+{
+    return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="fa fa-trash-o"></i></button>' +
             '<button class="btn btn-warning btn-sm PDF" href="#"><i class="fas fa-file-pdf"></i></button>';
 }
 
@@ -111,3 +125,11 @@ function setSpecialTagButton(data)
         return '';
     }
 }
+
+//var intVal = function ( i ) {
+//    console.log(typeof(i));
+//    return typeof i === 'string' ?
+//        i.replace(/[\$,]/g, '')*1 :
+//        typeof i === 'number' ?
+//            i : 0;
+//};

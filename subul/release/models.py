@@ -2,7 +2,6 @@ from django.db import models
 from django.db.models import Q, F, ExpressionWrapper, FloatField, Sum, DecimalField
 from django.db.models.functions import Cast
 from model_utils import Choices
-
 from core.models import Master, Detail, Location
 
 
@@ -121,16 +120,16 @@ class Release(Detail):
                 ('12', "releaseStoreLocationCodeName")
             )
             order_column = RELEASE_COLUMN_CHOICES[order_column]
-            queryset = Release.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date)\
+            queryset = Release.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
                 .filter(delete_state='N') \
                 .values('code', 'codeName', 'type', 'specialTag') \
                 .annotate(contentType=F('product_id__productCode__type')) \
                 .annotate(amount=Sum('amount')) \
                 .annotate(count=Sum('count')) \
                 .annotate(totalPrice=Sum('price')) \
+                .annotate(releaseVat=Sum('releaseVat')) \
                 .annotate(kgPrice=Cast(F('totalPrice') / F('amount'), DecimalField(max_digits=20, decimal_places=2))) \
                 .annotate(supplyPrice=ExpressionWrapper(F('totalPrice') - F('releaseVat'), output_field=FloatField())) \
-                .annotate(releaseVat=F('releaseVat')) \
                 .annotate(eaPrice=ExpressionWrapper(F('totalPrice') / F('count'), output_field=FloatField())) \
                 .annotate(releaseStoreLocationCodeName=F('releaseStoreLocation__codeName'))
         elif groupByFilter == 'stepThree':
@@ -157,10 +156,10 @@ class Release(Detail):
                 .annotate(releaseLocationName=F('releaseLocationName')) \
                 .annotate(amount=Sum('amount')) \
                 .annotate(count=Sum('count')) \
+                .annotate(releaseVat=Sum('releaseVat')) \
                 .annotate(totalPrice=Sum('price')) \
                 .annotate(kgPrice=ExpressionWrapper(F('totalPrice') / F('amount'), output_field=FloatField())) \
                 .annotate(supplyPrice=ExpressionWrapper(F('totalPrice') - F('releaseVat'), output_field=FloatField())) \
-                .annotate(releaseVat=F('releaseVat')) \
                 .annotate(eaPrice=ExpressionWrapper(F('totalPrice') / F('count'), output_field=FloatField())) \
                 .annotate(releaseStoreLocationCodeName=F('releaseStoreLocation__codeName'))
         elif groupByFilter == 'stepFour':
@@ -173,7 +172,7 @@ class Release(Detail):
                 ('5', 'releaseVat'),
             )
             order_column = RELEASE_COLUMN_CHOICES[order_column]
-            queryset = Release.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date)\
+            queryset = Release.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
                 .filter(delete_state='N') \
                 .values('releaseLocationName') \
                 .annotate(amount=Sum('amount')) \
@@ -181,6 +180,95 @@ class Release(Detail):
                 .annotate(totalPrice=Sum('price')) \
                 .annotate(releaseVat=Sum('releaseVat')) \
                 .annotate(supplyPrice=F('totalPrice') - F('releaseVat'))
+        elif groupByFilter == 'stepFive':
+            from django.apps import apps
+            ProductAdmin = apps.get_model('product', 'ProductAdmin')
+            RELEASE_COLUMN_CHOICES = Choices(
+                ('0', 'id'),
+                ('1', 'code'),
+                ('2', "codeName"),
+                ('3', 'ymd'),
+                ('4', 'previousStock'),
+                ('5', 'in'),
+                ('6', 'sale'),
+                ('7', 'sample'),
+                ('8', 'broken'),
+                ('9', 'notProduct'),
+                ('10', 'recall'),
+                ('11', 'currentStock'),
+            )
+            order_column = RELEASE_COLUMN_CHOICES[order_column]
+            arr = []
+
+            productAdmin = ProductAdmin.objects.values(  # 현재고
+                productId=F('product_id__id'),
+                productCode=F('product_id__code'),
+                productCodeName=F('product_id__codeName'),
+                oem=F('product_id__productCode__oem'),
+                productYmd=F('ymd')).annotate(totalCount=Sum('count')).annotate(totalAmount=Sum('amount'))
+
+            print(productAdmin)
+
+            for product in productAdmin:
+                result = {}
+                countPerType = ProductAdmin.objects.values(productCode=F('product_id__code'),  # 타입별 출고 amount
+                                                           productCodeName=F('product_id__codeName'),
+                                                           productYmd=F('ymd'), type=F('releaseType')) \
+                    .annotate(totalCount=Sum('count')) \
+                    .annotate(totalAmount=Sum('amount')) \
+                    .filter(product_id=product['productId']).filter(ymd__gte=start_date).filter(ymd__lte=end_date)
+                CURRENT_STOCK = product['totalAmount'] if product['oem'] == 'N' else product["totalCount"]
+                IN = 0
+                SALE = 0
+                SAMPLE = 0
+                BROKEN = 0
+                NOTPRODUCT = 0
+                RECALL = 0
+
+                for element in countPerType:
+                    number = element["totalAmount"] if product['oem'] == 'N' else element["totalCount"]
+                    if element['type'] == '생성':
+                        IN += number
+                    elif element['type'] == '판매':
+                        SALE += number
+                    elif element['type'] == '샘플' or element['type'] == '증정':
+                        SAMPLE += number
+                    elif element['type'] == '자손':
+                        BROKEN += number
+                    elif element['type'] == '미출고품':
+                        NOTPRODUCT += number
+                    elif element['type'] == '반품':
+                        RECALL += number
+
+                PREVIOUS_STOCK = '' if IN > 0 else CURRENT_STOCK - SALE - SAMPLE - BROKEN - NOTPRODUCT - RECALL # 기간
+                # 내 생성이 된거면 전일재고는 당연히 없다
+                if IN == 0: IN = ''
+                if SALE == 0: SALE = ''
+                if SAMPLE == 0: SAMPLE = ''
+                if BROKEN == 0: BROKEN = ''
+                if NOTPRODUCT == 0: NOTPRODUCT = ''
+                if RECALL == 0: RECALL = ''
+                if CURRENT_STOCK == 0: CURRENT_STOCK = ''
+                result['id'] = product['productId']
+                result['code'] = product['productCode']
+                result['codeName'] = product['productCodeName']
+                result['ymd'] = product['productYmd']
+                result['previousStock'] = PREVIOUS_STOCK
+                result['in'] = IN
+                result['sale'] = SALE
+                result['sample'] = SAMPLE
+                result['broken'] = BROKEN
+                result['notProduct'] = NOTPRODUCT
+                result['recall'] = RECALL
+                result['currentStock'] = CURRENT_STOCK
+                # if not IN and not SALE and not SAMPLE and not BROKEN and not NOTPRODUCT and not RECALL and CURRENT_STOCK > 0:
+                arr.append(result)
+            return {
+                'items': arr,
+                'count': 10,
+                'total': 10,
+                'draw': draw
+            }
         total = queryset.count()
 
         if releaseTypeFilter != '전체':

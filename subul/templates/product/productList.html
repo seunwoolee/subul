@@ -106,6 +106,22 @@
                         <th>Actions</th>
                     </tr>
                     </thead>
+
+                    <tfoot>
+                    <tr>
+                        <th colspan="6" style="text-align:center">합계</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th colspan="2"></th>
+                    </tr>
+                    </tfoot>
+
                     <tbody>
                     </tbody>
                 </table>
@@ -149,6 +165,7 @@
                         <input type="text" class="form-control memo" name="memo"
                                placeholder="메모를 입력하세요">
                     </div>
+                    <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="patch"/>
                     <input type="hidden" class="productType" name="productType" value="">
                     <button type="submit" class="btn btn-primary">OK</button>
                     <button type="button" data-dismiss="modal" class="btn">Cancel</button>
@@ -179,6 +196,7 @@
                         <input type="text" class="form-control memo" name="memo"
                                placeholder="메모를 입력하세요">
                     </div>
+                    <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="patch"/>
                     <input type="hidden" class="productType" name="productType" value="">
                     <button type="submit" class="btn btn-primary">OK</button>
                     <button type="button" data-dismiss="modal" class="btn">Cancel</button>
@@ -199,7 +217,8 @@
             <div class="modal-body">
                 <form role="form">
                     <!--{% csrf_token %}-->
-                    <input type="hidden" class="delete_state" name="delete_state" value="Y">
+                    <!--<input type="hidden" class="delete_state" name="delete_state" value="Y">-->
+                    <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="delete"/>
                     <input type="hidden" class="productType" name="productType" value="">
                     <button type="submit" class="btn btn-danger">Delete</button>
                     <button type="button" data-dismiss="modal" class="btn">Cancel</button>

@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'api',
     'eggs',
     'packing',
+    'eventlog',
 ]
 
 MIDDLEWARE = [

@@ -5,10 +5,6 @@ from product.models import ProductCode
 from core.models import Master, Detail, Location
 
 
-# class OrderMaster(Master):
-#     pass
-
-
 class Order(Detail):
     ORDER_TYPE_CHOICES = (
         ('판매', '판매'),
@@ -32,7 +28,7 @@ class Order(Detail):
     )
     price = models.IntegerField()
     setProduct = models.ForeignKey('product.SetProductCode', on_delete=models.CASCADE, null=True, blank=True)
-    release_id = models.ForeignKey('release.Release', on_delete=models.CASCADE, null=True, blank=True)
+    release_id = models.ForeignKey('release.Release', on_delete=models.SET_NULL, null=True, blank=True)
     specialTag = models.CharField(
         max_length=10,
         choices=SPECIALTAG_TYPE_CHOICES,

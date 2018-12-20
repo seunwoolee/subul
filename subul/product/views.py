@@ -2,6 +2,7 @@ from django.db.models import Sum
 from django.shortcuts import render
 from django.views.generic.base import View
 from core.models import Location
+from eventlog.models import log
 from product.models import ProductEgg, Product, ProductCode, ProductAdmin, ProductMaster
 from .forms import StepOneForm, StepTwoForm, StepThreeForm, StepFourForm, StepFourFormSet, MainForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -123,11 +124,10 @@ class ProductList(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = 'product.change_product'
 
     def get(self, request):
-        product = Product.objects.first()
-
+        # product = Product.objects.first()
         # log(
         #     user=request.user,
-        #     action="추가",
+        #     action="가나다라마",
         #     obj=product,
         #     extra={
         #         "name":product.codeName,

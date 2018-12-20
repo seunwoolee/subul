@@ -69,7 +69,7 @@ class ReleaseReg(View):
         releaseStoreLocation = Location.objects.get(code=data['storedLocationCode'])
         releaseOrder = int(data['releaseOrder'])
         setProductCode = request.POST.get('setProductCode', None)
-        specialTag = request.POST.get('specialTag', '일반')
+        specialTag = request.POST.get('specialTag', '')
 
         if data['count'] and data['amount'] and data['ymd']:
             totalPrice = int(data['price']) * int(data['count'])
@@ -120,7 +120,7 @@ class ReleaseReg(View):
                     ymd=data['productYmd'],
                     location=releaseLocation,
                     releaseType='생성',
-                    releaseSeq=release  # TODO 이거맞나..
+                    releaseSeq=release
                 )
 
             release.save()

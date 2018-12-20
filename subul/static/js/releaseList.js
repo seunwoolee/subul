@@ -17,6 +17,9 @@ fetch_data(start_day, end_day);
           },
           "stepFour":  function() {
             return setStepFourDataTable(args);
+          },
+          "stepFive":  function() {
+            return setStepFiveDataTable(args);
           }
      };
 
@@ -41,6 +44,76 @@ fetch_data(start_day, end_day);
 function setStepOneDataTable(args)
 {
     table = args['table'].DataTable({
+    	"footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
+            let numberFormat = $.fn.dataTable.render.number( ',').display;
+
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+
+            let pageTotal_amount = api
+                .column( 7, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_count = api
+                .column( 8, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_pricePerKg = api
+                .column( 9, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_price = api
+                .column( 10, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_supplyPrice = api
+                .column( 11, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_vat = api
+                .column( 12, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_pricePerEa = api
+                .column( 13, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            // Update footer
+            $( api.column( 7 ).footer() ).html( numberFormatWithDot(pageTotal_amount) + '(KG)' );
+            $( api.column( 8 ).footer() ).html( numberFormat(pageTotal_count) + '(EA)' );
+            $( api.column( 9 ).footer() ).html( numberFormat(pageTotal_pricePerKg) );
+            $( api.column( 10 ).footer() ).html( numberFormat(pageTotal_price) );
+            $( api.column( 11 ).footer() ).html( numberFormat(pageTotal_supplyPrice) );
+            $( api.column( 12 ).footer() ).html( numberFormat(pageTotal_vat) );
+            $( api.column( 13 ).footer() ).html( numberFormat(pageTotal_pricePerEa) );
+        },
         "language": {
             "decimal": ",",
             "thousands": "."
@@ -83,7 +156,10 @@ function setStepOneDataTable(args)
             {"data": "locationManagerName"},
             {'data': 'releaseSetProduct', "visible": false},
             {'data': 'releaseSetProductCodeName', "visible": false},
-            {"data": null, "render": function(data, type, row, meta){return setDataTableActionButtonWithPdfRecall();}}
+            {"data": 'type', "render": function(data, type, row, meta){
+                    console.log(data);
+                    return setDataTableActionButtonWithPdfRecall();
+            }}
         ],
         dom: 'Bfrtip',
         buttons: [
@@ -126,6 +202,76 @@ function setStepOneDataTable(args)
 function setStepTwoDataTable(args)
 {
     args['table'].DataTable({
+    	"footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
+            let numberFormat = $.fn.dataTable.render.number( ',').display;
+
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+
+            let pageTotal_amount = api
+                .column( 5, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_count = api
+                .column( 6, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_price = api
+                .column( 7, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_pricePerKg = api
+                .column( 8, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_supplyPrice = api
+                .column( 9, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_vat = api
+                .column( 10, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_pricePerEa = api
+                .column( 11, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            // Update footer
+            $( api.column( 5 ).footer() ).html( numberFormatWithDot(pageTotal_amount) + '(KG)' );
+            $( api.column( 6 ).footer() ).html( numberFormat(pageTotal_count) + '(EA)' );
+            $( api.column( 7 ).footer() ).html( numberFormat(pageTotal_price) );
+            $( api.column( 8 ).footer() ).html( numberFormat(pageTotal_pricePerKg) );
+            $( api.column( 9 ).footer() ).html( numberFormat(pageTotal_supplyPrice) );
+            $( api.column( 10 ).footer() ).html( numberFormat(pageTotal_vat) );
+            $( api.column( 11 ).footer() ).html( numberFormat(pageTotal_pricePerEa) );
+        },
         "processing": true,
         "serverSide": true,
         "ajax": {
@@ -196,6 +342,76 @@ function setStepTwoDataTable(args)
 function setStepThreeDataTable(args)
 {
     args['table'].DataTable({
+    	"footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
+            let numberFormat = $.fn.dataTable.render.number( ',').display;
+
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+
+            let pageTotal_amount = api
+                .column( 6, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_count = api
+                .column( 7, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_price = api
+                .column( 8, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_pricePerKg = api
+                .column( 9, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_supplyPrice = api
+                .column( 10, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_vat = api
+                .column( 11, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_pricePerEa = api
+                .column( 12, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            // Update footer
+            $( api.column( 6 ).footer() ).html( numberFormatWithDot(pageTotal_amount) + '(KG)' );
+            $( api.column( 7 ).footer() ).html( numberFormat(pageTotal_count) + '(EA)' );
+            $( api.column( 8 ).footer() ).html( numberFormat(pageTotal_price) );
+            $( api.column( 9 ).footer() ).html( numberFormat(pageTotal_pricePerKg) );
+            $( api.column( 10).footer() ).html( numberFormat(pageTotal_supplyPrice) );
+            $( api.column( 11 ).footer() ).html( numberFormat(pageTotal_vat) );
+            $( api.column( 12 ).footer() ).html( numberFormat(pageTotal_pricePerEa) );
+        },
         "processing": true,
         "serverSide": true,
         "ajax": {
@@ -267,6 +483,60 @@ function setStepThreeDataTable(args)
 function setStepFourDataTable(args)
 {
     args['table'].DataTable({
+    	"footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
+            let numberFormat = $.fn.dataTable.render.number( ',').display;
+
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+
+            let pageTotal_amount = api
+                .column( 1, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_count = api
+                .column( 2, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_price = api
+                .column( 3, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_supplyPrice = api
+                .column( 4, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_vat = api
+                .column( 5, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            // Update footer
+            $( api.column( 1 ).footer() ).html( numberFormatWithDot(pageTotal_amount) + '(KG)' );
+            $( api.column( 2 ).footer() ).html( numberFormat(pageTotal_count) + '(EA)' );
+            $( api.column( 3 ).footer() ).html( numberFormat(pageTotal_price) );
+            $( api.column( 4 ).footer() ).html( numberFormat(pageTotal_supplyPrice) );
+            $( api.column( 5).footer() ).html( numberFormat(pageTotal_vat) );
+        },
         "processing": true,
         "serverSide": true,
         "ajax": {
@@ -327,10 +597,78 @@ function setStepFourDataTable(args)
     });
 }
 
+function setStepFiveDataTable(args)
+{
+    args['table'].DataTable({
+        "language": {
+            "lengthMenu": "_MENU_ 페이지당 개수",
+            "zeroRecords": "결과 없음",
+            "info": "",
+            "infoEmpty": "No records available",
+            "infoFiltered": "(검색된결과 from _MAX_ total records)"
+        },
+        "processing": true,
+        "serverSide": true,
+        "paging": false,
+        "ajax": {
+            "url": "/api/release/",
+            "type": "GET",
+            "data": {
+                start_date:args['start_date'],
+                end_date:args['end_date'],
+                releaseTypeFilter:args['releaseTypeFilter'],
+                productTypeFilter:args['productTypeFilter'],
+                checkBoxFilter:args['checkBoxFilter'],
+                groupByFilter:args['groupByFilter']
+            }
+        },
+        "columns": [
+            {'data': 'id'},
+            {'data': 'code'},
+            {'data': 'codeName'},
+            {'data': 'ymd'},
+            {'data': 'previousStock', "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {'data': 'in', "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {'data': 'sale', "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {'data': 'sample', "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {'data': 'broken', "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {'data': 'notProduct', "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {'data': 'recall', "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {'data': 'currentStock', "render": $.fn.dataTable.render.number( ',', '.', 2)}
+        ],
+        dom: 'Bfrtip',
+        buttons: [
+                    {
+                        extend: 'colvis',
+                        className:'btn btn-light',
+                        text : '<i class="far fa-eye fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    },
+                    {
+                        extend: 'copy',
+                        className:'btn btn-light',
+                        text : '<i class="fas fa-copy fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        className:'btn btn-light',
+                        text : '<i class="far fa-file-excel fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    }],
+        lengthMenu : [[30, 50, -1], [30, 50, "All"]]
+    });
+}
+
 function setDataTableActionButtonWithPdfRecall()
 {
     return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="fa fa-trash-o"></i></button>' +
-            '<button class="btn btn-info btn-sm MODIFY" href="#"><i class="fa fa-edit"></i></button>'+
             '<button class="btn btn-warning btn-sm PDF" href="#"><i class="fas fa-file-pdf"></i></button>' +
             '<button class="btn btn-success btn-sm RECALL" href="#"><i class="fas fa-undo-alt"></i></button>';
 }
@@ -358,20 +696,6 @@ function setTypeButton(data)
     }
 }
 
-var AMOUNT_KG = {};
-function editButtonClick(data)
-{
-    console.log(data);
-    window.AMOUNT_KG = { "AMOUNT_KG" : data["amount_kg"]};
-    $('#id_ymd').val(data['ymd']);
-    $('#id_amount').val(data['amount']);
-    $('#id_count').val(data['count']);
-    $('#id_price').val(data['price']);
-    $('#id_memo').val(data['memo']);
-    $('.codeName').text(data['codeName']);
-    $("#releaseModal").modal();
-}
-
 function deleteButtonClick(data)
 {
     $('#modal_title').text('DELETE');
@@ -385,10 +709,27 @@ function pdfButtonClick(data)
     window.open('/release/pdf?ymd=' + ymd + '&releaseLocationCode=' + releaseLocationCode, '_blank');
 }
 
+var AMOUNT_KG = {};
+function editButtonClick(data)
+{
+    let fakeYmd = set_yyyy_mm_dd(data['ymd']);
+    window.AMOUNT_KG = { "AMOUNT_KG" : data["amount_kg"]};
+    $('#id_ymd').val(data['ymd']);
+    $('#id_fakeYmd').val(fakeYmd);
+    $('#id_amount').val(data['amount']);
+    $('#id_count').val(data['count']);
+    $('#id_price').val(data['price']);
+    $('#id_memo').val(data['memo']);
+    $('.codeName').text(data['codeName']);
+    $("#releaseModal").modal();
+}
+
 function recallButtonClick(data)
 {
+    let fakeYmd = set_yyyy_mm_dd(data['ymd']);
     window.AMOUNT_KG = { "AMOUNT_KG" : data["amount_kg"], "EA_PRICE" : data["eaPrice"]};
     $('#id_ymd_recall').val(data['ymd']);
+    $('#id_fakeYmd_recall').val(fakeYmd);
     $('#id_amount_recall').val(data['amount']).attr("max",data['amount']);
     $('#id_count_recall').val(data['count']).attr("max",data['count']);
     $('#id_price_recall').val(data['price']);
@@ -408,6 +749,10 @@ $("#id_price_recall").click(function(){
 });
 $(".amount").focusout(function(){ setAutoCountValue($(this)); });
 $(".count").focusout(function(){ setAutoAmountValue($(this)); });
+$(".fakeYmd").focusout(function(){
+    ymd = set_yyyymmdd($(this).val());
+    $('input[name=ymd]').val(ymd);
+});
 
 $('form').on('submit', function (e)
 {
@@ -415,8 +760,6 @@ $('form').on('submit', function (e)
     $this = $(this);
     let type = $this.find('.ajaxUrlType').val();
     let data = $this.serialize();
-
-    console.log(data);
 
     if(type != 'post')
     {

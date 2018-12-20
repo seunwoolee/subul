@@ -20,7 +20,7 @@ class ReleaseForm(forms.Form):
         ('재고조정', '재고조정'),
     )
 
-    #Hidden fields
+    # Hidden fields
     productCode = forms.CharField(widget=forms.HiddenInput())
     storedLocationCode = forms.CharField(widget=forms.HiddenInput())
     productYmd = forms.CharField(widget=forms.HiddenInput())
@@ -41,9 +41,12 @@ class ReleaseForm(forms.Form):
         label='',
         widget=forms.Textarea(attrs={'rows': 2}), required=False
     )
+    fakeYmd = forms.DateField(required=False, widget=forms.DateInput(  # 수정 Modal Ymd
+        attrs={'type': 'date'}
+    ))
 
 
 class ReleaseLocationForm(forms.Form):
     storedLocation = forms.ChoiceField(
-                                 choices=list(Location.objects.values_list('code', 'codeName')
-                                              .filter(location_shoppingmall=2).order_by('code'))) # TODO deleteState
+        choices=list(Location.objects.values_list('code', 'codeName')
+                     .filter(location_shoppingmall=2).order_by('code')))  # TODO deleteState

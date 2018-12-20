@@ -70,7 +70,6 @@ class OrderReg(LoginRequiredMixin, View):
 
     def post(self, request):
         formset = OrderFormSet(request.POST)
-
         if formset.is_valid():
             for form in formset:
                 setProduct = None
@@ -90,7 +89,7 @@ class OrderReg(LoginRequiredMixin, View):
                 if form.cleaned_data.get('package'):
                     setProduct = SetProductCode.objects.get(code=form.cleaned_data.get('package'))
 
-                if amount_kg * count == amount:
+                if amount_kg and count and amount:
                     order = Order.objects.create(
                         ymd=ymd,
                         code=code,

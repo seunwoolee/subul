@@ -42,8 +42,10 @@ class OrderForm(forms.Form):
     )
     ymd = forms.CharField(max_length=8, widget=forms.HiddenInput())
     package = forms.CharField(widget=forms.HiddenInput(), required=False)
-    specialTag = forms.ChoiceField(choices=SPECIALTAG_TYPE_CHOICES, required=False) # TODO 이게맞나?
-    modifyYmd = forms.CharField(max_length=8, required=False) # 수정 Modal Ymd
+    specialTag = forms.ChoiceField(choices=SPECIALTAG_TYPE_CHOICES, required=False)
+    fakeYmd = forms.DateField(required=False, widget=forms.DateInput( # 수정 Modal Ymd
+        attrs={'type': 'date'}
+    ))
 
 
 OrderFormSet = formset_factory(OrderForm)

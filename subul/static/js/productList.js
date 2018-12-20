@@ -7,7 +7,86 @@
     end_date = set_yyyymmdd(end_date);
     let checkBoxFilter = $('.type_filter input:checkbox:checked').map(function(){ return $(this).val(); }).get().join(',');
     $('.datatable').DataTable().destroy();
+
     table = $('.datatable').DataTable({
+    	"footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
+            let numberFormat = $.fn.dataTable.render.number( ',').display;
+
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+
+            let pageTotal_amount = api
+                .column( 6, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_count = api
+                .column( 7, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_rawTank = api
+                .column( 8, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_pastTank = api
+                .column( 9, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_loss_insert = api
+                .column( 10, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_loss_openEgg = api
+                .column( 11, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_loss_clean = api
+                .column( 12, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_loss_fill = api
+                .column( 13, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            // Update footer
+            $( api.column( 6 ).footer() ).html( numberFormatWithDot(pageTotal_amount) + '(KG)' );
+            $( api.column( 7 ).footer() ).html( numberFormat(pageTotal_count) + '(EA)' );
+            $( api.column( 8 ).footer() ).html( numberFormat(pageTotal_rawTank) );
+            $( api.column( 9 ).footer() ).html( numberFormat(pageTotal_pastTank) );
+            $( api.column( 10 ).footer() ).html( numberFormatWithDot(pageTotal_loss_insert) );
+            $( api.column( 11 ).footer() ).html( numberFormatWithDot(pageTotal_loss_openEgg) );
+            $( api.column( 12 ).footer() ).html( numberFormatWithDot(pageTotal_loss_clean) );
+            $( api.column( 13 ).footer() ).html( numberFormatWithDot(pageTotal_loss_fill) );
+        },
         "language": {searchPlaceholder: "제품명, 메모"},
         "processing": true,
         "serverSide": true,
@@ -188,11 +267,12 @@ $('form').on('submit', function (e)  // EDIT
     e.preventDefault();
     $this = $(this);
     let data = $this.serialize();
-    url = makeAjaxUrl($this);
+    let type = $this.find('.ajaxUrlType').val();
+    url = setAjaxUrl($this);
 
     $.ajax({
     url: url,
-    type: 'patch',
+    type: type,
     data: data,
     }).done(function(data) {
         alert('수정완료');
@@ -203,7 +283,7 @@ $('form').on('submit', function (e)  // EDIT
     });
 });
 
-function makeAjaxUrl($this)
+function setAjaxUrl($this)
 {
     let productType = $this.find("input[name='productType']").val();
     if(productType == 'product')

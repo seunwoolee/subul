@@ -152,8 +152,6 @@ var BOOL = true;
 $(document).on('click', "#orderDatatable tbody tr", function() {
     resetOrderData();
     var data = orderTable.row($(this)).data();
-    console.log('ORDER 데이터 ↓');
-    console.log(data);
     data['storedLocation'] = $('#id_storedLocation').val();
     window.AMOUNT_KG = { "AMOUNT_KG" : data["amount_kg"]};
     var storedLocationName = $('#id_storedLocation option:selected').text();
@@ -165,33 +163,38 @@ $(document).on('click', "#orderDatatable tbody tr", function() {
     type: 'get',
     data: data,
     }).done(function(rows) {
-        console.log(rows);
         changeReleaseInfo(releaseInfoOne, releaseInfoTwo);
         setOrderAmount(data);
         setStoredTotalAmount(rows);
-
-        $(rows).each(function(i, row){
-            var TR = setOrderReleaseTrModal(data,row);
-            $TR = $('#orderModal tbody').append(TR);
-            $TR = $TR.find('tr:last');
-            insertInputValue($TR, row, data);
-            if( window.ORDER_AMOUNT >= window.STORE_TOTAL_AMOUNT) // 총 주문량이 더 많기 때문에 총 재고량을 각각 val에 박아준다
-            {
-                $TR.find('.amount').val(row['totalAmount']);
-                $TR.find('.count').val(row['totalCount']);
-                $TR.find('.datepicker').val(data['ymd']);
-            }
-            else if(BOOL)// 재고량이 더많을때
-            {
-                calculateData = {};
-                calculateData['totalAmount'] = row['totalAmount'];
-                calculateData['ymd'] = data['ymd'];
-                calculateData['totalCount'] = row['totalCount'];
-                calculateReleaseAmount($TR,calculateData);
-            }
-        });
-        setDatePicker();
-        $("#orderModal").modal();
+        if(rows.length > 0)
+        {
+            $(rows).each(function(i, row){
+                var TR = setOrderReleaseTrModal(data,row);
+                $TR = $('#orderModal tbody').append(TR);
+                $TR = $TR.find('tr:last');
+                insertInputValue($TR, row, data);
+                if( window.ORDER_AMOUNT >= window.STORE_TOTAL_AMOUNT) // 총 주문량이 더 많기 때문에 총 재고량을 각각 val에 박아준다
+                {
+                    $TR.find('.amount').val(row['totalAmount']);
+                    $TR.find('.count').val(row['totalCount']);
+                    $TR.find('.datepicker').val(data['ymd']);
+                }
+                else if(BOOL)// 재고량이 더많을때
+                {
+                    calculateData = {};
+                    calculateData['totalAmount'] = row['totalAmount'];
+                    calculateData['ymd'] = data['ymd'];
+                    calculateData['totalCount'] = row['totalCount'];
+                    calculateReleaseAmount($TR,calculateData);
+                }
+            });
+            setDatePicker();
+            $("#orderModal").modal();
+        }
+        else
+        {
+            alert('해당 장소에 재고가 없습니다.');
+        }
     }).fail(function() {
         alert('수정 에러 전산실로 문의바랍니다.');
     });
@@ -304,7 +307,7 @@ $('#manualRelease').on('submit', function (e)
         {
             manualReleaseAjax(url,data);
         }
-        else { alert('장소를 확인해주세요'); }
+        else { alert('장소 및 수량을 확인해주세요'); }
     }
     else if(type == "미출고품" || type == "재고조정")
     {

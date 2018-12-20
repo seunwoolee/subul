@@ -5,7 +5,10 @@
               <td>
                   <div class="form-group">
                       <label><i class="nav-icon icon-drop"></i>반품일</label>
-                        {% render_field form.ymd class="form-control ymd" id="id_ymd_recall" required="True" %}
+                        {% render_field form.ymd class="form-control ymd" id="id_ymd_recall" required="True" type="hidden"%}
+                        {% render_field form.fakeYmd class="form-control fakeYmd" id="id_fakeYmd_recall" required="True"%}
+
+                        <!--{% render_field form.ymd class="form-control ymd" id="id_ymd_recall" required="True" %}-->
                         {% render_field form.productCode id="id_productCode_recall" %}
                         {% render_field form.storedLocationCode id="id_storedLocationCode_recall" %}
                         {% render_field form.productYmd id="id_productYmd_recall" %}
