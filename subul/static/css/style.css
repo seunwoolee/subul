@@ -37,37 +37,37 @@
     overflow-x : scroll;
 }
 /* Mobile Card View Form */
+
 @media only screen and (max-width: 800px) {
 
-.container-fluid{
-    padding : 5px !important;
-}
+    .container-fluid{
+        padding : 5px !important;
+    }
 
-	/* Force table to not be like tables anymore */
-	.table table,
-	.table thead,
-	.table tbody,
-	.table th,
-	.table td,
-	.table tr {
+	.cardView table,
+	.cardView thead,
+	.cardView tbody,
+	.cardView th,
+	.cardView td,
+	.cardView tr {
 		display: block;
 	}
 
-    .table td{
+    .cardView td{
         min-height : 15px;
     }
 
-	/* Hide table headers (but not display: none;, for accessibility) */
-	.table thead tr {
+
+	.cardView thead tr {
 		position: absolute;
 		top: -9999px;
 		left: -9999px;
 	}
 
-	.table tr { border: 1.5px solid #ccc; }
+	.cardView tr { border: 1.5px solid #ccc; }
 
-	.table td {
-		/* Behave  like a "row" */
+	.cardView td {
+
 		border: none;
 		border-bottom: 1px solid #eee;
 		position: relative;
@@ -76,10 +76,10 @@
 		text-align:left;
 	}
 
-	.table td:before {
-		/* Now like a table header */
+	.cardView td:before {
+
 		position: absolute;
-		/* Top/left values mimic padding */
+
 		top: 12px;
 		left: 12px;
 		width: 40%;
@@ -89,10 +89,9 @@
 		font-weight: bold;
 	}
 
-	/*
-	Label the data
-	*/
-	.table td:before { content: attr(data-title); }
+
+	.cardView td:before { content: attr(data-title); }
+
 }
 /* Mobile Card View Form */
 

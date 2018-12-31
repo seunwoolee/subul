@@ -20,6 +20,9 @@ fetch_data(start_day, end_day);
           },
           "stepFive":  function() {
             return setStepFiveDataTable(args);
+          },
+          "stepSix":  function() {
+            return setStepSixDataTable(args);
           }
      };
 
@@ -132,6 +135,12 @@ function setStepOneDataTable(args)
                 groupByFilter:args['groupByFilter']
             }
         },
+        "responsive" : true,
+        "columnDefs": [
+            { responsivePriority: 1, targets: 0 },
+            { responsivePriority: 2, targets: 1 },
+            { responsivePriority: 3, targets: -1 },
+        ],
         "columns": [
             {'data': 'id'},
             {'data': 'ymd'},
@@ -286,6 +295,7 @@ function setStepTwoDataTable(args)
                 groupByFilter:args['groupByFilter']
             }
         },
+        "responsive" : true,
         "columns": [
             {'data': 'code'},
             {"data": "specialTag", "render" : function(data, type, row, meta){return setSpecialTagButton(data);}},
@@ -426,6 +436,7 @@ function setStepThreeDataTable(args)
                 groupByFilter:args['groupByFilter']
             }
         },
+        "responsive" : true,
         "columns": [
             {'data': 'code'},
             {"data": "specialTag", "render" : function(data, type, row, meta){return setSpecialTagButton(data);}},
@@ -551,6 +562,7 @@ function setStepFourDataTable(args)
                 groupByFilter:args['groupByFilter']
             }
         },
+        "responsive" : true,
         "columns": [
             {'data': 'releaseLocationName'},
             {'data': 'amount' , "render": $.fn.dataTable.render.number( ',', '.', 2)},
@@ -600,6 +612,84 @@ function setStepFourDataTable(args)
 function setStepFiveDataTable(args)
 {
     args['table'].DataTable({
+    	"footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
+            let numberFormat = $.fn.dataTable.render.number( ',').display;
+
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+
+            let pageTotal_previousStock = api
+                .column( 4, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_in = api
+                .column( 5, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_sale = api
+                .column( 6, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_sample = api
+                .column( 7, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_broken = api
+                .column( 8, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_notProduct = api
+                .column( 9, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_recall = api
+                .column( 10, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_currentStock = api
+                .column( 11, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            // Update footer
+            $( api.column( 4 ).footer() ).html( numberFormatWithDot(pageTotal_previousStock));
+            $( api.column( 5 ).footer() ).html( numberFormatWithDot(pageTotal_in));
+            $( api.column( 6 ).footer() ).html( numberFormatWithDot(pageTotal_sale));
+            $( api.column( 7 ).footer() ).html( numberFormatWithDot(pageTotal_sample));
+            $( api.column( 8 ).footer() ).html( numberFormatWithDot(pageTotal_broken));
+            $( api.column( 9 ).footer() ).html( numberFormatWithDot(pageTotal_notProduct));
+            $( api.column( 10 ).footer() ).html( numberFormatWithDot(pageTotal_recall));
+            $( api.column( 11 ).footer() ).html( numberFormatWithDot(pageTotal_currentStock));
+        },
         "language": {
             "lengthMenu": "_MENU_ 페이지당 개수",
             "zeroRecords": "결과 없음",
@@ -622,6 +712,7 @@ function setStepFiveDataTable(args)
                 groupByFilter:args['groupByFilter']
             }
         },
+        "responsive" : true,
         "columns": [
             {'data': 'id'},
             {'data': 'code'},
@@ -634,6 +725,153 @@ function setStepFiveDataTable(args)
             {'data': 'broken', "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {'data': 'notProduct', "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {'data': 'recall', "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {'data': 'currentStock', "render": $.fn.dataTable.render.number( ',', '.', 2)}
+        ],
+        dom: 'Bfrtip',
+        buttons: [
+                    {
+                        extend: 'colvis',
+                        className:'btn btn-light',
+                        text : '<i class="far fa-eye fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    },
+                    {
+                        extend: 'copy',
+                        className:'btn btn-light',
+                        text : '<i class="fas fa-copy fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        className:'btn btn-light',
+                        text : '<i class="far fa-file-excel fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    }],
+        lengthMenu : [[30, 50, -1], [30, 50, "All"]]
+    });
+}
+
+function setStepSixDataTable(args)
+{
+    args['table'].DataTable({
+//    	"footerCallback": function ( row, data, start, end, display ) {
+//            var api = this.api(), data;
+//            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
+//            let numberFormat = $.fn.dataTable.render.number( ',').display;
+//
+//            var intVal = function ( i ) {
+//                return typeof i === 'string' ?
+//                    i.replace(/[\$,]/g, '')*1 :
+//                    typeof i === 'number' ?
+//                        i : 0;
+//            };
+//
+//            let pageTotal_previousStock = api
+//                .column( 4, { page: 'current'} )
+//                .data()
+//                .reduce( function (a, b) {
+//                    return intVal(a) + intVal(b);
+//                }, 0 );
+//
+//            let pageTotal_in = api
+//                .column( 5, { page: 'current'} )
+//                .data()
+//                .reduce( function (a, b) {
+//                    return intVal(a) + intVal(b);
+//                }, 0 );
+//
+//            let pageTotal_sale = api
+//                .column( 6, { page: 'current'} )
+//                .data()
+//                .reduce( function (a, b) {
+//                    return intVal(a) + intVal(b);
+//                }, 0 );
+//
+//            let pageTotal_sample = api
+//                .column( 7, { page: 'current'} )
+//                .data()
+//                .reduce( function (a, b) {
+//                    return intVal(a) + intVal(b);
+//                }, 0 );
+//
+//            let pageTotal_broken = api
+//                .column( 8, { page: 'current'} )
+//                .data()
+//                .reduce( function (a, b) {
+//                    return intVal(a) + intVal(b);
+//                }, 0 );
+//
+//            let pageTotal_notProduct = api
+//                .column( 9, { page: 'current'} )
+//                .data()
+//                .reduce( function (a, b) {
+//                    return intVal(a) + intVal(b);
+//                }, 0 );
+//
+//            let pageTotal_recall = api
+//                .column( 10, { page: 'current'} )
+//                .data()
+//                .reduce( function (a, b) {
+//                    return intVal(a) + intVal(b);
+//                }, 0 );
+//
+//            let pageTotal_currentStock = api
+//                .column( 11, { page: 'current'} )
+//                .data()
+//                .reduce( function (a, b) {
+//                    return intVal(a) + intVal(b);
+//                }, 0 );
+//
+//            // Update footer
+//            $( api.column( 4 ).footer() ).html( numberFormatWithDot(pageTotal_previousStock));
+//            $( api.column( 5 ).footer() ).html( numberFormatWithDot(pageTotal_in));
+//            $( api.column( 6 ).footer() ).html( numberFormatWithDot(pageTotal_sale));
+//            $( api.column( 7 ).footer() ).html( numberFormatWithDot(pageTotal_sample));
+//            $( api.column( 8 ).footer() ).html( numberFormatWithDot(pageTotal_broken));
+//            $( api.column( 9 ).footer() ).html( numberFormatWithDot(pageTotal_notProduct));
+//            $( api.column( 10 ).footer() ).html( numberFormatWithDot(pageTotal_recall));
+//            $( api.column( 11 ).footer() ).html( numberFormatWithDot(pageTotal_currentStock));
+//        },
+        "language": {
+            "lengthMenu": "_MENU_ 페이지당 개수",
+            "zeroRecords": "결과 없음",
+            "info": "",
+            "infoEmpty": "No records available",
+            "infoFiltered": "(검색된결과 from _MAX_ total records)"
+        },
+        "processing": true,
+        "serverSide": true,
+        "paging": false,
+        "ajax": {
+            "url": "/api/release/",
+            "type": "GET",
+            "data": {
+                start_date:args['start_date'],
+                end_date:args['end_date'],
+                releaseTypeFilter:args['releaseTypeFilter'],
+                productTypeFilter:args['productTypeFilter'],
+                checkBoxFilter:args['checkBoxFilter'],
+                groupByFilter:args['groupByFilter']
+            }
+        },
+        "responsive" : true,
+        "columns": [
+            {'data': 'id'},
+            {'data': 'locationCode'},
+            {'data': 'locationCodeName'},
+            {'data': 'productCode'},
+            {'data': 'productCodeName'},
+            {'data': 'ymd'},
+            {'data': 'previousStock', "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {'data': 'in', "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {'data': 'move', "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {'data': 'sale', "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {'data': 'currentStock', "render": $.fn.dataTable.render.number( ',', '.', 2)}
         ],
         dom: 'Bfrtip',

@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
 
@@ -12,8 +13,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 class EggList(View):
 
     def get(self, request):
-        releaseLocationForm = EggForm()
-        return render(request, 'eggs/eggsList.html', {'releaseLocationForm': releaseLocationForm})
+        eggForm = EggForm()
+        return render(request, 'eggs/eggsList.html', {'eggForm': eggForm})
 
 
 class EggReg(LoginRequiredMixin, View):
@@ -23,7 +24,7 @@ class EggReg(LoginRequiredMixin, View):
 
         if formset.is_valid():
             for form in formset:
-                ymd = form.cleaned_data.get('ymd')
+                in_ymd = form.cleaned_data.get('in_ymd')
                 code = form.cleaned_data.get('product')
                 eggCode = EggCode.objects.get(code=code)
                 codeName = eggCode.codeName
@@ -33,14 +34,15 @@ class EggReg(LoginRequiredMixin, View):
                 locationCode = Location.objects.get(code=form.cleaned_data.get('location'))
                 locationCodeName = locationCode.codeName
                 Egg.objects.create(
-                    ymd=ymd,
+                    in_ymd=in_ymd,
+                    ymd=in_ymd,
                     code=code,
                     codeName=codeName,
                     count=count,
                     price=price,
                     memo=memo,
-                    locationCode=locationCode,
-                    locationCodeName=locationCodeName,
+                    in_locationCode=locationCode,
+                    in_locationCodeName=locationCodeName,
                     eggCode=eggCode,
                 )
         else:
@@ -51,3 +53,39 @@ class EggReg(LoginRequiredMixin, View):
     def get(self, request):
         eggForm = EggFormSet(request.GET or None)
         return render(request, 'eggs/eggsReg.html', {'eggForm': eggForm})
+
+
+class EggRelease(View):
+    def post(self, request):
+        data = request.POST.dict()
+        try:
+            location = data['locationSale']
+            price = data['price']
+        except KeyError:
+            location = None
+            price = None
+
+        product = EggCode.objects.get(code=data['productCode'])
+        in_location = Location.objects.get(code=data['in_locatoin'])
+        egg = Egg.objects.create(
+            in_ymd=data['in_ymd'],
+            code=data['productCode'],
+            codeName=product.codeName,
+            in_locationCode=in_location,
+            in_locationCodeName=in_location.codeName,
+            type=data['type'],
+            ymd=data['ymd'],
+            count=-int(data['count']),
+            eggCode=product
+        )
+
+        if location:
+            location = Location.objects.get(code=location)
+            egg.locationCode = location
+            egg.locationCodeName = location.codeName
+
+        if price:
+            egg.price = price
+
+        egg.save()
+        return HttpResponse(status=200)

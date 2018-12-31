@@ -87,6 +87,12 @@
             $( api.column( 12 ).footer() ).html( numberFormatWithDot(pageTotal_loss_clean) );
             $( api.column( 13 ).footer() ).html( numberFormatWithDot(pageTotal_loss_fill) );
         },
+        "responsive": true,
+        "columnDefs": [
+            { responsivePriority: 1, targets: 0 },
+            { responsivePriority: 2, targets: -1, orderable: false },
+            { responsivePriority: 3, targets: 2 }
+        ],
         "language": {searchPlaceholder: "제품명, 메모"},
         "processing": true,
         "serverSide": true,

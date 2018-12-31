@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import ProductsAPIView, ProductUpdate, ProductEggUpdate, OrderProductUnitPrice, OrderSetProductMatch, \
     OrderSetProductCode, ProductCodes, OrdersAPIView, OrderUpdate, ProductAdminsAPIView, ReleasesAPIView, ReleaseUpdate, \
-    ProductMasterUpdate
+    ProductMasterUpdate, EggsAPIView, EggsListAPIView, EggsUpdate
 
 urlpatterns = [
     # 생산쪽 API
@@ -20,7 +20,9 @@ urlpatterns = [
     path('productAdmin/', ProductAdminsAPIView.as_view()),
     path('release/', ReleasesAPIView.as_view()),
     path('release/<int:pk>', ReleaseUpdate.as_view()),
-    # path('OrderProductUnitPrice/<slug:code>', OrderProductUnitPrice.as_view()),
-    # path('OrderSetProductCode/<slug:code>', OrderSetProductCode.as_view()),
-    # path('OrderSetProductMatch/<slug:code>', OrderSetProductMatch.as_view()),
+    # 원란쪽 API
+    path('eggs/', EggsAPIView.as_view()),
+    path('eggs/<int:pk>', EggsUpdate.as_view()),
+    path('eggsList/', EggsListAPIView.as_view()),
+    # path('release/<int:pk>', ReleaseUpdate.as_view()),
 ]

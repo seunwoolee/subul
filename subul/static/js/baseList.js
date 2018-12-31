@@ -11,7 +11,7 @@ $('#search').click(function(){
   }
  });
 
- $('.datatable tbody').on('click', 'button', function () {
+ $('.datatable tbody, #eggDatatable tbody').on('click', 'button', function () {
     let data = table.row($(this).parents('tr')).data();
     console.log(data);
     let class_name = $(this).attr('class');

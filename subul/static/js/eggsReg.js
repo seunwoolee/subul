@@ -84,7 +84,7 @@ $("form").submit(function(){
     ymd = set_yyyymmdd($('input[type=date]').val());
     if(ymd)
     {
-        $("input[type=hidden][id*='ymd']").each(function (i, element){
+        $("input[type=hidden][id*='in_ymd']").each(function (i, element){
             $(element).val(ymd);
         });
         $("form").submit();

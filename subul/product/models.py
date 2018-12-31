@@ -334,7 +334,7 @@ class ProductAdmin(models.Model):
         queryset = ProductAdmin.objects.values(productId=F('product_id'),
                                                productCode=F('product_id__code'),
                                                productCodeName=F('product_id__codeName'),
-                                               productYmd=F('ymd'),
+                                               productYmd=F('product_id__ymd'),
                                                storedLocationCode=F('location__code'),
                                                amount_kg=F('product_id__amount_kg'),
                                                storedLocationCodeName=F('location__codeName')) \
@@ -369,7 +369,7 @@ class ProductAdmin(models.Model):
         queryset = ProductAdmin.objects.values(productId=F('product_id'),
                                                productCode=F('product_id__code'),
                                                productCodeName=F('product_id__codeName'),
-                                               productYmd=F('ymd'),
+                                               productYmd=F('product_id__ymd'),
                                                storedLocationCode=F('location__code'),
                                                amount_kg=F('product_id__amount_kg'),
                                                storedLocationCodeName=F('location__codeName')) \

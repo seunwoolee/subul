@@ -111,6 +111,12 @@ function setStepOneDataTable(args)
             $( row ).find('td:eq(11)').attr('data-title','세트명');
             $( row ).find('td:eq(12)').attr('data-title','Actions');
          },
+        "responsive" : true,
+        "columnDefs": [
+            { responsivePriority: 1, targets: 0 },
+            { responsivePriority: 2, targets: 3 },
+            { responsivePriority: 3, targets: -1, orderable: false },
+        ],
         "columns": [
             {"data": "id"},
             {"data": "type", "render" : function(data, type, row, meta){return setTypeButton(data);}},
@@ -261,6 +267,12 @@ function setStepTwoDataTable(args)
             $( row ).find('td:eq(14)').attr('data-title','Actions');
             $( row ).find('td:eq(15)').attr('data-title','Actions');
          },
+        "responsive" : true,
+        "columnDefs": [
+            { responsivePriority: 1, targets: 0 },
+            { responsivePriority: 2, targets: 1 },
+            { responsivePriority: 3, targets: 3 },
+        ],
         "columns": [
             {"data": "id"},
             {"data": "type", "render" : function(data, type, row, meta){return setTypeButton(data);}},

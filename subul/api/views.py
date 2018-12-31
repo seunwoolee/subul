@@ -4,9 +4,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import mixins
 
+from api.eggSerializers import EggSerializer
 from api.orderSerializers import OrderSerializer
 from api.releaseSerializers import ProductAdminSerializer, ReleaseSerializer
 from core.models import Location
+from eggs.models import Egg
 from eventlog.models import log
 from order.models import Order
 from product.models import ProductMaster, Product, ProductEgg, ProductUnitPrice, \
@@ -72,11 +74,11 @@ class ProductsAPIView(APIView):
 
         if order == 'desc':
             mergedProductInfo['data'] = sorted(mergedProductInfo['data'],
-                                               key=lambda k: k[order_column] if k[order_column] != None
+                                               key=lambda k: k[order_column] if k[order_column] is not None
                                                else 0, reverse=True)
         else:
             mergedProductInfo['data'] = sorted(mergedProductInfo['data'],
-                                               key=lambda k: k[order_column] if k[order_column] != None
+                                               key=lambda k: k[order_column] if k[order_column] is not None
                                                else 0)
         result = dict()
         result['data'] = mergedProductInfo['data'][start:start + length]  # 페이징
@@ -274,7 +276,6 @@ class ProductAdminsAPIView(APIView):
                 productAdmins = ProductAdmin.productAdminQuery(**request.query_params)
                 result = dict()
                 result['data'] = productAdmins['items']
-                print(result['data'])
                 result['draw'] = productAdmins['draw']
                 result['recordsTotal'] = productAdmins['total']
                 result['recordsFiltered'] = productAdmins['count']
@@ -314,3 +315,43 @@ class ReleasesAPIView(APIView):
             return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
         except Exception as e:
             return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+
+
+class EggsAPIView(APIView):
+
+    def get(self, request, format=None):
+        try:
+            Eggs = Egg.eggQuery(**request.query_params)
+            result = dict()
+            result['data'] = Eggs['items']
+            result['draw'] = Eggs['draw']
+            result['recordsTotal'] = Eggs['total']
+            result['recordsFiltered'] = Eggs['count']
+            return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+        except Exception as e:
+            return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+
+
+class EggsListAPIView(APIView):
+
+    def get(self, request, format=None):
+        try:
+            result = dict()
+            Eggs = Egg.eggListQuery(**request.query_params)
+            eggSerializer = EggSerializer(Eggs['items'], many=True)
+            result['data'] = eggSerializer.data
+            result['draw'] = Eggs['draw']
+            result['recordsTotal'] = Eggs['total']
+            result['recordsFiltered'] = Eggs['count']
+            return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+        except Exception as e:
+            return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+
+
+class EggsUpdate(generics.RetrieveUpdateDestroyAPIView):
+    """
+    원란조회에서 Update , Delete
+    """
+
+    queryset = Egg.objects.all()
+    serializer_class = EggSerializer

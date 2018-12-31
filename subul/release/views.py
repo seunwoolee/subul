@@ -71,7 +71,7 @@ class ReleaseReg(View):
         setProductCode = request.POST.get('setProductCode', None)
         specialTag = request.POST.get('specialTag', '')
 
-        if data['count'] and data['amount'] and data['ymd']:
+        if int(data['count']) and int(data['amount']) and data['ymd']:
             totalPrice = int(data['price']) * int(data['count'])
             releaseVat = round(totalPrice - (totalPrice / 1.1)) if productCode.vat else 0  # vat 계산
             release = Release.objects.create(
@@ -106,7 +106,7 @@ class ReleaseReg(View):
                 product_id=Product.objects.get(id=data['productId']),
                 count=-int(data['count']),
                 amount=-float(data['amount']),
-                ymd=data['productYmd'],
+                ymd=data['ymd'],
                 location=releaseStoreLocation,
                 releaseType=data['type'],
                 releaseSeq=release
@@ -117,7 +117,7 @@ class ReleaseReg(View):
                     product_id=Product.objects.get(id=data['productId']),
                     count=int(data['count']),
                     amount=float(data['amount']),
-                    ymd=data['productYmd'],
+                    ymd=data['ymd'],
                     location=releaseLocation,
                     releaseType='생성',
                     releaseSeq=release
@@ -163,7 +163,7 @@ class ReleaseAdjustment(View): # 재고조정, 미출고품, 반품
                 product_id=Product.objects.get(id=data['productId']),
                 count=int(data['count']),
                 amount=float(data['amount']),
-                ymd=data['productYmd'],
+                ymd=data['ymd'],
                 location=releaseStoreLocation,
                 releaseType=data['type'],
                 releaseSeq=release
@@ -195,7 +195,7 @@ class ReleaseAdjustment(View): # 재고조정, 미출고품, 반품
                 product_id=Product.objects.get(id=data['productId']),
                 count=int(data['count']),
                 amount=float(data['amount']),
-                ymd=data['productYmd'],
+                ymd=data['ymd'],
                 location=releaseLocation,
                 releaseType=data['type'],
                 releaseSeq=release

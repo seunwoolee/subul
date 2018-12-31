@@ -31,6 +31,9 @@
         <list>
           <option value="product.models.Product.objects" />
           <option value="product.models.ProductEgg.objects" />
+          <option value="eggs.models.EggCode.objects" />
+          <option value="eggs.models.Egg.objects" />
+          <option value="core.models.Location.objects" />
         </list>
       </option>
     </inspection_tool>
