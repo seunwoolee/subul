@@ -19,7 +19,6 @@ END_VALUE = u"Unicode \u3042 6".encode('utf-8')
 
 # cx_Oracle 한글처리 끝
 
-
 class LocationMigrate(View):
     def get(self, request):
         con = cx_Oracle.connect('system/kcerp@155.1.19.2/kcerp')
@@ -33,13 +32,15 @@ class LocationMigrate(View):
                         사업자번호 as  location_companyNumber, \
                         쇼핑몰 as location_shoppingmall, \
                         분류 as location_character,\
-                        사용유무 as delete_state  \
+                        사용유무 as delete_state,  \
+                        담장자 as location_owner,\
+                        담당직원 as location_manager\
                     from KCFEED.FRESH장소CD"
         cursor.execute(query)
 
         for row in cursor:
             try:
-                location = Location.objects.create(
+                Location.objects.create(
                     code=row[0],
                     codeName=row[1],
                     type=row[2],

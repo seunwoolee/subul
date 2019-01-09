@@ -120,9 +120,12 @@
             {"data": "loss_clean" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {"data": "loss_fill" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {"data": "memo", "render": function(data, type, row, meta){return setMemoStyle(data);}},
-            {"data": null, "render": function(data, type, row, meta){return setDataTableActionButton();}}
+            {"data": "type", "render": function(data, type, row, meta){
+                    if(data == "제품생산") {  return setDataTableActionButtonWithRecall(); }
+                    else if(data.includes("미출고품")){ return setDataTableActionButtonOnlyDelete(); }
+                    else { return setDataTableActionButton(); }
+            }}
         ],
-
         dom: 'Bfrtip',
         buttons: [
                     {
@@ -159,9 +162,26 @@
                     }],
         lengthMenu : [[30, 50, -1], [30, 50, "All"]],
         drawCallback: function(settings) {
+//                alert();
+                $.ajax({
+                url: '/api/productSummary',
+                type: 'get',
+                data: {start_date: start_date, end_date: end_date}
+                }).done(function(data) {
+                    console.log(data);
+                    $("#openEggPercent").html(`할란수율 : ${data['openEggPercent']} %`);
+                    $("#productPercent").html(`제품수율 : ${data['productPercent']} %`);
+                    $("#lossTotal").html(`로스량 : ${data['lossTotal']} kg`);
+                    $("#insertLoss").html(`투입LOSS : ${data['insertLoss']} %`);
+                    $("#openEggLoss").html(`할란LOSS : ${data['openEggLoss']} %`);
+                }).fail(function() {
+                    alert('수정 에러 전산실로 문의바랍니다(Summary Error).');
+                });
                 $('[data-toggle="tooltip"]').tooltip();
             }
     });
+
+
  }
 
 function setTypeButton(data)
@@ -182,6 +202,12 @@ function setTypeButton(data)
             break;
         case '제품생산':
             return '<button class="btn btn-dark btn-sm">'+ data +'</button>'
+            break;
+        case '미출고품사용':
+            return '<button class="btn btn-secondary btn-sm">'+ data +'</button>'
+            break;
+        case '미출고품투입':
+            return '<button class="btn btn-info btn-sm">'+ data +'</button>'
             break;
     }
 }
@@ -256,7 +282,11 @@ function editButtonClick(data)
 
 function deleteButtonClick(data)
 {
-    if(data['type'] == "제품생산")
+    let code = data['code'];
+    let codeHash = {'01201':'01201', '01202':'01202', '01203':'01203'}; // RAW TANK 코드
+    let FALG = codeHash[code];
+
+    if(data['type'] == "제품생산" || (data['type'] == "미출고품사용" && FALG === undefined))
     {
         $('.productType').val('product');
     }
@@ -268,7 +298,16 @@ function deleteButtonClick(data)
     $("#confirm").modal();
 }
 
-$('form').on('submit', function (e)  // EDIT
+function recallButtonClick(data)
+{
+    window.AMOUNT_KG = { "AMOUNT_KG" : data["amount_kg"]};
+    $('#id_amount_recall').val(data['amount']).attr("max",data['amount']);
+    $('#id_count_recall').val(data['count']).attr("max",data['count']);
+    $('.codeName').text(data['codeName']);
+    $("#releaseRecallModal").modal();
+}
+
+$('form').on('submit', function (e)
 {
     e.preventDefault();
     $this = $(this);
@@ -281,7 +320,7 @@ $('form').on('submit', function (e)  // EDIT
     type: type,
     data: data,
     }).done(function(data) {
-        alert('수정완료');
+        alert('완료');
         $('.datatable').DataTable().search($("input[type='search']").val()).draw();
         $(".everyModal").modal('hide');
     }).fail(function() {
@@ -292,6 +331,7 @@ $('form').on('submit', function (e)  // EDIT
 function setAjaxUrl($this)
 {
     let productType = $this.find("input[name='productType']").val();
+    alert(productType);
     if(productType == 'product')
     {
         url = '/api/product/'+id;
@@ -300,8 +340,16 @@ function setAjaxUrl($this)
     {
         url = '/api/productEgg/'+id;
     }
+    else if(productType == 'recall')
+    {
+        url = '/product/recall/'+id;
+    }
     return url;
 }
 
 $(".amount").focusout(function(){ setAutoCountValue($(this)); });
 $(".count").focusout(function(){ setAutoAmountValue($(this)); });
+$(".fakeYmd").focusout(function(){
+    ymd = set_yyyymmdd($(this).val());
+    $('input[name=ymd]').val(ymd);
+});

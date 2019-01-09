@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Sum, DecimalField, F, Q
+from django.db.models import Sum, DecimalField, F, Q, FloatField
 from django.db.models.functions import Cast
 from model_utils import Choices
 
@@ -35,8 +35,7 @@ class Egg(Detail):
     locationCode = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True)
     locationCodeName = models.CharField(max_length=255, null=True, blank=True)
     eggCode = models.ForeignKey(EggCode, on_delete=models.CASCADE, null=True, blank=True)
-
-    amount = models.CharField(max_length=10, null=True, blank=True)
+    amount = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return self.codeName + '(' + self.in_ymd + ') ' + self.type + '_' + self.in_locationCodeName
@@ -137,3 +136,165 @@ class Egg(Detail):
             'total': total,
             'draw': draw
         }
+
+    @staticmethod
+    def eggReportQuery(**kwargs):
+        ORDER_COLUMN_CHOICES = Choices(
+            ('0', 'codeName'),
+            ('1', 'in_ymd'),
+            ('2', 'in_locationCodeName'),
+            ('3', 'previousStock'),
+            ('4', 'in'),
+            ('5', 'in_price'),
+            ('6', 'sale'),
+            ('7', 'sale_price'),
+            ('8', 'loss'),
+            ('9', 'insert'),
+            ('10', 'release'),
+            ('11', 'currentStock')
+        )
+        draw = int(kwargs.get('draw', None)[0])
+        search_value = kwargs.get('search[value]', None)[0]
+        order_column = kwargs.get('order[0][column]', None)[0]
+        order = kwargs.get('order[0][dir]', None)[0]
+        order_column = ORDER_COLUMN_CHOICES[order_column]
+        start_date = kwargs.get('start_date', None)[0]
+        end_date = kwargs.get('end_date', None)[0]
+        arr = []
+
+        egg_previous = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName') \
+            .annotate(totalCount=Sum('count')) \
+            .filter(ymd__lt=start_date) \
+            .filter(totalCount__gt=0)  # 재고가 0초과인 이전 재고
+
+        if search_value:
+            egg_previous = egg_previous.filter(productCodeName__icontains=search_value)
+
+        for previous in egg_previous:  # 기간 내 전일재고의 각 타입별(IN, SALE, LOSS, INSERT) count를 구한다
+            result = {}
+            countPerType = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName', 'type') \
+                .annotate(totalCount=Sum('count')) \
+                .annotate(totalPrice=Sum('price')) \
+                .filter(code=previous['code']) \
+                .filter(in_ymd=previous['in_ymd']) \
+                .filter(in_locationCodeName=previous['in_locationCodeName']) \
+                .filter(ymd__gte=start_date) \
+                .filter(ymd__lte=end_date)
+            PREVIOUS_STOCK = previous["totalCount"]
+            # IN = 0
+            SALE = 0
+            SALE_PRICE = 0
+            LOSS = 0
+            INSERT = 0
+            for element in countPerType:  # 전일재고니깐 생성 없음
+                number = element["totalCount"]
+                price = element["totalPrice"]
+                if element['type'] == '판매':
+                    SALE += number
+                    if price:
+                        SALE_PRICE += price
+                elif element['type'] == '폐기':
+                    LOSS += number
+                elif element['type'] == '생산':
+                    INSERT += number
+            RELEASE = SALE + LOSS + INSERT
+            CURRENT_STOCK = PREVIOUS_STOCK + RELEASE
+            if SALE == 0: SALE = None
+            if SALE_PRICE == 0: SALE_PRICE = None
+            if LOSS == 0: LOSS = None
+            if INSERT == 0: INSERT = None
+            if RELEASE == 0: RELEASE = None
+            # if CURRENT_STOCK == 0: CURRENT_STOCK = None
+            result['codeName'] = previous['codeName']
+            result['in_ymd'] = previous['in_ymd']
+            result['in_locationCodeName'] = previous['in_locationCodeName']
+            result['previousStock'] = PREVIOUS_STOCK
+            result['in'] = None
+            result['in_price'] = None
+            result['sale'] = SALE
+            result['sale_price'] = SALE_PRICE
+            result['loss'] = LOSS
+            result['insert'] = INSERT
+            result['release'] = RELEASE
+            result['currentStock'] = CURRENT_STOCK
+            arr.append(result)
+
+        # 기간 내 생산되고 출고된 것들의 현재고 구하기(전일재고 당연히 없음)
+        egg_period = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName') \
+            .annotate(totalCount=Sum('count')) \
+            .filter(ymd__gte=start_date) \
+            .filter(ymd__lte=end_date) \
+            .filter(type='입고')
+
+        if search_value:
+            egg_period = egg_period.filter(productCodeName__icontains=search_value)
+
+        for period in egg_period:  # 기간 내 생성된 각 타입별(IN, SALE, LOSS, INSERT) count를 구한다
+            result = {}
+            countPerType = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName', 'type') \
+                .annotate(totalCount=Sum('count')) \
+                .annotate(totalPrice=Sum('price')) \
+                .filter(code=period['code']) \
+                .filter(in_ymd=period['in_ymd']) \
+                .filter(in_locationCodeName=period['in_locationCodeName']) \
+                .filter(ymd__gte=start_date) \
+                .filter(ymd__lte=end_date)
+            IN = 0
+            SALE = 0
+            IN_PRICE = 0
+            SALE_PRICE = 0
+            LOSS = 0
+            INSERT = 0
+            for element in countPerType:  # 전일재고니깐 생성 없음
+                number = element["totalCount"]
+                price = element["totalPrice"]
+                if element['type'] == '판매':
+                    SALE += number
+                    if price:
+                        SALE_PRICE += price
+                elif element['type'] == '폐기':
+                    LOSS += number
+                elif element['type'] == '생산':
+                    INSERT += number
+                elif element['type'] == '입고':
+                    IN += number
+                    if price:
+                        IN_PRICE += price
+            RELEASE = SALE + LOSS + INSERT
+            CURRENT_STOCK = IN + RELEASE
+            if SALE == 0: SALE = None
+            if SALE_PRICE == 0: SALE_PRICE = None
+            if IN == 0: IN = None
+            if IN_PRICE == 0: IN_PRICE = None
+            if LOSS == 0: LOSS = None
+            if INSERT == 0: INSERT = None
+            if RELEASE == 0: RELEASE = None
+            result['codeName'] = period['codeName']
+            result['in_ymd'] = period['in_ymd']
+            result['in_locationCodeName'] = period['in_locationCodeName']
+            result['previousStock'] = None
+            result['in'] = IN
+            result['in_price'] = IN_PRICE
+            result['sale'] = SALE
+            result['sale_price'] = SALE_PRICE
+            result['loss'] = LOSS
+            result['insert'] = INSERT
+            result['release'] = RELEASE
+            result['currentStock'] = CURRENT_STOCK
+            arr.append(result)
+
+        if order == 'desc':
+            arr = sorted(arr, key=lambda k: k[order_column] if k[order_column] is not None else 0, reverse=True)
+        else:
+            arr = sorted(arr, key=lambda k: k[order_column] if k[order_column] is not None else 0)
+        return {
+            'items': arr,
+            'count': 10,
+            'total': 10,
+            'draw': draw
+        }
+
+    @staticmethod
+    def getAmount(start_date, end_date):
+        return Egg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).aggregate(
+            totalAmount=Cast(Sum('amount'), FloatField()))['totalAmount']

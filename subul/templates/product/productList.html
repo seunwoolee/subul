@@ -25,7 +25,14 @@
                 </div>
             </div>
             <div class="card-header">
-                <div class="row float-right">
+                <div class="row">
+                    <div class="col-md-4">
+                        <span class="badge badge-danger" id="openEggPercent"></span>
+                        <span class="badge badge-dark" id="productPercent"></span>
+                        <span class="badge badge-success" id="lossTotal"></span>
+                        <span class="badge badge-secondary" id="insertLoss"></span>
+                        <span class="badge badge-warning" id="openEggLoss"></span>
+                    </div>
                     <!--생산구분 checkbox 시작-->
                     <div class="type_filter pt-1">
                         <div class="form-check form-check-inline">
@@ -65,22 +72,24 @@
                     </div>
                     <!--생산구분 checkbox 끝-->
                     <div class="input-daterange form-row">
-                        <div class="col input-group mb-2 mr-sm-2">
+                        <div class="col-lg-5 input-group mb-2 mr-sm-2">
                             <div class="input-group-prepend">
                                 <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
                             </div>
                             <input type="date" name="start_date" id="start_date" class="form-control"/>
                         </div>
-                        <div class="col input-group mb-2 mr-sm-2">
+                        <div class="col-lg-5 input-group mb-2 mr-sm-2">
                             <div class="input-group-prepend">
                                 <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
                             </div>
                             <input name="end_date" type="date" class="form-control" id="end_date">
                         </div>
+                        <div class="col-lg-1">
+                            <input type="button" name="search" id="search" value="Search"
+                                   class="btn btn-info float-right"/>
+                        </div>
                     </div>
-                    <div class="col">
-                        <input type="button" name="search" id="search" value="Search" class="btn btn-info float-right"/>
-                    </div>
+
                 </div>
             </div>
 
@@ -109,7 +118,7 @@
 
                     <tfoot>
                     <tr>
-                        <th colspan="6" style="text-align:center">합계</th>
+                        <!--<th colspan="6" style="text-align:center">합계</th>-->
                         <th></th>
                         <th></th>
                         <th></th>
@@ -118,7 +127,15 @@
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th colspan="2"></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <!--<th colspan="2"></th>-->
                     </tr>
                     </tfoot>
 
@@ -168,6 +185,57 @@
                     <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="patch"/>
                     <input type="hidden" class="productType" name="productType" value="">
                     <button type="submit" class="btn btn-primary">OK</button>
+                    <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 미출고품 Modal -->
+<div class="modal fade everyModal" id="releaseRecallModal" role="dialog">
+    <div class="modal-dialog modal-success">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title codeName"></h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <!--{% csrf_token %}-->
+                    <div class="form-group">
+                        <label><i class="nav-icon icon-drop"></i>재투입 일자</label>
+                        <input type="hidden" name="ymd" maxlength="8" required="True" id="id_ymd_recall"
+                               class="form-control ymd">
+                        <input type="date" name="fakeYmd" required="True" id="id_fakeYmd_recall"
+                               class="form-control fakeYmd">
+                    </div>
+                    <table style="width : 100%">
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    <label><i class="nav-icon icon-drop"></i>양(KG)</label>
+                                    <input type="number" class="form-control amount" name="amount" id="id_amount_recall"
+                                           placeholder="생산량을 입력하세요" required="true">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <label><i class="nav-icon icon-drop"></i>수량(EA)</label>
+                                    <input type="number" class="form-control count" name="count" id="id_count_recall"
+                                           placeholder="생산수량을 입력하세요" required="true">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="form-group">
+                        <label><i class="nav-icon icon-note"></i>메모</label>
+                        <input type="text" class="form-control memo" name="memo"
+                               placeholder="메모를 입력하세요">
+                    </div>
+                    <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="post"/>
+                    <input type="hidden" name="productType" value="recall">
+                    <button type="submit" class="btn btn-success">OK</button>
                     <button type="button" data-dismiss="modal" class="btn">Cancel</button>
                 </form>
             </div>
@@ -239,6 +307,7 @@
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js"></script>
+<script src="{% static 'js/base.js' %}"></script>
 <script src="{% static 'js/baseList.js' %}"></script>
 <script src="{% static 'js/productList.js' %}"></script>
 {% endblock %}

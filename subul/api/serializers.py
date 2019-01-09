@@ -17,13 +17,13 @@ class ProductSerializer(serializers.ModelSerializer):
     loss_openEgg = serializers.SerializerMethodField()
     pastTank_amount = serializers.SerializerMethodField()
     rawTank_amount = serializers.SerializerMethodField()
-    type = serializers.SerializerMethodField()
+    # type = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = ('id', 'master_id', 'ymd', 'code', 'codeName', 'amount', 'count', 'memo', 'loss_clean',
-                  'loss_fill', 'delete_state', 'amount_kg',
-                  'loss_insert', 'loss_openEgg', 'pastTank_amount', 'rawTank_amount', 'type')  # 가짜 데이터
+                  'loss_fill', 'delete_state', 'amount_kg', 'type',
+                  'loss_insert', 'loss_openEgg', 'pastTank_amount', 'rawTank_amount')  # 가짜 데이터
 
     def get_loss_insert(self, obj):
         return None
@@ -37,8 +37,8 @@ class ProductSerializer(serializers.ModelSerializer):
     def get_rawTank_amount(self, obj):
         return None
 
-    def get_type(self, obj):
-        return '제품생산'
+    # def get_type(self, obj):
+    #     return '제품생산'
 
 
 class ProductEggSerializer(serializers.ModelSerializer):

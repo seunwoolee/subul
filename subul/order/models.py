@@ -1,8 +1,12 @@
 from django.db import models
-from django.db.models import Q, Sum, F
+from django.db.models import Q, Sum, F, ExpressionWrapper, FloatField, Value, IntegerField
 from model_utils import Choices
+from itertools import chain
+
+from eggs.models import Egg
 from product.models import ProductCode
 from core.models import Master, Detail, Location
+from release.models import Release
 
 
 class Order(Detail):
@@ -101,7 +105,7 @@ class Order(Detail):
                     ('14', 'release_price'),
                 )
                 order_column = ORDER_COLUMN_CHOICES[order_column]
-                queryset = Order.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(delete_state='N')\
+                queryset = Order.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(delete_state='N') \
                     .annotate(release_ymd=F('release_id__ymd')) \
                     .annotate(release_type=F('release_id__type')) \
                     .annotate(release_locationName=F('release_id__releaseLocationName')) \
@@ -159,3 +163,56 @@ class Order(Detail):
             'total': total,
             'draw': draw
         }
+
+    @staticmethod
+    def orderStepThreeQuery(**kwargs):
+        draw = int(kwargs.get('draw', None)[0])
+        start = int(kwargs.get('start', None)[0])
+        length = int(kwargs.get('length', None)[0])
+        search_value = kwargs.get('search[value]', None)[0]
+        start_date = kwargs.get('start_date', None)[0]
+        end_date = kwargs.get('end_date', None)[0]
+        order_column = kwargs.get('order[0][column]', None)[0]
+        order = kwargs.get('order[0][dir]', None)[0]
+        mergedProductInfo = {}
+        ORDER_COLUMN_CHOICES = {
+            '0': 'id',
+            '1': 'ymd',
+            '2': 'releaseLocationName',
+            '3': 'code',
+            '4': 'codeName',
+            '5': 'count',
+            '6': 'amount',
+            '7': 'price',
+            '8': 'supplyPrice',
+            '9': 'releaseVat'
+        }
+        order_column = ORDER_COLUMN_CHOICES[order_column]
+        queryset_release = Release.objects.values('id', 'ymd', 'releaseLocationName', 'code', 'codeName', 'count',
+                                                  'amount', 'price', 'releaseVat') \
+            .filter(ymd__gte=start_date) \
+            .filter(ymd__lte=end_date).filter(type='판매') \
+            .annotate(supplyPrice=ExpressionWrapper(F('price') - F('releaseVat'), output_field=FloatField()))
+        queryset_egg = Egg.objects.values('id', 'ymd', 'code', 'codeName', 'count', 'amount', 'price') \
+            .filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(type='판매') \
+            .annotate(releaseLocationName=F('locationCodeName')).annotate(releaseVat=Value(0, IntegerField())) \
+            .annotate(supplyPrice=F('price'))
+        mergedProductInfo['recordsTotal'] = queryset_release.count() + queryset_egg.count()
+        if search_value:
+            queryset_release = queryset_release.filter(Q(releaseLocationName__icontains=search_value) |
+                                                       Q(codeName__icontains=search_value))
+            queryset_egg = queryset_egg.filter(Q(locationCodeName__icontains=search_value) |
+                                               Q(codeName__icontains=search_value))
+        mergedProductInfo['recordsFiltered'] = queryset_release.count() + queryset_egg.count()
+        mergedProductInfo['data'] = list(chain(queryset_release, queryset_egg))
+        if order == 'desc':
+            mergedProductInfo['data'] = sorted(mergedProductInfo['data'],
+                                               key=lambda k: k[order_column] if k[order_column] is not None
+                                               else 0, reverse=True)
+        else:
+            mergedProductInfo['data'] = sorted(mergedProductInfo['data'],
+                                               key=lambda k: k[order_column] if k[order_column] is not None
+                                               else 0)
+        mergedProductInfo['data'] = mergedProductInfo['data'][start:start + length]  # 페이징
+        mergedProductInfo['draw'] = draw
+        return mergedProductInfo

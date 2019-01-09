@@ -166,10 +166,10 @@ function setStepOneDataTable(args)
             {'data': 'releaseSetProduct', "visible": false},
             {'data': 'releaseSetProductCodeName', "visible": false},
             {"data": 'type', "render": function(data, type, row, meta){
-                    console.log(data);
                     return setDataTableActionButtonWithPdfRecall();
             }}
         ],
+        stateSave:  true,
         dom: 'Bfrtip',
         buttons: [
                     {
@@ -311,6 +311,7 @@ function setStepTwoDataTable(args)
             {"data": "eaPrice" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "releaseStoreLocationCodeName"}
         ],
+        stateSave:  true,
         dom: 'Bfrtip',
         buttons: [
                     {
@@ -453,6 +454,7 @@ function setStepThreeDataTable(args)
             {"data": "eaPrice" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "releaseStoreLocationCodeName"}
         ],
+        stateSave:  true,
         dom: 'Bfrtip',
         buttons: [
                     {
@@ -571,6 +573,7 @@ function setStepFourDataTable(args)
             {'data': 'supplyPrice' , "render": $.fn.dataTable.render.number( ',')},
             {'data': 'releaseVat' , "render": $.fn.dataTable.render.number( ',')},
         ],
+        stateSave:  true,
         dom: 'Bfrtip',
         buttons: [
                     {
@@ -727,6 +730,7 @@ function setStepFiveDataTable(args)
             {'data': 'recall', "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {'data': 'currentStock', "render": $.fn.dataTable.render.number( ',', '.', 2)}
         ],
+        stateSave:  true,
         dom: 'Bfrtip',
         buttons: [
                     {
@@ -874,6 +878,7 @@ function setStepSixDataTable(args)
             {'data': 'sale', "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {'data': 'currentStock', "render": $.fn.dataTable.render.number( ',', '.', 2)}
         ],
+        stateSave:  true,
         dom: 'Bfrtip',
         buttons: [
                     {
@@ -902,13 +907,6 @@ function setStepSixDataTable(args)
                     }],
         lengthMenu : [[30, 50, -1], [30, 50, "All"]]
     });
-}
-
-function setDataTableActionButtonWithPdfRecall()
-{
-    return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="fa fa-trash-o"></i></button>' +
-            '<button class="btn btn-warning btn-sm PDF" href="#"><i class="fas fa-file-pdf"></i></button>' +
-            '<button class="btn btn-success btn-sm RECALL" href="#"><i class="fas fa-undo-alt"></i></button>';
 }
 
 function setTypeButton(data)

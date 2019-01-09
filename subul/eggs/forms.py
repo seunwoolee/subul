@@ -20,6 +20,7 @@ class EggForm(forms.Form):
     product = forms.ChoiceField(widget=Select2Widget,
                                 choices=[('', '')] + list(EggCode.objects.values_list('code', 'codeName')))
     count = forms.IntegerField(min_value=0)
+    amount = forms.IntegerField(min_value=0, required=False)
     price = forms.IntegerField(min_value=0, required=False)
     memo = forms.CharField(
         label='',

@@ -20,7 +20,7 @@ class EggSerializer(serializers.ModelSerializer):
         return in_locationCode
 
     def get_locationCode(self, obj):
-        locationCode = obj.in_locationCode.code if obj.in_locationCode else None
+        locationCode = obj.locationCode.code if obj.locationCode else None
         return locationCode
 
     def get_in_price(self, obj):

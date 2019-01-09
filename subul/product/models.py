@@ -42,6 +42,8 @@ class ProductEgg(models.Model):
         ('할란사용', '할란사용'),
         ('공정품투입', '공정품투입'),
         ('공정품발생', '공정품발생'),
+        ('미출고품사용', '미출고품사용'),
+        ('미출고품투입', '미출고품투입'),
     )
 
     TANK_TYPE_CHOICES = (
@@ -206,7 +208,6 @@ class ProductCode(Code):
         choices=CONTENT_TYPE_CHOICES,
         default='',
     )
-
     amount_kg = models.FloatField()
     price = models.IntegerField()
     store_type = models.CharField(
@@ -226,7 +227,16 @@ class ProductCode(Code):
         return self.codeName + '(' + self.code + ')'
 
 
-class Product(Detail):  # TODO 주문 나갈때 Tag 붙이는 필드 필요
+class Product(Detail):
+    PRODUCT_TYPE_CHOICES = (
+        ('제품생산', '제품생산'),
+        ('미출고품사용', '미출고품사용'),
+    )
+    type = models.CharField(
+        max_length=30,
+        choices=PRODUCT_TYPE_CHOICES,
+        default='제품생산',
+    )
     master_id = models.ForeignKey(ProductMaster,
                                   on_delete=models.CASCADE,
                                   related_name='master_id')
@@ -266,8 +276,7 @@ class Product(Detail):  # TODO 주문 나갈때 Tag 붙이는 필드 필요
         search_value = kwargs.get('search[value]', None)[0]
         start_date = kwargs.get('start_date', None)[0]
         end_date = kwargs.get('end_date', None)[0]
-        queryset = Product.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(
-            delete_state='N')  # TODO delete state Y -> N으로 수정
+        queryset = Product.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date)
         total = queryset.count()
 
         if search_value:
@@ -292,7 +301,7 @@ class ProductAdmin(models.Model):
         ('자손', '자손'),
         ('반품', '반품'),
         ('이동', '이동'),
-        ('미출고품', '미출고품'),
+        ('미출고품사용', '미출고품사용'),
         ('재고조정', '재고조정'),
     )
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -342,19 +351,18 @@ class ProductAdmin(models.Model):
             .annotate(totalAmount=Cast(Sum('amount'), DecimalField(max_digits=20, decimal_places=2))) \
             .filter(totalCount__gt=0)
 
-
         # django orm '-' -> desc
         if order == 'desc':
             order_column = '-' + order_column
 
-        total = queryset.count() # TODO 삭제
+        total = queryset.count()  # TODO 삭제
 
         if search_value:
             queryset = queryset.filter(Q(productCodeName__icontains=search_value) |
                                        Q(productYmd__icontains=search_value) |
                                        Q(storedLocationCodeName__icontains=search_value))
 
-        count = queryset.count() # TODO 삭제
+        count = queryset.count()  # TODO 삭제
         queryset = queryset.order_by(order_column)
         return {
             'items': queryset,
@@ -388,6 +396,7 @@ class ProductUnitPrice(TimeStampedModel):
     price = models.IntegerField(default=0)
     specialPrice = models.IntegerField(default=0)
 
+
 class SetProductCode(Code):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
 
@@ -404,6 +413,3 @@ class SetProductMatch(TimeStampedModel):
 
     def __str__(self):
         return f"{self.setProductCode.codeName}_{self.saleLocation.codeName}_{self.productCode.codeName}"
-
-
-

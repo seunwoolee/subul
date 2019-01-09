@@ -1,19 +1,19 @@
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 from django.views import View
 
 from core.models import Location
-from order.forms import OrderForm
+from eggs.forms import EggForm
 from .models import Packing, PackingCode
-from .forms import PackingFormSet
+from .forms import PackingFormSet, PackingForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
-# class OrderList(LoginRequiredMixin, View):
-#
-#     def get(self, request):
-#         print(request.user.has_perm('order.delete_order')) # TODO 권한 문제!!
-#         form = OrderForm()
-#         return render(request, 'order/orderList.html', {'form': form})
+class PackingList(View):
+
+    def get(self, request):
+        packingForm = PackingForm()
+        return render(request, 'packing/packingList.html', {'packingForm': packingForm})
 
 
 class PackingReg(LoginRequiredMixin, View):
@@ -45,9 +45,24 @@ class PackingReg(LoginRequiredMixin, View):
                 )
         else:
             print(formset.errors)
-        form = OrderForm()
-        return render(request, 'order/orderList.html', {'form': form})
+        return redirect('packingList')
 
     def get(self, request):
         packingForm = PackingFormSet(request.GET or None)
         return render(request, 'packing/packingReg.html', {'packingForm': packingForm})
+
+
+class PackingRelease(View):
+    def post(self, request):
+        data = request.POST.dict()
+        product = PackingCode.objects.get(code=data['code'])
+        Packing.objects.create(
+            ymd=data['ymd'],
+            type=data['type'],
+            code=product.code,
+            codeName=product.codeName,
+            count=-int(data['count']),
+            packingCode=product,
+            memo=data['memo']
+        )
+        return HttpResponse(status=200)

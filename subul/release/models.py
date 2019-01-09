@@ -13,7 +13,6 @@ class Release(Detail):
         ('자손', '자손'),
         ('반품', '반품'),
         ('이동', '이동'),
-        ('미출고품', '미출고품'),
         ('재고조정', '재고조정'),
     )
 
@@ -237,7 +236,7 @@ class Release(Detail):
                         SAMPLE += number
                     elif element['type'] == '자손':
                         BROKEN += number
-                    elif element['type'] == '미출고품':
+                    elif element['type'] == '미출고품사용':
                         NOTPRODUCT += number
                     elif element['type'] == '반품':
                         RECALL += number
@@ -303,7 +302,7 @@ class Release(Detail):
                         SAMPLE += number
                     elif element['type'] == '자손':
                         BROKEN += number
-                    elif element['type'] == '미출고품':
+                    elif element['type'] == '미출고품사용':
                         NOTPRODUCT += number
                     elif element['type'] == '반품':
                         RECALL += number

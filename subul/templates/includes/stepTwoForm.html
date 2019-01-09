@@ -14,9 +14,9 @@
             <td>{{ field.help_text}}</td>
             <td class="text-center">{{ field.label_tag}}</td>
          {% if tankValue %}
-            <td class="text-center">{{tankValue|lookup:seq}}</td>
+            <td class="text-center">{{tankValue|lookup_amount:seq}}</td>
             <td>
-              {% render_field field class="form-control" max=tankValue|lookup:seq %}
+              {% render_field field class="form-control" max=tankValue|lookup_amount:seq %}
             </td>
          {% else %}
             <td class="text-center">0</td>

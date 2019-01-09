@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from core.models import Location
 from order.forms import OrderFormSet, OrderForm
@@ -21,10 +21,10 @@ class GeneratePDF(View):
         ymd = request.GET['ymd']
         yyyymmdd = "{}/{}/{}".format(ymd[0:4], ymd[4:6], ymd[6:])
         orderLocationCode = request.GET['orderLocationCode']
-        # template = get_template('invoice/거래명세표.html')
+        moneyMark = request.GET['moneyMark']
         location = Location.objects.get(code=orderLocationCode)
         orders = Order.objects.filter(ymd=ymd).filter(orderLocationCode=location) \
-            .values('code', 'codeName', 'price', 'specialTag') \
+            .values('code', 'codeName', 'price', 'specialTag', 'memo') \
             .annotate(totalCount=Sum('count')) \
             .annotate(totalPrice=F('totalCount') * F('price')) \
             .annotate(vat=ExpressionWrapper(F('productCode__vat') * 0.01 + 1, output_field=FloatField())) \
@@ -37,7 +37,8 @@ class GeneratePDF(View):
         sumData = {'sumTotalCount': sumTotalCount['sumTotalCount'],
                    'sumSupplyPrice': sumSupplyPrice['sumSupplyPrice'],
                    'sumVat': sumVat['sumVat'],
-                   'sumTotal': sumTotal}
+                   'sumTotal': sumTotal,
+                   'moneyMark': moneyMark}
         context_dict = {
             "yyyymmdd": yyyymmdd,
             "orders": orders,
@@ -112,8 +113,7 @@ class OrderReg(LoginRequiredMixin, View):
 
         else:
             print(formset.errors)
-        form = OrderForm()
-        return render(request, 'order/orderList.html', {'form': form})
+        return redirect('orderList')
 
     def get(self, request):
         orderForm = OrderFormSet(request.GET or None)

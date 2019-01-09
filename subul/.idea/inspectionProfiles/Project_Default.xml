@@ -34,6 +34,7 @@
           <option value="eggs.models.EggCode.objects" />
           <option value="eggs.models.Egg.objects" />
           <option value="core.models.Location.objects" />
+          <option value="product.models.ProductAdmin.objects" />
         </list>
       </option>
     </inspection_tool>

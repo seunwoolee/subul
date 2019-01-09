@@ -1,6 +1,10 @@
-from django.db.models import Sum
+from django.db.models import Sum, F
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic.base import View
+from rest_framework import status
+from rest_framework.response import Response
+
 from core.models import Location
 from eventlog.models import log
 from product.models import ProductEgg, Product, ProductCode, ProductAdmin, ProductMaster
@@ -135,3 +139,76 @@ class ProductList(LoginRequiredMixin, PermissionRequiredMixin, View):
         #     }
         # )
         return render(request, 'product/productList.html')
+
+
+class ProductRecall(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = '/'
+    permission_required = 'product.change_product'
+
+    def post(self, request, pk):
+        CODE_TYPE_CHOICES = {
+            '01201': 'RAW Tank 전란',
+            '01202': 'RAW Tank 난황',
+            '01203': 'RAW Tank 난백',
+        }
+        ymd = request.POST['ymd']
+        amount = int(request.POST['amount'])
+        count = int(request.POST['count'])
+        memo = request.POST['memo']
+        KCFRESH_LOCATION_CODE = '00301'
+        location = Location.objects.get(code=KCFRESH_LOCATION_CODE)  # kcfresh 본사
+        product = Product.objects.get(pk=pk)
+        totalCount = ProductAdmin.objects.filter(product_id=product).values('product_id__code').annotate(
+            totalCount=Sum(F('count')))
+        if count <= int(totalCount[0]['totalCount']):
+            Product.objects.create(
+                ymd=product.ymd,
+                code=product.code,
+                codeName=product.codeName,
+                type="미출고품사용",
+                amount=-amount,
+                count=-count,
+                amount_kg=product.amount_kg,
+                master_id=product.master_id,
+                memo=memo,
+                productCode=product.productCode
+            )
+            # productAdmin = ProductAdmin.objects.filter(product_id=product).filter(releaseType='생성').first()
+            ProductAdmin.objects.create(
+                product_id=product,
+                amount=-amount,
+                count=-count,
+                ymd=ymd,
+                location=location,
+                releaseType='미출고품사용'
+            )
+            if product.productCode.type == "전란":
+                egg_code = '01201'
+                egg_codeName = CODE_TYPE_CHOICES['01201']
+            elif product.productCode.type == "난황":
+                egg_code = '01202'
+                egg_codeName = CODE_TYPE_CHOICES['01202']
+            else:
+                egg_code = '01203'
+                egg_codeName = CODE_TYPE_CHOICES['01203']
+
+            ProductEgg.objects.create(
+                code=egg_code,
+                codeName=egg_codeName,
+                ymd=ymd,
+                type='미출고품사용',
+                rawTank_amount=amount,
+                master_id=product.master_id,
+            )
+
+            ProductEgg.objects.create(
+                code=egg_code,
+                codeName=egg_codeName,
+                ymd=ymd,
+                type='미출고품투입',
+                rawTank_amount=-amount,
+                master_id=product.master_id,
+            )
+            return HttpResponse(status=200)
+        else:
+            return HttpResponse(status=400)

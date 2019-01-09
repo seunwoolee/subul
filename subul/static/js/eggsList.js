@@ -1,59 +1,65 @@
-fetch_data();
-function fetch_data()
+$('#start_date').val(start_day);
+$('#end_date').val(end_day);
+fetch_data(start_day, end_day);
+function fetch_data(start_date='', end_date='')
 {
-    table = $('.datatable').DataTable({
-        "language": {
-        "lengthMenu": "_MENU_ 페이지당 개수",
-        "zeroRecords": "결과 없음",
-        "info": "",
-        "infoEmpty": "No records available",
-        "infoFiltered": "(검색된결과 from _MAX_ total records)"
-        },
-         "createdRow": function( row, data, dataIndex ) {
-            $( row ).find('td:eq(0)').attr('data-title','거래처명');
-            $( row ).find('td:eq(1)').attr('data-title','제품명');
-            $( row ).find('td:eq(2)').attr('data-title','생산일');
-            $( row ).find('td:eq(3)').attr('data-title','재고수량');
-         },
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": "/api/eggs/",
-            "type": "GET"
-        },
-        "columns": [
-            {"data": "egg_in_locationCodeName"},
-            {"data": "egg_codeName"},
-            {"data": "egg_in_ymd"},
-            {"data": "totalCount" , "render": $.fn.dataTable.render.number( ',')},
-        ],
-        dom: 'Bfrtip',
-    });
-}
+     start_date = set_yyyymmdd(start_date);
+     end_date = set_yyyymmdd(end_date);
+     var LOOKUP_TABLE = {
+          "stepOne": function(args) {
+            return setStepOneDataTable(args);
+          },
+          "stepTwo": function() {
+            return setStepTwoDataTable(args);
+          },
+          "stepThree":  function() {
+            return setStepThreeDataTable(args);
+          },
+          "stepFour":  function() {
+            return setStepFourDataTable(args);
+          },
+          "stepFive":  function() {
+            return setStepFiveDataTable(args);
+          },
+          "stepSix":  function() {
+            return setStepSixDataTable(args);
+          }
+     };
 
- $('#start_date').val(start_day);
- $('#end_date').val(end_day);
-egg_fetch_data(start_day, end_day);
-function egg_fetch_data(start_date='', end_date='')
-{
-    start_date = set_yyyymmdd(start_date);
-    end_date = set_yyyymmdd(end_date);
+    let gubunFilter = $('#tabnavigator a.nav-link.active').attr('href');
+    gubunFilter = gubunFilter.substring(1);
     let releaseTypeFilter = $('.type_filter #releaseType_List select').val();
     let productTypeFilter = $('.type_filter #releaseProduct_List select').val();
     let locatoinTypeFilter = $('.type_filter #releaseLocation_List select').val();
+    let table = $('#'+gubunFilter +' .datatable');
+    var args={
+            'table' : table,
+            'start_date' : start_date,
+            'end_date' : end_date,
+            'releaseTypeFilter':releaseTypeFilter,
+            'productTypeFilter':productTypeFilter,
+            'locatoinTypeFilter':locatoinTypeFilter,
+             'gubunFilter': gubunFilter };
+    table.DataTable().destroy();
+    LOOKUP_TABLE[gubunFilter](args);
+}
 
-    eggTable = $('#eggDatatable').DataTable({
+function setStepOneDataTable(args)
+{
+    table = args['table'].DataTable({
+        "select": true,
         "processing": true,
         "serverSide": true,
         "ajax": {
             "url": "/api/eggsList/",
             "type": "GET",
             "data": {
-                start_date:start_date,
-                end_date:end_date,
-                releaseTypeFilter:releaseTypeFilter,
-                productTypeFilter:productTypeFilter,
-                locatoinTypeFilter:locatoinTypeFilter
+                start_date:args['start_date'],
+                end_date:args['end_date'],
+                releaseTypeFilter:args['releaseTypeFilter'],
+                productTypeFilter:args['productTypeFilter'],
+                locatoinTypeFilter:args['locatoinTypeFilter'],
+                gubunFilter:args['gubunFilter']
                 }
         },
         "responsive" : true,
@@ -79,10 +85,191 @@ function egg_fetch_data(start_date='', end_date='')
             {"data": "out_price" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "pricePerEa" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "memo"},
-            {"data": null, "render": function(data, type, row, meta){return setDataTableActionButton();}}
+            {"data": "type", "render": function(data, type, row, meta){
+                    if(data == "판매")
+                    {
+                        return setDataTableActionButtonWithPdf();
+                    }
+                    else
+                    {
+                        return setDataTableActionButton();
+                    }
+            }}
+        ],
+        stateSave:  true,
+//        colReorder: true,
+        dom: 'Bfrtip',
+        buttons: [
+                    {
+                        extend: 'pageLength',
+                        className:'btn btn-light',
+                        text : '<i class="fas fa-list-ol fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    },
+                    {
+                        extend: 'colvis',
+                        className:'btn btn-light',
+                        text : '<i class="far fa-eye fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    },
+                    {
+                        extend: 'copy',
+                        className:'btn btn-light',
+                        text : '<i class="fas fa-copy fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        className:'btn btn-light',
+                        text : '<i class="far fa-file-excel fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    }],
+        lengthMenu : [[30, 50, -1], [30, 50, "All"]]
+    });
+}
+
+function setStepTwoDataTable(args)
+{
+    releaseTable = args['table'].DataTable({
+        "language": {
+        "lengthMenu": "_MENU_ 페이지당 개수",
+        "zeroRecords": "결과 없음",
+        "info": "",
+        "infoEmpty": "No records available",
+        "infoFiltered": "(검색된결과 from _MAX_ total records)"
+        },
+         "createdRow": function( row, data, dataIndex ) {
+            $( row ).find('td:eq(0)').attr('data-title','거래처명');
+            $( row ).find('td:eq(1)').attr('data-title','제품명');
+            $( row ).find('td:eq(2)').attr('data-title','생산일');
+            $( row ).find('td:eq(3)').attr('data-title','재고수량');
+         },
+        "paging": false,
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": "/api/eggs/",
+            "type": "GET"
+        },
+        "columns": [
+            {"data": "egg_in_locationCodeName"},
+            {"data": "egg_codeName"},
+            {"data": "egg_in_ymd"},
+            {"data": "totalCount" , "render": $.fn.dataTable.render.number( ',')},
         ],
         dom: 'Bfrtip',
-        buttons: ['pageLength', 'colvis','copy', 'excel', 'pdf', 'print'],
+        buttons: [
+                    {
+                        extend: 'pageLength',
+                        className:'btn btn-light',
+                        text : '<i class="fas fa-list-ol fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    },
+                    {
+                        extend: 'colvis',
+                        className:'btn btn-light',
+                        text : '<i class="far fa-eye fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    },
+                    {
+                        extend: 'copy',
+                        className:'btn btn-light',
+                        text : '<i class="fas fa-copy fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        className:'btn btn-light',
+                        text : '<i class="far fa-file-excel fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    }]
+    });
+}
+
+function setStepThreeDataTable(args)
+{
+    eggReportTable = args['table'].DataTable({
+        "language": {
+        "lengthMenu": "_MENU_ 페이지당 개수",
+        "zeroRecords": "결과 없음",
+        "info": "",
+        "infoEmpty": "No records available",
+        "infoFiltered": "(검색된결과 from _MAX_ total records)"
+        },
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": "/api/eggsReport/",
+            "type": "GET",
+            "data": {
+                start_date:args['start_date'],
+                end_date:args['end_date']
+                }
+        },
+        "columns": [
+            {"data": "codeName"},
+            {"data": "in_ymd"},
+            {"data": "in_locationCodeName"},
+            {"data": "previousStock" , "render": $.fn.dataTable.render.number( ',')},
+            {'data': 'in', "render": $.fn.dataTable.render.number( ',')},
+            {'data': 'in_price', "render": $.fn.dataTable.render.number( ',')},
+            {'data': 'sale', "render": $.fn.dataTable.render.number( ',')},
+            {'data': 'sale_price', "render": $.fn.dataTable.render.number( ',')},
+            {'data': 'loss', "render": $.fn.dataTable.render.number( ',')},
+            {'data': 'insert', "render": $.fn.dataTable.render.number( ',')},
+            {'data': 'release', "render": $.fn.dataTable.render.number( ',')},
+            {'data': 'currentStock', "render": $.fn.dataTable.render.number( ',')}
+        ],
+        dom: 'Bfrtip',
+        buttons: [
+                    {
+                        extend: 'pageLength',
+                        className:'btn btn-light',
+                        text : '<i class="fas fa-list-ol fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    },
+                    {
+                        extend: 'colvis',
+                        className:'btn btn-light',
+                        text : '<i class="far fa-eye fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    },
+                    {
+                        extend: 'copy',
+                        className:'btn btn-light',
+                        text : '<i class="fas fa-copy fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        className:'btn btn-light',
+                        text : '<i class="far fa-file-excel fa-lg"></i>',
+                        init : function(api, node, config){
+                            $(node).removeClass('btn-secondary');
+                        }
+                    }],
         lengthMenu : [[30, 50, -1], [30, 50, "All"]]
     });
 }
@@ -106,23 +293,9 @@ function setTypeButton(data)
     }
 }
 
-$('#search').click(function(){ //TODO 합칠수있으면 합치자
-    var start_date = $('#start_date').val();
-    var end_date = $('#end_date').val();
-    if(start_date != '' && end_date !='')
-    {
-       $('#eggDatatable').DataTable().destroy();
-       egg_fetch_data(start_date, end_date);
-    }
-    else
-    {
-       alert("날짜를 모두 입력해주세요");
-    }
-});
-
-$(document).on('click', ".datatable tbody tr", function()
+$(document).on('click', "#releaseEgg tbody tr", function()
 {
-    let data = table.row($(this)).data();
+    let data = releaseTable.row($(this)).data();
     manualReleaseModal(data);
 });
 
@@ -140,6 +313,31 @@ function manualReleaseModal(data)
     $('#id_memo').val("");
     $("#Modal").modal();
 }
+function editButtonClick(data)
+{
+    console.log(data);
+    $('#modify_id_count').val(data['count']).removeAttr( "min" );
+    $('#modify_id_price').val(data['price']);
+    $('#modify_id_memo').val(data['memo']);
+    $('.codeName').text(data['codeName']);
+    $("#eggModifyModal").modal();
+}
+
+function deleteButtonClick(data)
+{
+    $('#modal_title').text('DELETE');
+    $("#confirm").modal();
+}
+
+function pdfButtonClick(data)
+{
+    console.log(data);
+    let ymd = data['ymd'];
+    let locationCode = data['locationCode'];
+    let moneyMark = $("#moneyMark").is(":checked");
+    window.open('/eggs/pdf?ymd=' + ymd + '&locationCode=' + locationCode + "&moneyMark=" + moneyMark, '_blank');
+}
+
 
 $( "#id_type" ).change(function() {
     var type = $(this).val();
@@ -173,79 +371,27 @@ function setSaleStyle()
     $("#id_price").parent().show("slow");
 }
 
-var ORDER_AMOUNT = 0.0;
-var ORDER_COUNT = 0;
-var STORE_TOTAL_AMOUNT=0.0;
-var STORE_TOTAL_COUNT=0;
-var BOOL = true;
-$(document).on('click', "#orderDatatable tbody tr", function() {
-    resetOrderData();
-    var data = orderTable.row($(this)).data();
-    console.log('ORDER 데이터 ↓');
-    console.log(data);
-    data['storedLocation'] = $('#id_storedLocation').val();
-    window.AMOUNT_KG = { "AMOUNT_KG" : data["amount_kg"]};
-    var storedLocationName = $('#id_storedLocation option:selected').text();
-    var releaseInfoOne = setReleaseInfoOne(storedLocationName, data);
-    var releaseInfoTwo = setReleaseInfoTwo(data);
+$('.deleteAndEdit').on('submit', function (e)
+{
+    e.preventDefault();
+    $this = $(this);
+    let type = $this.find('.ajaxUrlType').val();
+    let data = $this.serialize();
+    let url = '/api/eggs/'+id;
 
     $.ajax({
-    url: '/api/productAdmin/',
-    type: 'get',
+    url: url,
+    type: type,
     data: data,
-    }).done(function(rows) {
-        console.log(rows);
-        changeReleaseInfo(releaseInfoOne, releaseInfoTwo);
-        setOrderAmount(data);
-        setStoredTotalAmount(rows);
-
-        $(rows).each(function(i, row){
-            var TR = setOrderReleaseTrModal(data,row);
-            $TR = $('#orderModal tbody').append(TR);
-            $TR = $TR.find('tr:last');
-            insertInputValue($TR, row, data);
-            if( window.ORDER_AMOUNT >= window.STORE_TOTAL_AMOUNT) // 총 주문량이 더 많기 때문에 총 재고량을 각각 val에 박아준다
-            {
-                $TR.find('.amount').val(row['totalAmount']);
-                $TR.find('.count').val(row['totalCount']);
-                $TR.find('.datepicker').val(data['ymd']);
-            }
-            else if(BOOL)// 재고량이 더많을때
-            {
-                calculateData = {};
-                calculateData['totalAmount'] = row['totalAmount'];
-                calculateData['ymd'] = data['ymd'];
-                calculateData['totalCount'] = row['totalCount'];
-                calculateReleaseAmount($TR,calculateData);
-            }
-        });
-        setDatePicker();
-        $("#orderModal").modal();
+    }).done(function(data) {
+        alert('수정완료');
+        $('#stepOne .datatable').DataTable().search($("input[type='search']").val()).draw();
+        $(".everyModal").modal('hide');
     }).fail(function() {
         alert('수정 에러 전산실로 문의바랍니다.');
     });
 });
 
-$('#orderRelease').on('submit', function (e)
-{
-    e.preventDefault();
-    len = $("#orderRelease tbody tr").length;
-    url = '/release/';
-    for(var i=0; i<len; i++)
-    {
-            var data = $("#orderRelease tbody tr:eq("+i+") :input").serialize();
-            var request = $.ajax({
-            url: url,
-            type: 'post',
-            data: data,
-            }).done(function(data) {
-                    $(".everyModal").modal('hide');
-                    $('#orderDatatable').DataTable().search($("input[type='search']").val()).draw();
-            }).fail(function() {
-                alert('수정 에러 전산실로 문의바랍니다.');
-            });
-    }
-});
 
 $('#manualRelease').on('submit', function (e)
 {
@@ -261,8 +407,6 @@ $('#manualRelease').on('submit', function (e)
     let memo = parseInt($this.find('#id_memo').val());
     let data = $this.serialize();
 
-    console.log(data);
-
     $.ajax({
     url: '/eggs/release',
     type: 'post',
@@ -270,9 +414,93 @@ $('#manualRelease').on('submit', function (e)
     }).done(function(data) {
         alert('수정완료');
         $(".everyModal").modal('hide');
-        $('.datatable').DataTable().search($("input[type='search']").val()).draw();
+        $('#stepTwo .datatable').DataTable().search($("input[type='search']").val()).draw();
     }).fail(function() { alert('수정 에러 전산실로 문의바랍니다.'); });
-
 });
 
+$('#calculateAmount').click( function () {
+    let datas = table.rows('.selected').data();
+    if(datas.length > 0)
+    {
+        var Flag = true;
+        let typeCheck = datas[0]['type'];
+        var pk = datas[0]['id'];
+        $.each(datas, function( index, data ) {
+            if(index > 0)
+            {
+                if(typeCheck == data["type"])
+                {
+                    pk = pk + "," + data['id'];
+                }
+                else {  Flag = false; }
+            }
+        });
+    }
+    else
+    {
+        alert('대상을 선택해주세요');
+        return false;
+    }
+
+    if(Flag)
+    {
+        $("#pks").val(pk);
+        $("#calculateAmountModal").modal();
+    }
+    else
+    {
+        alert('동일한 구분만 선택하세요.');
+        return false;
+    }
+});
+
+$('#calculateAmountForm').on('submit', function (e)
+{
+    e.preventDefault();
+    $this = $(this);
+    let amount = $this.find('#id_amount').val();
+    let data = $this.serialize();
+
+    if(amount > 0)
+    {
+        $.ajax({
+        url: 'eggs/calculateAmount',
+        type: 'post',
+        data: data,
+        }).done(function(data) {
+            alert('수정완료');
+            $('.datatable').DataTable().search($("input[type='search']").val()).draw();
+            $(".everyModal").modal('hide');
+        }).fail(function() {
+            alert('수정 에러 전산실로 문의바랍니다.');
+        });
+    }
+    else
+    {
+        alert("출고중량을 0보다 크게 입력해주세요");
+        return false;
+    }
+});
+
+$('#pricePerEa').click( function () {
+    let start_date = $('#start_date').val();
+    let end_date = $('#end_date').val();
+    let answer = confirm(`${start_date} ~ ${end_date} 생산단가작업을 실행 하시겠습니까?`);
+    if (answer) {
+        start_date = set_yyyymmdd(start_date);
+        end_date = set_yyyymmdd(end_date);
+        let data = `start_date=${start_date}&end_date=${end_date}`;
+        $.ajax({
+        url: 'eggs/pricePerEa',
+        type: 'post',
+        data: data,
+        }).done(function(data) {
+            alert('완료');
+            $('.datatable').DataTable().search($("input[type='search']").val()).draw();
+            $(".everyModal").modal('hide');
+        }).fail(function() {
+            alert('해당 기간 내 입고 원란의 구매금액을 확인해주세요.');
+        });
+    }
+});
 

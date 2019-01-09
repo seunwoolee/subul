@@ -13,7 +13,7 @@ fetch_data(start_day, end_day);
             return setStepTwoDataTable(args);
         },
         "stepThree": function(args) {
-            return setStepOneDataTable(args);
+            return setStepThreeDataTable(args);
         },
     };
 
@@ -334,32 +334,28 @@ function setStepThreeDataTable(args)
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": "/api/release/",
+            "url": "/api/order/",
             "type": "GET",
             "data": {
                 start_date:args['start_date'],
                 end_date:args['end_date'],
-                releaseTypeFilter:args['releaseTypeFilter'],
-                productTypeFilter:args['productTypeFilter'],
-                checkBoxFilter:args['checkBoxFilter'],
-                groupByFilter:args['groupByFilter']
+                eggTypeFilter:args['eggTypeFilter'],
+                gubunFilter:args['gubunFilter']
             }
         },
         "columns": [
+            {'data': 'id'},
+            {'data': 'ymd'},
+            {'data': 'releaseLocationName'},
             {'data': 'code'},
             {'data': 'codeName'},
-            {"data": "type"},
-            {'data': 'releaseLocationName'},
-            {'data': 'contentType'},
-            {'data': 'amount' , "render": $.fn.dataTable.render.number( ',', '.', 2)},
-            {'data': 'count' , "render": $.fn.dataTable.render.number( ',')},
-            {'data': 'totalPrice' , "render": $.fn.dataTable.render.number( ',')},
-            {'data': 'kgPrice' , "render": $.fn.dataTable.render.number( ',')},
+            {"data": "count", "render": $.fn.dataTable.render.number( ',')},
+            {"data": "amount", "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {"data": "price" , "render": $.fn.dataTable.render.number( ',')},
             {'data': 'supplyPrice' , "render": $.fn.dataTable.render.number( ',')},
-            {'data': 'releaseVat' , "render": $.fn.dataTable.render.number( ',')},
-            {"data": "eaPrice" , "render": $.fn.dataTable.render.number( ',')},
-            {"data": "releaseStoreLocationCodeName"}
+            {'data': 'releaseVat' , "render": $.fn.dataTable.render.number( ',')}
         ],
+        responsive : true,
         dom: 'Bfrtip',
         buttons: [
                     {
@@ -458,7 +454,6 @@ function editButtonClick(data)
         $('.codeName').text(data['codeName']);
         $("#orderModal").modal();
     }
-
 }
 
 $(".amount").focusout(function(){ setAutoCountValue($(this)); });
@@ -478,7 +473,8 @@ function pdfButtonClick(data)
 {
     let ymd = data['ymd'];
     let orderLocationCode = data['orderLocationCode'];
-    window.open('/order/pdf?ymd=' + ymd + '&orderLocationCode=' + orderLocationCode, '_blank');
+    let moneyMark = $("#moneyMark").is(":checked");
+    window.open('/order/pdf?ymd=' + ymd + '&orderLocationCode=' + orderLocationCode + "&moneyMark=" + moneyMark, '_blank');
 }
 
 $('form').on('submit', function (e)
@@ -503,7 +499,7 @@ $('form').on('submit', function (e)
 });
 
 
-$('.nav-item a').click(function(){
+$('.nav-item a').click(function(){ // 탭별 style 주기
     let nav_item_id = $(this).attr('href');
     $('.type_filter input:checkbox').attr("disabled", true);
     $('.type_filter select').attr("disabled", true);
