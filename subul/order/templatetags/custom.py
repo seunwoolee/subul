@@ -67,6 +67,15 @@ def lookup_vatPrice(d, key):
 
 
 @register.filter
+def lookup_releaseVat(d, key):
+    try:
+        result = d[key]["releaseVat"]
+    except:
+        result = ' '
+    return result
+
+
+@register.filter
 def lookup_memo(d, key):
     try:
         result = d[key]["memo"]

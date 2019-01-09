@@ -1,6 +1,6 @@
 from django.db.models import Sum, F
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.base import View
 from rest_framework import status
 from rest_framework.response import Response
@@ -98,7 +98,7 @@ class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
                             productExistAdmin.save()
 
             Product.getLossProductPercent(main)
-        return render(request, 'product/productList.html')
+        return redirect('productList')
 
     def get(self, request):
         tankValue = list(ProductEgg.objects.values('code', 'codeName') \

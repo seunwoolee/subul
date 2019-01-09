@@ -20,8 +20,10 @@ class GeneratePDF(View):
         ymd = request.GET['ymd']
         yyyymmdd = "{}/{}/{}".format(ymd[0:4], ymd[4:6], ymd[6:])
         releaseLocationCode = request.GET['releaseLocationCode']
+        moneyMark = request.GET['moneyMark']
         location = Location.objects.get(code=releaseLocationCode)
         releases = Release.objects.filter(ymd=ymd).filter(releaseLocationCode=location) \
+            .filter(type__in=['판매', '샘플', '증정'])\
             .values('code', 'codeName', 'price', 'specialTag', 'releaseVat') \
             .annotate(totalCount=Sum('count')) \
             .annotate(totalPrice=F('price')) \
@@ -33,10 +35,11 @@ class GeneratePDF(View):
         sumData = {'sumTotalCount': sumTotalCount['sumTotalCount'],
                    'sumSupplyPrice': sumSupplyPrice['sumSupplyPrice'],
                    'sumVat': sumVat['sumVat'],
-                   'sumTotal': sumTotal}
+                   'sumTotal': sumTotal,
+                   'moneyMark': moneyMark}
         context_dict = {
             "yyyymmdd": yyyymmdd,
-            "releases": releases,
+            "orders": releases,
             "sumData": sumData,
             "location": location,
         }

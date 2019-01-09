@@ -1,5 +1,4 @@
 {% load humanize %}
-{% load custom %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +15,7 @@
 
 * {
     font-family: malgun;
-    font-size:13.5px;
+    font-size:14px;
 }
 
 
@@ -37,10 +36,7 @@
 
 td
 {
-    padding-top : 2.5px;
-    padding-right : 2px;
-    padding-left : 2px;
-    padding-bottom : 0px;
+    padding : 3px,2px,2px,3px;
     font-weight : 600;
 }
 
@@ -97,14 +93,8 @@ th
 
 .line
 {
-    margin-top : 15px;
-    margin-bottom : 15px;
-}
-
-.memo
-{
-    color: #9e9e9e;
-    font-weight : 20 !important;
+    margin-top : 20px;
+    margin-bottom : 20px;
 }
 
 </style>
@@ -113,21 +103,28 @@ th
 </head>
 <body>
 
+
+
+
+
+
+
+
 <div id="give">
     <div class="top">
         <div class="header">
             <div class="title blue" style="font-size:28px; font-weight : 800;">거 래 명 세 표</div>
             <div><span style="color : red;">(고객용)</span></div>
-            <div><span class="blue">거 래 일 자 :</span> {{ yyyymmdd }}</div>
+            <div><span  class="blue">거 래 일 자 :</span> {{ yyyymmdd }}</div>
         </div>
     </div>
     <div class="table-sheet">
         <table>
             <tr class="border-bold">
-                <th class="blue" rowspan="2" style="width : 35px; padding:2px; line-height:10%">공<br>급<br>자</th>
+                <th class="blue" rowspan="2" style="width : 35px; padding:3px; line-height:10%">공<br>급<br>자</th>
                 <th class="blue">등록번호</th>
                 <td class="blue" colspan="3">505-81-00799</td>
-                <th class="blue" rowspan="2" style="width : 35px; padding:2px; line-height:10%">피<br>공<br>급<br>자</th>
+                <th class="blue" rowspan="2" style="width : 35px; padding:3px; line-height:10%">피<br>공<br>급<br>자</th>
                 <th class="blue">등록번호</th>
                 <td colspan="3">105-87-81968</td>
             </tr>
@@ -137,78 +134,44 @@ th
                 <th class="blue">상호</th>
                 <td class="blue" style="font-size : 12px; padding : 0.1;">(주)케이씨피드</td>
                 <th class="blue">성명</th>
-                <td>{{ location.location_owner|cut:" " }}</td>
+                <td>{{ location.location_owner }}</td>
                 <th class="blue">상호</th>
-                <td style="font-size : 12px;">{{ location.codeName|cut:" " }}</td>
+                <td style="font-size : 12px;">{{ location.codeName }}</td>
             </tr>
             <tr class="border-bold">
                 <td class="blue" style="padding : 1px;">주소</td>
                 <td class="blue" colspan="4">경남 거창군 남상면 홍덕길 22</td>
                 <td class="blue" style="padding : 1px;">주소</td>
-                <td colspan="4">{{ location.location_address|cut:" " }}</td>
+                <td colspan="4">{{ location.location_address }}</td>
             </tr>
             <tr class="border-bold">
                 <th class="blue" style="width : 35px; padding-top : 3px;">NO</th>
                 <th class="blue" colspan="4" style="padding-top : 3px;">제품명</th>
                 <th class="blue" style="width : 35px; padding-top : 3px;">단위</th>
                 <th class="blue" style="padding-top : 3px;">수량</th>
-                {% if sumData.moneyMark == "true"%}
-                    <th class="blue" style="padding-top : 3px;">단가</th>
-                    <th class="blue" style="padding-top : 3px;">공급가액</th>
-                    <th class="blue" style="padding-top : 3px;">부가세액</th>
-                {% else %}
-                    <th class="blue" colspan="3" style="padding-top : 3px;">메모</th>
-                {% endif %}
+                <th class="blue" style="padding-top : 3px;">단가</th>
+                <th class="blue" style="padding-top : 3px;">공급가액</th>
+                <th class="blue" style="padding-top : 3px;">부가세액</th>
             </tr>
-            {% if sumData.moneyMark == "true"%}
-                {% for i in "xxxxxxx" %} <!-- 금액 -->
-                <tr class="border-bold">
-                    <td class="blue text-center border-bold-left" style="width : 35px; ">{{ forloop.counter }}</td>
-                    {% if orders|lookup_specialTag:forloop.counter0 %}
-                    <td colspan="4">
-                        <span style="text-decoration: underline;">({{orders|lookup_specialTag:forloop.counter0}})</span>
-                        {{orders|lookup_codeName:forloop.counter0}}
-                    </td>
-                    {% else %}
-                    <td colspan="4"> {{ orders|lookup_codeName:forloop.counter0 }}</td>
-                    {% endif %}
-                    {% if orders|lookup_codeName:forloop.counter0 == " " %}
-                        <td class="text-center"> </td>
-                    {% else %}
-                        <td class="text-center">EA</td>
-                    {% endif %}
-                    <td class="text-right">{{ orders|lookup_totalCount:forloop.counter0 }}</td>
-                    <td class="text-right">{{ orders|lookup_price:forloop.counter0|intcomma }}</td>
-                    <td class="text-right">{{ orders|lookup_supplyPrice:forloop.counter0|intcomma }}</td>
-                    <td class="text-right">{{ orders|lookup_releaseVat:forloop.counter0|intcomma }}</td>
-                </tr>
-                {% endfor %}
-            {% else %} <!-- 메모 -->
-                {% for i in "xxxxxxx" %}
-                <tr class="border-bold">
-                    <td class="blue text-center border-bold-left" style="width : 35px; ">{{ forloop.counter }}</td>
-                    {% if orders|lookup_specialTag:forloop.counter0 %}
-                    <td colspan="4">
-                        <span style="text-decoration: underline;">({{orders|lookup_specialTag:forloop.counter0}})</span>
-                        {{orders|lookup_codeName:forloop.counter0}}
-                    </td>
-                    {% else %}
-                    <td colspan="4"> {{ orders|lookup_codeName:forloop.counter0 }}</td>
-                    {% endif %}
-                    {% if orders|lookup_codeName:forloop.counter0 == " " %}
-                        <td class="text-center"> </td>
-                    {% else %}
-                        <td class="text-center">EA</td>
-                    {% endif %}
-                    <td class="text-right">{{ orders|lookup_totalCount:forloop.counter0 }}</td>
-                    <td colspan="3" class="text-center memo">{{ orders|lookup_memo:forloop.counter0|cut:" " }}</td>
-                </tr>
-                {% endfor %}
-            {% endif %}
+            {% for order in releases %}
+            <tr class="border-light">
+                <td class="blue text-center border-bold-left" style="width : 35px; ">{{ forloop.counter }}</td>
+                {% if order.specialTag %}
+                <td colspan="4"><span style="text-decoration: underline;">({{ order.specialTag }})</span> {{ order.codeName }}</td>
+                {% else %}
+                    <td colspan="4"> {{ order.codeName }}</td>
+                {% endif %}
+                <td class="text-center">EA</td>
+                <td class="text-right">{{ order.totalCount }}</td>
+                <td class="text-right">{{ order.price|intcomma }}</td>
+                <td class="text-right">{{ order.supplyPrice|intcomma }}</td>
+                <td class="text-right">{{ order.releaseVat|intcomma }}</td>
+            </tr>
+            {% endfor %}
         </table>
         <table>
             <tr>
-                <td class="blue text-center border-bold">
+                <td class="blue text-center border-light">
                     <table>
                         <tr>
                             <td class="blue text-center border-bold-bottom">합계(EA)</td>
@@ -218,7 +181,7 @@ th
                         </tr>
                     </table>
                 </td>
-                <td class="blue text-center border-bold">
+                <td class="blue text-center border-light">
                     <table>
                         <tr>
                             <td class="blue text-center border-bold-bottom">{{sumData.sumTotalCount|intcomma}}</td>
@@ -236,7 +199,7 @@ th
                     <span style="color : red;">책임자 서명이 없으면 무효입니다.</span><br>
                     <span>당사 제품을 애용해 주셔서 감사합니다.</span>
                 </td>
-                <td class="blue text-center border-bold">
+                <td class="blue text-center border-light">
                     <table>
                         <tr>
                             <td class="blue text-center border-bold-bottom">공급가액소계</td>
@@ -249,7 +212,7 @@ th
                         </tr>
                     </table>
                 </td>
-                <td class="blue text-center border-bold">
+                <td class="blue text-center border-light">
                     <table>
                         <tr>
                             <td class="blue text-center border-bold-bottom">{{sumData.sumSupplyPrice|intcomma}}</td>
@@ -269,18 +232,17 @@ th
 
 
 <div class="line">
-    --------------------------------------------------------- 절 취 선
-    ------------------------------------------------------------
+    --------------------------------------------------------- 절 취 선 --------------------------------------------------------
 </div>
 
 
 <div id="take">
-    <div class="top" style="padding-top : 15px;">
+    <div class="top" style="padding-top : 10px;">
         <div class="header">
-            <div class="title blue" style="font-size:28px; font-weight : 800; padding-bottom:-10px;">제 품 인 수 증</div>
+            <div class="title blue" style="font-size:28px; font-weight : 800;">제 품 인 수 증</div>
             <div><span style="color : red;">(고객용)</span></div>
             <div class="noPadding">
-                <span class="blue">거 래 일 자 : </span>{{ yyyymmdd }}
+                <span  class="blue">거 래 일 자 : </span>{{ yyyymmdd }}
                 <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
                 <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
                 <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
@@ -289,8 +251,8 @@ th
                 <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
                 <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
             </div>
-            <div class="noPadding"><span class="blue">거래처 상호 : </span>{{ location.codeName }}</div>
-            <div class="blue noPadding">도착 요망 일시 :</div>
+            <div class="noPadding"><span  class="blue">거래처 상호 : </span>{{ location.codeName }}</div>
+            <div class="blue noPadding">도착 요망 일시 : </div>
             <div class="blue noPadding" style="margin-left : 20px !important">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -315,85 +277,51 @@ th
     <div class="table-sheet">
         <table>
             <tr class="border-bold">
-                <th class="blue" style="width : 40px; padding-top : 3px;">NO</th>
+                <th class="blue" style="width : 35px; padding-top : 3px;">NO</th>
                 <th class="blue" colspan="4" style="padding-top : 3px;">제품명</th>
-                <th class="blue" style="width : 40px; padding-top : 3px;">단위</th>
+                <th class="blue" style="width : 35px; padding-top : 3px;">단위</th>
                 <th class="blue" style="padding-top : 3px;">수량</th>
-                {% if sumData.moneyMark == "true"%}
-                    <th class="blue" style="padding-top : 3px;">단가</th>
-                    <th class="blue" style="padding-top : 3px;">공급가액</th>
-                    <th class="blue" style="padding-top : 3px;">부가세액</th>
-                {% else %}
-                    <th class="blue" colspan="3" style="padding-top : 3px;">메모</th>
-                {% endif %}
+                <th class="blue" style="padding-top : 3px;">단가</th>
+                <th class="blue" style="padding-top : 3px;">공급가액</th>
+                <th class="blue" style="padding-top : 3px;">부가세액</th>
             </tr>
-            {% if sumData.moneyMark == "true"%}
-                {% for i in "xxxxxxx" %} <!-- 금액 -->
-                <tr class="border-bold">
-                    <td class="blue text-center border-bold-left" style="width : 35px; ">{{ forloop.counter }}</td>
-                    {% if orders|lookup_specialTag:forloop.counter0 %}
-                    <td colspan="4">
-                        <span style="text-decoration: underline;">({{orders|lookup_specialTag:forloop.counter0}})</span>
-                        {{orders|lookup_codeName:forloop.counter0}}
-                    </td>
-                    {% else %}
-                    <td colspan="4"> {{ orders|lookup_codeName:forloop.counter0 }}</td>
-                    {% endif %}
-                    {% if orders|lookup_codeName:forloop.counter0 == " " %}
-                        <td class="text-center"> </td>
-                    {% else %}
-                        <td class="text-center">EA</td>
-                    {% endif %}
-                    <td class="text-right">{{ orders|lookup_totalCount:forloop.counter0 }}</td>
-                    <td class="text-right">{{ orders|lookup_price:forloop.counter0|intcomma }}</td>
-                    <td class="text-right">{{ orders|lookup_supplyPrice:forloop.counter0|intcomma }}</td>
-                    <td class="text-right">{{ orders|lookup_releaseVat:forloop.counter0|intcomma }}</td>
-                </tr>
-                {% endfor %}
-            {% else %} <!-- 메모 -->
-                {% for i in "xxxxxxx" %}
-                <tr class="border-bold">
-                    <td class="blue text-center border-bold-left" style="width : 35px; ">{{ forloop.counter }}</td>
-                    {% if orders|lookup_specialTag:forloop.counter0 %}
-                    <td colspan="4">
-                        <span style="text-decoration: underline;">({{orders|lookup_specialTag:forloop.counter0}})</span>
-                        {{orders|lookup_codeName:forloop.counter0}}
-                    </td>
-                    {% else %}
-                    <td colspan="4"> {{ orders|lookup_codeName:forloop.counter0 }}</td>
-                    {% endif %}
-                    {% if orders|lookup_codeName:forloop.counter0 == " " %}
-                        <td class="text-center"> </td>
-                    {% else %}
-                        <td class="text-center">EA</td>
-                    {% endif %}
-                    <td class="text-right">{{ orders|lookup_totalCount:forloop.counter0 }}</td>
-                    <td colspan="3" class="text-center memo">{{ orders|lookup_memo:forloop.counter0|cut:" " }}</td>
-                </tr>
-                {% endfor %}
-            {% endif %}
+            {% for order in releases %}
+            <tr class="border-light">
+                <td class="blue text-center border-bold-left" style="width : 35px; ">{{ forloop.counter }}</td>
+                {% if order.specialTag %}
+                    <td colspan="4"><span style="text-decoration: underline;">({{ order.specialTag }})</span>{{ order.codeName }}</td>
+                {% else %}
+                    <td colspan="4"> {{ order.codeName }}</td>
+                {% endif %}
+                <td class="text-center">EA</td>
+                <td class="text-right">{{ order.totalCount }}</td>
+                <td class="text-right">{{ order.price|intcomma }}</td>
+                <td class="text-right">{{ order.supplyPrice|intcomma }}</td>
+                <td class="text-right">{{ order.releaseVat|intcomma }}</td>
+            </tr>
+            {% endfor %}
         </table>
         <table>
             <tr>
-                <td class="blue text-center border-bold">합계(EA)
+                <td class="blue text-center border-light">합계(EA)
                     <!--<table>-->
-                    <!--<tr>-->
-                    <!--<td class="blue text-center ">합계(EA)</td>-->
-                    <!--</tr>-->
+                        <!--<tr>-->
+                            <!--<td class="blue text-center ">합계(EA)</td>-->
+                        <!--</tr>-->
                     <!--</table>-->
                 </td>
-                <td class="blue text-center border-bold">{{sumData.sumTotalCount|intcomma}}
+                <td class="blue text-center border-light">{{sumData.sumTotalCount|intcomma}}
                     <!--<table>-->
-                    <!--<tr>-->
-                    <!--<td  class="blue text-center ">{{sumData.sumTotalCount|intcomma}}</td>-->
-                    <!--</tr>-->
+                        <!--<tr>-->
+                            <!--<td  class="blue text-center ">{{sumData.sumTotalCount|intcomma}}</td>-->
+                        <!--</tr>-->
                     <!--</table>-->
                 </td>
                 <td class="blue text-center" colspan="2">
                     <br>
                     <span style="font-size:20px; font-weight : 800;">케이씨피드 귀중</span><br>
                 </td>
-                <td class="blue text-center border-bold">
+                <td class="blue text-center border-light">
                     <table>
                         <tr>
                             <td class="blue text-center border-bold-bottom">공급가액소계</td>
@@ -406,7 +334,7 @@ th
                         </tr>
                     </table>
                 </td>
-                <td class="blue text-center border-bold">
+                <td class="blue text-center border-light">
                     <table>
                         <tr>
                             <td class="blue text-center border-bold-bottom">{{sumData.sumSupplyPrice|intcomma}}</td>

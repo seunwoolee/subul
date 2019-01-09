@@ -942,7 +942,8 @@ function pdfButtonClick(data)
 {
     let ymd = data['ymd'];
     let releaseLocationCode = data['releaseLocationCode'];
-    window.open('/release/pdf?ymd=' + ymd + '&releaseLocationCode=' + releaseLocationCode, '_blank');
+    let moneyMark = $("#moneyMark").is(":checked");
+    window.open('/release/pdf?ymd=' + ymd + '&releaseLocationCode=' + releaseLocationCode + "&moneyMark=" + moneyMark, '_blank');
 }
 
 var AMOUNT_KG = {};
