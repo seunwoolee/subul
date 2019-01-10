@@ -84,7 +84,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'subul.wsgi.application'
 
-# Database
+# Databases
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 # DATABASES = {
@@ -147,6 +147,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'staticfiles')
 AUTH_USER_MODEL = 'users.CustomUser'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'login'
