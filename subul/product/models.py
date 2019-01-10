@@ -13,6 +13,55 @@ DELETE_STATE_CHOICES = (
 )
 
 
+class ProductCode(Code):
+    CONTENT_TYPE_CHOICES = (
+        ('전란', '전란'),
+        ('난백', '난백'),
+        ('난황', '난황'),
+        ('X', '없음'),
+    )
+
+    OEM_TYPE_CHOICES = (
+        ('N', 'N'),
+        ('Y', 'Y'),
+    )
+
+    STORE_TYPE_CHOICES = (
+        ('AP', 'AP'),
+        ('BIB', 'BIB'),
+        ('CT', 'CT'),
+        ('PAC', 'PAC'),
+        ('PKG', 'PKG'),
+        ('TANK', 'TANK'),
+        ('TON', 'TON'),
+        ('TOTE', 'TOTE'),
+        ('', '없음'),
+    )
+
+    type = models.CharField(
+        max_length=10,
+        choices=CONTENT_TYPE_CHOICES,
+        default='',
+    )
+    amount_kg = models.FloatField()
+    price = models.IntegerField()
+    store_type = models.CharField(
+        max_length=10,
+        choices=STORE_TYPE_CHOICES,
+        default=''
+    )
+    vat = models.IntegerField(default=0)
+    expiration = models.IntegerField(default=0)
+    oem = models.CharField(
+        max_length=10,
+        choices=OEM_TYPE_CHOICES,
+        default='N'
+    )
+
+    def __str__(self):
+        return self.codeName + '(' + self.code + ')'
+
+
 class ProductMaster(models.Model):
     produce_id = models.IntegerField(default=0)
     ymd = models.CharField(max_length=8)
@@ -176,55 +225,6 @@ class ProductEgg(models.Model):
             'count': count,
             'total': total
         }
-
-
-class ProductCode(Code):
-    CONTENT_TYPE_CHOICES = (
-        ('전란', '전란'),
-        ('난백', '난백'),
-        ('난황', '난황'),
-        ('X', '없음'),
-    )
-
-    OEM_TYPE_CHOICES = (
-        ('N', 'N'),
-        ('Y', 'Y'),
-    )
-
-    STORE_TYPE_CHOICES = (
-        ('AP', 'AP'),
-        ('BIB', 'BIB'),
-        ('CT', 'CT'),
-        ('PAC', 'PAC'),
-        ('PKG', 'PKG'),
-        ('TANK', 'TANK'),
-        ('TON', 'TON'),
-        ('TOTE', 'TOTE'),
-        ('', '없음'),
-    )
-
-    type = models.CharField(
-        max_length=10,
-        choices=CONTENT_TYPE_CHOICES,
-        default='',
-    )
-    amount_kg = models.FloatField()
-    price = models.IntegerField()
-    store_type = models.CharField(
-        max_length=10,
-        choices=STORE_TYPE_CHOICES,
-        default=''
-    )
-    vat = models.IntegerField(default=0)
-    expiration = models.IntegerField(default=0)
-    oem = models.CharField(
-        max_length=10,
-        choices=OEM_TYPE_CHOICES,
-        default='N'
-    )
-
-    def __str__(self):
-        return self.codeName + '(' + self.code + ')'
 
 
 class Product(Detail):

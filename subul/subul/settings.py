@@ -45,11 +45,11 @@ INSTALLED_APPS = [
     # local
     'core',
     'users',
-    'product',
     'release',
     'order',
     'api',
     'eggs',
+    'product',
     'packing',
     'eventlog',
 ]
@@ -87,14 +87,25 @@ WSGI_APPLICATION = 'subul.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'sbl',
+#         'USER': 'postgres',
+#         'PASSWORD': 'tmddn132!',
+#         'HOST': 'localhost',
+#         'PORT': '',
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'sbl',
-        'USER': 'postgres',
-        'PASSWORD': 'tmddn132!',
-        'HOST': 'localhost',
-        'PORT': '',
+        'NAME': 'subul',
+        'USER': 'kcfeed',
+        'PASSWORD': 'wjstks132!',
+        'HOST': 'reservedrds.chqu6s4q8xjb.us-east-2.rds.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
