@@ -74,7 +74,7 @@ class ReleaseReg(View):
         setProductCode = request.POST.get('setProductCode', None)
         specialTag = request.POST.get('specialTag', '')
 
-        if int(data['count']) and int(data['amount']) and data['ymd']:
+        if int(data['count']) and float(data['amount']) and data['ymd']:
             totalPrice = int(data['price']) * int(data['count'])
             releaseVat = round(totalPrice - (totalPrice / 1.1)) if productCode.vat else 0  # vat 계산
             release = Release.objects.create(

@@ -290,7 +290,7 @@ class OrderSetProductCode(APIView):
     def get_object(self, code):
         try:
             location = Location.objects.get(code=code)
-            return SetProductCode.objects.filter(location=location).filter(delete_state='Y')
+            return SetProductCode.objects.filter(location=location).filter(delete_state='N')
             # return ProductUnitPrice.objects.all
         except SetProductCode.DoesNotExist:
             raise Http404  # TODO 없으면 그냥 None

@@ -45,7 +45,7 @@ class StepOneForm(forms.Form):
                                             required=False, min_value=1)
     할란사용_RawTank전란_01201 = forms.IntegerField(label='', required=False, min_value=1)
     메모_RawTank전란_01201_one = forms.CharField(
-        label='',
+        label='memo',
         required=False,
         widget=forms.Textarea(attrs={'rows': 1}, )
     )
@@ -54,7 +54,7 @@ class StepOneForm(forms.Form):
                                             required=False, min_value=1)
     할란사용_RawTank난황_01202 = forms.IntegerField(label='', required=False, min_value=1)
     메모_RawTank난황_01202_one = forms.CharField(
-        label='',
+        label='memo',
         required=False,
         widget=forms.Textarea(attrs={'rows': 1})
     )
@@ -63,7 +63,7 @@ class StepOneForm(forms.Form):
                                             required=False, min_value=1)
     할란사용_RawTank난백_01203 = forms.IntegerField(label='', required=False, min_value=1)
     메모_RawTank난백_01203_one = forms.CharField(
-        label='',
+        label='memo',
         required=False,
         widget=forms.Textarea(attrs={'rows': 1})
     )
@@ -72,7 +72,7 @@ class StepOneForm(forms.Form):
                                                , required=False, min_value=1)
     할란사용_RawTank등급란전란_01207 = forms.IntegerField(label='', required=False, min_value=1)
     메모_RawTank등급란전란_01207_one = forms.CharField(
-        label='',
+        label='memo',
         required=False,
         widget=forms.Textarea(attrs={'rows': 1})
     )
@@ -81,7 +81,7 @@ class StepOneForm(forms.Form):
                                                , required=False, min_value=1)
     할란사용_RawTank등급란난황_01208 = forms.IntegerField(label='', required=False, min_value=1)
     메모_RawTank등급란난황_01208_one = forms.CharField(
-        label='',
+        label='memo',
         required=False,
         widget=forms.Textarea(attrs={'rows': 1})
     )
@@ -90,7 +90,7 @@ class StepOneForm(forms.Form):
                                                , required=False, min_value=1)
     할란사용_RawTank등급란난백_01209 = forms.IntegerField(label='', required=False, min_value=1)
     메모_RawTank등급란난백_01209_one = forms.CharField(
-        label='',
+        label='memo',
         required=False,
         widget=forms.Textarea(attrs={'rows': 1})
     )

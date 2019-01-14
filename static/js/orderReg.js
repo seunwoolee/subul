@@ -156,7 +156,7 @@ function setPackageElementInputInfo(parentTR, $this, data, total)
         }
         else if(name.indexOf("amount") >= 0)
         {
-            $this.attr({'name': name, 'id': id}).val(data[i]["amount"] * COUNT).removeAttr('readonly');
+            $this.attr({'name': name, 'id': id}).val(parseFloat(data[i]["amount"] * COUNT).toFixed(2)).removeAttr('readonly');
         }
         else if(name.indexOf("count") >= 0)
 

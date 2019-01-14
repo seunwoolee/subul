@@ -30,6 +30,7 @@ class LocationMigrate(View):
                         구분 as type,\
                         주소 as location_address,\
                         전화 as location_phone,\
+                        담당자 as location_owner,\
                         사업자번호 as  location_companyNumber, \
                         쇼핑몰 as location_shoppingmall, \
                         분류 as location_character,\
@@ -38,20 +39,19 @@ class LocationMigrate(View):
         cursor.execute(query)
 
         for row in cursor:
-            try:
-                location = Location.objects.create(
-                    code=row[0],
-                    codeName=row[1],
-                    type=row[2],
-                    location_address=row[3],
-                    location_phone=row[4],
-                    location_companyNumber=row[5],
-                    location_shoppingmall=row[6],
-                    location_character=row[7],
-                    delete_state=row[8]
-                )
-            except Exception as e:
-                print(e)
+            delete_state = 'N' if row[9] == 'Y' else 'Y'
+            Location.objects.create(
+                code=row[0],
+                codeName=row[1],
+                type=row[2],
+                location_address=row[3],
+                location_phone=row[4],
+                location_owner=row[5],
+                location_companyNumber=row[6],
+                location_shoppingmall=row[7],
+                location_character=row[8],
+                delete_state=delete_state
+            )
 
 
 class ProductCodeMigrate(View):
@@ -79,8 +79,10 @@ class ProductCodeMigrate(View):
                     type = '난백'
 
                 delete_state = row[8]
-                if delete_state is None:
+                if delete_state == 'N': #사용유무가 N이면 삭제 나머지 다 사용
                     delete_state = 'Y'
+                else:
+                    delete_state = 'N'
 
                 location = ProductCode.objects.create(
                     code=row[0],
@@ -110,7 +112,7 @@ class ProductUnitPriceMigrate(View):
                 location = Location.objects.get(code=row[0])
                 product = ProductCode.objects.get(code=row[1])
                 price = row[2]
-                delete_state = row[3]
+                delete_state = 'N' if row[3] == 'Y' else 'Y'
 
                 location = ProductUnitPrice.objects.create(
                     locationCode=location,
@@ -131,6 +133,7 @@ class SetProductCodeMigrate(View):
 
         for row in cursor:
             try:
+                delete_state = 'N' if row[3] == 'Y' else 'Y'
                 location = Location.objects.get(code=row[8])
 
                 setProductCode = SetProductCode.objects.create(
@@ -138,7 +141,7 @@ class SetProductCodeMigrate(View):
                     codeName=row[1],
                     type='세트상품',
                     location=location,
-                    delete_state=row[3]
+                    delete_state=delete_state
                 )
             except Exception as e:
                 print(e)
@@ -153,6 +156,7 @@ class SetProductMatchMigrate(View):
 
         for row in cursor:
             try:
+                delete_state = 'N' if row[6] == 'Y' else 'Y'
                 location = Location.objects.get(code=row[5])
                 product = ProductCode.objects.get(code=row[1])
                 setProduct = SetProductCode.objects.get(code=row[0])
@@ -163,7 +167,7 @@ class SetProductMatchMigrate(View):
                     count=row[3],
                     price=row[2],
                     saleLocation=location,
-                    delete_state=row[6]
+                    delete_state=delete_state
                 )
             except Exception as e:
                 print(e)
@@ -177,9 +181,12 @@ class EggCodeMigrate(View):
         cursor.execute(query)
 
         for row in cursor:
+
             delete_state = row[6]
-            if delete_state is None:
+            if delete_state == 'N':  # 사용유무가 N이면 삭제 나머지 다 사용
                 delete_state = 'Y'
+            else:
+                delete_state = 'N'
 
             EggCode.objects.create(
                 code=row[0],
@@ -199,8 +206,10 @@ class PackingCodeMigrate(View):
 
         for row in cursor:
             delete_state = row[6]
-            if delete_state is None:
+            if delete_state == 'N':  # 사용유무가 N이면 삭제 나머지 다 사용
                 delete_state = 'Y'
+            else:
+                delete_state = 'N'
 
             PackingCode.objects.create(
                 code=row[0],
@@ -220,8 +229,10 @@ class ProductMasterMigrate(View):
 
         for row in cursor:
             delete_state = row[6]
-            if delete_state is None:
+            if delete_state == 'N':  # 사용유무가 N이면 삭제 나머지 다 사용
                 delete_state = 'Y'
+            else:
+                delete_state = 'N'
 
             PackingCode.objects.create(
                 code=row[0],

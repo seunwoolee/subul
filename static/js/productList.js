@@ -119,7 +119,7 @@
             {"data": "loss_openEgg" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {"data": "loss_clean" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {"data": "loss_fill" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
-            {"data": "memo", "render": function(data, type, row, meta){return setMemoStyle(data);}},
+            {"data": "memo"},
             {"data": "type", "render": function(data, type, row, meta){
                     if(data == "제품생산") {  return setDataTableActionButtonWithRecall(); }
                     else if(data.includes("미출고품")){ return setDataTableActionButtonOnlyDelete(); }
@@ -162,13 +162,11 @@
                     }],
         lengthMenu : [[30, 50, -1], [30, 50, "All"]],
         drawCallback: function(settings) {
-//                alert();
                 $.ajax({
                 url: '/api/productSummary',
                 type: 'get',
                 data: {start_date: start_date, end_date: end_date}
                 }).done(function(data) {
-                    console.log(data);
                     $("#openEggPercent").html(`할란수율 : ${data['openEggPercent']} %`);
                     $("#productPercent").html(`제품수율 : ${data['productPercent']} %`);
                     $("#lossTotal").html(`로스량 : ${data['lossTotal']} kg`);
@@ -216,27 +214,11 @@ function setTankAmountStyle(data)
 {
     if(data < 0)
     {
-        return '<span class="text-danger">'+ data +'</span>'
+        return '<span class="text-danger">'+ data.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) +'</span>'
     }
     else if(data > 0)
     {
-        return '<span>'+ data +'</span>'
-    }
-    else
-    {
-        return ""
-    }
-}
-
-function setMemoStyle(data)
-{
-    if(data)
-    {
-        return `<span style="font-size : 1rem;">
-                    <i class="fas fa-file-alt" data-toggle="tooltip" data-placement="top"
-                     title=${data}>
-                     </i>
-                 </span>`
+        return '<span>'+ data.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) +'</span>'
     }
     else
     {
@@ -331,7 +313,6 @@ $('form').on('submit', function (e)
 function setAjaxUrl($this)
 {
     let productType = $this.find("input[name='productType']").val();
-    alert(productType);
     if(productType == 'product')
     {
         url = '/api/product/'+id;

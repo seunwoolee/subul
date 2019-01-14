@@ -67,15 +67,19 @@ $( ".product" ).change(function() {
     data = parentTR.find('.product').val();
     url = '/api/productCodes/'+data;
 
-    $.ajax({
-    url: url,
-    type: 'get',
-    data: data,
-    }).done(function(data) {
-        window.AMOUNT_KG = {"parentTR" : parentTR, "AMOUNT_KG" : data["amount_kg"]};
-    }).fail(function() {
-        alert('수정 에러 전산실로 문의바랍니다.');
-    });
+    if(data)
+    {
+        $.ajax({
+        url: url,
+        type: 'get',
+        data: data,
+        }).done(function(data) {
+            window.AMOUNT_KG = {"parentTR" : parentTR, "AMOUNT_KG" : data["amount_kg"]};
+        }).fail(function() {
+            alert('수정 에러 전산실로 문의바랍니다.');
+        });
+    }
+
 
 });
 

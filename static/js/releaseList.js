@@ -30,8 +30,8 @@ fetch_data(start_day, end_day);
      groupByFilter = groupByFilter.substring(1);
      let releaseTypeFilter = $('.type_filter #releaseType select').val();
      let productTypeFilter = $('.type_filter #productType select').val();
-     let checkBoxFilter = $('.type_filter input:checkbox:checked').map(function(){ return $(this).val(); })
-                                                                  .get().join(',');
+     let checkBoxFilter = $('.type_filter input:checkbox:checked')
+                                .not('#moneyMark').map(function(){ return $(this).val(); }).get().join(',');
      let table = $('#'+groupByFilter +' .datatable');
      args={ 'table' : table,
             'start_date' : start_date,

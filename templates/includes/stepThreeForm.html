@@ -9,14 +9,14 @@
          {% else %}
           <tr>
          {% endif %}
-            <td>{{ forloop.counter|intdiv:2|add:1 }}</td>
-            <td>{{ field.help_text}}</td>
-            <td class="text-center">{{ field.label_tag}}</td>
-            <td>
+            <td data-title="No">{{ forloop.counter|intdiv:2|add:1 }}</td>
+            <td data-title="코드">{{ field.help_text}}</td>
+            <td class="text-center" data-title="제품">{{ field.label_tag}}</td>
+            <td data-title="공정품발생량">
               {% render_field field class="form-control" %}
             </td>
         {% else %}
-              <td>{% render_field field class="form-control"  %}</td>
+              <td data-title="메모">{% render_field field class="form-control"  %}</td>
         {% endif %}
 
     {% endfor %}

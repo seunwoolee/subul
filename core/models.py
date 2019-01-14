@@ -3,8 +3,8 @@ from django.db.models import SET_DEFAULT
 from users.models import CustomUser
 
 DELETE_STATE_CHOICES = (
-    ('Y', 'deleted'),
-    ('N', 'notDeleted'),
+    ('Y', 'notDeleted'),
+    ('N', 'deleted'),
 )
 
 

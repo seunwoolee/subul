@@ -20,8 +20,8 @@ fetch_data(start_day, end_day);
     let gubunFilter = $('#tabnavigator a.nav-link.active').attr('href');
     gubunFilter = gubunFilter.substring(1);
     let eggTypeFilter = $('.type_filter #releaseType select').val();
-    let checkBoxFilter = $('.type_filter input:checkbox:checked').map(function(){ return $(this).val(); })
-                                                                      .get().join(',');
+    let checkBoxFilter = $('.type_filter input:checkbox:checked').not('#moneyMark')
+                                .map(function(){ return $(this).val(); }).get().join(',');
     let table = $('#'+gubunFilter +' .datatable');
     var args={
             'table' : table,

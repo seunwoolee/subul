@@ -87,27 +87,27 @@ WSGI_APPLICATION = 'subul.wsgi.application'
 # Databases
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'sbl',
-#         'USER': 'postgres',
-#         'PASSWORD': 'tmddn132!',
-#         'HOST': 'localhost',
-#         'PORT': '',
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'subul',
-        'USER': 'kcfeed',
-        'PASSWORD': 'wjstks132!',
-        'HOST': 'reservedrds.chqu6s4q8xjb.us-east-2.rds.amazonaws.com',
-        'PORT': '5432',
+        'NAME': 'sbl',
+        'USER': 'postgres',
+        'PASSWORD': 'tmddn132!',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'subul',
+#         'USER': 'kcfeed',
+#         'PASSWORD': 'wjstks132!',
+#         'HOST': 'reservedrds.chqu6s4q8xjb.us-east-2.rds.amazonaws.com',
+#         'PORT': '5432',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
