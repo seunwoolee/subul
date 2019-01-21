@@ -91,7 +91,15 @@
         "columnDefs": [
             { responsivePriority: 1, targets: 0 },
             { responsivePriority: 2, targets: -1, orderable: false },
-            { responsivePriority: 3, targets: 2 }
+            { responsivePriority: 3, targets: 2 },
+            { targets: 6, className: "dt-body-right" },
+            { targets: 7, className: "dt-body-right" },
+            { targets: 8, className: "dt-body-right" },
+            { targets: 9, className: "dt-body-right" },
+            { targets: 10, className: "dt-body-right" },
+            { targets: 11, className: "dt-body-right" },
+            { targets: 12, className: "dt-body-right" },
+            { targets: 13, className: "dt-body-right" },
         ],
         "language": {searchPlaceholder: "제품명, 메모"},
         "processing": true,
@@ -333,4 +341,11 @@ $(".count").focusout(function(){ setAutoAmountValue($(this)); });
 $(".fakeYmd").focusout(function(){
     ymd = set_yyyymmdd($(this).val());
     $('input[name=ymd]').val(ymd);
+});
+
+$( "#productReport" ).click(function() {
+    let start_date = set_yyyymmdd($('#start_date').val());
+    let end_date = set_yyyymmdd($('#end_date').val());
+    console.log(start_date, end_date);
+    window.open('/product/productReport?start_date=' + start_date + '&end_date=' + end_date);
 });

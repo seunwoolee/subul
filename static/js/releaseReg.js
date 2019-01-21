@@ -330,7 +330,12 @@ $('#orderRelease').on('submit', function (e)
     url = '/release/';
     for(var i=0; i<len; i++)
     {
+        let count = $("#orderRelease tbody tr:eq("+i+")").find('.count').val();
+        let ymd = $("#orderRelease tbody tr:eq("+i+")").find('input[name="ymd"]').val();
+        if(ymd.length == 8 && count.length > 0)
+        {
             var data = $("#orderRelease tbody tr:eq("+i+") :input").serialize();
+            console.log(data);
             var request = $.ajax({
             url: url,
             type: 'post',
@@ -341,6 +346,8 @@ $('#orderRelease').on('submit', function (e)
             }).fail(function() {
                 alert('수정 에러 전산실로 문의바랍니다.');
             });
+        }
+
     }
 });
 

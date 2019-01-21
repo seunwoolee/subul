@@ -6,4 +6,7 @@ urlpatterns = [
     path('', views.ProductRegister.as_view(), name='productRegister'),
     path('list', views.ProductList.as_view(), name='productList'),
     path('recall/<int:pk>', views.ProductRecall.as_view(), name='productRecall'),
+    path('productReport', views.ProductReport.as_view(), name='productReport'),
+    path('productOEMReg', views.ProductOEMReg.as_view(), name='productOEMReg'),
+    path('productOEMList', views.ProductOEMReg.as_view(), name='productOEMList'),
 ]

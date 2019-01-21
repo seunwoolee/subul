@@ -1,12 +1,14 @@
 from django import forms
 from django.forms import formset_factory
+
+from core.models import Location
 from django_select2.forms import Select2Widget
 from .models import ProductCode, ProductEgg, ProductMaster
 
 
 class MainForm(forms.ModelForm):
     ymd = forms.CharField(max_length=8, widget=forms.HiddenInput())
-    total_loss_openEgg= forms.IntegerField(widget=forms.NumberInput(attrs=
+    total_loss_openEgg = forms.IntegerField(widget=forms.NumberInput(attrs=
     {
         'placeholder': '할란',
         'data-toggle': 'tooltip',
@@ -246,8 +248,8 @@ class StepThreeForm(forms.Form):
 
 class StepFourForm(forms.Form):
     product = forms.ChoiceField(widget=Select2Widget,
-                                choices=list(ProductCode.objects.values_list('code', 'codeName').order_by('code')),
-                                required=False)
+                                choices=list(ProductCode.objects.values_list('code', 'codeName')
+                                             .filter(delete_state='N').order_by('code')), required=False)
     amount = forms.FloatField(min_value=0)
     amount_kg = forms.FloatField(min_value=0, widget=forms.HiddenInput())
     count = forms.IntegerField(min_value=0)
@@ -258,3 +260,32 @@ class StepFourForm(forms.Form):
 
 
 StepFourFormSet = formset_factory(StepFourForm)
+
+
+class ProductOEMForm(forms.Form):
+    product = forms.ChoiceField(widget=Select2Widget,
+                                choices=[('', '')] + list(ProductCode.objects.values_list('code', 'codeName')
+                                             .filter(delete_state='N').filter(oem='Y').order_by('code')))
+    location = forms.ChoiceField(widget=Select2Widget,
+                                 choices=[('', '')] + list(Location.objects.values_list('code', 'codeName')
+                                              .filter(delete_state='N').filter(type='09').order_by('code')))
+    # amount = forms.FloatField(min_value=0)
+    # amount_kg = forms.FloatField(min_value=0, widget=forms.HiddenInput())
+    count = forms.IntegerField(min_value=0)
+    purchaseSupplyPrice = forms.IntegerField(min_value=0)
+    purchaseVat = forms.IntegerField(min_value=0, required=False)
+    memo = forms.CharField(
+        label='',
+        widget=forms.Textarea(attrs={'rows': 2}), required=False
+    )
+    fakeYmd = forms.DateField(required=False, widget=forms.DateInput(
+        attrs={'type': 'date'}
+    ))
+    fakePurchaseYmd = forms.DateField(required=False, widget=forms.DateInput(
+        attrs={'type': 'date'}
+    ))
+    ymd = forms.CharField(max_length=8, widget=forms.HiddenInput())
+    purchaseYmd = forms.CharField(max_length=8, widget=forms.HiddenInput())
+
+
+ProductOEMFormSet = formset_factory(ProductOEMForm)

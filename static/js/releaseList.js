@@ -42,6 +42,7 @@ fetch_data(start_day, end_day);
             'groupByFilter':groupByFilter };
     table.DataTable().destroy();
     LOOKUP_TABLE[groupByFilter](args);
+    $('.customTolltip').tooltip();
  }
 
 function setStepOneDataTable(args)

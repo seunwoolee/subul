@@ -3,8 +3,8 @@ from django.db.models import SET_DEFAULT
 from users.models import CustomUser
 
 DELETE_STATE_CHOICES = (
-    ('Y', 'notDeleted'),
-    ('N', 'deleted'),
+    ('Y', 'deleted'),
+    ('N', 'notDeleted'),
 )
 
 
@@ -60,7 +60,7 @@ class Detail(models.Model):
     count = models.IntegerField()
     amount = models.FloatField()
     amount_kg = models.FloatField(blank=True, null=True)
-    memo = models.TextField(blank=True)
+    memo = models.TextField(blank=True, null=True)
     delete_state = models.CharField(
         max_length=2,
         choices=DELETE_STATE_CHOICES,

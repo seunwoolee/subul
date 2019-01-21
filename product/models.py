@@ -63,23 +63,11 @@ class ProductCode(Code):
 
 
 class ProductMaster(models.Model):
-    produce_id = models.IntegerField(default=0)
     ymd = models.CharField(max_length=8)
     total_loss_openEgg = models.FloatField(default=0)
     total_loss_insert = models.FloatField(default=0)
     total_loss_clean = models.FloatField(default=0)
     total_loss_fill = models.FloatField(default=0)
-    total_openEgg = models.FloatField(default=0)
-    total_eggUse = models.FloatField(default=0)
-    total_storeInsert = models.FloatField(default=0)
-    total_produceStore = models.FloatField(default=0)
-    total_productAmount = models.FloatField(default=0)
-    total_productCount = models.IntegerField(default=0)
-    delete_state = models.CharField(
-        max_length=2,
-        choices=DELETE_STATE_CHOICES,
-        default='N',
-    )
 
     def __str__(self):
         return self.ymd + '_생산마스터'
@@ -105,6 +93,8 @@ class ProductEgg(models.Model):
         ('01207', 'RAW Tank 등급란 전란'),
         ('01208', 'RAW Tank 등급란 난황'),
         ('01209', 'RAW Tank 등급란 난백'),
+        ('01213', 'RAW Tank 동물복지 유정란 전란'),
+        ('01214', 'Past Tank 동물복지 유정란 전란'),
     )
 
     CODE_TYPE_CHOICES = {
@@ -116,7 +106,9 @@ class ProductEgg(models.Model):
         '01206': 'Past Tank 난백',
         '01207': 'RAW Tank 등급란 전란',
         '01208': 'RAW Tank 등급란 난황',
-        '01209': 'RAW Tank 등급란 난백'
+        '01209': 'RAW Tank 등급란 난백',
+        '01213': 'RAW Tank 동물복지 유정란 전란',
+        '01214': 'Past Tank 동물복지 유정란 전란'
     }
 
     master_id = models.ForeignKey(ProductMaster,
@@ -134,7 +126,7 @@ class ProductEgg(models.Model):
     pastTank_amount = models.FloatField(default=0)
     loss_insert = models.FloatField(default=0)
     loss_openEgg = models.FloatField(default=0)
-    memo = models.TextField(blank=True)
+    memo = models.TextField(blank=True, null=True)
     delete_state = models.CharField(
         max_length=2,
         choices=DELETE_STATE_CHOICES,
@@ -231,6 +223,7 @@ class Product(Detail):
     PRODUCT_TYPE_CHOICES = (
         ('제품생산', '제품생산'),
         ('미출고품사용', '미출고품사용'),
+        ('OEM', 'OEM'),
     )
     type = models.CharField(
         max_length=30,
@@ -242,13 +235,15 @@ class Product(Detail):
                                   related_name='master_id')
     loss_clean = models.FloatField(default=0)
     loss_fill = models.FloatField(default=0)
+    productCode = models.ForeignKey(ProductCode, on_delete=models.CASCADE,
+                                    blank=True, null=True, related_name='productInfo')
     '''OEM 상품에 한해서 있는 필드'''
     purchaseYmd = models.CharField(max_length=8, blank=True, null=True)
     purchaseLocation = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='purchase_locationCode',
                                          blank=True, null=True)
     purchaseLocationName = models.CharField(max_length=255, blank=True, null=True)
-    productCode = models.ForeignKey(ProductCode, on_delete=models.CASCADE,
-                                    blank=True, null=True, related_name='productInfo')
+    purchaseSupplyPrice = models.IntegerField(blank=True, null=True)
+    purchaseVat = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.codeName + '(' + self.ymd + ')'

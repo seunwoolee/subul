@@ -74,59 +74,58 @@ class ReleaseReg(View):
         setProductCode = request.POST.get('setProductCode', None)
         specialTag = request.POST.get('specialTag', '')
 
-        if int(data['count']) and float(data['amount']) and data['ymd']:
-            totalPrice = int(data['price']) * int(data['count'])
-            releaseVat = round(totalPrice - (totalPrice / 1.1)) if productCode.vat else 0  # vat 계산
-            release = Release.objects.create(
-                ymd=data['ymd'],
-                productYmd=data['productYmd'],
-                code=data['productCode'],
-                codeName=productCode.codeName,
-                count=data['count'],
-                amount=data['amount'],
-                amount_kg=data['amount_kg'],
-                type=data['type'],
-                product_id=Product.objects.get(id=data['productId']),
-                memo=data['memo'],
-                releaseLocationCode=releaseLocation,
-                releaseLocationName=releaseLocation.codeName,
-                releaseStoreLocation=releaseStoreLocation,
-                price=totalPrice,
-                releaseVat=releaseVat,
-                specialTag=specialTag
-            )
+        totalPrice = int(data['price']) * int(data['count'])
+        releaseVat = round(totalPrice - (totalPrice / 1.1)) if productCode.vat else 0  # vat 계산
+        release = Release.objects.create(
+            ymd=data['ymd'],
+            productYmd=data['productYmd'],
+            code=data['productCode'],
+            codeName=productCode.codeName,
+            count=data['count'],
+            amount=data['amount'],
+            amount_kg=data['amount_kg'],
+            type=data['type'],
+            product_id=Product.objects.get(id=data['productId']),
+            memo=data['memo'],
+            releaseLocationCode=releaseLocation,
+            releaseLocationName=releaseLocation.codeName,
+            releaseStoreLocation=releaseStoreLocation,
+            price=totalPrice,
+            releaseVat=releaseVat,
+            specialTag=specialTag
+        )
 
-            if releaseOrder:  # 주문 기반 출고
-                order = Order.objects.get(id=releaseOrder)
-                release.releaseOrder = order
-                order.release_id = release
-                order.save()
+        if releaseOrder:  # 주문 기반 출고
+            order = Order.objects.get(id=releaseOrder)
+            release.releaseOrder = order
+            order.release_id = release
+            order.save()
 
-            if setProductCode:  # 세트 상품 존재
-                release.releaseSetProductCode = SetProductCode.objects.get(code=setProductCode)
+        if setProductCode:  # 세트 상품 존재
+            release.releaseSetProductCode = SetProductCode.objects.get(code=setProductCode)
 
+        ProductAdmin.objects.create(
+            product_id=Product.objects.get(id=data['productId']),
+            count=-int(data['count']),
+            amount=-float(data['amount']),
+            ymd=data['ymd'],
+            location=releaseStoreLocation,
+            releaseType=data['type'],
+            releaseSeq=release
+        )
+
+        if data['type'] == '이동':  # 이동장소에 재고 +
             ProductAdmin.objects.create(
                 product_id=Product.objects.get(id=data['productId']),
-                count=-int(data['count']),
-                amount=-float(data['amount']),
+                count=int(data['count']),
+                amount=float(data['amount']),
                 ymd=data['ymd'],
-                location=releaseStoreLocation,
-                releaseType=data['type'],
+                location=releaseLocation,
+                releaseType='생성',
                 releaseSeq=release
             )
 
-            if data['type'] == '이동':  # 이동장소에 재고 +
-                ProductAdmin.objects.create(
-                    product_id=Product.objects.get(id=data['productId']),
-                    count=int(data['count']),
-                    amount=float(data['amount']),
-                    ymd=data['ymd'],
-                    location=releaseLocation,
-                    releaseType='생성',
-                    releaseSeq=release
-                )
-
-            release.save()
+        release.save()
         return HttpResponse(status=200)
 
     def get(self, request):

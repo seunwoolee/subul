@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+
+<style>
+body {
+	margin: 0;
+	padding: 0;
+	background-color: #FAFAFA;
+	font: 9pt "Tahoma";
+}
+
+* {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+.page {
+	width: 21cm;
+	min-height: 29.7cm;
+	padding: 1cm;
+	margin: 1cm auto;
+	border: 1px #D3D3D3 solid;
+	border-radius: 5px;
+	background: white;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+.subpage {
+	padding: 1cm;
+	border: 2px black solid;
+	height: 280mm;
+	outline: 1cm white solid;
+}
+
+@page {
+	size: A4;
+	margin: 0;
+}
+@media print {
+	.page {
+		margin: 0;
+		border: initial;
+		border-radius: initial;
+		width: initial;
+		min-height: initial;
+		box-shadow: initial;
+		background: initial;
+		page-break-after: always;
+	}
+}
+	
+table {
+  border-collapse: collapse;
+
+}
+
+td, th {
+  white-space: nowrap;
+  border: 1px solid #000000;
+  text-align: center;
+  padding: 2px;
+}
+
+#approvalTable
+{
+	float : right;
+	width: 300px;
+	margin-top : 10px;
+}
+
+#mainTable
+{
+	width : 100%;
+}
+
+.sum
+{
+	background-color : #b9efbb
+}
+
+.blue
+{
+	color : blue;
+}
+</style>
+
+</head>
+
+
+
+<body>
+<div class="page">
+<div class="subpage">Page 1/2
+	<div> 
+	<h1 style="text-align : center; margin-bottom : 0px;">생산 일지</h1>
+	<div style="text-align : center;"><span>생산일 : 2019-01-01 ~ 2019-01-15</span></div>
+
+	<table id="approvalTable" style="">
+	<tr>
+		<th rowspan="2">결재</th>
+		<th>작성자</th>
+		<th>검토</th>
+		<th>검토</th>
+		<th>승인</th>
+	</tr>
+	<tr>
+		<td style="width : 80px; height : 50px;"><br><br></td>
+		<td style="width : 80px; height : 50px;"><br></td>
+		<td style="width : 80px; height : 50px;"><br></td>
+		<td style="width : 80px; height : 50px;"><br></td>
+	</tr>
+	</table>
+	</div>
+
+
+	<div style="clear : both;"></div>
+
+	<div>
+		<div>할란수율 : <span>83.69%</span> 제품수율 : 83.33% 로스합 : 588kg 투입LOSS : 0.61% 할란LOSS : 0.45%</div>
+		<table id="mainTable">
+		  <tr style="height:50px; background-color:yellow;">
+			<th>구분</th>
+			<th>제품명</th>
+			<th>투입수량</th>
+			<th>투입중량</th>
+			<th>RAWTANK</th>
+			<th>PASTTANK</th>
+			<th>생산량</th>
+		  </tr>
+		  <tr>
+			<td>원란</td>
+			<td class="blue">대란</td>
+			<td>28,800</td>
+			<td>1,757</td>
+			<td></td>
+			<td></td>
+			<td></td>
+		  </tr>
+		  <tr>
+			<td>원란</td>
+			<td class="blue">신선란</td>
+			<td>54,800</td>
+			<td>3,270</td>
+			<td></td>
+			<td></td>
+			<td></td>
+		  </tr>
+		  <tr>
+			<td></td>
+			<td class="sum"><b>원란</b></td>
+			<td class="sum"><b>합계</b></td>
+			<td class="sum blue"><b>707,160</b></td>
+			<td class="sum blue"><b>43,441</b></td>
+			<td class="sum"></td>
+			<td class="sum"></td>
+		  </tr>
+		  <tr>
+			<td>할란</td>
+			<td class="blue">Raw Tank 난백</td>
+			<td></td>
+			<td></td>
+			<td>9,582</td>
+			<td></td>
+			<td></td>
+		  </tr>
+		  <tr>
+			<td>할란</td>
+			<td class="blue">Raw Tank 난황</td>
+			<td></td>
+			<td></td>
+			<td>5,136</td>
+			<td></td>
+			<td></td>
+		  </tr>
+		  <tr>
+			<td></td>
+			<td class="sum"><b>할란</b></td>
+			<td class="sum"><b>합계</b></td>
+			<td class="sum"></td>
+			<td class="sum blue"><b>43,441</b></td>
+			<td class="sum"></td>
+			<td class="sum"></td>
+		  </tr>
+		  <tr>
+			<td>할란사용</td>
+			<td class="blue">Raw Tank 동물복지 유정란 전란</td>
+			<td></td>
+			<td></td>
+			<td>9,582</td>
+			<td></td>
+			<td></td>
+		  </tr>
+		  <tr>
+			<td>할란사용</td>
+			<td class="blue">Raw Tank 동물복지 유정란 전란</td>
+			<td></td>
+			<td></td>
+			<td>5,136</td>
+			<td></td>
+			<td></td>
+		  </tr>
+		  <tr>
+			<td></td>
+			<td class="sum"><b>할란사용</b></td>
+			<td class="sum"><b>합계</b></td>
+			<td class="sum"></td>
+			<td class="sum blue"><b>43,441</b></td>
+			<td class="sum"></td>
+			<td class="sum"></td>
+		  </tr>
+		</table>
+	</div>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,5 +1,7 @@
 @charset "UTF-8";
 
+.dt-body-right {text-align: right;}
+
 .datatable
 {
     width:100% !important;
@@ -8,6 +10,7 @@
 .table th{
     white-space: nowrap;
     font-size : 0.75rem;
+    text-align: center;
 }
 
 .table td , .table input, .table select, .table option{

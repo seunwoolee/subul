@@ -6,9 +6,10 @@ from rest_framework import status
 from rest_framework.response import Response
 
 from core.models import Location
+from eggs.models import Egg
 from eventlog.models import log
 from product.models import ProductEgg, Product, ProductCode, ProductAdmin, ProductMaster
-from .forms import StepOneForm, StepTwoForm, StepThreeForm, StepFourForm, StepFourFormSet, MainForm
+from .forms import StepOneForm, StepTwoForm, StepThreeForm, StepFourForm, StepFourFormSet, MainForm, ProductOEMFormSet
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
@@ -24,13 +25,14 @@ class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
         formset = StepFourFormSet(request.POST)
 
         if form0.is_valid():
-            ymd = form0.cleaned_data.get('ymd', None)
-            productMaster = ProductMaster.objects.filter(ymd=ymd).first()
-
-            if productMaster:
-                main = productMaster
-            else:
-                main = form0.save()
+            # ymd = form0.cleaned_data.get('ymd', None)
+            main = form0.save()
+            # productMaster = ProductMaster.objects.filter(ymd=ymd).first()
+            #
+            # if productMaster:
+            #     main = productMaster
+            # else:
+            #     main = form0.save()
 
         if form1.is_valid():
             stepOneProductEgg = [[key, value] for key, value in form1.cleaned_data.items()]
@@ -210,3 +212,72 @@ class ProductRecall(LoginRequiredMixin, PermissionRequiredMixin, View):
             return HttpResponse(status=200)
         else:
             return HttpResponse(status=400)
+
+
+class ProductReport(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = '/'
+    permission_required = 'product.change_product'
+
+    def get(self, request):
+        SORT_ARRAY = ['미출고품사용', '미출고품투입', '할란', '할란사용', '공정품투입', '공정품발생']
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        egg = Egg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(type='생산')
+        productEgg = ProductEgg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date)
+        productEgg = sorted(productEgg, key=lambda x: SORT_ARRAY.index(x.type))
+        print(productEgg)
+        product = Product.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date)
+        return render(request, 'product/productReport.html')
+
+
+class ProductOEMReg(LoginRequiredMixin, View):
+
+    def post(self, request):
+        formset = ProductOEMFormSet(request.POST)
+        if formset.is_valid():
+            for form in formset:
+                purchaseYmd = form.cleaned_data.get('purchaseYmd', None)
+                ymd = form.cleaned_data.get('ymd', None)
+                purchaseLocation = form.cleaned_data.get('location', None)
+                purchaseSupplyPrice = form.cleaned_data.get('purchaseSupplyPrice', None)
+                purchaseVat = form.cleaned_data.get('purchaseVat', None)
+                code = form.cleaned_data.get('product', None)
+                count = form.cleaned_data.get('count', None)
+                memo = form.cleaned_data.get('memo', None)
+                KCFRESH_LOCATION_CODE = '00301'
+                location = Location.objects.get(code=KCFRESH_LOCATION_CODE)
+                purchaseLocation = Location.objects.get(code=purchaseLocation)
+                productCode = ProductCode.objects.get(code=code)
+                main = ProductMaster.objects.filter(ymd='00000000').first()
+                product = Product.objects.create(
+                    master_id=main,
+                    ymd=ymd,
+                    code=code,
+                    codeName=productCode.codeName,
+                    productCode=productCode,
+                    amount=count,
+                    amount_kg=1,
+                    count=count,
+                    memo=memo,
+                    purchaseYmd=purchaseYmd,
+                    purchaseLocation=purchaseLocation,
+                    purchaseLocationName=purchaseLocation.codeName,
+                    purchaseSupplyPrice=purchaseSupplyPrice,
+                    purchaseVat=purchaseVat
+                )
+
+                productAdmin = ProductAdmin.objects.create(
+                    product_id=product,
+                    amount=count,
+                    count=count,
+                    ymd=ymd,
+                    location=location,
+                )
+                product.save()
+                productAdmin.save()
+
+        return redirect('productList')
+
+    def get(self, request):
+        ProductOEMForm = ProductOEMFormSet(request.GET or None)
+        return render(request, 'productOEM/productOEMReg.html', {'ProductOEMForm': ProductOEMForm})
