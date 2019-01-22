@@ -64,10 +64,10 @@ class ProductCode(Code):
 
 class ProductMaster(models.Model):
     ymd = models.CharField(max_length=8)
-    total_loss_openEgg = models.FloatField(default=0)
-    total_loss_insert = models.FloatField(default=0)
-    total_loss_clean = models.FloatField(default=0)
-    total_loss_fill = models.FloatField(default=0)
+    total_loss_openEgg = models.DecimalField(decimal_places=2, max_digits=19, default=0)
+    total_loss_insert = models.DecimalField(decimal_places=2, max_digits=19, default=0)
+    total_loss_clean = models.DecimalField(decimal_places=2, max_digits=19, default=0)
+    total_loss_fill = models.DecimalField(decimal_places=2, max_digits=19, default=0)
 
     def __str__(self):
         return self.ymd + '_생산마스터'
@@ -122,10 +122,12 @@ class ProductEgg(models.Model):
     )
     code = models.CharField(max_length=10, default='01201')
     codeName = models.CharField(max_length=255, default=CODE_TYPE_CHOICES['01201'])
-    rawTank_amount = models.FloatField(default=0)
-    pastTank_amount = models.FloatField(default=0)
-    loss_insert = models.FloatField(default=0)
-    loss_openEgg = models.FloatField(default=0)
+    # rawTank_amount = models.FloatField(default=0)
+    # pastTank_amount = models.FloatField(default=0)
+    rawTank_amount = models.DecimalField(decimal_places=2, max_digits=19, default=0)
+    pastTank_amount = models.DecimalField(decimal_places=2, max_digits=19,default=0)
+    loss_insert = models.DecimalField(decimal_places=2, max_digits=19,default=0)
+    loss_openEgg = models.DecimalField(decimal_places=2, max_digits=19,default=0)
     memo = models.TextField(blank=True, null=True)
     delete_state = models.CharField(
         max_length=2,

@@ -134,10 +134,12 @@ class Release(Detail):
                 .annotate(count=Sum('count')) \
                 .annotate(totalPrice=Sum('price')) \
                 .annotate(releaseVat=Sum('releaseVat')) \
-                .annotate(kgPrice=Cast(F('totalPrice') / F('amount'), DecimalField(max_digits=20, decimal_places=2))) \
-                .annotate(supplyPrice=ExpressionWrapper(F('totalPrice') - F('releaseVat'), output_field=FloatField())) \
-                .annotate(eaPrice=ExpressionWrapper(F('totalPrice') / F('count'), output_field=FloatField())) \
                 .annotate(releaseStoreLocationCodeName=F('releaseStoreLocation__codeName'))
+
+            queryset = queryset.annotate(eaPrice=Case(When(totalPrice=0, then=0), default=F('totalPrice') / F('count')))\
+                    .annotate(supplyPrice=ExpressionWrapper(F('totalPrice') - F('releaseVat'), output_field=FloatField()))\
+                    .annotate(kgPrice=ExpressionWrapper(F('totalPrice') / F('amount'), output_field = FloatField()))
+
         elif groupByFilter == 'stepThree':
             RELEASE_COLUMN_CHOICES = Choices(
                 ('0', 'code'),
@@ -164,10 +166,12 @@ class Release(Detail):
                 .annotate(count=Sum('count')) \
                 .annotate(releaseVat=Sum('releaseVat')) \
                 .annotate(totalPrice=Sum('price')) \
-                .annotate(kgPrice=ExpressionWrapper(F('totalPrice') / F('amount'), output_field=FloatField())) \
-                .annotate(supplyPrice=ExpressionWrapper(F('totalPrice') - F('releaseVat'), output_field=FloatField())) \
-                .annotate(eaPrice=ExpressionWrapper(F('totalPrice') / F('count'), output_field=FloatField())) \
                 .annotate(releaseStoreLocationCodeName=F('releaseStoreLocation__codeName'))
+
+            queryset = queryset.annotate(eaPrice=Case(When(totalPrice=0, then=0), default=F('totalPrice') / F('count')))\
+                    .annotate(supplyPrice=ExpressionWrapper(F('totalPrice') - F('releaseVat'), output_field=FloatField()))\
+                    .annotate(kgPrice=ExpressionWrapper(F('totalPrice') / F('amount'), output_field = FloatField()))
+
         elif groupByFilter == 'stepFour':
             RELEASE_COLUMN_CHOICES = Choices(
                 ('0', 'releaseLocationName'),
@@ -277,6 +281,7 @@ class Release(Detail):
                 .annotate(totalCount=Sum('count')) \
                 .annotate(totalAmount=Sum('amount')) \
                 .filter(ymd__gte=start_date).filter(ymd__lte=end_date)  # 단순히 묶기위해 Sum을함
+
             if search_value:
                 productAdmin_period = productAdmin_period.filter(productCodeName__icontains=search_value)
 
@@ -338,60 +343,62 @@ class Release(Detail):
                     result['currentStock'] = CURRENT_STOCK
                     arr.append(result)
 
+            print(arr)
+
             # 전일 재고 액란 구하기
-            tankValue_previous = ProductEgg.objects.values('code', 'codeName') \
-                .filter(delete_state='N').annotate(rawSum=Sum('rawTank_amount')) \
-                .annotate(pastSum=Sum('pastTank_amount')).filter(ymd__lt=start_date).order_by('code')
-
-            if search_value:
-                tankValue_previous = tankValue_previous.filter(codeName__icontains=search_value)
-
-            for tank in tankValue_previous:
-                if "RAW" in tank["codeName"]:
-                    tank["amount"] = tank["rawSum"]
-                elif "Past" in tank["codeName"]:
-                    tank["amount"] = tank["pastSum"]
-
-            # 기간 내 액란 구하기
-            tankValue_period = ProductEgg.objects.values('code', 'codeName') \
-                .filter(delete_state='N').annotate(rawSum=Sum('rawTank_amount')) \
-                .annotate(pastSum=Sum('pastTank_amount')).filter(ymd__gte=start_date).filter(
-                ymd__lte=end_date).order_by('code')
-
-            if search_value:
-                tankValue_period = tankValue_period.filter(codeName__icontains=search_value)
-
-            for tank in tankValue_period:
-                if "RAW" in tank["codeName"]:
-                    tank["amount"] = tank["rawSum"]
-                elif "Past" in tank["codeName"]:
-                    tank["amount"] = tank["pastSum"]
-
-            for eachTank in tankValue_previous:
-                IN = 0
-                for in_period in tankValue_period:
-                    if eachTank['code'] == in_period['code']:
-                        IN = in_period['amount']
-                        break
-
-                CURRENT_STOCK = eachTank['amount'] + IN
-                # if IN == 0: IN = None
-                # if eachTank['amount'] == 0: eachTank['amount'] = None
-
-                result = {}
-                result['id'] = 99999
-                result['code'] = eachTank['code']
-                result['codeName'] = eachTank['codeName']
-                result['ymd'] = ''
-                result['previousStock'] = eachTank['amount']
-                result['in'] = IN
-                result['sale'] = None
-                result['sample'] = None
-                result['broken'] = None
-                result['notProduct'] = None
-                result['recall'] = None
-                result['currentStock'] = CURRENT_STOCK
-                arr.append(result)
+            # tankValue_previous = ProductEgg.objects.values('code', 'codeName') \
+            #     .filter(delete_state='N').annotate(rawSum=Sum('rawTank_amount')) \
+            #     .annotate(pastSum=Sum('pastTank_amount')).filter(ymd__lt=start_date).order_by('code')
+            #
+            # if search_value:
+            #     tankValue_previous = tankValue_previous.filter(codeName__icontains=search_value)
+            #
+            # for tank in tankValue_previous:
+            #     if "RAW" in tank["codeName"]:
+            #         tank["amount"] = tank["rawSum"]
+            #     elif "Past" in tank["codeName"]:
+            #         tank["amount"] = tank["pastSum"]
+            #
+            # # 기간 내 액란 구하기
+            # tankValue_period = ProductEgg.objects.values('code', 'codeName') \
+            #     .filter(delete_state='N').annotate(rawSum=Sum('rawTank_amount')) \
+            #     .annotate(pastSum=Sum('pastTank_amount')).filter(ymd__gte=start_date).filter(
+            #     ymd__lte=end_date).order_by('code')
+            #
+            # if search_value:
+            #     tankValue_period = tankValue_period.filter(codeName__icontains=search_value)
+            #
+            # for tank in tankValue_period:
+            #     if "RAW" in tank["codeName"]:
+            #         tank["amount"] = tank["rawSum"]
+            #     elif "Past" in tank["codeName"]:
+            #         tank["amount"] = tank["pastSum"]
+            #
+            # for eachTank in tankValue_previous:
+            #     IN = 0
+            #     for in_period in tankValue_period:
+            #         if eachTank['code'] == in_period['code']:
+            #             IN = in_period['amount']
+            #             break
+            #
+            #     CURRENT_STOCK = eachTank['amount'] + IN
+            #     # if IN == 0: IN = None
+            #     # if eachTank['amount'] == 0: eachTank['amount'] = None
+            #
+            #     result = {}
+            #     result['id'] = 99999
+            #     result['code'] = eachTank['code']
+            #     result['codeName'] = eachTank['codeName']
+            #     result['ymd'] = ''
+            #     result['previousStock'] = eachTank['amount']
+            #     result['in'] = IN
+            #     result['sale'] = None
+            #     result['sample'] = None
+            #     result['broken'] = None
+            #     result['notProduct'] = None
+            #     result['recall'] = None
+            #     result['currentStock'] = CURRENT_STOCK
+            #     arr.append(result)
 
             if order == 'desc':
                 arr = sorted(arr, key=lambda k: k[order_column] if k[order_column] is not None else 0, reverse=True)
