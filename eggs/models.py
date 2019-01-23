@@ -35,7 +35,8 @@ class Egg(Detail):
     locationCode = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True)
     locationCodeName = models.CharField(max_length=255, null=True, blank=True)
     eggCode = models.ForeignKey(EggCode, on_delete=models.CASCADE, null=True, blank=True)
-    amount = models.FloatField(null=True, blank=True)
+    # amount = models.FloatField(null=True, blank=True)
+    amount = models.DecimalField(decimal_places=2, max_digits=19, null=True, blank=True)
 
     def __str__(self):
         return self.codeName + '(' + self.in_ymd + ') ' + self.type + '_' + self.in_locationCodeName
@@ -297,4 +298,4 @@ class Egg(Detail):
     @staticmethod
     def getAmount(start_date, end_date):
         return Egg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).aggregate(
-            totalAmount=Cast(Sum('amount'), FloatField()))['totalAmount']
+            totalAmount=Sum('amount'))['totalAmount']

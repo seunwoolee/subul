@@ -41,8 +41,8 @@ class Code(models.Model):
 
 class Master(models.Model):
     ymd = models.CharField(max_length=8)
-    totalCount = models.IntegerField(default=0)
-    totalAmount = models.FloatField(default=0)
+    totalCount = models.DecimalField(decimal_places=2, max_digits=19, default=0)
+    totalAmount = models.DecimalField(decimal_places=2, max_digits=19, default=0)
     delete_state = models.CharField(
         max_length=2,
         choices=DELETE_STATE_CHOICES,
@@ -58,8 +58,8 @@ class Detail(models.Model):
     code = models.CharField(max_length=255)
     codeName = models.CharField(max_length=255)
     count = models.IntegerField()
-    amount = models.FloatField()
-    amount_kg = models.FloatField(blank=True, null=True)
+    amount = models.DecimalField(decimal_places=2, max_digits=19, default=0)
+    amount_kg = models.DecimalField(decimal_places=2, max_digits=19, default=0, blank=True, null=True)
     memo = models.TextField(blank=True, null=True)
     delete_state = models.CharField(
         max_length=2,

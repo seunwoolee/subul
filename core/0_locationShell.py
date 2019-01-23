@@ -29,7 +29,8 @@ query = " select \
                 담당직원 as locatoin_manager \
             from KCFEED.FRESH장소CD"
 cursor.execute(query)
-
+Location.objects.all().delete()
+CustomUser.objects.all().delete()
 for row in cursor:
     delete_state = 'N' if row[9] == 'Y' else 'Y'
     user = row[10]

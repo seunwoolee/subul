@@ -17,7 +17,7 @@ cursor = con.cursor()
 # 고유 생성만 실시
 query = " select * from kcfeed.FRESH상품 where 구분1 = 1 and 수량 > 0"
 cursor.execute(query)
-for i, row in enumerate(cursor, start=90000):
+for i, row in enumerate(cursor, start=95000):
     id = i
     productYmd = row[2]
     to_location = row[5]

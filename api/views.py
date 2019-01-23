@@ -131,6 +131,7 @@ class ProductSummaryAPIView(APIView):
         loss_fill_amount = loss_fill_amount['loss_fill'] if loss_fill_amount['loss_fill'] else 0
         loss_insert_amount = loss_insert_amount['loss_insert'] if loss_insert_amount['loss_insert'] else 0
         loss_openEgg_amount = loss_openEgg_amount['loss_openEgg'] if loss_openEgg_amount['loss_openEgg'] else 0
+        print(type(processProduct_amount), type(total_EggAmount))
         openEggPercent = round((processProduct_amount / total_EggAmount * 100), 2) if total_EggAmount > 0 else 0
         productPercent = round(
             ((product_amount + processProduct_amount + openEggUse_amount + processProductInsert_amount +
@@ -151,7 +152,6 @@ class OrdersAPIView(APIView):
 
     def get(self, request, format=None):
         result = dict()
-        print(request.query_params)
         try:
             if request.query_params.get("gubunFilter", None) != "stepThree":
                 orders = Order.orderQuery(**request.query_params)

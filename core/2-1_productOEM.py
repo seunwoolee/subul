@@ -1,5 +1,5 @@
 import os
-
+from decimal import Decimal
 import cx_Oracle
 
 # cx_Oracle 한글처리 시작
@@ -18,7 +18,7 @@ query = " select '' 문서번호, MAX(구매일) as 구매일 , 생산일, MIN(�
          상품코드,상품명, sum(수량) as 수량, sum(금액) as 금액,sum(부가세) as 부가세, '' as 구분1, '' as 구분2 , '' as 입력자 , '' as 입력일 , '' as 수정자 , '' as 수정일 , MIN(메모)as 메모  \
          from kcfeed.FRESH상품 where 구분1 = 0 group by 생산일,상품코드,상품명"
 cursor.execute(query)
-
+master_instance= None
 for row in cursor:
     purchaseYmd = row[1]
     ymd = row[2]

@@ -54,6 +54,9 @@ def lookup_supplyPrice(d, key):
         result = d[key]["supplyPrice"]
     except:
         result = ' '
+
+    if not result:
+        result = ' '
     return result
 
 
@@ -63,14 +66,21 @@ def lookup_vatPrice(d, key):
         result = d[key]["vatPrice"]
     except:
         result = ' '
+
+    if not result:
+        result = ' '
     return result
 
 
 @register.filter
 def lookup_releaseVat(d, key):
+
     try:
         result = d[key]["releaseVat"]
     except:
+        result = ' '
+
+    if not result:
         result = ' '
     return result
 
@@ -80,6 +90,9 @@ def lookup_memo(d, key):
     try:
         result = d[key]["memo"]
     except:
+        result = ' '
+
+    if not result:
         result = ' '
     return result
 

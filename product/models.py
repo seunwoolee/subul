@@ -43,7 +43,7 @@ class ProductCode(Code):
         choices=CONTENT_TYPE_CHOICES,
         default='',
     )
-    amount_kg = models.FloatField()
+    amount_kg = models.DecimalField(decimal_places=2, max_digits=19, default=0)
     price = models.IntegerField()
     store_type = models.CharField(
         max_length=10,
@@ -235,8 +235,8 @@ class Product(Detail):
     master_id = models.ForeignKey(ProductMaster,
                                   on_delete=models.CASCADE,
                                   related_name='master_id')
-    loss_clean = models.FloatField(default=0)
-    loss_fill = models.FloatField(default=0)
+    loss_clean = models.DecimalField(decimal_places=2, max_digits=19, default=0)
+    loss_fill = models.DecimalField(decimal_places=2, max_digits=19, default=0)
     productCode = models.ForeignKey(ProductCode, on_delete=models.CASCADE,
                                     blank=True, null=True, related_name='productInfo')
     '''OEM 상품에 한해서 있는 필드'''
@@ -302,7 +302,7 @@ class ProductAdmin(models.Model):
         ('재고조정', '재고조정'),
     )
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
-    amount = models.FloatField()
+    amount = models.DecimalField(decimal_places=2, max_digits=19, default=0)
     count = models.IntegerField()
     ymd = models.CharField(max_length=8)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)

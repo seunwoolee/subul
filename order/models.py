@@ -53,14 +53,16 @@ class Order(Detail):
         end_date = kwargs.get('end_date', None)[0]
         order_column = kwargs.get('order[0][column]', None)[0]
         order = kwargs.get('order[0][dir]', None)[0]
+        releaseOrder = kwargs.get("releaseOrder", None)
         checkBoxFilter = None
         gubunFilter = None
-        if length != -1:
+
+        if not releaseOrder :
             checkBoxFilter = kwargs.get('checkBoxFilter', None)[0]
             gubunFilter = kwargs.get('gubunFilter', None)[0]
         if checkBoxFilter: checkBoxFilter = checkBoxFilter.split(',')
 
-        if length != -1:  # 주문내역조회
+        if not releaseOrder:  # 주문내역조회
             if gubunFilter == "stepOne":
                 ORDER_COLUMN_CHOICES = Choices(
                     ('0', 'id'),
@@ -142,20 +144,20 @@ class Order(Detail):
         if order == 'desc':
             order_column = '-' + order_column
 
-        # total = queryset.count()
-        # if search_value:
-        #     queryset = queryset.filter(Q(orderLocationName__icontains=search_value) |
-        #                                Q(codeName__icontains=search_value) |
-        #                                Q(memo__icontains=search_value))
         count = queryset.count()
 
-        if length != -1:
+        # if length != -1:
+        if not releaseOrder:
             if checkBoxFilter:  # TODO 담당자 검색
                 queryset = queryset.filter(orderLocationCode__type__in=checkBoxFilter)
 
-            queryset = queryset.order_by(order_column)[start:start + length]
         else:
             queryset = queryset.filter(release_id=None).order_by(order_column)  # 출고가능한 ORDER
+
+        if length != -1:
+            queryset = queryset.order_by(order_column)[start:start + length]
+        else:
+            queryset = queryset.order_by(order_column)
 
         return {
             'items': queryset,

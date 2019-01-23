@@ -1,4 +1,5 @@
 import os
+from decimal import Decimal
 
 import cx_Oracle
 
@@ -35,7 +36,7 @@ for i, row in enumerate(cursor):
     amount = row[8]
     product = Product.objects.filter(ymd=productYmd).filter(code=productCode).first()
     product_Instance = ProductCode.objects.get(code=productCode)
-    count = round(amount / product_Instance.amount_kg)
+    count = round(Decimal(amount) / product_Instance.amount_kg)
     location=Location.objects.get(code='00301')
 
     ProductAdmin.objects.create(
@@ -68,7 +69,7 @@ for i, row in enumerate(cursor):
     locationCode = row[16]
     product = Product.objects.filter(ymd=productYmd).filter(code=productCode).first()
     product_Instance = ProductCode.objects.get(code=productCode)
-    count = round(amount / product_Instance.amount_kg)
+    count = round(Decimal(amount) / product_Instance.amount_kg)
     location=Location.objects.get(code=locationCode)
 
     ProductAdmin.objects.create(

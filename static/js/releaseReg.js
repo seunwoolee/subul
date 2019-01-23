@@ -49,7 +49,7 @@ function order_fetch_data(start_date='', end_date='')
         "ajax": {
             "url": "/api/order/",
             "type": "GET",
-            "data": { start_date:start_date, end_date:end_date }
+            "data": { start_date:start_date, end_date:end_date, releaseOrder:true }
         },
          "createdRow": function( row, data, dataIndex ) {
             $( row ).find('td:eq(0)').attr('data-title','ID');

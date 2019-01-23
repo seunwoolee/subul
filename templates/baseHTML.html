@@ -58,8 +58,14 @@
         <li class="nav-item dropdown">
             <a class="nav-link nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
                aria-expanded="false">
-                <img class="img-avatar" src="{% static 'img/employee/21803.jpg' %} " alt="admin@bootstrapmaster.com">
-                {{ user.username }}
+                {% if user.is_authenticated %}
+                    {% with 'img/employee/'|add:user.username|add:'.jpg' as image_static%}
+                    <img class="img-avatar" src="{% static  image_static %} " alt=" ">
+                    {% endwith%}
+                   <span>{{ user.username }}</span>
+                {% else %}
+                    <span>로그인필요</span>
+                {% endif %}
             </a>
             <div class="dropdown-menu dropdown-menu-right">
                 <div class="dropdown-header text-center">

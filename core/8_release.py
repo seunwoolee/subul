@@ -1,4 +1,5 @@
 import os
+from decimal import Decimal
 
 import cx_Oracle
 
@@ -39,7 +40,7 @@ for i, row in enumerate(cursor):
     product_Instance = ProductCode.objects.get(code=productCode)
     toLocation_instance = Location.objects.filter(code=locationCode).first()
     fromLocation_instance = Location.objects.get(code=storedLocation)
-    count = round(amount / product_Instance.amount_kg)
+    count = round(Decimal(amount) / product_Instance.amount_kg)
 
     if not price:
         price=0
@@ -82,6 +83,8 @@ for i, row in enumerate(cursor):
 
         if order_instance:
             release.releaseOrder = order_instance
+            order_instance.release_id = release
+            order_instance.save()
 
     if setProductCode:
         release.releaseSetProductCode=SetProductCode.objects.get(code=setProductCode)

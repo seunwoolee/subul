@@ -218,7 +218,7 @@ class Release(Detail):
                 oem=F('product_id__productCode__oem'),
                 productYmd=F('product_id__ymd')) \
                 .annotate(totalCount=Sum('count')).annotate(totalAmount=Sum('amount')) \
-                .filter(ymd__lt=start_date).filter(totalCount__gt=0)  # 재고가 0초과인 이전 재고
+                .filter(ymd__lt=start_date).filter(totalCount__gt=0).filter(totalAmount__gt=0)  # 재고가 0초과인 이전 재고
 
             if search_value:
                 productAdmin_previous = productAdmin_previous.filter(productCodeName__icontains=search_value)
@@ -343,62 +343,62 @@ class Release(Detail):
                     result['currentStock'] = CURRENT_STOCK
                     arr.append(result)
 
-            print(arr)
+            # print(arr)
 
             # 전일 재고 액란 구하기
-            # tankValue_previous = ProductEgg.objects.values('code', 'codeName') \
-            #     .filter(delete_state='N').annotate(rawSum=Sum('rawTank_amount')) \
-            #     .annotate(pastSum=Sum('pastTank_amount')).filter(ymd__lt=start_date).order_by('code')
-            #
-            # if search_value:
-            #     tankValue_previous = tankValue_previous.filter(codeName__icontains=search_value)
-            #
-            # for tank in tankValue_previous:
-            #     if "RAW" in tank["codeName"]:
-            #         tank["amount"] = tank["rawSum"]
-            #     elif "Past" in tank["codeName"]:
-            #         tank["amount"] = tank["pastSum"]
-            #
-            # # 기간 내 액란 구하기
-            # tankValue_period = ProductEgg.objects.values('code', 'codeName') \
-            #     .filter(delete_state='N').annotate(rawSum=Sum('rawTank_amount')) \
-            #     .annotate(pastSum=Sum('pastTank_amount')).filter(ymd__gte=start_date).filter(
-            #     ymd__lte=end_date).order_by('code')
-            #
-            # if search_value:
-            #     tankValue_period = tankValue_period.filter(codeName__icontains=search_value)
-            #
-            # for tank in tankValue_period:
-            #     if "RAW" in tank["codeName"]:
-            #         tank["amount"] = tank["rawSum"]
-            #     elif "Past" in tank["codeName"]:
-            #         tank["amount"] = tank["pastSum"]
-            #
-            # for eachTank in tankValue_previous:
-            #     IN = 0
-            #     for in_period in tankValue_period:
-            #         if eachTank['code'] == in_period['code']:
-            #             IN = in_period['amount']
-            #             break
-            #
-            #     CURRENT_STOCK = eachTank['amount'] + IN
-            #     # if IN == 0: IN = None
-            #     # if eachTank['amount'] == 0: eachTank['amount'] = None
-            #
-            #     result = {}
-            #     result['id'] = 99999
-            #     result['code'] = eachTank['code']
-            #     result['codeName'] = eachTank['codeName']
-            #     result['ymd'] = ''
-            #     result['previousStock'] = eachTank['amount']
-            #     result['in'] = IN
-            #     result['sale'] = None
-            #     result['sample'] = None
-            #     result['broken'] = None
-            #     result['notProduct'] = None
-            #     result['recall'] = None
-            #     result['currentStock'] = CURRENT_STOCK
-            #     arr.append(result)
+            tankValue_previous = ProductEgg.objects.values('code', 'codeName') \
+                .filter(delete_state='N').annotate(rawSum=Sum('rawTank_amount')) \
+                .annotate(pastSum=Sum('pastTank_amount')).filter(ymd__lt=start_date).order_by('code')
+
+            if search_value:
+                tankValue_previous = tankValue_previous.filter(codeName__icontains=search_value)
+
+            for tank in tankValue_previous:
+                if "RAW" in tank["codeName"]:
+                    tank["amount"] = tank["rawSum"]
+                elif "Past" in tank["codeName"]:
+                    tank["amount"] = tank["pastSum"]
+
+            # 기간 내 액란 구하기
+            tankValue_period = ProductEgg.objects.values('code', 'codeName') \
+                .filter(delete_state='N').annotate(rawSum=Sum('rawTank_amount')) \
+                .annotate(pastSum=Sum('pastTank_amount')).filter(ymd__gte=start_date).filter(
+                ymd__lte=end_date).order_by('code')
+
+            if search_value:
+                tankValue_period = tankValue_period.filter(codeName__icontains=search_value)
+
+            for tank in tankValue_period:
+                if "RAW" in tank["codeName"]:
+                    tank["amount"] = tank["rawSum"]
+                elif "Past" in tank["codeName"]:
+                    tank["amount"] = tank["pastSum"]
+
+            for eachTank in tankValue_previous:
+                IN = 0
+                for in_period in tankValue_period:
+                    if eachTank['code'] == in_period['code']:
+                        IN = in_period['amount']
+                        break
+
+                CURRENT_STOCK = eachTank['amount'] + IN
+                # if IN == 0: IN = None
+                # if eachTank['amount'] == 0: eachTank['amount'] = None
+
+                result = {}
+                result['id'] = 99999
+                result['code'] = eachTank['code']
+                result['codeName'] = eachTank['codeName']
+                result['ymd'] = ''
+                result['previousStock'] = eachTank['amount']
+                result['in'] = IN
+                result['sale'] = None
+                result['sample'] = None
+                result['broken'] = None
+                result['notProduct'] = None
+                result['recall'] = None
+                result['currentStock'] = CURRENT_STOCK
+                arr.append(result)
 
             if order == 'desc':
                 arr = sorted(arr, key=lambda k: k[order_column] if k[order_column] is not None else 0, reverse=True)
@@ -585,7 +585,11 @@ class Release(Detail):
                                        Q(memo__icontains=search_value))
 
         count = queryset.count()
-        queryset = queryset.order_by(order_column)[start:start + length]
+
+        if length > 0:
+            queryset = queryset.order_by(order_column)[start:start + length]
+        else:
+            queryset = queryset.order_by(order_column)
         return {
             'items': queryset,
             'count': count,

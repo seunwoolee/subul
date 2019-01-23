@@ -1,5 +1,5 @@
 import os
-
+from decimal import Decimal
 import cx_Oracle
 
 # cx_Oracle 한글처리 시작
@@ -61,7 +61,8 @@ for row in cursor:
     loss_clean = row[14]
     loss_fill = row[15]
     product_Instance = ProductCode.objects.get(code=productCode)
-    count = round(amount / product_Instance.amount_kg)
+    count = round(Decimal(amount) / product_Instance.amount_kg)
+    # count = round(amount / product_Instance.amount_kg)
 
     master_instance = ProductMaster.objects.filter(ymd=ymd).first()
     if not master_instance:
