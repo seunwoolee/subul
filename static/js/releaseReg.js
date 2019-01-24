@@ -1,4 +1,4 @@
-fetch_data();
+//fetch_data();
 function fetch_data()
 {
     table = $('.datatable').DataTable({
@@ -111,6 +111,16 @@ $('#search').click(function(){
     else
     {
        alert("날짜를 모두 입력해주세요");
+    }
+});
+
+$('#stockFind').click(function(){
+    try{
+        table.DataTable().destroy();
+    } catch ( e ){
+        if (e instanceof ReferenceError){
+            fetch_data();
+        }
     }
 });
 

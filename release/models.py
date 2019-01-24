@@ -215,7 +215,6 @@ class Release(Detail):
                 productId=F('product_id__id'),
                 productCode=F('product_id__code'),
                 productCodeName=F('product_id__codeName'),
-                oem=F('product_id__productCode__oem'),
                 productYmd=F('product_id__ymd')) \
                 .annotate(totalCount=Sum('count')).annotate(totalAmount=Sum('amount')) \
                 .filter(ymd__lt=start_date).filter(totalCount__gt=0).filter(totalAmount__gt=0)  # 재고가 0초과인 이전 재고
@@ -232,7 +231,7 @@ class Release(Detail):
                     .annotate(totalAmount=Sum('amount')) \
                     .filter(product_id=previous['productId']).filter(ymd__gte=start_date).filter(ymd__lte=end_date)
 
-                PREVIOUS_STOCK = previous['totalAmount'] if previous['oem'] == 'N' else previous["totalCount"]
+                PREVIOUS_STOCK = previous['totalAmount']
                 SALE = 0
                 SAMPLE = 0
                 BROKEN = 0
@@ -240,7 +239,7 @@ class Release(Detail):
                 RECALL = 0
 
                 for element in countPerType:  # 전일재고니깐 생성 없음
-                    number = element["totalAmount"] if previous['oem'] == 'N' else element["totalCount"]
+                    number = element["totalAmount"]
                     if element['type'] == '판매':
                         SALE += number
                     elif element['type'] == '샘플' or element['type'] == '증정':
@@ -276,7 +275,6 @@ class Release(Detail):
             productAdmin_period = ProductAdmin.objects.values(productId=F('product_id__id'),
                                                               productCode=F('product_id__code'),
                                                               productCodeName=F('product_id__codeName'),
-                                                              oem=F('product_id__productCode__oem'),
                                                               productYmd=F('product_id__ymd')) \
                 .annotate(totalCount=Sum('count')) \
                 .annotate(totalAmount=Sum('amount')) \
@@ -302,7 +300,7 @@ class Release(Detail):
                 RECALL = 0
 
                 for element in countPerType:
-                    number = element["totalAmount"] if period['oem'] == 'N' else element["totalCount"]
+                    number = element["totalAmount"]
                     if element['type'] == '생성':
                         if element['releaseInfo'] is None:  # 이동으로 인한 생성 제외
                             IN += number
@@ -404,6 +402,7 @@ class Release(Detail):
                 arr = sorted(arr, key=lambda k: k[order_column] if k[order_column] is not None else 0, reverse=True)
             else:
                 arr = sorted(arr, key=lambda k: k[order_column] if k[order_column] is not None else 0)
+
             return {
                 'items': arr,
                 'count': 10,
@@ -590,6 +589,7 @@ class Release(Detail):
             queryset = queryset.order_by(order_column)[start:start + length]
         else:
             queryset = queryset.order_by(order_column)
+
         return {
             'items': queryset,
             'count': count,

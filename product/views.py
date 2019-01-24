@@ -266,7 +266,7 @@ class ProductOEMReg(LoginRequiredMixin, View):
                     purchaseVat=purchaseVat
                 )
 
-                productAdmin = ProductAdmin.objects.create(
+                productAdmin = ProductAdmin.objects.create( # TODO UPdate
                     product_id=product,
                     amount=count,
                     count=count,

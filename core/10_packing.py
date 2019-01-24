@@ -43,9 +43,14 @@ for i, row in enumerate(cursor):
     elif type == '3':
         type = '조정'
 
-    print(count)
+    print(outLocationCode)
     packing_instance = PackingCode.objects.filter(code=productCode).first()
-    inLocation_instance = Location.objects.get(code=inLocationCode)
+
+    try:
+        inLocation_instance = Location.objects.get(code=inLocationCode)
+    except:
+        inLocation_instance = None
+
     try:
         outLocation_instance = Location.objects.get(code=outLocationCode)
     except:
@@ -57,20 +62,14 @@ for i, row in enumerate(cursor):
         count=count,
         memo=memo,
         type=type,
-        in_locationCode=inLocation_instance,
-        in_locationCodeName=inLocation_instance.codeName,
         ymd=ymd,
         price=price,
         packingCode=packing_instance,
     )
 
-    if outLocation_instance:
-        packing.locationCode = outLocation_instance
-        packing.locationCodeName = outLocation_instance.codeName
-
-    if outYmd:
-        egg.ymd=outYmd
-
-    egg.save()
+    if inLocation_instance:
+        packing.locationCode = inLocation_instance
+        packing.locationCodeName = inLocation_instance.codeName
+    packing.save()
 
 print('Egg 완료')
