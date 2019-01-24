@@ -1,3 +1,4 @@
+ var LOCATION_MANAGER = false;
  $('#start_date').val(start_day);
  $('#end_date').val(end_day);
 fetch_data(start_day, end_day);
@@ -39,6 +40,7 @@ fetch_data(start_day, end_day);
             'releaseTypeFilter':releaseTypeFilter,
             'productTypeFilter':productTypeFilter,
             'checkBoxFilter':checkBoxFilter,
+            'location_manager':window.LOCATION_MANAGER,
             'groupByFilter':groupByFilter };
     table.DataTable().destroy();
     LOOKUP_TABLE[groupByFilter](args);
@@ -133,6 +135,7 @@ function setStepOneDataTable(args)
                 releaseTypeFilter:args['releaseTypeFilter'],
                 productTypeFilter:args['productTypeFilter'],
                 checkBoxFilter:args['checkBoxFilter'],
+                location_manager:args['location_manager'],
                 groupByFilter:args['groupByFilter']
             }
         },
@@ -293,6 +296,7 @@ function setStepTwoDataTable(args)
                 releaseTypeFilter:args['releaseTypeFilter'],
                 productTypeFilter:args['productTypeFilter'],
                 checkBoxFilter:args['checkBoxFilter'],
+                location_manager:args['location_manager'],
                 groupByFilter:args['groupByFilter']
             }
         },
@@ -435,6 +439,7 @@ function setStepThreeDataTable(args)
                 releaseTypeFilter:args['releaseTypeFilter'],
                 productTypeFilter:args['productTypeFilter'],
                 checkBoxFilter:args['checkBoxFilter'],
+                location_manager:args['location_manager'],
                 groupByFilter:args['groupByFilter']
             }
         },
@@ -562,6 +567,7 @@ function setStepFourDataTable(args)
                 releaseTypeFilter:args['releaseTypeFilter'],
                 productTypeFilter:args['productTypeFilter'],
                 checkBoxFilter:args['checkBoxFilter'],
+                location_manager:args['location_manager'],
                 groupByFilter:args['groupByFilter']
             }
         },
@@ -713,6 +719,7 @@ function setStepFiveDataTable(args)
                 releaseTypeFilter:args['releaseTypeFilter'],
                 productTypeFilter:args['productTypeFilter'],
                 checkBoxFilter:args['checkBoxFilter'],
+                location_manager:args['location_manager'],
                 groupByFilter:args['groupByFilter']
             }
         },
@@ -1019,4 +1026,18 @@ $('form').on('submit', function (e)
     }).fail(function() {
         alert('수정 에러 전산실로 문의바랍니다.');
     });
+});
+
+$('#locationManagerSearch').click(function(){
+    window.LOCATION_MANAGER = true;
+    var start_date = $('#start_date').val();
+    var end_date = $('#end_date').val();
+    if(start_date != '' && end_date !='')
+    {
+       fetch_data(start_date, end_date);
+    }
+    else
+    {
+       alert("날짜를 모두 입력해주세요");
+    }
 });

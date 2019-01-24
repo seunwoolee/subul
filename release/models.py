@@ -62,6 +62,8 @@ class Release(Detail):
         productTypeFilter = kwargs.get('productTypeFilter', None)[0]
         groupByFilter = kwargs.get('groupByFilter', None)[0]
         checkBoxFilter = kwargs.get('checkBoxFilter', None)[0]
+        location_manager = kwargs.get('location_manager', None)[0]
+        user_instance = kwargs.get("user_instance", None)[0]
         if checkBoxFilter: checkBoxFilter = checkBoxFilter.split(',')
 
         if groupByFilter == 'stepOne':
@@ -91,7 +93,7 @@ class Release(Detail):
                 ('22', 'releaseSetProductCodeName'),
             )
             order_column = RELEASE_COLUMN_CHOICES[order_column]
-            queryset = Release.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(delete_state='N') \
+            queryset = Release.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
                 .annotate(kgPrice=Case(
                 When(price=0, then=0),
                 When(amount=0, then=0),
@@ -573,7 +575,10 @@ class Release(Detail):
             queryset = queryset.filter(product_id__productCode__type=productTypeFilter)
 
         if checkBoxFilter:
-            queryset = queryset.filter(releaseLocationCode__type__in=checkBoxFilter)
+            queryset = queryset.filter(releaseLocationCode__location_character__in=checkBoxFilter)
+
+        if location_manager == "true":
+            queryset = queryset.filter(releaseLocationCode__location_manager=user_instance)
 
         if order == 'desc':
             order_column = '-' + order_column
