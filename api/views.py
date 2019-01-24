@@ -102,7 +102,7 @@ class ProductSummaryAPIView(APIView):
         openEggUse_amount = ProductEgg.objects.values('type').filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
             .filter(type='할란사용').annotate(tankAmount=Sum('rawTank_amount') + Sum('pastTank_amount'))
         product_amount = Product.objects.values('type').filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
-            .filter(type='제품생산').annotate(tankAmount=Sum('amount'))
+            .filter(type='제품생산').filter(purchaseYmd=None).annotate(tankAmount=Sum('amount'))
         processProductCreate_amount = ProductEgg.objects.values('type').filter(ymd__gte=start_date).filter(
             ymd__lte=end_date) \
             .filter(type='공정품발생').annotate(tankAmount=Sum('rawTank_amount') + Sum('pastTank_amount'))
@@ -120,9 +120,9 @@ class ProductSummaryAPIView(APIView):
         processProductInsert_amount = processProductInsert_amount[0]['tankAmount'] if processProductInsert_amount else 0
         recallProductInsert_amount = recallProductInsert_amount[0]['tankAmount'] if recallProductInsert_amount else 0
         loss_clean_amount = Product.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
-            .aggregate(loss_clean=Sum('loss_clean'))
+            .filter(purchaseYmd=None).aggregate(loss_clean=Sum('loss_clean'))
         loss_fill_amount = Product.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
-            .aggregate(loss_fill=Sum('loss_fill'))
+            .filter(purchaseYmd=None).aggregate(loss_fill=Sum('loss_fill'))
         loss_insert_amount = ProductEgg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
             .aggregate(loss_insert=Sum('loss_insert'))
         loss_openEgg_amount = ProductEgg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
@@ -131,7 +131,6 @@ class ProductSummaryAPIView(APIView):
         loss_fill_amount = loss_fill_amount['loss_fill'] if loss_fill_amount['loss_fill'] else 0
         loss_insert_amount = loss_insert_amount['loss_insert'] if loss_insert_amount['loss_insert'] else 0
         loss_openEgg_amount = loss_openEgg_amount['loss_openEgg'] if loss_openEgg_amount['loss_openEgg'] else 0
-        print(type(processProduct_amount), type(total_EggAmount))
         openEggPercent = round((processProduct_amount / total_EggAmount * 100), 2) if total_EggAmount > 0 else 0
         productPercent = round(
             ((product_amount + processProduct_amount + openEggUse_amount + processProductInsert_amount +
@@ -154,7 +153,9 @@ class OrdersAPIView(APIView):
         result = dict()
         try:
             if request.query_params.get("gubunFilter", None) != "stepThree":
-                orders = Order.orderQuery(**request.query_params)
+                request.GET = request.GET.copy()
+                request.GET['user_instance'] = request.user
+                orders = Order.orderQuery(**request.GET)
                 orderSerializer = OrderSerializer(orders['items'], many=True)
                 result['data'] = orderSerializer.data
                 result['draw'] = orders['draw']

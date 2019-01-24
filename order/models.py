@@ -54,12 +54,15 @@ class Order(Detail):
         order_column = kwargs.get('order[0][column]', None)[0]
         order = kwargs.get('order[0][dir]', None)[0]
         releaseOrder = kwargs.get("releaseOrder", None)
+        user_instance = kwargs.get("user_instance", None)[0]
         checkBoxFilter = None
         gubunFilter = None
 
         if not releaseOrder :
             checkBoxFilter = kwargs.get('checkBoxFilter', None)[0]
+            location_manager = kwargs.get('location_manager', None)[0]
             gubunFilter = kwargs.get('gubunFilter', None)[0]
+            print(location_manager)
         if checkBoxFilter: checkBoxFilter = checkBoxFilter.split(',')
 
         if not releaseOrder:  # 주문내역조회
@@ -149,7 +152,14 @@ class Order(Detail):
         # if length != -1:
         if not releaseOrder:
             if checkBoxFilter:  # TODO 담당자 검색
-                queryset = queryset.filter(orderLocationCode__type__in=checkBoxFilter)
+                queryset = queryset.filter(orderLocationCode__location_character__in=checkBoxFilter)
+                count = queryset.count()
+
+            if location_manager == "true":
+                print(user_instance)
+                queryset = queryset.filter(orderLocationCode__location_manager=user_instance)
+                count = queryset.count()
+
 
         else:
             queryset = queryset.filter(release_id=None).order_by(order_column)  # 출고가능한 ORDER

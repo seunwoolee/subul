@@ -1,4 +1,10 @@
 $('#search').click(function(){
+
+  if(typeof LOCATION_MANAGER != "undefined")
+  {
+    LOCATION_MANAGER = false;
+  }
+
   var start_date = $('#start_date').val();
   var end_date = $('#end_date').val();
   if(start_date != '' && end_date !='')

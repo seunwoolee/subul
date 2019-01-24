@@ -80,17 +80,6 @@ $(document).on('click', '.remove-form-row', function(e){ // 삭제 - 버튼
 });
 
 
-$("form").submit(function(){
-    ymd = set_yyyymmdd($('input[type=date]').val());
-    if(ymd)
-    {
-        $("input[type=hidden][id*='ymd']").each(function (i, element){
-            $(element).val(ymd);
-        });
-        $("form").submit();
-    }
-})
-
 $(".fakeYmd").focusout(function(){
     let fakeYmd = $(this).val();
     if(fakeYmd.length == 10)

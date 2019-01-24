@@ -1,3 +1,4 @@
+ var LOCATION_MANAGER = false;
  $('#start_date').val(start_day);
  $('#end_date').val(end_day);
 fetch_data(start_day, end_day);
@@ -29,6 +30,7 @@ fetch_data(start_day, end_day);
             'end_date' : end_date,
             'eggTypeFilter':eggTypeFilter,
             'checkBoxFilter':checkBoxFilter,
+            'location_manager':window.LOCATION_MANAGER,
             'gubunFilter':gubunFilter };
     table.DataTable().destroy();
     LOOKUP_TABLE[gubunFilter](args);
@@ -93,6 +95,7 @@ function setStepOneDataTable(args)
                         start_date:args['start_date'],
                         end_date:args['end_date'],
                         checkBoxFilter:args['checkBoxFilter'],
+                        location_manager:args['location_manager'],
                         gubunFilter:args['gubunFilter']
             }
         },
@@ -246,6 +249,7 @@ function setStepTwoDataTable(args)
                         start_date:args['start_date'],
                         end_date:args['end_date'],
                         checkBoxFilter:args['checkBoxFilter'],
+                        location_manager:args['location_manager'],
                         gubunFilter:args['gubunFilter']
             }
         },
@@ -507,10 +511,26 @@ $('.nav-item a').click(function(){ // 탭별 style 주기
     {
         $('.type_filter input:checkbox').attr("disabled", true);
         $(".type_filter select").removeAttr("disabled").val('전체');
+        $('#locationManagerSearch').attr("disabled", true);
     }
     else
     {
         $(".type_filter input:checkbox").removeAttr("disabled");
+        $('#locationManagerSearch').removeAttr("disabled");
         $('.type_filter select').attr("disabled", true);
+    }
+});
+
+$('#locationManagerSearch').click(function(){
+    window.LOCATION_MANAGER = true;
+    var start_date = $('#start_date').val();
+    var end_date = $('#end_date').val();
+    if(start_date != '' && end_date !='')
+    {
+       fetch_data(start_date, end_date);
+    }
+    else
+    {
+       alert("날짜를 모두 입력해주세요");
     }
 });

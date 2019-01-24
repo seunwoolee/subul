@@ -83,20 +83,6 @@ class ProductEgg(models.Model):
         ('미출고품투입', '미출고품투입'),
     )
 
-    TANK_TYPE_CHOICES = (
-        ('01201', 'RAW Tank 전란'),
-        ('01202', 'RAW Tank 난황'),
-        ('01203', 'RAW Tank 난백'),
-        ('01204', 'Past Tank 전란'),
-        ('01205', 'Past Tank 난황'),
-        ('01206', 'Past Tank 난백'),
-        ('01207', 'RAW Tank 등급란 전란'),
-        ('01208', 'RAW Tank 등급란 난황'),
-        ('01209', 'RAW Tank 등급란 난백'),
-        ('01213', 'RAW Tank 동물복지 유정란 전란'),
-        ('01214', 'Past Tank 동물복지 유정란 전란'),
-    )
-
     CODE_TYPE_CHOICES = {
         '01201': 'RAW Tank 전란',
         '01202': 'RAW Tank 난황',
@@ -122,8 +108,6 @@ class ProductEgg(models.Model):
     )
     code = models.CharField(max_length=10, default='01201')
     codeName = models.CharField(max_length=255, default=CODE_TYPE_CHOICES['01201'])
-    # rawTank_amount = models.FloatField(default=0)
-    # pastTank_amount = models.FloatField(default=0)
     rawTank_amount = models.DecimalField(decimal_places=2, max_digits=19, default=0)
     pastTank_amount = models.DecimalField(decimal_places=2, max_digits=19,default=0)
     loss_insert = models.DecimalField(decimal_places=2, max_digits=19,default=0)
@@ -177,7 +161,7 @@ class ProductEgg(models.Model):
     @staticmethod
     def getLossOpenEggPercent(masterInstance):
         total_rawTank_amount = 0
-        eggs = ProductEgg.objects.filter(master_id=masterInstance).filter(type='할란').filter(delete_state='N')
+        eggs = ProductEgg.objects.filter(master_id=masterInstance).filter(type='할란')
         for egg in eggs:
             total_rawTank_amount += egg.rawTank_amount
 
@@ -203,7 +187,7 @@ class ProductEgg(models.Model):
         search_value = kwargs.get('search[value]', None)[0]
         start_date = kwargs.get('start_date', None)[0]
         end_date = kwargs.get('end_date', None)[0]
-        queryset = ProductEgg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(delete_state='N')
+        queryset = ProductEgg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date)
         total = queryset.count()
 
         if search_value:
@@ -225,7 +209,6 @@ class Product(Detail):
     PRODUCT_TYPE_CHOICES = (
         ('제품생산', '제품생산'),
         ('미출고품사용', '미출고품사용'),
-        ('OEM', 'OEM'),
     )
     type = models.CharField(
         max_length=30,
@@ -253,7 +236,7 @@ class Product(Detail):
     @staticmethod
     def getLossProductPercent(masterInstance):
         total_product_amount = 0
-        products = Product.objects.filter(master_id=masterInstance).filter(delete_state='N')
+        products = Product.objects.filter(master_id=masterInstance).filter(purchaseYmd=None)
         for product in products:
             total_product_amount += product.amount
 
@@ -273,7 +256,7 @@ class Product(Detail):
         search_value = kwargs.get('search[value]', None)[0]
         start_date = kwargs.get('start_date', None)[0]
         end_date = kwargs.get('end_date', None)[0]
-        queryset = Product.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date)
+        queryset = Product.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(purchaseYmd=None)
         total = queryset.count()
 
         if search_value:

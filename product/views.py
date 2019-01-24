@@ -249,6 +249,7 @@ class ProductOEMReg(LoginRequiredMixin, View):
                 purchaseLocation = Location.objects.get(code=purchaseLocation)
                 productCode = ProductCode.objects.get(code=code)
                 main = ProductMaster.objects.filter(ymd='00000000').first()
+
                 product = Product.objects.create(
                     master_id=main,
                     ymd=ymd,
