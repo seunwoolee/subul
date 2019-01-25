@@ -109,11 +109,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="models.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/eggs/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="404">
-              <caret line="301" lean-forward="true" selection-start-line="301" selection-end-line="301" />
+            <state relative-caret-position="354">
+              <caret line="299" column="15" lean-forward="true" selection-start-line="299" selection-start-column="15" selection-end-line="300" selection-end-column="64" />
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
               </folding>
@@ -145,11 +145,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="9_eggs.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="9_eggs.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/core/9_eggs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1165">
-              <caret line="79" column="104" selection-start-line="79" selection-start-column="10" selection-end-line="79" selection-end-column="104" />
+            <state relative-caret-position="-435">
+              <caret line="81" lean-forward="true" selection-start-line="81" selection-end-line="81" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -285,7 +285,6 @@
         <option value="$PROJECT_DIR$/core/6_productAdjust.py" />
         <option value="$PROJECT_DIR$/core/7_order.py" />
         <option value="$PROJECT_DIR$/core/8_release.py" />
-        <option value="$PROJECT_DIR$/core/9_eggs.py" />
         <option value="$PROJECT_DIR$/core/10_packing.py" />
         <option value="$PROJECT_DIR$/subul/settings.py" />
         <option value="$PROJECT_DIR$/core/0_locationShell.py" />
@@ -302,12 +301,13 @@
         <option value="$PROJECT_DIR$/product/views.py" />
         <option value="$PROJECT_DIR$/core/0-2_productUnitPriceShell.py" />
         <option value="$PROJECT_DIR$/eggs/models.py" />
+        <option value="$PROJECT_DIR$/core/9_eggs.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
-    <option name="x" value="1925" />
-    <option name="y" value="-12" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-200" />
+    <option name="y" value="-8" />
     <option name="width" value="1936" />
     <option name="height" value="1056" />
   </component>
@@ -643,17 +643,17 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1912" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49842766" visible="true" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49842766" visible="true" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32875264" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50208336" side_tool="true" weight="0.32769555" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32875264" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.49791667" visible="true" weight="0.35835096" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="8" sideWeight="0.49791667" visible="true" weight="0.35835096" />
       <window_info id="Favorites" order="2" sideWeight="0.5015723" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39957717" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -1066,16 +1066,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/9_eggs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1165">
-          <caret line="79" column="104" selection-start-line="79" selection-start-column="10" selection-end-line="79" selection-end-column="104" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api/views.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
@@ -1088,10 +1078,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/eggs/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="404">
-          <caret line="301" lean-forward="true" selection-start-line="301" selection-end-line="301" />
+        <state relative-caret-position="354">
+          <caret line="299" column="15" lean-forward="true" selection-start-line="299" selection-start-column="15" selection-end-line="300" selection-end-column="64" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/9_eggs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-435">
+          <caret line="81" lean-forward="true" selection-start-line="81" selection-end-line="81" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
