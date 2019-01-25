@@ -26,7 +26,7 @@ class ReleaseForm(forms.Form):
     productYmd = forms.CharField(widget=forms.HiddenInput())
     productId = forms.IntegerField(widget=forms.HiddenInput())
     releaseOrder = forms.IntegerField(widget=forms.HiddenInput())
-    amount_kg = forms.FloatField(min_value=0, widget=forms.HiddenInput())
+    amount_kg = forms.DecimalField(decimal_places=2, max_digits=19, min_value=0, widget=forms.HiddenInput())
     setProductCode = forms.CharField(widget=forms.HiddenInput())
     totalCount = forms.CharField(widget=forms.HiddenInput(), disabled=True)
 
@@ -34,7 +34,7 @@ class ReleaseForm(forms.Form):
     location = forms.ChoiceField(widget=Select2Widget,
                                  choices=list(Location.objects.values_list('code', 'codeName').order_by('code')))
     ymd = forms.CharField(max_length=8)
-    amount = forms.FloatField(min_value=0)
+    amount = forms.DecimalField(decimal_places=2, max_digits=19, min_value=0)
     count = forms.IntegerField(min_value=0)
     price = forms.IntegerField(min_value=0)
     memo = forms.CharField(
