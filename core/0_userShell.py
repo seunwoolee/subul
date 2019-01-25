@@ -18,9 +18,9 @@ cursor = con.cursor()
 query = " select * FROM KCFEED.FUSERS"
 cursor.execute(query)
 
-#TODO admin password kcfeed12!로 변경할 것
 
 for row in cursor:
+    print(row)
     is_active = True if row[8] == '0' else False
     CustomUser.objects.create(
         username=row[0],

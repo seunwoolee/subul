@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db.models import Sum
 from django.http import Http404
 from rest_framework import generics, status
@@ -184,7 +186,6 @@ class ProductUpdate(generics.RetrieveUpdateDestroyAPIView):
             obj=instance,
             extra={
                 "name": instance.codeName,
-                "amount": instance.amount,
                 "count": instance.count
             }
         )

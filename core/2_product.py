@@ -31,6 +31,7 @@ cursor.execute(query)
 master_instance = None
 # diffYmd = 0
 for row in cursor:
+    print(row)
     # LOSS1 :할란, LOSS4 :살균 , LOSS7 : 충진불량 , LOSS0 : 투입
     # LOSS 1+2 , LOSS3+4 , LOSS 5+7, LOSS6+0
     # master_id = row[0]

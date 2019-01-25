@@ -27,6 +27,7 @@ query = " select \
 cursor.execute(query)
 
 for row in cursor:
+    print(row)
     oem = row[9]
     type = row[2]
     if type is None:

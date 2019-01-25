@@ -19,6 +19,7 @@ query = " select * FROM KCFEED.FRESHCD "
 cursor.execute(query)
 
 for row in cursor:
+    print(row)
     delete_state = row[6]
     if delete_state == 'N':  # 사용유무가 N이면 삭제 나머지 다 사용
         delete_state = 'Y'

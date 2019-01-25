@@ -17,6 +17,7 @@ query = " select * from KCFEED.FRESHCP "
 cursor.execute(query)
 
 for row in cursor:
+    print(row)
     delete_state = 'N' if row[6] == 'Y' else 'Y'
     location = Location.objects.filter(code=row[5]).first()
     product = ProductCode.objects.filter(code=row[1]).first()

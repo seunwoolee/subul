@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db.models import Sum, F
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -146,13 +148,14 @@ class ProductRecall(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = 'product.change_product'
 
     def post(self, request, pk):
+        print(request.POST)
         CODE_TYPE_CHOICES = {
             '01201': 'RAW Tank 전란',
             '01202': 'RAW Tank 난황',
             '01203': 'RAW Tank 난백',
         }
         ymd = request.POST['ymd']
-        amount = int(request.POST['amount'])
+        amount = Decimal(request.POST['amount'])
         count = int(request.POST['count'])
         memo = request.POST['memo']
         KCFRESH_LOCATION_CODE = '00301'
@@ -160,6 +163,7 @@ class ProductRecall(LoginRequiredMixin, PermissionRequiredMixin, View):
         product = Product.objects.get(pk=pk)
         totalCount = ProductAdmin.objects.filter(product_id=product).values('product_id__code').annotate(
             totalCount=Sum(F('count')))
+        print(totalCount)
         if count <= int(totalCount[0]['totalCount']):
             Product.objects.create(
                 ymd=product.ymd,
