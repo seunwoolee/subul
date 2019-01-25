@@ -90,11 +90,11 @@ class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
                         product.save()
                         productAdmin.save()
                     else:
-                        productExist.amount += amount
+                        productExist.amount += Decimal(amount)
                         productExist.count += count
                         productExistAdmin = ProductAdmin.objects.filter(releaseType='생성') \
                             .filter(product_id=productExist).first()
-                        productExistAdmin.amount += amount
+                        productExistAdmin.amount += Decimal(amount)
                         productExistAdmin.count += count
                         productExist.save()
                         productExistAdmin.save()

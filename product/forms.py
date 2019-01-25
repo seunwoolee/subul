@@ -1,5 +1,5 @@
 from django import forms
-from django.forms import formset_factory
+from django.forms import formset_factory, DecimalField
 
 from core.models import Location
 from django_select2.forms import Select2Widget
