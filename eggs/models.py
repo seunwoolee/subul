@@ -297,5 +297,5 @@ class Egg(Detail):
 
     @staticmethod
     def getAmount(start_date, end_date):
-        return Egg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).aggregate(
-            totalAmount=Sum('amount'))['totalAmount']
+        return Egg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(type__in=['입고','생산']) \
+            .aggregate(totalAmount=Sum('amount'))['totalAmount']

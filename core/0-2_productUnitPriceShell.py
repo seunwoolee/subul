@@ -29,5 +29,7 @@ for row in cursor:
             price=price,
             delete_state=delete_state
         )
+    else:
+        print(row)
 
 print('productUnitPriceShell 완료')
