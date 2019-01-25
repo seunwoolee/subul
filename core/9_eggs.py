@@ -15,7 +15,7 @@ START_VALUE = u"Unicode \u3042 3".encode('utf-8')
 END_VALUE = u"Unicode \u3042 6".encode('utf-8')
 # cx_Oracle 한글처리 끝
 Egg.objects.all().delete()
-con = cx_Oracle.connect('system/kcerp@155.1.19.2/kcerp')
+con = cx_Oracle.connect('system/kcerp@112.216.66.219/kcerp')
 cursor = con.cursor()
 # 고유 생성만 실시
 query = " select 입고처,원란종류 계란종류,입고일,'0' 입출고구분,수량 From kcfeed.fresh원란마감 where  마감일 = '20131231'"
