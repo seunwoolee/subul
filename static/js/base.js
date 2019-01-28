@@ -55,9 +55,9 @@ function set_yyyy_mm_dd(yyyymmdd)
 
 var date = new Date();
 var days = 7;
-var plusSevenDate = new Date(date.getTime() + (days * 24 * 60 * 60 * 1000));
-var start_day = date.yyyymmdd();
-var end_day = plusSevenDate.yyyymmdd();
+var minusSevenDate = new Date(date.getTime() - (days * 24 * 60 * 60 * 1000));
+var start_day = minusSevenDate.yyyymmdd();
+var end_day = date.yyyymmdd();
 
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
