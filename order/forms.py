@@ -29,7 +29,8 @@ class OrderForm(forms.Form):
     set = forms.ChoiceField(choices=SET_TYPE_CHOICES)
     type = forms.ChoiceField(choices=ORDER_TYPE_CHOICES)
     location = forms.ChoiceField(widget=Select2Widget,
-                                 choices=list(Location.objects.values_list('code', 'codeName').order_by('code')),
+                                 choices=list(Location.objects.values_list('code', 'codeName').filter(type='05')
+                                              .filter(delete_state='N').order_by('code')),
                                  required=False)
     product = forms.ChoiceField(choices=list(ProductCode.objects.values_list('code', 'codeName')))  # TODO delete_State
     amount = forms.DecimalField(decimal_places=2, max_digits=19, min_value=0)
@@ -43,7 +44,7 @@ class OrderForm(forms.Form):
     ymd = forms.CharField(max_length=8, widget=forms.HiddenInput())
     package = forms.CharField(widget=forms.HiddenInput(), required=False)
     specialTag = forms.ChoiceField(choices=SPECIALTAG_TYPE_CHOICES, required=False)
-    fakeYmd = forms.DateField(required=False, widget=forms.DateInput( # 수정 Modal Ymd
+    fakeYmd = forms.DateField(required=False, widget=forms.DateInput(  # 수정 Modal Ymd
         attrs={'type': 'date'}
     ))
 
