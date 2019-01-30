@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Q, Sum, F, ExpressionWrapper, FloatField, Value, IntegerField
+from django.db.models import Q, Sum, F, ExpressionWrapper, FloatField, DecimalField, Value, IntegerField
 from model_utils import Choices
 from itertools import chain
 
@@ -202,7 +202,7 @@ class Order(Detail):
                                                   'amount', 'price', 'releaseVat') \
             .filter(ymd__gte=start_date) \
             .filter(ymd__lte=end_date).filter(type='판매') \
-            .annotate(supplyPrice=ExpressionWrapper(F('price') - F('releaseVat'), output_field=FloatField()))
+            .annotate(supplyPrice=ExpressionWrapper(F('price') - F('releaseVat'), output_field=DecimalField()))
         queryset_egg = Egg.objects.values('id', 'ymd', 'code', 'codeName', 'count', 'amount', 'price') \
             .filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(type='판매') \
             .annotate(releaseLocationName=F('locationCodeName')).annotate(releaseVat=Value(0, IntegerField())) \

@@ -79,24 +79,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="packingModifyForm.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/includes/modal/packingModifyForm.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
-              <caret line="8" column="51" selection-start-line="8" selection-start-column="40" selection-end-line="8" selection-end-column="51" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="productOEMForm.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/includes/productOEMForm.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="625">
-              <caret line="25" column="23" selection-start-line="25" selection-start-column="23" selection-end-line="25" selection-end-column="67" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/views.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -109,11 +91,35 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="baseHTML.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="baseHTML.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/baseHTML.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="271">
-              <caret line="501" column="51" lean-forward="true" selection-start-line="501" selection-start-column="51" selection-end-line="501" selection-end-column="51" />
+            <state relative-caret-position="429">
+              <caret line="479" column="78" lean-forward="true" selection-start-line="479" selection-start-column="78" selection-end-line="479" selection-end-column="78" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/release/models.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="25">
+              <caret line="1" column="71" selection-start-line="1" selection-start-column="59" selection-end-line="1" selection-end-column="71" />
+              <folding>
+                <element signature="e#19518#19552#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/order/models.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="471">
+              <caret line="206" column="86" lean-forward="true" selection-start-line="206" selection-start-column="86" selection-end-line="206" selection-end-column="86" />
+              <folding>
+                <element signature="e#0#28#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -163,8 +169,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>setTankAmountStyle</find>
-      <find>5</find>
       <find>set_</find>
       <find>draw</find>
       <find>rowCallback</find>
@@ -193,6 +197,8 @@
       <find>numberFormat</find>
       <find>deleteAndEdit</find>
       <find>CoreUI Pro</find>
+      <find>Home</find>
+      <find>Float</find>
     </findStrings>
     <replaceStrings>
       <replace>releases</replace>
@@ -236,8 +242,6 @@
         <option value="$PROJECT_DIR$/static/js/productOEMReg.js" />
         <option value="$PROJECT_DIR$/static/js/baseList.js" />
         <option value="$PROJECT_DIR$/static/js/releaseList.js" />
-        <option value="$PROJECT_DIR$/order/models.py" />
-        <option value="$PROJECT_DIR$/release/models.py" />
         <option value="$PROJECT_DIR$/core/0_userShell.py" />
         <option value="$PROJECT_DIR$/users/models.py" />
         <option value="$PROJECT_DIR$/core/0-3_setProductMatchShell.py" />
@@ -284,6 +288,8 @@
         <option value="$PROJECT_DIR$/api/views.py" />
         <option value="$PROJECT_DIR$/static/js/productOEMList.js" />
         <option value="$PROJECT_DIR$/templates/baseHTML.html" />
+        <option value="$PROJECT_DIR$/release/models.py" />
+        <option value="$PROJECT_DIR$/order/models.py" />
       </list>
     </option>
   </component>
@@ -445,30 +451,6 @@
               <item name="subul" type="462c0819:PsiDirectoryNode" />
               <item name="templates" type="462c0819:PsiDirectoryNode" />
               <item name="order" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="subul" type="b2602c69:ProjectViewProjectNode" />
-              <item name="subul" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-              <item name="packing" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="subul" type="b2602c69:ProjectViewProjectNode" />
-              <item name="subul" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-              <item name="product" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="subul" type="b2602c69:ProjectViewProjectNode" />
-              <item name="subul" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-              <item name="productOEM" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="subul" type="b2602c69:ProjectViewProjectNode" />
-              <item name="subul" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-              <item name="release" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="subul" type="b2602c69:ProjectViewProjectNode" />
@@ -924,17 +906,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/release/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="103" column="39" lean-forward="true" selection-start-line="103" selection-start-column="39" selection-end-line="103" selection-end-column="39" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-            <element signature="e#19518#19552#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api/productOEMSerializers.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="275">
@@ -952,13 +923,6 @@
           <folding>
             <element signature="e#0#36#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/order/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="165" column="76" lean-forward="true" selection-start-line="165" selection-start-column="12" selection-end-line="165" selection-end-column="76" />
         </state>
       </provider>
     </entry>
@@ -1080,8 +1044,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/baseHTML.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="271">
-          <caret line="501" column="51" lean-forward="true" selection-start-line="501" selection-start-column="51" selection-end-line="501" selection-end-column="51" />
+        <state relative-caret-position="429">
+          <caret line="479" column="78" lean-forward="true" selection-start-line="479" selection-start-column="78" selection-end-line="479" selection-end-column="78" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/release/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="25">
+          <caret line="1" column="71" selection-start-line="1" selection-start-column="59" selection-end-line="1" selection-end-column="71" />
+          <folding>
+            <element signature="e#19518#19552#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="471">
+          <caret line="206" column="86" lean-forward="true" selection-start-line="206" selection-start-column="86" selection-end-line="206" selection-end-column="86" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

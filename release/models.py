@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Q, F, ExpressionWrapper, FloatField, Sum, DecimalField, When, Case
+from django.db.models import Q, F, ExpressionWrapper, Sum, DecimalField, When, Case
 from django.db.models.functions import Cast
 from model_utils import Choices
 
@@ -97,14 +97,14 @@ class Release(Detail):
                 .annotate(kgPrice=Case(
                 When(price=0, then=0),
                 When(amount=0, then=0),
-                default=ExpressionWrapper(F('price') / F('amount'), output_field=FloatField()))) \
+                default=ExpressionWrapper(F('price') / F('amount'), output_field=DecimalField()))) \
                 .annotate(contentType=F('product_id__productCode__type')) \
                 .annotate(totalPrice=F('price')) \
-                .annotate(supplyPrice=ExpressionWrapper(F('price') - F('releaseVat'), output_field=FloatField())) \
+                .annotate(supplyPrice=ExpressionWrapper(F('price') - F('releaseVat'), output_field=DecimalField())) \
                 .annotate(eaPrice=Case(
                 When(price=0, then=0),
                 When(count=0, then=0),
-                default=ExpressionWrapper(F('price') / F('count'), output_field=FloatField()))) \
+                default=ExpressionWrapper(F('price') / F('count'), output_field=DecimalField()))) \
                 .annotate(releaseStoreLocationCodeName=F('releaseStoreLocation__codeName')) \
                 .annotate(orderMemo=F('releaseOrder__memo')) \
                 .annotate(locationType=F('releaseLocationCode__location_character')) \
@@ -138,9 +138,9 @@ class Release(Detail):
                 .annotate(releaseVat=Sum('releaseVat')) \
                 .annotate(releaseStoreLocationCodeName=F('releaseStoreLocation__codeName'))
 
-            queryset = queryset.annotate(eaPrice=Case(When(totalPrice=0, then=0), default=F('totalPrice') / F('count')))\
-                    .annotate(supplyPrice=ExpressionWrapper(F('totalPrice') - F('releaseVat'), output_field=FloatField()))\
-                    .annotate(kgPrice=ExpressionWrapper(F('totalPrice') / F('amount'), output_field = FloatField()))
+            queryset = queryset.annotate(eaPrice=Case(When(totalPrice=0, then=0), default=F('totalPrice') / F('count'))) \
+                .annotate(supplyPrice=ExpressionWrapper(F('totalPrice') - F('releaseVat'), output_field=DecimalField())) \
+                .annotate(kgPrice=ExpressionWrapper(F('totalPrice') / F('amount'), output_field=DecimalField()))
 
         elif groupByFilter == 'stepThree':
             RELEASE_COLUMN_CHOICES = Choices(
@@ -170,9 +170,9 @@ class Release(Detail):
                 .annotate(totalPrice=Sum('price')) \
                 .annotate(releaseStoreLocationCodeName=F('releaseStoreLocation__codeName'))
 
-            queryset = queryset.annotate(eaPrice=Case(When(totalPrice=0, then=0), default=F('totalPrice') / F('count')))\
-                    .annotate(supplyPrice=ExpressionWrapper(F('totalPrice') - F('releaseVat'), output_field=FloatField()))\
-                    .annotate(kgPrice=ExpressionWrapper(F('totalPrice') / F('amount'), output_field = FloatField()))
+            queryset = queryset.annotate(eaPrice=Case(When(totalPrice=0, then=0), default=F('totalPrice') / F('count'))) \
+                .annotate(supplyPrice=ExpressionWrapper(F('totalPrice') - F('releaseVat'), output_field=DecimalField())) \
+                .annotate(kgPrice=ExpressionWrapper(F('totalPrice') / F('amount'), output_field=DecimalField()))
 
         elif groupByFilter == 'stepFour':
             RELEASE_COLUMN_CHOICES = Choices(
