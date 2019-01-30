@@ -3,6 +3,7 @@ from django.db.models.functions import Cast
 from model_utils import Choices
 
 from core.models import Code, Detail, Location, Out, TimeStampedModel
+from eggs.models import Egg
 from release.models import Release
 from django.db.models import Sum, Q, F, DecimalField
 import datetime
@@ -156,7 +157,7 @@ class ProductEgg(models.Model):
                     productEgg.rawTank_amount = info[1]
                 elif 'PastTank' in rawOrPastType:
                     productEgg.pastTank_amount = info[1]
-                productEgg.save()  # TODO 할란 , 할란사용 수율 비례식 계산 필요
+                productEgg.save()
 
     @staticmethod
     def getLossOpenEggPercent(masterInstance):
@@ -168,7 +169,6 @@ class ProductEgg(models.Model):
         try:
             for egg in eggs:
                 percent = egg.rawTank_amount / total_rawTank_amount
-                # print(egg.rawTank_amount, percent, total_rawTank_amount, masterInstance.total_loss_openEgg)
                 openEgglossPercent = round(masterInstance.total_loss_openEgg * percent, 2)
                 insertlossPercent = round(masterInstance.total_loss_insert * percent, 2)
                 egg.loss_openEgg = openEgglossPercent
@@ -176,6 +176,58 @@ class ProductEgg(models.Model):
                 egg.save()
         except ZeroDivisionError:
             pass
+
+    @staticmethod
+    def percentSummary(start_date, end_date):
+        total_EggAmount = Egg.getAmount(start_date, end_date)  # 중량
+        processProduct_amount = ProductEgg.objects.values('type').filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
+            .filter(type='할란').annotate(tankAmount=Sum('rawTank_amount') + Sum('pastTank_amount'))
+        openEggUse_amount = ProductEgg.objects.values('type').filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
+            .filter(type='할란사용').annotate(tankAmount=Sum('rawTank_amount') + Sum('pastTank_amount'))
+        product_amount = Product.objects.values('type').filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
+            .filter(type='제품생산').filter(purchaseYmd=None).annotate(tankAmount=Sum('amount'))
+        processProductCreate_amount = ProductEgg.objects.values('type').filter(ymd__gte=start_date).filter(
+            ymd__lte=end_date) \
+            .filter(type='공정품발생').annotate(tankAmount=Sum('rawTank_amount') + Sum('pastTank_amount'))
+        processProductInsert_amount = ProductEgg.objects.values('type').filter(ymd__gte=start_date).filter(
+            ymd__lte=end_date) \
+            .filter(type='공정품투입').annotate(tankAmount=Sum('rawTank_amount') + Sum('pastTank_amount'))
+        recallProductInsert_amount = ProductEgg.objects.values('type').filter(ymd__gte=start_date).filter(
+            ymd__lte=end_date) \
+            .filter(type='미출고품투입').annotate(tankAmount=Sum('rawTank_amount') + Sum('pastTank_amount'))
+        if not total_EggAmount: total_EggAmount = 0
+        processProduct_amount = processProduct_amount[0]['tankAmount'] if processProduct_amount else 0
+        openEggUse_amount = openEggUse_amount[0]['tankAmount'] if openEggUse_amount else 0
+        product_amount = product_amount[0]['tankAmount'] if product_amount else 0
+        processProductCreate_amount = processProductCreate_amount[0]['tankAmount'] if processProductCreate_amount else 0
+        processProductInsert_amount = processProductInsert_amount[0]['tankAmount'] if processProductInsert_amount else 0
+        recallProductInsert_amount = recallProductInsert_amount[0]['tankAmount'] if recallProductInsert_amount else 0
+        loss_clean_amount = Product.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
+            .filter(purchaseYmd=None).aggregate(loss_clean=Sum('loss_clean'))
+        loss_fill_amount = Product.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
+            .filter(purchaseYmd=None).aggregate(loss_fill=Sum('loss_fill'))
+        loss_insert_amount = ProductEgg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
+            .aggregate(loss_insert=Sum('loss_insert'))
+        loss_openEgg_amount = ProductEgg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
+            .aggregate(loss_openEgg=Sum('loss_openEgg'))
+        loss_clean_amount = loss_clean_amount['loss_clean'] if loss_clean_amount['loss_clean'] else 0
+        loss_fill_amount = loss_fill_amount['loss_fill'] if loss_fill_amount['loss_fill'] else 0
+        loss_insert_amount = loss_insert_amount['loss_insert'] if loss_insert_amount['loss_insert'] else 0
+        loss_openEgg_amount = loss_openEgg_amount['loss_openEgg'] if loss_openEgg_amount['loss_openEgg'] else 0
+        openEggPercent = round((processProduct_amount / total_EggAmount * 100), 2) if total_EggAmount > 0 else 0
+        productPercent = round(
+            ((product_amount + processProduct_amount + openEggUse_amount + processProductInsert_amount +
+              processProductCreate_amount + recallProductInsert_amount) / total_EggAmount * 100), 2) \
+            if total_EggAmount > 0 else 0
+        lossTotal = loss_clean_amount + loss_fill_amount + loss_insert_amount + loss_openEgg_amount
+        insertLoss = round((loss_insert_amount / total_EggAmount * 100), 2) if total_EggAmount > 0 else 0
+        openEggLoss = round((loss_openEgg_amount / processProduct_amount * 100), 2) if processProduct_amount > 0 else 0
+        result = {'openEggPercent': openEggPercent,
+                  'productPercent': productPercent,
+                  'lossTotal': lossTotal,
+                  'insertLoss': insertLoss,
+                  'openEggLoss': openEggLoss}
+        return result
 
     @staticmethod
     def productEggQuery(**kwargs):
@@ -269,6 +321,53 @@ class Product(Detail):
             'items': queryset,
             'count': count,
             'total': total
+        }
+
+    @staticmethod
+    def productOEMQuery(**kwargs):
+        ORDER_COLUMN_CHOICES = Choices(
+            ('0', 'id'),
+            ('1', 'purchaseYmd'),
+            ('2', 'ymd'),
+            ('3', 'locationCode_code'),
+            ('4', 'purchaseLocationName'),
+            ('5', 'code'),
+            ('6', 'codeName'),
+            ('7', 'count'),
+            ('8', 'purchaseSupplyPrice'),
+            ('9', 'purchaseVat'),
+            ('10', 'totalPrice'),
+            ('11', 'memo'),
+        )
+        draw = int(kwargs.get('draw', None)[0])
+        start = int(kwargs.get('start', None)[0])
+        length = int(kwargs.get('length', None)[0])
+        search_value = kwargs.get('search[value]', None)[0]
+        order_column = kwargs.get('order[0][column]', None)[0]
+        order = kwargs.get('order[0][dir]', None)[0]
+        order_column = ORDER_COLUMN_CHOICES[order_column]
+        start_date = kwargs.get('start_date', None)[0]
+        end_date = kwargs.get('end_date', None)[0]
+        queryset = Product.objects.all().annotate(locationCode_code=F('purchaseLocation__code'))\
+            .annotate(totalPrice=F('purchaseSupplyPrice')+F('purchaseVat'))\
+            .filter(ymd__gte=start_date).filter(ymd__lte=end_date).exclude(purchaseYmd=None)
+        total = queryset.count()
+
+        if search_value:
+            queryset = queryset.filter(Q(purchaseLocation__codeName__icontains=search_value) |
+                                       Q(codeName__icontains=search_value) |
+                                       Q(memo__icontains=search_value))
+
+        if order == 'desc':
+            order_column = '-' + order_column
+
+        count = queryset.count()
+        queryset = queryset.order_by(order_column)[start:start + length]
+        return {
+            'items': queryset,
+            'count': count,
+            'total': total,
+            'draw': draw
         }
 
 

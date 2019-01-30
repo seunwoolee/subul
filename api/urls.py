@@ -2,7 +2,7 @@ from django.urls import path
 from .views import ProductsAPIView, ProductUpdate, ProductEggUpdate, OrderProductUnitPrice, OrderSetProductMatch, \
     OrderSetProductCode, ProductCodes, OrdersAPIView, OrderUpdate, ProductAdminsAPIView, ReleasesAPIView, ReleaseUpdate, \
     ProductMasterUpdate, EggsAPIView, EggsListAPIView, EggsUpdate, EggsReportAPIView, PackingListAPIView, PackingUpdate, \
-    PackingAPIView, PackingReportAPIView, ProductSummaryAPIView
+    PackingAPIView, PackingReportAPIView, ProductSummaryAPIView, ProductOEMsAPIView, ProductOEMUpdate
 
 urlpatterns = [
     # 생산쪽 API
@@ -12,6 +12,9 @@ urlpatterns = [
     path('product/<int:pk>', ProductUpdate.as_view()),
     path('productEgg/<int:pk>', ProductEggUpdate.as_view()),
     path('productCodes/<slug:code>', ProductCodes.as_view()),
+    # OEM쪽 API
+    path('productOEM/', ProductOEMsAPIView.as_view()),
+    path('productOEM/<int:pk>', ProductOEMUpdate.as_view()),
     # 주문쪽 API
     path('order/', OrdersAPIView.as_view()),
     path('order/<int:pk>', OrderUpdate.as_view()),

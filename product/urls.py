@@ -8,5 +8,5 @@ urlpatterns = [
     path('recall/<int:pk>', views.ProductRecall.as_view(), name='productRecall'),
     path('productReport', views.ProductReport.as_view(), name='productReport'),
     path('productOEMReg', views.ProductOEMReg.as_view(), name='productOEMReg'),
-    path('productOEMList', views.ProductOEMReg.as_view(), name='productOEMList'),
+    path('productOEMList', views.ProductOEMList.as_view(), name='productOEMList'),
 ]

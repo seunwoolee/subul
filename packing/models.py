@@ -89,6 +89,8 @@ class Packing(Detail):
             ('9', 'memo'),
         )
         draw = int(kwargs.get('draw', None)[0])
+        start = int(kwargs.get('start', None)[0])
+        length = int(kwargs.get('length', None)[0])
         search_value = kwargs.get('search[value]', None)[0]
         order_column = kwargs.get('order[0][column]', None)[0]
         order = kwargs.get('order[0][dir]', None)[0]
@@ -101,7 +103,6 @@ class Packing(Detail):
 
         queryset = Packing.objects.all().annotate(locationCode_code=F('locationCode__code'))\
                                         .filter(ymd__gte=start_date).filter(ymd__lte=end_date)
-        print(queryset)
         total = queryset.count()
 
         if releaseTypeFilter != '전체':
@@ -121,7 +122,7 @@ class Packing(Detail):
                 Q(codeName__icontains=search_value) | Q(locationCodeName__icontains=search_value))
 
         count = queryset.count()
-        queryset = queryset.order_by(order_column)
+        queryset = queryset.order_by(order_column)[start:start + length]
         return {
             'items': queryset,
             'count': count,

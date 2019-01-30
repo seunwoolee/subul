@@ -145,7 +145,6 @@ class GeneratePDF(View):
         eggs = Egg.objects.filter(ymd=ymd).filter(locationCode=location) \
             .values('code', 'codeName', 'price', 'memo') \
             .annotate(totalCount=ABS('count'))
-        print(eggs)
         sumTotalCount = eggs.aggregate(sumTotalCount=Sum('totalCount'))
         sumSupplyPrice = 0
         sumVat = 0

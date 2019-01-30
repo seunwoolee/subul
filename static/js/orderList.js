@@ -119,6 +119,10 @@ function setStepOneDataTable(args)
             { responsivePriority: 1, targets: 0 },
             { responsivePriority: 2, targets: 3 },
             { responsivePriority: 3, targets: -1, orderable: false },
+            { targets: 6, className: "dt-body-right" },
+            { targets: 7, className: "dt-body-right" },
+            { targets: 8, className: "dt-body-right" },
+            { targets: 9, className: "dt-body-right" }
         ],
         "columns": [
             {"data": "id"},
@@ -178,7 +182,10 @@ function setStepOneDataTable(args)
                             $(node).removeClass('btn-secondary');
                         }
                     }],
-        lengthMenu : [[30, 50, -1], [30, 50, "All"]]
+        lengthMenu : [[30, 50, -1], [30, 50, "All"]],
+        rowCallback: function(row, data, index){
+             $('td:eq(3)', row).html( set_yyyy_mm_dd(data.ymd) );
+        }
     });
 }
 
@@ -276,6 +283,10 @@ function setStepTwoDataTable(args)
             { responsivePriority: 1, targets: 0 },
             { responsivePriority: 2, targets: 1 },
             { responsivePriority: 3, targets: 3 },
+            { targets: 6, className: "dt-body-right" },
+            { targets: 7, className: "dt-body-right" },
+            { targets: 13, className: "dt-body-right" },
+            { targets: 14, className: "dt-body-right" },
         ],
         "columns": [
             {"data": "id"},
@@ -328,7 +339,11 @@ function setStepTwoDataTable(args)
                             $(node).removeClass('btn-secondary');
                         }
                     }],
-        lengthMenu : [[30, 50, -1], [30, 50, "All"]]
+        lengthMenu : [[30, 50, -1], [30, 50, "All"]],
+        rowCallback: function(row, data, index){
+             $('td:eq(3)', row).html( set_yyyy_mm_dd(data.ymd) );
+             $('td:eq(8)', row).html( set_yyyy_mm_dd(data.release_ymd)).css('color', 'blue');
+        }
     });
 }
 

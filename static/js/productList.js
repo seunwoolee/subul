@@ -92,6 +92,8 @@
             { responsivePriority: 1, targets: 0 },
             { responsivePriority: 2, targets: -1, orderable: false },
             { responsivePriority: 3, targets: 2 },
+            { targets: 3, className: "dt-justify" },
+            { targets: 4, className: "dt-justify" },
             { targets: 6, className: "dt-body-right" },
             { targets: 7, className: "dt-body-right" },
             { targets: 8, className: "dt-body-right" },
@@ -121,8 +123,8 @@
             {"data": "ymd"},
             {"data": "amount" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {"data": "count" , "render": $.fn.dataTable.render.number( ',')},
-            {"data": "rawTank_amount", "render":function(data, type, row, meta){return setTankAmountStyle(data);}},
-            {"data": "pastTank_amount","render": function(data, type, row, meta){return setTankAmountStyle(data);}},
+            {"data": "rawTank_amount", "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {"data": "pastTank_amount","render": $.fn.dataTable.render.number( ',', '.', 2)},
             {"data": "loss_insert" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {"data": "loss_openEgg" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {"data": "loss_clean" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
@@ -169,6 +171,11 @@
                         }
                     }],
         lengthMenu : [[30, 50, -1], [30, 50, "All"]],
+        rowCallback: function(row, data, index){
+             $('td:eq(4)', row).html( set_yyyy_mm_dd(data.ymd) );
+            if(data.rawTank_amount <  0){ $(row).find('td:eq(7)').css('color', 'red'); }
+            if(data.pastTank_amount <  0){ $(row).find('td:eq(8)').css('color', 'red'); }
+        },
         drawCallback: function(settings) {
                 $.ajax({
                 url: '/api/productSummary',
@@ -215,22 +222,6 @@ function setTypeButton(data)
         case '미출고품투입':
             return '<button class="btn btn-info btn-sm">'+ data +'</button>'
             break;
-    }
-}
-
-function setTankAmountStyle(data)
-{
-    if(data < 0)
-    {
-        return '<span class="text-danger">'+ data.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) +'</span>'
-    }
-    else if(data > 0)
-    {
-        return '<span>'+ data.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) +'</span>'
-    }
-    else
-    {
-        return ""
     }
 }
 
@@ -346,6 +337,5 @@ $(".fakeYmd").focusout(function(){
 $( "#productReport" ).click(function() {
     let start_date = set_yyyymmdd($('#start_date').val());
     let end_date = set_yyyymmdd($('#end_date').val());
-    console.log(start_date, end_date);
     window.open('/product/productReport?start_date=' + start_date + '&end_date=' + end_date);
 });

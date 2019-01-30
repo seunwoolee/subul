@@ -1,6 +1,7 @@
 from decimal import Decimal
+from itertools import chain
 
-from django.db.models import Sum, F
+from django.db.models import Sum, F, Case, When, Value, CharField, Func
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic.base import View
@@ -11,8 +12,13 @@ from core.models import Location
 from eggs.models import Egg
 from eventlog.models import log
 from product.models import ProductEgg, Product, ProductCode, ProductAdmin, ProductMaster
-from .forms import StepOneForm, StepTwoForm, StepThreeForm, StepFourForm, StepFourFormSet, MainForm, ProductOEMFormSet
+from .forms import StepOneForm, StepTwoForm, StepThreeForm, StepFourForm, StepFourFormSet, MainForm, ProductOEMFormSet, \
+    ProductOEMForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+
+
+class ABS(Func):
+    function = 'ABS'
 
 
 class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
@@ -148,7 +154,6 @@ class ProductRecall(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = 'product.change_product'
 
     def post(self, request, pk):
-        print(request.POST)
         CODE_TYPE_CHOICES = {
             '01201': 'RAW Tank 전란',
             '01202': 'RAW Tank 난황',
@@ -163,7 +168,6 @@ class ProductRecall(LoginRequiredMixin, PermissionRequiredMixin, View):
         product = Product.objects.get(pk=pk)
         totalCount = ProductAdmin.objects.filter(product_id=product).values('product_id__code').annotate(
             totalCount=Sum(F('count')))
-        print(totalCount)
         if count <= int(totalCount[0]['totalCount']):
             Product.objects.create(
                 ymd=product.ymd,
@@ -223,15 +227,213 @@ class ProductReport(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = 'product.change_product'
 
     def get(self, request):
-        SORT_ARRAY = ['미출고품사용', '미출고품투입', '할란', '할란사용', '공정품투입', '공정품발생']
+        SORT_ARRAY = ['미출고품사용',
+                      '미출고품투입',
+                      '이동',
+                      '합계기타',
+                      '원란',
+                      '합계원란',
+                      '할란',
+                      '합계할란',
+                      '할란사용',
+                      '합계할란사용',
+                      '공정품투입',
+                      '합계공정품투입',
+                      '공정품발생',
+                      '합계공정품발생',
+                      '제품생산',
+                      '합계제품생산']
         start_date = request.GET.get('start_date')
         end_date = request.GET.get('end_date')
-        egg = Egg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(type='생산')
-        productEgg = ProductEgg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date)
-        productEgg = sorted(productEgg, key=lambda x: SORT_ARRAY.index(x.type))
-        print(productEgg)
-        product = Product.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date)
-        return render(request, 'product/productReport.html')
+        location = Location.objects.get(code='00301')
+        egg = Egg.objects.values('code', 'codeName').filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
+            .filter(type='생산') \
+            .annotate(report_egg_amount=ABS('amount')) \
+            .annotate(report_egg_count=ABS('count')) \
+            .annotate(report_sort_type=Value('원란', CharField())) \
+            .annotate(report_rawTank_amount=Value(' ', CharField())) \
+            .annotate(report_pastTank_amount=Value(' ', CharField())) \
+            .annotate(report_product_amount=Value(' ', CharField())).order_by('codeName')
+
+        total_amount = egg.aggregate(Sum('report_egg_amount'))['report_egg_amount__sum']
+        total_count = egg.aggregate(Sum('report_egg_count'))['report_egg_count__sum']
+        if not total_amount: total_amount = ' '
+        if not total_count: total_count = ' '
+
+        total_egg = [dict(code=' ',
+                          codeName='합계',
+                          report_sort_type='합계원란',
+                          report_egg_amount=total_amount,
+                          report_egg_count=total_count,
+                          report_rawTank_amount=' ',
+                          report_pastTank_amount=' ',
+                          report_product_amount=' ')]
+        if total_egg[0]['report_egg_amount'] == ' ' and total_egg[0]['report_egg_count'] == ' ':
+            total_egg[0]['code'] = 'pass'
+
+        productEgg = ProductEgg.objects.values('code', 'codeName') \
+            .filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
+            .annotate(report_egg_amount=Value(' ', CharField())) \
+            .annotate(report_egg_count=Value(' ', CharField())) \
+            .annotate(report_sort_type=F('type')) \
+            .annotate(report_rawTank_amount=F('rawTank_amount')) \
+            .annotate(report_pastTank_amount=F('pastTank_amount')) \
+            .annotate(report_product_amount=Value(' ', CharField())).order_by('codeName')
+
+        total_rawTank = productEgg.filter(report_sort_type='할란') \
+            .aggregate(Sum('report_rawTank_amount'))['report_rawTank_amount__sum']
+        total_pastTank = productEgg.filter(report_sort_type='할란') \
+            .aggregate(Sum('report_pastTank_amount'))['report_pastTank_amount__sum']
+        if not total_rawTank: total_rawTank = ' '
+        if not total_pastTank: total_pastTank = ' '
+
+        total_openEgg = [dict(code=' ',
+                              codeName='합계',
+                              report_sort_type='합계할란',
+                              report_egg_amount=' ',
+                              report_egg_count=' ',
+                              report_rawTank_amount=total_rawTank,
+                              report_pastTank_amount=total_pastTank,
+                              report_product_amount=' ')]
+        if total_openEgg[0]['report_rawTank_amount'] == ' ' and total_openEgg[0]['report_pastTank_amount'] == ' ':
+            total_openEgg[0]['code'] = 'pass'
+
+        total_rawTank = productEgg.filter(report_sort_type='할란사용') \
+            .aggregate(Sum('report_rawTank_amount'))['report_rawTank_amount__sum']
+        total_pastTank = productEgg.filter(report_sort_type='할란사용') \
+            .aggregate(Sum('report_pastTank_amount'))['report_pastTank_amount__sum']
+        if not total_rawTank: total_rawTank = ' '
+        if not total_pastTank: total_pastTank = ' '
+
+        total_openEggUse = [dict(code=' ',
+                                 codeName='합계',
+                                 report_sort_type='합계할란사용',
+                                 report_egg_amount=' ',
+                                 report_egg_count=' ',
+                                 report_rawTank_amount=total_rawTank,
+                                 report_pastTank_amount=total_pastTank,
+                                 report_product_amount=' ')]
+        if total_openEggUse[0]['report_rawTank_amount'] == ' ' and total_openEggUse[0]['report_pastTank_amount'] == ' ':
+            total_openEggUse[0]['code'] = 'pass'
+
+        total_rawTank = productEgg.filter(report_sort_type='공정품투입') \
+            .aggregate(Sum('report_rawTank_amount'))['report_rawTank_amount__sum']
+        total_pastTank = productEgg.filter(report_sort_type='공정품투입') \
+            .aggregate(Sum('report_pastTank_amount'))['report_pastTank_amount__sum']
+        if not total_rawTank: total_rawTank = ' '
+        if not total_pastTank: total_pastTank = ' '
+
+        total_insert = [dict(code=' ',
+                             codeName='합계',
+                             report_sort_type='합계공정품투입',
+                             report_egg_amount=' ',
+                             report_egg_count=' ',
+                             report_rawTank_amount=total_rawTank,
+                             report_pastTank_amount=total_pastTank,
+                             report_product_amount=' ')]
+        if total_insert[0]['report_rawTank_amount'] == ' ' and total_insert[0]['report_pastTank_amount'] == ' ':
+            total_insert[0]['code'] = 'pass'
+
+        total_rawTank = productEgg.filter(report_sort_type='공정품발생') \
+            .aggregate(Sum('report_rawTank_amount'))['report_rawTank_amount__sum']
+        total_pastTank = productEgg.filter(report_sort_type='공정품발생') \
+            .aggregate(Sum('report_pastTank_amount'))['report_pastTank_amount__sum']
+        if not total_rawTank: total_rawTank = ' '
+        if not total_pastTank: total_pastTank = ' '
+
+        total_create = [dict(code=' ',
+                             codeName='합계',
+                             report_sort_type='합계공정품발생',
+                             report_egg_amount=' ',
+                             report_egg_count=' ',
+                             report_rawTank_amount=total_rawTank,
+                             report_pastTank_amount=total_pastTank,
+                             report_product_amount=' ')]
+        if total_create[0]['report_rawTank_amount'] == ' ' and total_create[0]['report_pastTank_amount'] == ' ':
+            total_create[0]['code'] = 'pass'
+
+        product = Product.objects.values('code', 'codeName').filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
+            .filter(purchaseYmd=None) \
+            .annotate(report_egg_amount=Value(' ', CharField())) \
+            .annotate(report_egg_count=Value(' ', CharField())) \
+            .annotate(report_sort_type=F('type')) \
+            .annotate(report_rawTank_amount=Value(' ', CharField())) \
+            .annotate(report_pastTank_amount=Value(' ', CharField())) \
+            .annotate(report_product_amount=F('amount')).order_by('codeName')
+
+        total_amount = product.filter(report_sort_type='제품생산') \
+            .aggregate(Sum('report_product_amount'))['report_product_amount__sum']
+        if not total_amount: total_amount = ' '
+        total_product = [dict(code=' ',
+                              codeName='합계',
+                              report_sort_type='합계제품생산',
+                              report_egg_amount=' ',
+                              report_egg_count=' ',
+                              report_rawTank_amount=' ',
+                              report_pastTank_amount=' ',
+                              report_product_amount=total_amount)]
+        if total_product[0]['report_product_amount'] == ' ':
+            total_product[0]['code'] = 'pass'
+
+        productAdmin = ProductAdmin.objects.values(code=F('product_id__code')) \
+            .values(codeName=F('product_id__codeName')) \
+            .filter(product_id__purchaseYmd=None) \
+            .filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
+            .filter(location=location).filter(releaseType='이동').filter(count__lt=0) \
+            .annotate(report_egg_amount=Value(' ', CharField())) \
+            .annotate(report_egg_count=Value(' ', CharField())) \
+            .annotate(report_sort_type=F('releaseType')) \
+            .annotate(report_rawTank_amount=Value(' ', CharField())) \
+            .annotate(report_pastTank_amount=Value(' ', CharField())) \
+            .annotate(report_product_amount=F('amount')).order_by('codeName')
+
+        total_rawTank = productEgg.filter(report_sort_type__in=['미출고품사용', '미출고품투입']) \
+            .aggregate(Sum('report_rawTank_amount'))['report_rawTank_amount__sum']
+        total_amount = product.filter(report_sort_type='미출고품사용') \
+            .aggregate(Sum('report_product_amount'))['report_product_amount__sum']
+        total_move_amount = productAdmin.filter(report_sort_type='이동') \
+            .aggregate(Sum('report_product_amount'))['report_product_amount__sum']
+        if total_move_amount: total_amount += total_move_amount
+        if not total_rawTank: total_rawTank = ' '
+        if not total_amount: total_amount = ' '
+        total_other = [dict(code=' ',
+                            codeName='합계',
+                            report_sort_type='합계기타',
+                            report_egg_amount=' ',
+                            report_egg_count=' ',
+                            report_rawTank_amount=total_rawTank,
+                            report_pastTank_amount=' ',
+                            report_product_amount=total_amount)]
+        if total_other[0]['report_product_amount'] == ' ' and total_other[0]['report_rawTank_amount'] == ' ':
+            total_other[0]['code'] = 'pass'
+        result_list = sorted(
+            chain(egg,
+                  total_other,
+                  total_egg,
+                  productEgg,
+                  total_openEgg,
+                  total_openEggUse,
+                  total_insert,
+                  total_create,
+                  product,
+                  total_product,
+                  productAdmin),
+            key=lambda x: SORT_ARRAY.index(x['report_sort_type']))
+        percentSummary = ProductEgg.percentSummary(start_date, end_date)
+        if len(result_list) > 37:
+            first_loop_reuslt = result_list[:37]
+            loop_reuslt = result_list[37:]
+            return render(request, 'product/productReport.html',
+                          {'first_loop_reuslt': first_loop_reuslt,
+                           'loop_reuslt': loop_reuslt,
+                           'percentSummary': percentSummary,
+                           'start_date': start_date,
+                           'end_date': end_date})
+        else:
+            return render(request, 'product/productReport.html', {'result_list': result_list,
+                                                                  'percentSummary': percentSummary,
+                                                                  'start_date': start_date,
+                                                                  'end_date': end_date})
 
 
 class ProductOEMReg(LoginRequiredMixin, View):
@@ -271,7 +473,7 @@ class ProductOEMReg(LoginRequiredMixin, View):
                     purchaseVat=purchaseVat
                 )
 
-                productAdmin = ProductAdmin.objects.create( # TODO UPdate
+                productAdmin = ProductAdmin.objects.create(  # TODO UPdate
                     product_id=product,
                     amount=count,
                     count=count,
@@ -286,3 +488,12 @@ class ProductOEMReg(LoginRequiredMixin, View):
     def get(self, request):
         ProductOEMForm = ProductOEMFormSet(request.GET or None)
         return render(request, 'productOEM/productOEMReg.html', {'ProductOEMForm': ProductOEMForm})
+
+
+class ProductOEMList(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = '/'
+    permission_required = 'product.change_product'
+
+    def get(self, request):
+        productOEMForm = ProductOEMForm()
+        return render(request, 'productOEM/productOEMList.html', {'productOEMForm': productOEMForm})

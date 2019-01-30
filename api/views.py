@@ -10,6 +10,7 @@ from rest_framework import mixins
 from api.eggSerializers import EggSerializer
 from api.orderSerializers import OrderSerializer
 from api.packingSerializers import PackingSerializer
+from api.productOEMSerializers import ProductOEMSerializer
 from api.releaseSerializers import ProductAdminSerializer, ReleaseSerializer
 from core.models import Location
 from eggs.models import Egg
@@ -98,54 +99,7 @@ class ProductSummaryAPIView(APIView):
     def get(self, request, format=None):
         start_date = request.query_params["start_date"]
         end_date = request.query_params["end_date"]
-        total_EggAmount = Egg.getAmount(start_date, end_date)  # 중량
-        processProduct_amount = ProductEgg.objects.values('type').filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
-            .filter(type='할란').annotate(tankAmount=Sum('rawTank_amount') + Sum('pastTank_amount'))
-        openEggUse_amount = ProductEgg.objects.values('type').filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
-            .filter(type='할란사용').annotate(tankAmount=Sum('rawTank_amount') + Sum('pastTank_amount'))
-        product_amount = Product.objects.values('type').filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
-            .filter(type='제품생산').filter(purchaseYmd=None).annotate(tankAmount=Sum('amount'))
-        processProductCreate_amount = ProductEgg.objects.values('type').filter(ymd__gte=start_date).filter(
-            ymd__lte=end_date) \
-            .filter(type='공정품발생').annotate(tankAmount=Sum('rawTank_amount') + Sum('pastTank_amount'))
-        processProductInsert_amount = ProductEgg.objects.values('type').filter(ymd__gte=start_date).filter(
-            ymd__lte=end_date) \
-            .filter(type='공정품투입').annotate(tankAmount=Sum('rawTank_amount') + Sum('pastTank_amount'))
-        recallProductInsert_amount = ProductEgg.objects.values('type').filter(ymd__gte=start_date).filter(
-            ymd__lte=end_date) \
-            .filter(type='미출고품투입').annotate(tankAmount=Sum('rawTank_amount') + Sum('pastTank_amount'))
-        if not total_EggAmount: total_EggAmount = 0
-        processProduct_amount = processProduct_amount[0]['tankAmount'] if processProduct_amount else 0
-        openEggUse_amount = openEggUse_amount[0]['tankAmount'] if openEggUse_amount else 0
-        product_amount = product_amount[0]['tankAmount'] if product_amount else 0
-        processProductCreate_amount = processProductCreate_amount[0]['tankAmount'] if processProductCreate_amount else 0
-        processProductInsert_amount = processProductInsert_amount[0]['tankAmount'] if processProductInsert_amount else 0
-        recallProductInsert_amount = recallProductInsert_amount[0]['tankAmount'] if recallProductInsert_amount else 0
-        loss_clean_amount = Product.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
-            .filter(purchaseYmd=None).aggregate(loss_clean=Sum('loss_clean'))
-        loss_fill_amount = Product.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
-            .filter(purchaseYmd=None).aggregate(loss_fill=Sum('loss_fill'))
-        loss_insert_amount = ProductEgg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
-            .aggregate(loss_insert=Sum('loss_insert'))
-        loss_openEgg_amount = ProductEgg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
-            .aggregate(loss_openEgg=Sum('loss_openEgg'))
-        loss_clean_amount = loss_clean_amount['loss_clean'] if loss_clean_amount['loss_clean'] else 0
-        loss_fill_amount = loss_fill_amount['loss_fill'] if loss_fill_amount['loss_fill'] else 0
-        loss_insert_amount = loss_insert_amount['loss_insert'] if loss_insert_amount['loss_insert'] else 0
-        loss_openEgg_amount = loss_openEgg_amount['loss_openEgg'] if loss_openEgg_amount['loss_openEgg'] else 0
-        openEggPercent = round((processProduct_amount / total_EggAmount * 100), 2) if total_EggAmount > 0 else 0
-        productPercent = round(
-            ((product_amount + processProduct_amount + openEggUse_amount + processProductInsert_amount +
-              processProductCreate_amount + recallProductInsert_amount) / total_EggAmount * 100), 2) \
-            if total_EggAmount > 0 else 0
-        lossTotal = loss_clean_amount + loss_fill_amount + loss_insert_amount + loss_openEgg_amount
-        insertLoss = round((loss_insert_amount / total_EggAmount * 100), 2) if total_EggAmount > 0 else 0
-        openEggLoss = round((loss_openEgg_amount / processProduct_amount * 100), 2) if processProduct_amount > 0 else 0
-        result = {'openEggPercent': openEggPercent,
-                  'productPercent': productPercent,
-                  'lossTotal': lossTotal,
-                  'insertLoss': insertLoss,
-                  'openEggLoss': openEggLoss}
+        result = ProductEgg.percentSummary(start_date, end_date)
         return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
 
 
@@ -500,3 +454,28 @@ class PackingReportAPIView(APIView):
             return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
         except Exception as e:
             return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+
+
+class ProductOEMsAPIView(APIView):
+
+    def get(self, request):
+        try:
+            result = dict()
+            productOEM = Product.productOEMQuery(**request.query_params)
+            productOEMSerializer = ProductOEMSerializer(productOEM['items'], many=True)
+            result['data'] = productOEMSerializer.data
+            result['draw'] = productOEM['draw']
+            result['recordsTotal'] = productOEM['total']
+            result['recordsFiltered'] = productOEM['count']
+            return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+        except Exception as e:
+            return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+
+
+class ProductOEMUpdate(generics.RetrieveUpdateDestroyAPIView):
+    """
+    OEM조회에서 Update , Delete
+    """
+
+    queryset = Product.objects.all().exclude(purchaseYmd=None)
+    serializer_class = ProductOEMSerializer

@@ -374,7 +374,6 @@ $(document).on('click', "#releasePacking tbody tr", function()
 
 function manualReleaseModal(data)
 {
-    console.log(data);
     $("#id_type").val("생산").change();
     $("#id_code").val(data['code']);
     $("#id_fakeYmd").val("");
@@ -382,9 +381,9 @@ function manualReleaseModal(data)
     $('#id_memo').val("");
     $("#Modal").modal();
 }
+
 function editButtonClick(data)
 {
-    console.log(data);
     $('#modify_id_count').val(data['count']).removeAttr( "min" );
     $('#modify_id_price').val(data['price']).removeAttr("required");
     $('#modify_id_memo').val(data['memo']);
@@ -400,7 +399,6 @@ function deleteButtonClick(data)
 
 function pdfButtonClick(data)
 {
-    console.log(data);
     let ymd = data['ymd'];
     let locationCode = data['locationCode'];
     let moneyMark = $("#moneyMark").is(":checked");

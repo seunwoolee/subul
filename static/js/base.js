@@ -47,10 +47,20 @@ function set_yyyymmdd(yyyy_mm_dd)
 
 function set_yyyy_mm_dd(yyyymmdd)
 {
-    let yyyy = yyyymmdd.substring(0, 4);
-    let mm = yyyymmdd.substring(4, 6);
-    let dd = yyyymmdd.substring(6, 8);
-    return fakeYmd = yyyy + '-' + mm + '-' + dd;;
+    if(yyyymmdd != null)
+    {
+        if (yyyymmdd.length == 8)
+        {
+            let yyyy = yyyymmdd.substring(0, 4);
+            let mm = yyyymmdd.substring(4, 6);
+            let dd = yyyymmdd.substring(6, 8);
+            return fakeYmd = yyyy + '-' + mm + '-' + dd;
+        }
+    }
+    else
+    {
+        return yyyymmdd;
+    }
 }
 
 var date = new Date();

@@ -104,3 +104,9 @@ def lookup_amount(d, key):
     except:
         result = 0
     return result
+
+
+@register.filter
+def update_type(key , value):
+    key = value
+    return key
