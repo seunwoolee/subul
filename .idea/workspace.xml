@@ -79,18 +79,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="forms.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/product/forms.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="679">
-              <caret line="295" column="21" lean-forward="true" selection-start-line="295" selection-start-column="21" selection-end-line="295" selection-end-column="21" />
-              <folding>
-                <element signature="e#0#24#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="packingModifyForm.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/includes/modal/packingModifyForm.html">
           <provider selected="true" editor-type-id="text-editor">
@@ -109,7 +97,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/views.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="604">
@@ -117,6 +105,15 @@
               <folding>
                 <element signature="e#0#27#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="baseHTML.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/templates/baseHTML.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="271">
+              <caret line="501" column="51" lean-forward="true" selection-start-line="501" selection-start-column="51" selection-end-line="501" selection-end-column="51" />
             </state>
           </provider>
         </entry>
@@ -166,7 +163,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>annotate</find>
       <find>setTankAmountStyle</find>
       <find>5</find>
       <find>set_</find>
@@ -196,6 +192,7 @@
       <find>packingListQuery</find>
       <find>numberFormat</find>
       <find>deleteAndEdit</find>
+      <find>CoreUI Pro</find>
     </findStrings>
     <replaceStrings>
       <replace>releases</replace>
@@ -274,7 +271,6 @@
         <option value="$PROJECT_DIR$/order/templatetags/custom.py" />
         <option value="$PROJECT_DIR$/templates/product/productReport.html" />
         <option value="$PROJECT_DIR$/templates/productOEM/packingList.html" />
-        <option value="$PROJECT_DIR$/templates/baseHTML.html" />
         <option value="$PROJECT_DIR$/product/urls.py" />
         <option value="$PROJECT_DIR$/api/productOEMSerializers.py" />
         <option value="$PROJECT_DIR$/packing/models.py" />
@@ -287,6 +283,7 @@
         <option value="$PROJECT_DIR$/api/urls.py" />
         <option value="$PROJECT_DIR$/api/views.py" />
         <option value="$PROJECT_DIR$/static/js/productOEMList.js" />
+        <option value="$PROJECT_DIR$/templates/baseHTML.html" />
       </list>
     </option>
   </component>
@@ -860,13 +857,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/baseHTML.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="246">
-          <caret line="157" column="68" selection-start-line="157" selection-start-column="54" selection-end-line="157" selection-end-column="68" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/product/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
@@ -1085,6 +1075,13 @@
           <folding>
             <element signature="e#0#27#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/baseHTML.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="271">
+          <caret line="501" column="51" lean-forward="true" selection-start-line="501" selection-start-column="51" selection-end-line="501" selection-end-column="51" />
         </state>
       </provider>
     </entry>
