@@ -1,9 +1,13 @@
 from django.db import models
-from django.db.models import Sum, DecimalField, F, Q, FloatField
+from django.db.models import Sum, DecimalField, F, Q, FloatField, Func, Value, IntegerField, Case, When, \
+    ExpressionWrapper
 from django.db.models.functions import Cast
 from model_utils import Choices
-
 from core.models import Detail, Location, Code
+
+
+class ABS(Func):
+    function = 'ABS'
 
 
 class EggCode(Code):
@@ -62,16 +66,16 @@ class Egg(Detail):
                                       egg_codeName=F('codeName'),
                                       egg_in_ymd=F('in_ymd')).annotate(totalCount=Sum('count')).filter(totalCount__gt=0)
 
-        # django orm '-' -> desc
         if order == 'desc':
             order_column = '-' + order_column
 
-        total = queryset.count()  # TODO 삭제
+        total = queryset.count()
 
         if search_value:
-            queryset = queryset.filter(Q(codeName__icontains=search_value))
+            queryset = queryset.filter(Q(codeName__icontains=search_value) |
+                                       Q(egg_in_locationCodeName__icontains=search_value))
 
-        count = queryset.count()  # TODO 삭제
+        count = queryset.count()
         queryset = queryset.order_by(order_column)
         return {
             'items': queryset,
@@ -91,7 +95,7 @@ class Egg(Detail):
             ('4', 'in_locationCodeName'),
             ('5', 'locationCodeName'),
             ('6', 'ymd'),
-            ('7', 'count'),
+            ('7', 'counts'),
             ('8', 'amount'),
             ('9', 'in_price'),
             ('10', 'out_price'),
@@ -109,7 +113,13 @@ class Egg(Detail):
         productTypeFilter = kwargs.get('productTypeFilter', None)[0]
         locatoinTypeFilter = kwargs.get('locatoinTypeFilter', None)[0]
 
-        queryset = Egg.objects.all().filter(ymd__gte=start_date).filter(ymd__lte=end_date)
+        queryset = Egg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
+            .annotate(counts=ABS(F('count'))) \
+            .annotate(in_locationCodes=F('in_locationCode__code')) \
+            .annotate(in_price=Case(When(type='입고', then=F('price')),  default=0))\
+            .annotate(out_price=Case(When(type='판매', then=F('price')),  default=0))\
+            .annotate(pricePerEa=Case(When(price=0, then=0), When(count=0, then=0), default=F('price') / ABS(F('count'))))
+
         total = queryset.count()
 
         if releaseTypeFilter != '전체':
@@ -122,12 +132,11 @@ class Egg(Detail):
             queryset = queryset.filter(Q(in_locationCode__code=locatoinTypeFilter) |
                                        Q(locationCode__code=locatoinTypeFilter))
 
-        # django orm '-' -> desc
         if order == 'desc':
             order_column = '-' + order_column
 
         if search_value:
-            queryset = queryset.filter(Q(codeName__icontains=search_value))
+            queryset = queryset.filter(Q(memo__icontains=search_value) | Q(locationCodeName__icontains=search_value))
 
         count = queryset.count()
         queryset = queryset.order_by(order_column)
@@ -169,8 +178,8 @@ class Egg(Detail):
             .filter(totalCount__gt=0)  # 재고가 0초과인 이전 재고
 
         if search_value:
-            egg_previous = egg_previous.filter(productCodeName__icontains=search_value)
-
+            egg_previous = egg_previous.filter(Q(codeName__icontains=search_value) |
+                                               Q(in_locationCodeName__icontains=search_value))
         for previous in egg_previous:  # 기간 내 전일재고의 각 타입별(IN, SALE, LOSS, INSERT) count를 구한다
             result = {}
             countPerType = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName', 'type') \
@@ -228,7 +237,8 @@ class Egg(Detail):
             .filter(type='입고')
 
         if search_value:
-            egg_period = egg_period.filter(productCodeName__icontains=search_value)
+            egg_period = egg_period.filter(Q(codeName__icontains=search_value) |
+                                               Q(in_locationCodeName__icontains=search_value))
 
         for period in egg_period:  # 기간 내 생성된 각 타입별(IN, SALE, LOSS, INSERT) count를 구한다
             result = {}
@@ -297,5 +307,5 @@ class Egg(Detail):
 
     @staticmethod
     def getAmount(start_date, end_date):
-        return Egg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(type__in=['입고','생산']) \
+        return Egg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(type__in=['입고', '생산']) \
             .aggregate(totalAmount=Sum('amount'))['totalAmount']

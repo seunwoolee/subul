@@ -94,17 +94,13 @@ class Release(Detail):
             )
             order_column = RELEASE_COLUMN_CHOICES[order_column]
             queryset = Release.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
-                .annotate(kgPrice=Case(
-                When(price=0, then=0),
-                When(amount=0, then=0),
-                default=ExpressionWrapper(F('price') / F('amount'), output_field=DecimalField()))) \
+                .annotate(kgPrice=Case(When(price=0, then=0), When(amount=0, then=0),
+                                       default=ExpressionWrapper(F('price') / F('amount'), output_field=DecimalField()))) \
                 .annotate(contentType=F('product_id__productCode__type')) \
                 .annotate(totalPrice=F('price')) \
                 .annotate(supplyPrice=ExpressionWrapper(F('price') - F('releaseVat'), output_field=DecimalField())) \
-                .annotate(eaPrice=Case(
-                When(price=0, then=0),
-                When(count=0, then=0),
-                default=ExpressionWrapper(F('price') / F('count'), output_field=DecimalField()))) \
+                .annotate(eaPrice=Case(When(price=0, then=0), When(count=0, then=0),
+                                       default=ExpressionWrapper(F('price') / F('count'), output_field=DecimalField()))) \
                 .annotate(releaseStoreLocationCodeName=F('releaseStoreLocation__codeName')) \
                 .annotate(orderMemo=F('releaseOrder__memo')) \
                 .annotate(locationType=F('releaseLocationCode__location_character')) \
@@ -584,9 +580,19 @@ class Release(Detail):
             order_column = '-' + order_column
 
         if search_value:
-            queryset = queryset.filter(Q(code__icontains=search_value) |
-                                       Q(codeName__icontains=search_value) |
-                                       Q(memo__icontains=search_value))
+            if groupByFilter == 'stepOne':
+                queryset = queryset.filter(Q(releaseLocationName__icontains=search_value) |
+                                           Q(codeName__icontains=search_value) |
+                                           Q(memo__icontains=search_value) |
+                                           Q(orderMemo__icontains=search_value))
+            elif groupByFilter == 'stepTwo':
+                queryset = queryset.filter(Q(releaseStoreLocationCodeName__icontains=search_value) |
+                                           Q(codeName__icontains=search_value))
+            elif groupByFilter == 'stepThree':
+                queryset = queryset.filter(Q(releaseLocationName__icontains=search_value) |
+                                           Q(codeName__icontains=search_value))
+            elif groupByFilter == 'stepFour':
+                queryset = queryset.filter(releaseLocationName__icontains=search_value)
 
         count = queryset.count()
 

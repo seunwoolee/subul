@@ -14,15 +14,6 @@ function fetch_data(start_date='', end_date='')
           },
           "stepThree":  function() {
             return setStepThreeDataTable(args);
-          },
-          "stepFour":  function() {
-            return setStepFourDataTable(args);
-          },
-          "stepFive":  function() {
-            return setStepFiveDataTable(args);
-          },
-          "stepSix":  function() {
-            return setStepSixDataTable(args);
           }
      };
 
@@ -47,6 +38,7 @@ function fetch_data(start_date='', end_date='')
 function setStepOneDataTable(args)
 {
     table = args['table'].DataTable({
+        "language": {searchPlaceholder: "판매처명, 메모"},
         "select": true,
         "processing": true,
         "serverSide": true,
@@ -67,9 +59,11 @@ function setStepOneDataTable(args)
             { responsivePriority: 1, targets: 0 },
             { responsivePriority: 2, targets: 3 },
             { responsivePriority: 3, targets: -1, orderable: false },
-            { orderable: false, targets: 9 },
-            { orderable: false, targets: 10 },
-            { orderable: false, targets: 11 }
+            { targets: 7, className: "dt-body-right"  },
+            { targets: 8, className: "dt-body-right"  },
+            { targets: 9, className: "dt-body-right"  },
+            { targets: 10, className: "dt-body-right"  },
+            { targets: 11, className: "dt-body-right"  },
         ],
         "columns": [
             {"data": "id"},
@@ -79,21 +73,15 @@ function setStepOneDataTable(args)
             {"data": "in_locationCodeName"},
             {"data": "locationCodeName"},
             {"data": "ymd"},
-            {"data": "count" , "render": $.fn.dataTable.render.number( ',')},
+            {"data": "counts" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "amount" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {"data": "in_price" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "out_price" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "pricePerEa" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "memo"},
             {"data": "type", "render": function(data, type, row, meta){
-                    if(data == "판매")
-                    {
-                        return setDataTableActionButtonWithPdf();
-                    }
-                    else
-                    {
-                        return setDataTableActionButton();
-                    }
+                    if(data == "판매") { return setDataTableActionButtonWithPdf(); }
+                    else { return setDataTableActionButton(); }
             }}
         ],
         dom: 'Bfrtip',
@@ -130,26 +118,21 @@ function setStepOneDataTable(args)
                             $(node).removeClass('btn-secondary');
                         }
                     }],
-        lengthMenu : [[30, 50, -1], [30, 50, "All"]]
+        lengthMenu : [[30, 50, -1], [30, 50, "All"]],
+        rowCallback: function(row, data, index){
+             $('td:eq(2)', row).html( set_yyyy_mm_dd(data.in_ymd) );
+             $('td:eq(6)', row).html( set_yyyy_mm_dd(data.ymd) );
+            if(data.in_price ==  0){ $(row).find('td:eq(9)').html('') };
+            if(data.out_price ==  0){ $(row).find('td:eq(10)').html('') };
+        }
+
     });
 }
 
 function setStepTwoDataTable(args)
 {
     releaseTable = args['table'].DataTable({
-        "language": {
-        "lengthMenu": "_MENU_ 페이지당 개수",
-        "zeroRecords": "결과 없음",
-        "info": "",
-        "infoEmpty": "No records available",
-        "infoFiltered": "(검색된결과 from _MAX_ total records)"
-        },
-         "createdRow": function( row, data, dataIndex ) {
-            $( row ).find('td:eq(0)').attr('data-title','거래처명');
-            $( row ).find('td:eq(1)').attr('data-title','제품명');
-            $( row ).find('td:eq(2)').attr('data-title','생산일');
-            $( row ).find('td:eq(3)').attr('data-title','재고수량');
-         },
+        "language": {searchPlaceholder: "제품명, 농장명"},
         "paging": false,
         "processing": true,
         "serverSide": true,
@@ -157,6 +140,10 @@ function setStepTwoDataTable(args)
             "url": "/api/eggs/",
             "type": "GET"
         },
+        "responsive" : true,
+        "columnDefs": [
+            { targets: 3, className: "dt-body-right"  },
+        ],
         "columns": [
             {"data": "egg_in_locationCodeName"},
             {"data": "egg_codeName"},
@@ -196,20 +183,18 @@ function setStepTwoDataTable(args)
                         init : function(api, node, config){
                             $(node).removeClass('btn-secondary');
                         }
-                    }]
+                    }],
+        lengthMenu : [[30, 50, -1], [30, 50, "All"]],
+        rowCallback: function(row, data, index){
+             $('td:eq(2)', row).html( set_yyyy_mm_dd(data.egg_in_ymd) );
+        }
     });
 }
 
 function setStepThreeDataTable(args)
 {
     eggReportTable = args['table'].DataTable({
-        "language": {
-        "lengthMenu": "_MENU_ 페이지당 개수",
-        "zeroRecords": "결과 없음",
-        "info": "",
-        "infoEmpty": "No records available",
-        "infoFiltered": "(검색된결과 from _MAX_ total records)"
-        },
+        "language": {searchPlaceholder: "제품명, 메모"},
         "processing": true,
         "serverSide": true,
         "ajax": {
@@ -268,7 +253,10 @@ function setStepThreeDataTable(args)
                             $(node).removeClass('btn-secondary');
                         }
                     }],
-        lengthMenu : [[30, 50, -1], [30, 50, "All"]]
+        lengthMenu : [[30, 50, -1], [30, 50, "All"]],
+        rowCallback: function(row, data, index){
+             $('td:eq(1)', row).html( set_yyyy_mm_dd(data.in_ymd) );
+        }
     });
 }
 

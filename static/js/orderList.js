@@ -99,21 +99,6 @@ function setStepOneDataTable(args)
                         gubunFilter:args['gubunFilter']
             }
         },
-         "createdRow": function( row, data, dataIndex ) {
-            $( row ).find('td:eq(0)').attr('data-title','ID');
-            $( row ).find('td:eq(1)').attr('data-title','구분');
-            $( row ).find('td:eq(2)').attr('data-title','특인');
-            $( row ).find('td:eq(3)').attr('data-title','주문일');
-            $( row ).find('td:eq(4)').attr('data-title','거래처명');
-            $( row ).find('td:eq(5)').attr('data-title','품명');
-            $( row ).find('td:eq(6)').attr('data-title','양(KG)');
-            $( row ).find('td:eq(7)').attr('data-title','개수(EA)');
-            $( row ).find('td:eq(8)').attr('data-title','단가');
-            $( row ).find('td:eq(9)').attr('data-title','금액');
-            $( row ).find('td:eq(10)').attr('data-title','메모');
-            $( row ).find('td:eq(11)').attr('data-title','세트명');
-            $( row ).find('td:eq(12)').attr('data-title','Actions');
-         },
         "responsive" : true,
         "columnDefs": [
             { responsivePriority: 1, targets: 0 },
@@ -260,24 +245,6 @@ function setStepTwoDataTable(args)
                         gubunFilter:args['gubunFilter']
             }
         },
-         "createdRow": function( row, data, dataIndex ) {
-            $( row ).find('td:eq(0)').attr('data-title','ID');
-            $( row ).find('td:eq(1)').attr('data-title','구분');
-            $( row ).find('td:eq(2)').attr('data-title','특인');
-            $( row ).find('td:eq(3)').attr('data-title','주문일');
-            $( row ).find('td:eq(4)').attr('data-title','거래처명');
-            $( row ).find('td:eq(5)').attr('data-title','품명');
-            $( row ).find('td:eq(6)').attr('data-title','양(KG)');
-            $( row ).find('td:eq(7)').attr('data-title','개수(EA)');
-            $( row ).find('td:eq(8)').attr('data-title','단가');
-            $( row ).find('td:eq(9)').attr('data-title','금액');
-            $( row ).find('td:eq(10)').attr('data-title','메모');
-            $( row ).find('td:eq(11)').attr('data-title','세트명');
-            $( row ).find('td:eq(12)').attr('data-title','Actions');
-            $( row ).find('td:eq(13)').attr('data-title','Actions');
-            $( row ).find('td:eq(14)').attr('data-title','Actions');
-            $( row ).find('td:eq(15)').attr('data-title','Actions');
-         },
         "responsive" : true,
         "columnDefs": [
             { responsivePriority: 1, targets: 0 },

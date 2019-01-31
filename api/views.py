@@ -331,11 +331,9 @@ class ReleasesAPIView(APIView):
             result = dict()
             if groupByFilter == 'stepOne':
                 releases = Release.releaseQuery(**request.GET)
-                # releases = Release.releaseQuery(**request.query_params)
                 releaseSerializer = ReleaseSerializer(releases['items'], many=True)
                 result['data'] = releaseSerializer.data
             else:
-                # releases = Release.releaseQuery(**request.query_params)
                 releases = Release.releaseQuery(**request.GET)
                 result['data'] = releases['items']
             result['draw'] = releases['draw']

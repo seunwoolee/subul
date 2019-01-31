@@ -120,10 +120,7 @@ function setStepOneDataTable(args)
             $( api.column( 12 ).footer() ).html( numberFormat(pageTotal_vat) );
             $( api.column( 13 ).footer() ).html( numberFormat(pageTotal_pricePerEa) );
         },
-        "language": {
-            "decimal": ",",
-            "thousands": "."
-        },
+        "language": {searchPlaceholder: "거래처, 제품, 메모, 주문메모"},
         "processing": true,
         "serverSide": true,
         "ajax": {
@@ -144,6 +141,13 @@ function setStepOneDataTable(args)
             { responsivePriority: 1, targets: 0 },
             { responsivePriority: 2, targets: 1 },
             { responsivePriority: 3, targets: -1 },
+            { targets: 7, className: "dt-body-right" },
+            { targets: 8, className: "dt-body-right" },
+            { targets: 9, className: "dt-body-right" },
+            { targets: 10, className: "dt-body-right" },
+            { targets: 11, className: "dt-body-right" },
+            { targets: 12, className: "dt-body-right" },
+            { targets: 13, className: "dt-body-right" },
         ],
         "columns": [
             {'data': 'id'},
@@ -173,7 +177,6 @@ function setStepOneDataTable(args)
                     return setDataTableActionButtonWithPdfRecall();
             }}
         ],
-        stateSave:  true,
         dom: 'Bfrtip',
         buttons: [
                     {
@@ -208,7 +211,11 @@ function setStepOneDataTable(args)
                             $(node).removeClass('btn-secondary');
                         }
                     }],
-        lengthMenu : [[30, 50, -1], [30, 50, "All"]]
+        lengthMenu : [[30, 50, -1], [30, 50, "All"]],
+        rowCallback: function(row, data, index){
+             $('td:eq(1)', row).html( set_yyyy_mm_dd(data.ymd) );
+             $('td:eq(14)', row).html( set_yyyy_mm_dd(data.productYmd) );
+        }
     });
 }
 
@@ -285,6 +292,7 @@ function setStepTwoDataTable(args)
             $( api.column( 10 ).footer() ).html( numberFormat(pageTotal_vat) );
             $( api.column( 11 ).footer() ).html( numberFormat(pageTotal_pricePerEa) );
         },
+        "language": {searchPlaceholder: "제품명, 보관장소"},
         "processing": true,
         "serverSide": true,
         "ajax": {
@@ -301,6 +309,15 @@ function setStepTwoDataTable(args)
             }
         },
         "responsive" : true,
+        "columnDefs": [
+            { targets: 5, className: "dt-body-right" },
+            { targets: 6, className: "dt-body-right" },
+            { targets: 7, className: "dt-body-right" },
+            { targets: 8, className: "dt-body-right" },
+            { targets: 9, className: "dt-body-right" },
+            { targets: 10, className: "dt-body-right" },
+            { targets: 11, className: "dt-body-right" },
+        ],
         "columns": [
             {'data': 'code'},
             {"data": "specialTag", "render" : function(data, type, row, meta){return setSpecialTagButton(data);}},
@@ -316,7 +333,6 @@ function setStepTwoDataTable(args)
             {"data": "eaPrice" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "releaseStoreLocationCodeName"}
         ],
-        stateSave:  true,
         dom: 'Bfrtip',
         buttons: [
                     {
@@ -428,6 +444,7 @@ function setStepThreeDataTable(args)
             $( api.column( 11 ).footer() ).html( numberFormat(pageTotal_vat) );
             $( api.column( 12 ).footer() ).html( numberFormat(pageTotal_pricePerEa) );
         },
+        "language": {searchPlaceholder: "거래처, 제품명"},
         "processing": true,
         "serverSide": true,
         "ajax": {
@@ -444,6 +461,15 @@ function setStepThreeDataTable(args)
             }
         },
         "responsive" : true,
+        "columnDefs": [
+            { targets: 6, className: "dt-body-right" },
+            { targets: 7, className: "dt-body-right" },
+            { targets: 8, className: "dt-body-right" },
+            { targets: 9, className: "dt-body-right" },
+            { targets: 10, className: "dt-body-right" },
+            { targets: 11, className: "dt-body-right" },
+            { targets: 12, className: "dt-body-right" },
+        ],
         "columns": [
             {'data': 'code'},
             {"data": "specialTag", "render" : function(data, type, row, meta){return setSpecialTagButton(data);}},
@@ -460,7 +486,6 @@ function setStepThreeDataTable(args)
             {"data": "eaPrice" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "releaseStoreLocationCodeName"}
         ],
-        stateSave:  true,
         dom: 'Bfrtip',
         buttons: [
                     {
@@ -556,6 +581,7 @@ function setStepFourDataTable(args)
             $( api.column( 4 ).footer() ).html( numberFormat(pageTotal_supplyPrice) );
             $( api.column( 5).footer() ).html( numberFormat(pageTotal_vat) );
         },
+        "language": {searchPlaceholder: "거래처"},
         "processing": true,
         "serverSide": true,
         "ajax": {
@@ -572,6 +598,13 @@ function setStepFourDataTable(args)
             }
         },
         "responsive" : true,
+        "columnDefs": [
+            { targets: 1, className: "dt-body-right" },
+            { targets: 2, className: "dt-body-right" },
+            { targets: 3, className: "dt-body-right" },
+            { targets: 4, className: "dt-body-right" },
+            { targets: 5, className: "dt-body-right" },
+        ],
         "columns": [
             {'data': 'releaseLocationName'},
             {'data': 'amount' , "render": $.fn.dataTable.render.number( ',', '.', 2)},
@@ -580,7 +613,6 @@ function setStepFourDataTable(args)
             {'data': 'supplyPrice' , "render": $.fn.dataTable.render.number( ',')},
             {'data': 'releaseVat' , "render": $.fn.dataTable.render.number( ',')},
         ],
-        stateSave:  true,
         dom: 'Bfrtip',
         buttons: [
                     {
@@ -700,13 +732,7 @@ function setStepFiveDataTable(args)
             $( api.column( 10 ).footer() ).html( numberFormatWithDot(pageTotal_recall));
             $( api.column( 11 ).footer() ).html( numberFormatWithDot(pageTotal_currentStock));
         },
-        "language": {
-            "lengthMenu": "_MENU_ 페이지당 개수",
-            "zeroRecords": "결과 없음",
-            "info": "",
-            "infoEmpty": "No records available",
-            "infoFiltered": "(검색된결과 from _MAX_ total records)"
-        },
+        "language": {searchPlaceholder: "거래처"},
         "processing": true,
         "serverSide": true,
         "paging": false,
@@ -724,6 +750,16 @@ function setStepFiveDataTable(args)
             }
         },
         "responsive" : true,
+        "columnDefs": [
+            { targets: 4, className: "dt-body-right" },
+            { targets: 5, className: "dt-body-right" },
+            { targets: 6, className: "dt-body-right" },
+            { targets: 7, className: "dt-body-right" },
+            { targets: 8, className: "dt-body-right" },
+            { targets: 9, className: "dt-body-right" },
+            { targets: 10, className: "dt-body-right" },
+            { targets: 11, className: "dt-body-right" },
+        ],
         "columns": [
             {'data': 'id'},
             {'data': 'code'},
@@ -738,7 +774,6 @@ function setStepFiveDataTable(args)
             {'data': 'recall', "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {'data': 'currentStock', "render": $.fn.dataTable.render.number( ',', '.', 2)}
         ],
-        stateSave:  true,
         dom: 'Bfrtip',
         buttons: [
                     {
@@ -765,91 +800,16 @@ function setStepFiveDataTable(args)
                             $(node).removeClass('btn-secondary');
                         }
                     }],
-        lengthMenu : [[30, 50, -1], [30, 50, "All"]]
+        lengthMenu : [[30, 50, -1], [30, 50, "All"]],
+        rowCallback: function(row, data, index){
+             $('td:eq(3)', row).html( set_yyyy_mm_dd(data.ymd) );
+        }
     });
 }
 
 function setStepSixDataTable(args)
 {
     args['table'].DataTable({
-//    	"footerCallback": function ( row, data, start, end, display ) {
-//            var api = this.api(), data;
-//            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
-//            let numberFormat = $.fn.dataTable.render.number( ',').display;
-//
-//            var intVal = function ( i ) {
-//                return typeof i === 'string' ?
-//                    i.replace(/[\$,]/g, '')*1 :
-//                    typeof i === 'number' ?
-//                        i : 0;
-//            };
-//
-//            let pageTotal_previousStock = api
-//                .column( 4, { page: 'current'} )
-//                .data()
-//                .reduce( function (a, b) {
-//                    return intVal(a) + intVal(b);
-//                }, 0 );
-//
-//            let pageTotal_in = api
-//                .column( 5, { page: 'current'} )
-//                .data()
-//                .reduce( function (a, b) {
-//                    return intVal(a) + intVal(b);
-//                }, 0 );
-//
-//            let pageTotal_sale = api
-//                .column( 6, { page: 'current'} )
-//                .data()
-//                .reduce( function (a, b) {
-//                    return intVal(a) + intVal(b);
-//                }, 0 );
-//
-//            let pageTotal_sample = api
-//                .column( 7, { page: 'current'} )
-//                .data()
-//                .reduce( function (a, b) {
-//                    return intVal(a) + intVal(b);
-//                }, 0 );
-//
-//            let pageTotal_broken = api
-//                .column( 8, { page: 'current'} )
-//                .data()
-//                .reduce( function (a, b) {
-//                    return intVal(a) + intVal(b);
-//                }, 0 );
-//
-//            let pageTotal_notProduct = api
-//                .column( 9, { page: 'current'} )
-//                .data()
-//                .reduce( function (a, b) {
-//                    return intVal(a) + intVal(b);
-//                }, 0 );
-//
-//            let pageTotal_recall = api
-//                .column( 10, { page: 'current'} )
-//                .data()
-//                .reduce( function (a, b) {
-//                    return intVal(a) + intVal(b);
-//                }, 0 );
-//
-//            let pageTotal_currentStock = api
-//                .column( 11, { page: 'current'} )
-//                .data()
-//                .reduce( function (a, b) {
-//                    return intVal(a) + intVal(b);
-//                }, 0 );
-//
-//            // Update footer
-//            $( api.column( 4 ).footer() ).html( numberFormatWithDot(pageTotal_previousStock));
-//            $( api.column( 5 ).footer() ).html( numberFormatWithDot(pageTotal_in));
-//            $( api.column( 6 ).footer() ).html( numberFormatWithDot(pageTotal_sale));
-//            $( api.column( 7 ).footer() ).html( numberFormatWithDot(pageTotal_sample));
-//            $( api.column( 8 ).footer() ).html( numberFormatWithDot(pageTotal_broken));
-//            $( api.column( 9 ).footer() ).html( numberFormatWithDot(pageTotal_notProduct));
-//            $( api.column( 10 ).footer() ).html( numberFormatWithDot(pageTotal_recall));
-//            $( api.column( 11 ).footer() ).html( numberFormatWithDot(pageTotal_currentStock));
-//        },
         "language": {
             "lengthMenu": "_MENU_ 페이지당 개수",
             "zeroRecords": "결과 없음",
