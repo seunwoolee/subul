@@ -96,8 +96,6 @@ function setStepOneDataTable(args)
                     }
             }}
         ],
-        stateSave:  true,
-//        colReorder: true,
         dom: 'Bfrtip',
         buttons: [
                     {

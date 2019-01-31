@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Q, Sum, F, ExpressionWrapper, FloatField, DecimalField, Value, IntegerField
+from django.db.models import Q, Sum, F, ExpressionWrapper, FloatField, DecimalField, Value, IntegerField, Func
 from model_utils import Choices
 from itertools import chain
 
@@ -7,6 +7,10 @@ from eggs.models import Egg
 from product.models import ProductCode
 from core.models import Master, Detail, Location
 from release.models import Release
+
+
+class ABS(Func):
+    function = 'ABS'
 
 
 class Order(Detail):
@@ -203,8 +207,9 @@ class Order(Detail):
             .filter(ymd__gte=start_date) \
             .filter(ymd__lte=end_date).filter(type='판매') \
             .annotate(supplyPrice=ExpressionWrapper(F('price') - F('releaseVat'), output_field=DecimalField()))
-        queryset_egg = Egg.objects.values('id', 'ymd', 'code', 'codeName', 'count', 'amount', 'price') \
+        queryset_egg = Egg.objects.values('id', 'ymd', 'code', 'codeName', 'amount', 'price') \
             .filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(type='판매') \
+            .annotate(count=ABS(F('count')))\
             .annotate(releaseLocationName=F('locationCodeName')).annotate(releaseVat=Value(0, IntegerField())) \
             .annotate(supplyPrice=F('price'))
         mergedProductInfo['recordsTotal'] = queryset_release.count() + queryset_egg.count()

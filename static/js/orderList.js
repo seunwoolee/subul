@@ -350,6 +350,61 @@ function setStepTwoDataTable(args)
 function setStepThreeDataTable(args)
 {
     args['table'].DataTable({
+    	"footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
+            let numberFormat = $.fn.dataTable.render.number( ',').display;
+
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+
+            let pageTotal_count = api
+                .column( 5, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_amount = api
+                .column( 6, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_totalPrice = api
+                .column( 7, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_supplyPrice = api
+                .column( 8, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_vat = api
+                .column( 9, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            // Update footer
+            $( api.column( 5 ).footer() ).html( numberFormat(pageTotal_count) + '(EA)' );
+            $( api.column( 6 ).footer() ).html( numberFormatWithDot(pageTotal_amount) + '(KG)' );
+            $( api.column( 7 ).footer() ).html( numberFormat(pageTotal_totalPrice) );
+            $( api.column( 8 ).footer() ).html( numberFormat(pageTotal_supplyPrice) );
+            $( api.column( 9 ).footer() ).html( numberFormat(pageTotal_vat) );
+        },
+        "language": {searchPlaceholder: "거래처, 제품명"},
         "processing": true,
         "serverSide": true,
         "ajax": {
@@ -375,6 +430,13 @@ function setStepThreeDataTable(args)
             {'data': 'releaseVat' , "render": $.fn.dataTable.render.number( ',')}
         ],
         responsive : true,
+        "columnDefs": [
+            { targets: 5, className: "dt-body-right" },
+            { targets: 6, className: "dt-body-right" },
+            { targets: 7, className: "dt-body-right" },
+            { targets: 8, className: "dt-body-right" },
+            { targets: 9, className: "dt-body-right" },
+        ],
         dom: 'Bfrtip',
         buttons: [
                     {
@@ -409,7 +471,10 @@ function setStepThreeDataTable(args)
                             $(node).removeClass('btn-secondary');
                         }
                     }],
-        lengthMenu : [[30, 50, -1], [30, 50, "All"]]
+        lengthMenu : [[30, 50, -1], [30, 50, "All"]],
+        rowCallback: function(row, data, index){
+             $('td:eq(1)', row).html( set_yyyy_mm_dd(data.ymd) );
+        }
     });
 }
 
