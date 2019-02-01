@@ -164,30 +164,29 @@ class ProductEgg(models.Model):
         total_rawTank_amount = 0
         eggs = ProductEgg.objects.filter(master_id=masterInstance).filter(type='할란')
         last_item = len(eggs) - 1
-        for egg in eggs:
-            total_rawTank_amount += egg.rawTank_amount
-        total_loss_openEgg_last = masterInstance.total_loss_openEgg
-        total_loss_insert_last = masterInstance.total_loss_insert
+        if len(eggs) > 0:
+            for egg in eggs:
+                total_rawTank_amount += egg.rawTank_amount
+            total_loss_openEgg_last = masterInstance.total_loss_openEgg
+            total_loss_insert_last = masterInstance.total_loss_insert
 
-        try:
-            for egg in eggs[:last_item]:
-                percent = egg.rawTank_amount / total_rawTank_amount
-                openEgglossPercent = round(masterInstance.total_loss_openEgg * percent, 2)
-                insertlossPercent = round(masterInstance.total_loss_insert * percent, 2)
-                egg.loss_openEgg = openEgglossPercent
-                egg.loss_insert = insertlossPercent
-                egg.save()
-                total_loss_openEgg_last -= openEgglossPercent
-                total_loss_insert_last -= insertlossPercent
+            try:
+                for egg in eggs[:last_item]:
+                    percent = egg.rawTank_amount / total_rawTank_amount
+                    openEgglossPercent = round(masterInstance.total_loss_openEgg * percent, 2)
+                    insertlossPercent = round(masterInstance.total_loss_insert * percent, 2)
+                    egg.loss_openEgg = openEgglossPercent
+                    egg.loss_insert = insertlossPercent
+                    egg.save()
+                    total_loss_openEgg_last -= openEgglossPercent
+                    total_loss_insert_last -= insertlossPercent
+            except ZeroDivisionError:
+                pass
 
-        except ZeroDivisionError:
-            pass
-
-        lastEgg = eggs.last()
-        lastEgg.loss_openEgg = total_loss_openEgg_last
-        lastEgg.loss_insert = total_loss_insert_last
-        lastEgg.save()
-
+            lastEgg = eggs.last()
+            lastEgg.loss_openEgg = total_loss_openEgg_last
+            lastEgg.loss_insert = total_loss_insert_last
+            lastEgg.save()
 
     @staticmethod
     def percentSummary(start_date, end_date):
@@ -312,28 +311,30 @@ class Product(Detail):
         total_product_amount = 0
         products = Product.objects.filter(master_id=masterInstance).filter(purchaseYmd=None)
         last_item = len(products) - 1
-        for product in products:
-            total_product_amount += product.amount
-        total_loss_clean_last = masterInstance.total_loss_clean
-        total_loss_fill_last = masterInstance.total_loss_fill
 
-        try:
-            for product in products[:last_item]:
-                percent = product.amount / total_product_amount
-                cleanLossPercent = round(masterInstance.total_loss_clean * percent, 2)
-                fillLossPercent = round(masterInstance.total_loss_fill * percent, 2)
-                product.loss_clean = cleanLossPercent
-                product.loss_fill = fillLossPercent
-                product.save()
-                total_loss_clean_last -= cleanLossPercent
-                total_loss_fill_last -= fillLossPercent
-        except ZeroDivisionError:
-            pass
+        if len(products) > 0:
+            for product in products:
+                total_product_amount += product.amount
+            total_loss_clean_last = masterInstance.total_loss_clean
+            total_loss_fill_last = masterInstance.total_loss_fill
 
-        lastProduct = products.last()
-        lastProduct.loss_clean = total_loss_clean_last
-        lastProduct.loss_fill = total_loss_fill_last
-        lastProduct.save()
+            try:
+                for product in products[:last_item]:
+                    percent = product.amount / total_product_amount
+                    cleanLossPercent = round(masterInstance.total_loss_clean * percent, 2)
+                    fillLossPercent = round(masterInstance.total_loss_fill * percent, 2)
+                    product.loss_clean = cleanLossPercent
+                    product.loss_fill = fillLossPercent
+                    product.save()
+                    total_loss_clean_last -= cleanLossPercent
+                    total_loss_fill_last -= fillLossPercent
+            except ZeroDivisionError:
+                pass
+
+            lastProduct = products.last()
+            lastProduct.loss_clean = total_loss_clean_last
+            lastProduct.loss_fill = total_loss_fill_last
+            lastProduct.save()
 
     @staticmethod
     def productQuery(**kwargs):
