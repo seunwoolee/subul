@@ -27,12 +27,12 @@
     <bookmark url="file://$PROJECT_DIR$/templates/invoice/주문거래명세표.html" line="155" />
     <bookmark url="file://$PROJECT_DIR$/order/views.py" line="25" />
     <bookmark url="file://$PROJECT_DIR$/packing/models.py" line="174" />
-    <bookmark url="file://$PROJECT_DIR$/api/views.py" line="112" />
-    <bookmark url="file://$PROJECT_DIR$/api/views.py" line="57" />
+    <bookmark url="file://$PROJECT_DIR$/api/views.py" line="111" />
+    <bookmark url="file://$PROJECT_DIR$/api/views.py" line="56" />
     <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="95" />
     <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="96" />
     <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="97" />
-    <bookmark url="file://$PROJECT_DIR$/static/js/productList.js" line="125" />
+    <bookmark url="file://$PROJECT_DIR$/static/js/productList.js" line="124" />
     <bookmark url="file://$PROJECT_DIR$/release/models.py" line="499" />
     <bookmark url="file://$PROJECT_DIR$/product/views.py" line="34" />
     <bookmark url="file://$PROJECT_DIR$/static/js/releaseList.js" line="42" />
@@ -79,20 +79,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="productList.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="productList.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/static/js/productList.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="132" column="66" selection-start-line="132" selection-start-column="66" selection-end-line="132" selection-end-column="66" />
+            <state relative-caret-position="253">
+              <caret line="175" column="94" selection-start-line="175" selection-start-column="94" selection-end-line="175" selection-end-column="94" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="productList.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="productList.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/product/productList.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="550">
-              <caret line="123" column="33" lean-forward="true" selection-start-line="123" selection-start-column="33" selection-end-line="123" selection-end-column="33" />
+            <state relative-caret-position="425">
+              <caret line="103" column="36" lean-forward="true" selection-start-line="103" selection-start-column="36" selection-end-line="103" selection-end-column="36" />
             </state>
           </provider>
         </entry>
@@ -112,8 +112,8 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="350">
-              <caret line="46" column="36" lean-forward="true" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="36" />
+            <state relative-caret-position="400">
+              <caret line="48" column="9" lean-forward="true" selection-start-line="48" selection-start-column="9" selection-end-line="48" selection-end-column="9" />
               <folding>
                 <element signature="e#0#27#0" expanded="true" />
               </folding>
@@ -263,9 +263,9 @@
         <option value="$PROJECT_DIR$/order/models.py" />
         <option value="$PROJECT_DIR$/api/serializers.py" />
         <option value="$PROJECT_DIR$/product/models.py" />
+        <option value="$PROJECT_DIR$/templates/product/productList.html" />
         <option value="$PROJECT_DIR$/api/views.py" />
         <option value="$PROJECT_DIR$/static/js/productList.js" />
-        <option value="$PROJECT_DIR$/templates/product/productList.html" />
       </list>
     </option>
   </component>
@@ -1000,25 +1000,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/api/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="350">
-          <caret line="46" column="36" lean-forward="true" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="36" />
+        <state relative-caret-position="400">
+          <caret line="48" column="9" lean-forward="true" selection-start-line="48" selection-start-column="9" selection-end-line="48" selection-end-column="9" />
           <folding>
             <element signature="e#0#27#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/productList.js">
+    <entry file="file://$PROJECT_DIR$/templates/product/productList.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="132" column="66" selection-start-line="132" selection-start-column="66" selection-end-line="132" selection-end-column="66" />
+        <state relative-caret-position="425">
+          <caret line="103" column="36" lean-forward="true" selection-start-line="103" selection-start-column="36" selection-end-line="103" selection-end-column="36" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/product/productList.html">
+    <entry file="file://$PROJECT_DIR$/static/js/productList.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="550">
-          <caret line="123" column="33" lean-forward="true" selection-start-line="123" selection-start-column="33" selection-end-line="123" selection-end-column="33" />
+        <state relative-caret-position="253">
+          <caret line="175" column="94" selection-start-line="175" selection-start-column="94" selection-end-line="175" selection-end-column="94" />
         </state>
       </provider>
     </entry>

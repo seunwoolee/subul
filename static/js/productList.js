@@ -22,70 +22,70 @@
             };
 
             let pageTotal_amount = api
-                .column( 6, { page: 'current'} )
+                .column( 5, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
             let pageTotal_count = api
-                .column( 7, { page: 'current'} )
+                .column( 6, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
             let pageTotal_rawTank = api
-                .column( 8, { page: 'current'} )
+                .column( 7, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
             let pageTotal_pastTank = api
-                .column( 9, { page: 'current'} )
+                .column( 8, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
             let pageTotal_loss_insert = api
-                .column( 10, { page: 'current'} )
+                .column( 9, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
             let pageTotal_loss_openEgg = api
-                .column( 11, { page: 'current'} )
+                .column( 10, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
             let pageTotal_loss_clean = api
-                .column( 12, { page: 'current'} )
+                .column( 11, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
             let pageTotal_loss_fill = api
-                .column( 13, { page: 'current'} )
+                .column( 12, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
             // Update footer
-            $( api.column( 6 ).footer() ).html( numberFormatWithDot(pageTotal_amount) + '(KG)' );
-            $( api.column( 7 ).footer() ).html( numberFormat(pageTotal_count) + '(EA)' );
-            $( api.column( 8 ).footer() ).html( numberFormat(pageTotal_rawTank) );
-            $( api.column( 9 ).footer() ).html( numberFormat(pageTotal_pastTank) );
-            $( api.column( 10 ).footer() ).html( numberFormatWithDot(pageTotal_loss_insert) );
-            $( api.column( 11 ).footer() ).html( numberFormatWithDot(pageTotal_loss_openEgg) );
-            $( api.column( 12 ).footer() ).html( numberFormatWithDot(pageTotal_loss_clean) );
-            $( api.column( 13 ).footer() ).html( numberFormatWithDot(pageTotal_loss_fill) );
+            $( api.column( 5 ).footer() ).html( numberFormatWithDot(pageTotal_amount) + '(KG)' );
+            $( api.column( 6 ).footer() ).html( numberFormat(pageTotal_count) + '(EA)' );
+            $( api.column( 7 ).footer() ).html( numberFormat(pageTotal_rawTank) );
+            $( api.column( 8 ).footer() ).html( numberFormat(pageTotal_pastTank) );
+            $( api.column( 9 ).footer() ).html( numberFormatWithDot(pageTotal_loss_insert) );
+            $( api.column( 10 ).footer() ).html( numberFormatWithDot(pageTotal_loss_openEgg) );
+            $( api.column( 11 ).footer() ).html( numberFormatWithDot(pageTotal_loss_clean) );
+            $( api.column( 12 ).footer() ).html( numberFormatWithDot(pageTotal_loss_fill) );
         },
         "responsive": true,
         "columnDefs": [
@@ -94,6 +94,7 @@
             { responsivePriority: 3, targets: 2 },
             { targets: 3, className: "dt-justify" },
             { targets: 4, className: "dt-justify" },
+            { targets: 5, className: "dt-body-right" },
             { targets: 6, className: "dt-body-right" },
             { targets: 7, className: "dt-body-right" },
             { targets: 8, className: "dt-body-right" },
@@ -101,7 +102,6 @@
             { targets: 10, className: "dt-body-right" },
             { targets: 11, className: "dt-body-right" },
             { targets: 12, className: "dt-body-right" },
-            { targets: 13, className: "dt-body-right" },
         ],
         "language": {searchPlaceholder: "제품명, 메모"},
         "processing": true,
@@ -116,7 +116,6 @@
         },
         "columns": [
             {"data": "id"},
-            {"data": "list_master_id"},
             {"data": "list_type", "render" : function(data, type, row, meta){return setTypeButton(data);}},
             {"data": "list_code"},
             {"data": "list_codeName"},
@@ -172,18 +171,17 @@
                     }],
         lengthMenu : [[30, 50, -1], [30, 50, "All"]],
         rowCallback: function(row, data, index){
-             $('td:eq(5)', row).html( set_yyyy_mm_dd(data.list_ymd) );
-            if(data.list_rawTank_amount <  0){ $(row).find('td:eq(8)').css('color', 'red'); }
-            if(data.list_pastTank_amount <  0){ $(row).find('td:eq(9)').css('color', 'red'); }
-
-            if(data.list_amount ===  0){ $(row).find('td:eq(6)').html(''); }
-            if(data.list_count ==  0){ $(row).find('td:eq(7)').html(''); }
-            if(data.list_rawTank_amount ==  0){ $(row).find('td:eq(8)').html(''); }
-            if(data.list_pastTank_amount ==  0){ $(row).find('td:eq(9)').html(''); }
-            if(data.list_loss_insert ==  0){ $(row).find('td:eq(10)').html(''); }
-            if(data.list_loss_openEgg ==  0){ $(row).find('td:eq(11)').html(''); }
-            if(data.list_loss_clean ==  0){ $(row).find('td:eq(12)').html(''); }
-            if(data.list_loss_fill ==  0){ $(row).find('td:eq(13)').html(''); }
+             $('td:eq(4)', row).html( set_yyyy_mm_dd(data.list_ymd) );
+            if(data.list_rawTank_amount <  0){ $(row).find('td:eq(7)').css('color', 'red'); }
+            if(data.list_pastTank_amount <  0){ $(row).find('td:eq(8)').css('color', 'red'); }
+            if(data.list_amount ===  0){ $(row).find('td:eq(5)').html(''); }
+            if(data.list_count ==  0){ $(row).find('td:eq(6)').html(''); }
+            if(data.list_rawTank_amount ==  0){ $(row).find('td:eq(7)').html(''); }
+            if(data.list_pastTank_amount ==  0){ $(row).find('td:eq(8)').html(''); }
+            if(data.list_loss_insert ==  0){ $(row).find('td:eq(9)').html(''); }
+            if(data.list_loss_openEgg ==  0){ $(row).find('td:eq(10)').html(''); }
+            if(data.list_loss_clean ==  0){ $(row).find('td:eq(11)').html(''); }
+            if(data.list_loss_fill ==  0){ $(row).find('td:eq(12)').html(''); }
         },
         drawCallback: function(settings) {
                 $.ajax({

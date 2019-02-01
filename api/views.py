@@ -33,20 +33,19 @@ class ProductsAPIView(APIView):
 
         ORDER_COLUMN_CHOICES = {
             '0': 'id',
-            '1': 'list_master_id',
-            '2': 'list_type',
-            '3': 'list_code',
-            '4': 'list_codeName',
-            '5': 'list_ymd',
-            '6': 'list_amount',
-            '7': 'list_count',
-            '8': 'list_rawTank_amount',
-            '9': 'list_pastTank_amount',
-            '10': 'list_loss_insert',
-            '11': 'list_loss_openEgg',
-            '12': 'list_loss_clean',
-            '13': 'list_loss_fill',
-            '14': 'list_memo'
+            '1': 'list_type',
+            '2': 'list_code',
+            '3': 'list_codeName',
+            '4': 'list_ymd',
+            '5': 'list_amount',
+            '6': 'list_count',
+            '7': 'list_rawTank_amount',
+            '8': 'list_pastTank_amount',
+            '9': 'list_loss_insert',
+            '10': 'list_loss_openEgg',
+            '11': 'list_loss_clean',
+            '12': 'list_loss_fill',
+            '13': 'list_memo'
         }
         order_column = request.query_params['order[0][column]']
         order_column = ORDER_COLUMN_CHOICES[order_column]
