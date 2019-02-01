@@ -90,7 +90,7 @@ class Order(Detail):
                     .annotate(setProductCode=F('setProduct__code'))
 
                 total = queryset.count()
-                if search_value:  #
+                if search_value:
                     queryset = queryset.filter(Q(orderLocationName__icontains=search_value) |
                                                Q(codeName__icontains=search_value) |
                                                Q(memo__icontains=search_value))
@@ -146,7 +146,7 @@ class Order(Detail):
                 queryset = queryset.filter(Q(orderLocationName__icontains=search_value) |
                                            Q(codeName__icontains=search_value) |
                                            Q(memo__icontains=search_value))
-        # django orm '-' -> desc
+
         if order == 'desc':
             order_column = '-' + order_column
 

@@ -5,7 +5,7 @@ from model_utils import Choices
 from core.models import Code, Detail, Location, Out, TimeStampedModel
 from eggs.models import Egg
 from release.models import Release
-from django.db.models import Sum, Q, F, DecimalField
+from django.db.models import Sum, Q, F, DecimalField, Value, IntegerField, ExpressionWrapper
 import datetime
 
 DELETE_STATE_CHOICES = (
@@ -110,9 +110,9 @@ class ProductEgg(models.Model):
     code = models.CharField(max_length=10, default='01201')
     codeName = models.CharField(max_length=255, default=CODE_TYPE_CHOICES['01201'])
     rawTank_amount = models.DecimalField(decimal_places=2, max_digits=19, default=0)
-    pastTank_amount = models.DecimalField(decimal_places=2, max_digits=19,default=0)
-    loss_insert = models.DecimalField(decimal_places=2, max_digits=19,default=0)
-    loss_openEgg = models.DecimalField(decimal_places=2, max_digits=19,default=0)
+    pastTank_amount = models.DecimalField(decimal_places=2, max_digits=19, default=0)
+    loss_insert = models.DecimalField(decimal_places=2, max_digits=19, default=0)
+    loss_openEgg = models.DecimalField(decimal_places=2, max_digits=19, default=0)
     memo = models.TextField(blank=True, null=True)
     delete_state = models.CharField(
         max_length=2,
@@ -163,19 +163,31 @@ class ProductEgg(models.Model):
     def getLossOpenEggPercent(masterInstance):
         total_rawTank_amount = 0
         eggs = ProductEgg.objects.filter(master_id=masterInstance).filter(type='할란')
+        last_item = len(eggs) - 1
         for egg in eggs:
             total_rawTank_amount += egg.rawTank_amount
+        total_loss_openEgg_last = masterInstance.total_loss_openEgg
+        total_loss_insert_last = masterInstance.total_loss_insert
 
         try:
-            for egg in eggs:
+            for egg in eggs[:last_item]:
                 percent = egg.rawTank_amount / total_rawTank_amount
                 openEgglossPercent = round(masterInstance.total_loss_openEgg * percent, 2)
                 insertlossPercent = round(masterInstance.total_loss_insert * percent, 2)
                 egg.loss_openEgg = openEgglossPercent
                 egg.loss_insert = insertlossPercent
                 egg.save()
+                total_loss_openEgg_last -= openEgglossPercent
+                total_loss_insert_last -= insertlossPercent
+
         except ZeroDivisionError:
             pass
+
+        lastEgg = eggs.last()
+        lastEgg.loss_openEgg = total_loss_openEgg_last
+        lastEgg.loss_insert = total_loss_insert_last
+        lastEgg.save()
+
 
     @staticmethod
     def percentSummary(start_date, end_date):
@@ -239,7 +251,17 @@ class ProductEgg(models.Model):
         search_value = kwargs.get('search[value]', None)[0]
         start_date = kwargs.get('start_date', None)[0]
         end_date = kwargs.get('end_date', None)[0]
-        queryset = ProductEgg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date)
+
+        queryset = ProductEgg.objects.values(
+            'id', list_master_id=F('master_id'), list_ymd=F('ymd'),
+            list_type=F('type'), list_code=F('code'), list_codeName=F('codeName'),
+            list_rawTank_amount=F('rawTank_amount'), list_pastTank_amount=F('pastTank_amount'),
+            list_amount=Value(0, DecimalField()), list_amount_kg=Value(0, DecimalField()),
+            list_count=Value(0, IntegerField()), list_loss_openEgg=F('loss_openEgg'),
+            list_loss_insert=F('loss_insert'), list_loss_clean=Value(0, DecimalField()),
+            list_loss_fill=Value(0, DecimalField()), list_memo=F('memo')
+        ).filter(ymd__gte=start_date).filter(ymd__lte=end_date)
+
         total = queryset.count()
 
         if search_value:
@@ -289,26 +311,46 @@ class Product(Detail):
     def getLossProductPercent(masterInstance):
         total_product_amount = 0
         products = Product.objects.filter(master_id=masterInstance).filter(purchaseYmd=None)
+        last_item = len(products) - 1
         for product in products:
             total_product_amount += product.amount
+        total_loss_clean_last = masterInstance.total_loss_clean
+        total_loss_fill_last = masterInstance.total_loss_fill
 
         try:
-            for product in products:
+            for product in products[:last_item]:
                 percent = product.amount / total_product_amount
                 cleanLossPercent = round(masterInstance.total_loss_clean * percent, 2)
                 fillLossPercent = round(masterInstance.total_loss_fill * percent, 2)
                 product.loss_clean = cleanLossPercent
                 product.loss_fill = fillLossPercent
                 product.save()
+                total_loss_clean_last -= cleanLossPercent
+                total_loss_fill_last -= fillLossPercent
         except ZeroDivisionError:
             pass
+
+        lastProduct = products.last()
+        lastProduct.loss_clean = total_loss_clean_last
+        lastProduct.loss_fill = total_loss_fill_last
+        lastProduct.save()
 
     @staticmethod
     def productQuery(**kwargs):
         search_value = kwargs.get('search[value]', None)[0]
         start_date = kwargs.get('start_date', None)[0]
         end_date = kwargs.get('end_date', None)[0]
-        queryset = Product.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(purchaseYmd=None)
+
+        queryset = Product.objects.values(
+            'id', list_master_id=F('master_id'), list_ymd=F('ymd'),
+            list_type=F('type'), list_code=F('code'), list_codeName=F('codeName'),
+            list_rawTank_amount=Value(0, DecimalField()), list_pastTank_amount=Value(0, DecimalField()),
+            list_amount=F('amount'), list_amount_kg=F('amount_kg'),
+            list_count=F('count'), list_loss_openEgg=Value(0, DecimalField()),
+            list_loss_insert=Value(0, DecimalField()), list_loss_clean=F('loss_clean'),
+            list_loss_fill=F('loss_fill'), list_memo=F('memo')
+        ).filter(ymd__gte=start_date).filter(ymd__lte=end_date)
+
         total = queryset.count()
 
         if search_value:
@@ -348,8 +390,8 @@ class Product(Detail):
         order_column = ORDER_COLUMN_CHOICES[order_column]
         start_date = kwargs.get('start_date', None)[0]
         end_date = kwargs.get('end_date', None)[0]
-        queryset = Product.objects.all().annotate(locationCode_code=F('purchaseLocation__code'))\
-            .annotate(totalPrice=F('purchaseSupplyPrice')+F('purchaseVat'))\
+        queryset = Product.objects.all().annotate(locationCode_code=F('purchaseLocation__code')) \
+            .annotate(totalPrice=F('purchaseSupplyPrice') + F('purchaseVat')) \
             .filter(ymd__gte=start_date).filter(ymd__lte=end_date).exclude(purchaseYmd=None)
         total = queryset.count()
 

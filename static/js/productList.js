@@ -116,21 +116,21 @@
         },
         "columns": [
             {"data": "id"},
-            {"data": "master_id", "visible": false},
-            {"data": "type", "render" : function(data, type, row, meta){return setTypeButton(data);}},
-            {"data": "code"},
-            {"data": "codeName"},
-            {"data": "ymd"},
-            {"data": "amount" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
-            {"data": "count" , "render": $.fn.dataTable.render.number( ',')},
-            {"data": "rawTank_amount", "render": $.fn.dataTable.render.number( ',', '.', 2)},
-            {"data": "pastTank_amount","render": $.fn.dataTable.render.number( ',', '.', 2)},
-            {"data": "loss_insert" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
-            {"data": "loss_openEgg" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
-            {"data": "loss_clean" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
-            {"data": "loss_fill" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
-            {"data": "memo"},
-            {"data": "type", "render": function(data, type, row, meta){
+            {"data": "list_master_id"},
+            {"data": "list_type", "render" : function(data, type, row, meta){return setTypeButton(data);}},
+            {"data": "list_code"},
+            {"data": "list_codeName"},
+            {"data": "list_ymd"},
+            {"data": "list_amount" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {"data": "list_count" , "render": $.fn.dataTable.render.number( ',')},
+            {"data": "list_rawTank_amount", "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {"data": "list_pastTank_amount","render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {"data": "list_loss_insert" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {"data": "list_loss_openEgg" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {"data": "list_loss_clean" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {"data": "list_loss_fill" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {"data": "list_memo"},
+            {"data": "list_type", "render": function(data, type, row, meta){
                     if(data == "제품생산") {  return setDataTableActionButtonWithRecall(); }
                     else if(data.includes("미출고품")){ return setDataTableActionButtonOnlyDelete(); }
                     else { return setDataTableActionButton(); }
@@ -172,9 +172,18 @@
                     }],
         lengthMenu : [[30, 50, -1], [30, 50, "All"]],
         rowCallback: function(row, data, index){
-             $('td:eq(4)', row).html( set_yyyy_mm_dd(data.ymd) );
-            if(data.rawTank_amount <  0){ $(row).find('td:eq(7)').css('color', 'red'); }
-            if(data.pastTank_amount <  0){ $(row).find('td:eq(8)').css('color', 'red'); }
+             $('td:eq(5)', row).html( set_yyyy_mm_dd(data.list_ymd) );
+            if(data.list_rawTank_amount <  0){ $(row).find('td:eq(8)').css('color', 'red'); }
+            if(data.list_pastTank_amount <  0){ $(row).find('td:eq(9)').css('color', 'red'); }
+
+            if(data.list_amount ===  0){ $(row).find('td:eq(6)').html(''); }
+            if(data.list_count ==  0){ $(row).find('td:eq(7)').html(''); }
+            if(data.list_rawTank_amount ==  0){ $(row).find('td:eq(8)').html(''); }
+            if(data.list_pastTank_amount ==  0){ $(row).find('td:eq(9)').html(''); }
+            if(data.list_loss_insert ==  0){ $(row).find('td:eq(10)').html(''); }
+            if(data.list_loss_openEgg ==  0){ $(row).find('td:eq(11)').html(''); }
+            if(data.list_loss_clean ==  0){ $(row).find('td:eq(12)').html(''); }
+            if(data.list_loss_fill ==  0){ $(row).find('td:eq(13)').html(''); }
         },
         drawCallback: function(settings) {
                 $.ajax({
@@ -228,46 +237,45 @@ function setTypeButton(data)
 var AMOUNT_KG = {};
 function editButtonClick(data)
 {
-    if(data['type'] == "제품생산")
+    if(data['list_type'] == "제품생산")
     {
-        window.AMOUNT_KG = { "AMOUNT_KG" : data["amount_kg"]};
-        console.log(window.AMOUNT_KG);
-        $('#amount').val(data['amount']);
-        $('#count').val(data['count']);
-        $('.memo').val(data['memo']);
+        window.AMOUNT_KG = { "AMOUNT_KG" : data["list_amount_kg"]};
+        $('#amount').val(data['list_amount']);
+        $('#count').val(data['list_count']);
+        $('.memo').val(data['list_memo']);
         $('.modal_title').text('EDIT');
-        $('.codeName').text(data['codeName']);
+        $('.codeName').text(data['list_codeName']);
         $('.productType').val('product');
         $("#productModal").modal();
     }
     else // 할란, 할란사용, 공정품투입, 공정품발생
     {
-        if(data['codeName'].indexOf('RAW') != -1)
+        if(data['list_codeName'].indexOf('RAW') != -1)
         {
-            tank_amount = data['rawTank_amount'];
+            tank_amount = data['list_rawTank_amount'];
             $('#tank_amount').val(tank_amount).attr("name","rawTank_amount");
         }
         else
         {
-            tank_amount = data['pastTank_amount'];
+            tank_amount = data['list_pastTank_amount'];
             $('#tank_amount').val(tank_amount).attr("name","pastTank_amount");
         }
         $('.productType').val('productEgg');
-        $('.memo').val(data['memo']);
+        $('.memo').val(data['list_memo']);
         $('.type').val('edit');
         $('.modal_title').text('EDIT');
-        $('.codeName').text(data['codeName']);
+        $('.codeName').text(data['list_codeName']);
         $("#productEggModal").modal();
     }
 }
 
 function deleteButtonClick(data)
 {
-    let code = data['code'];
+    let code = data['list_code'];
     let codeHash = {'01201':'01201', '01202':'01202', '01203':'01203'}; // RAW TANK 코드
     let FALG = codeHash[code];
 
-    if(data['type'] == "제품생산" || (data['type'] == "미출고품사용" && FALG === undefined))
+    if(data['list_type'] == "제품생산" || (data['list_type'] == "미출고품사용" && FALG === undefined))
     {
         $('.productType').val('product');
     }
@@ -281,10 +289,10 @@ function deleteButtonClick(data)
 
 function recallButtonClick(data)
 {
-    window.AMOUNT_KG = { "AMOUNT_KG" : data["amount_kg"]};
-    $('#id_amount_recall').val(data['amount']).attr("max",data['amount']);
-    $('#id_count_recall').val(data['count']).attr("max",data['count']);
-    $('.codeName').text(data['codeName']);
+    window.AMOUNT_KG = { "AMOUNT_KG" : data["list_amount_kg"]};
+    $('#id_amount_recall').val(data['list_amount']).attr("max",data['list_amount']);
+    $('#id_count_recall').val(data['list_count']).attr("max",data['list_count']);
+    $('.codeName').text(data['list_codeName']);
     $("#releaseRecallModal").modal();
 }
 

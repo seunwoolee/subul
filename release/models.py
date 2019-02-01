@@ -2,7 +2,6 @@ from django.db import models
 from django.db.models import Q, F, ExpressionWrapper, Sum, DecimalField, When, Case
 from django.db.models.functions import Cast
 from model_utils import Choices
-
 from core.models import Master, Detail, Location
 
 

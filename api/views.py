@@ -33,20 +33,20 @@ class ProductsAPIView(APIView):
 
         ORDER_COLUMN_CHOICES = {
             '0': 'id',
-            '1': 'master_id',
-            '2': 'type',
-            '3': 'code',
-            '4': 'codeName',
-            '5': 'ymd',
-            '6': 'amount',
-            '7': 'count',
-            '8': 'rawTank_amount',
-            '9': 'pastTank_amount',
-            '10': 'loss_insert',
-            '11': 'loss_openEgg',
-            '12': 'loss_clean',
-            '13': 'loss_fill',
-            '14': 'memo'
+            '1': 'list_master_id',
+            '2': 'list_type',
+            '3': 'list_code',
+            '4': 'list_codeName',
+            '5': 'list_ymd',
+            '6': 'list_amount',
+            '7': 'list_count',
+            '8': 'list_rawTank_amount',
+            '9': 'list_pastTank_amount',
+            '10': 'list_loss_insert',
+            '11': 'list_loss_openEgg',
+            '12': 'list_loss_clean',
+            '13': 'list_loss_fill',
+            '14': 'list_memo'
         }
         order_column = request.query_params['order[0][column]']
         order_column = ORDER_COLUMN_CHOICES[order_column]
@@ -59,35 +59,27 @@ class ProductsAPIView(APIView):
 
         if checkBoxFilter == "제품생산":
             product = Product.productQuery(**request.query_params)
-            productSerializer = ProductSerializer(product['items'], many=True)
             mergedProductInfo['total'] = product['total']
             mergedProductInfo['count'] = product['count']
-            mergedProductInfo['data'] = productSerializer.data
+            mergedProductInfo['data'] = product['items']
         elif (checkBoxFilter and "제품생산" in checkBoxFilter) or not checkBoxFilter:
             productEgg = ProductEgg.productEggQuery(**request.query_params)
-            productEggSerializer = ProductEggSerializer(productEgg['items'], many=True)
             product = Product.productQuery(**request.query_params)
-            productSerializer = ProductSerializer(product['items'], many=True)
             mergedProductInfo['total'] = product['total'] + productEgg['total']
             mergedProductInfo['count'] = product['count'] + productEgg['count']
-            mergedProductInfo['data'] = productEggSerializer.data + productSerializer.data
+            mergedProductInfo['data'] = productEgg['items'].union(product['items'])
         else:  # 제품생산을 제외한 체크박스
             productEgg = ProductEgg.productEggQuery(**request.query_params)
-            productEggSerializer = ProductEggSerializer(productEgg['items'], many=True)
             mergedProductInfo['total'] = productEgg['total']
             mergedProductInfo['count'] = productEgg['count']
-            mergedProductInfo['data'] = productEggSerializer.data
+            mergedProductInfo['data'] = productEgg['items']
 
         if order == 'desc':
-            mergedProductInfo['data'] = sorted(mergedProductInfo['data'],
-                                               key=lambda k: k[order_column] if k[order_column] is not None
-                                               else 0, reverse=True)
-        else:
-            mergedProductInfo['data'] = sorted(mergedProductInfo['data'],
-                                               key=lambda k: k[order_column] if k[order_column] is not None
-                                               else 0)
+            order_column = '-' + order_column
+
+        mergedProductInfo['data'] = mergedProductInfo['data'].order_by(order_column)
         result = dict()
-        result['data'] = mergedProductInfo['data'][start:start + length]  # 페이징
+        result['data'] = mergedProductInfo['data'][start:start + length]
         result['draw'] = draw
         result['recordsTotal'] = mergedProductInfo['total']
         result['recordsFiltered'] = mergedProductInfo['count']

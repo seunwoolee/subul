@@ -15,12 +15,10 @@ from core.utils import render_to_pdf
 
 class Round(Func):
     function = 'ROUND'
-    # template = '%(function)s(%(expressions)s, 0)'
 
 
 class ABS(Func):
     function = 'ABS'
-    # template = '%(function)s(%(expressions)s, 0)'
 
 
 class EggList(View):
@@ -114,9 +112,11 @@ class EggCalculateAmount(View):
         totalCount = Egg.objects.filter(id__in=arr).aggregate(Sum('count'))
 
         for egg in eggs:
-            percent = round((egg.count / totalCount['count__sum']), 2)
-            egg_amount = round(percent * int(amount), 2)
-            egg.amount = egg_amount
+            # percent = round((egg.count / totalCount['count__sum']), 2)
+            percent = egg.count / totalCount['count__sum']
+            # egg_amount = round(percent * int(amount), 2)
+            # egg_amount = round(percent * int(amount), 2)
+            egg.amount = round(percent * amount, 2)
             egg.save()
         return HttpResponse(status=200)
 

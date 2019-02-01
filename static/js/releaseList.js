@@ -174,7 +174,9 @@ function setStepOneDataTable(args)
             {'data': 'releaseSetProduct', "visible": false},
             {'data': 'releaseSetProductCodeName', "visible": false},
             {"data": 'type', "render": function(data, type, row, meta){
-                    return setDataTableActionButtonWithPdfRecall();
+                    if(data == '이동'){return '';}
+                    else if(data == '판매'){return setDataTableActionButtonWithPdfRecall();}
+                    else{return setDataTableActionButtonWithoutEdit();}
             }}
         ],
         dom: 'Bfrtip',

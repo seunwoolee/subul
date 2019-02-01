@@ -123,14 +123,8 @@ function setStepOneDataTable(args)
             {"data": "memo"},
             {"data": "setProduct"},
             {"data": "release_id", "render": function(data, type, row, meta){
-                    if(data > 0)
-                    {
-                        return setDataTableActionButtonWithoutEdit();
-                    }
-                    else
-                    {
-                        return setDataTableActionButtonWithPdf();
-                    }
+                    if(data > 0) { return setDataTableActionButtonWithoutEdit(); }
+                    else { return setDataTableActionButtonWithPdf(); }
             }}
         ],
         dom: 'Bfrtip',
