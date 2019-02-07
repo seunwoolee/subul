@@ -38,6 +38,52 @@ function fetch_data(start_date='', end_date='')
 function setStepOneDataTable(args)
 {
     table = args['table'].DataTable({
+    	"footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
+            let numberFormat = $.fn.dataTable.render.number( ',').display;
+
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+
+            let pageTotal_count = api
+                .column( 7, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_amount = api
+                .column( 8, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_in_price = api
+                .column( 9, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_out_price = api
+                .column( 10, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            // Update footer
+            $( api.column( 7 ).footer() ).html( numberFormat(pageTotal_count));
+            $( api.column( 8 ).footer() ).html( numberFormat(pageTotal_amount));
+            $( api.column( 9 ).footer() ).html( numberFormat(pageTotal_in_price) );
+            $( api.column( 10 ).footer() ).html( numberFormat(pageTotal_out_price) );
+        },
         "language": {searchPlaceholder: "판매처명, 메모"},
         "select": true,
         "processing": true,

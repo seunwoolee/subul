@@ -105,19 +105,23 @@ class EggRelease(View):
 class EggCalculateAmount(View):
     def post(self, request):
         data = request.POST.dict()
-        amount = data['amount']
+        amount = int(data['amount'])
+        amount_last = amount
         pks = data['pks']
         arr = pks.split(',')
         eggs = Egg.objects.filter(id__in=arr)
+        last_item = len(eggs) - 1
         totalCount = Egg.objects.filter(id__in=arr).aggregate(Sum('count'))
 
-        for egg in eggs:
-            # percent = round((egg.count / totalCount['count__sum']), 2)
+        for egg in eggs[:last_item]:
             percent = egg.count / totalCount['count__sum']
-            # egg_amount = round(percent * int(amount), 2)
-            # egg_amount = round(percent * int(amount), 2)
-            egg.amount = round(percent * amount, 2)
+            egg.amount = round(percent * amount)
             egg.save()
+            amount_last -= egg.amount
+
+        lastEgg = eggs.last()
+        lastEgg.amount = amount_last
+        lastEgg.save()
         return HttpResponse(status=200)
 
 
