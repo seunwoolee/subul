@@ -21,7 +21,7 @@ class ABS(Func):
     function = 'ABS'
 
 
-class EggList(View):
+class EggList(LoginRequiredMixin, View):
 
     def get(self, request):
         eggForm = EggForm()

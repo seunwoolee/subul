@@ -307,7 +307,7 @@ class Product(Detail):
     @staticmethod
     def getLossProductPercent(masterInstance):
         total_product_amount = 0
-        products = Product.objects.filter(master_id=masterInstance).filter(purchaseYmd=None)
+        products = Product.objects.filter(master_id=masterInstance).filter(purchaseYmd=None).filter(type='제품생산')
         last_item = len(products) - 1
 
         if len(products) > 0:

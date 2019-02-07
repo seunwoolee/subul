@@ -12,7 +12,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 
 class Round(Func):
     function = 'ROUND'
-    # template = '%(function)s(%(expressions)s, 0)'
 
 
 class GeneratePDF(View):
@@ -45,7 +44,6 @@ class GeneratePDF(View):
             "sumData": sumData,
             "location": location,
         }
-        # html = template.render(context_dict)
         pdf = render_to_pdf('invoice/주문거래명세표.html', context_dict)
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')

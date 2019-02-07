@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum, F, ExpressionWrapper, FloatField, IntegerField
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -57,13 +58,13 @@ class GeneratePDF(View):
         return HttpResponse("Not found")
 
 
-class ReleaseList(View):
+class ReleaseList(LoginRequiredMixin, View):
     def get(self, request):
         form = ReleaseForm(auto_id=False)
         return render(request, 'release/releaseList.html', {'form': form})
 
 
-class ReleaseReg(View):
+class ReleaseReg(LoginRequiredMixin, View):
 
     def post(self, request):
         data = request.POST.dict()

@@ -221,7 +221,7 @@ class OrderProductUnitPrice(APIView):
             return ProductUnitPrice.objects.filter(locationCode=location)
             # return ProductUnitPrice.objects.all
         except ProductUnitPrice.DoesNotExist:
-            raise Http404  # TODO 없으면 그냥 None
+            raise Http404
 
     def get(self, request, code, format=None):
         productUnitPrice = self.get_object(code)
@@ -240,7 +240,7 @@ class OrderSetProductCode(APIView):
             return SetProductCode.objects.filter(location=location).filter(delete_state='N')
             # return ProductUnitPrice.objects.all
         except SetProductCode.DoesNotExist:
-            raise Http404  # TODO 없으면 그냥 None
+            raise Http404
 
     def get(self, request, code, format=None):
         setProductCode = self.get_object(code)
@@ -277,7 +277,7 @@ class OrderUpdate(generics.RetrieveUpdateDestroyAPIView):
 
 class ReleaseUpdate(generics.RetrieveUpdateDestroyAPIView):
     """
-    출고조회에서 Update , Delete 할때 Delete 실행 시 재고 TODO 정의필요
+    출고조회에서 Update , Delete 할때 Delete 실행 시 재고
     """
 
     queryset = Release.objects.all()

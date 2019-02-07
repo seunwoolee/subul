@@ -9,7 +9,7 @@ from .forms import PackingFormSet, PackingForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
-class PackingList(View):
+class PackingList(LoginRequiredMixin, View):
 
     def get(self, request):
         packingForm = PackingForm()

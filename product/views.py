@@ -1,13 +1,9 @@
 from decimal import Decimal
 from itertools import chain
-
 from django.db.models import Sum, F, Case, When, Value, CharField, Func
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic.base import View
-from rest_framework import status
-from rest_framework.response import Response
-
 from core.models import Location
 from eggs.models import Egg
 from eventlog.models import log
@@ -22,7 +18,6 @@ class ABS(Func):
 
 
 class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
-    login_url = '/'
     permission_required = 'product.add_product'
 
     def post(self, request):
@@ -33,14 +28,7 @@ class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
         formset = StepFourFormSet(request.POST)
 
         if form0.is_valid():
-            # ymd = form0.cleaned_data.get('ymd', None)
             main = form0.save()
-            # productMaster = ProductMaster.objects.filter(ymd=ymd).first()
-            #
-            # if productMaster:
-            #     main = productMaster
-            # else:
-            #     main = form0.save()
 
         if form1.is_valid():
             stepOneProductEgg = [[key, value] for key, value in form1.cleaned_data.items()]
@@ -106,6 +94,18 @@ class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
                         productExistAdmin.save()
 
             Product.getLossProductPercent(main)
+            log(
+                user=request.user,
+                action="제품생산",
+                obj=main,
+                extra={
+                    "ymd": main.ymd,
+                    "total_loss_openEgg": float(main.total_loss_openEgg),
+                    "total_loss_insert": float(main.total_loss_insert),
+                    "total_loss_clean": float(main.total_loss_clean),
+                    "total_loss_fill": float(main.total_loss_fill)
+                }
+            )
         return redirect('productList')
 
     def get(self, request):
@@ -132,26 +132,13 @@ class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
 
 
 class ProductList(LoginRequiredMixin, PermissionRequiredMixin, View):
-    login_url = '/'
     permission_required = 'product.change_product'
 
     def get(self, request):
-        # product = Product.objects.first()
-        # log(
-        #     user=request.user,
-        #     action="가나다라마",
-        #     obj=product,
-        #     extra={
-        #         "name":product.codeName,
-        #         "amount":product.amount
-        #     }
-        # )
         return render(request, 'product/productList.html')
 
 
-class ProductRecall(LoginRequiredMixin, PermissionRequiredMixin, View):
-    login_url = '/'
-    permission_required = 'product.change_product'
+class ProductRecall(View):
 
     def post(self, request, pk):
         CODE_TYPE_CHOICES = {
@@ -222,9 +209,7 @@ class ProductRecall(LoginRequiredMixin, PermissionRequiredMixin, View):
             return HttpResponse(status=400)
 
 
-class ProductReport(LoginRequiredMixin, PermissionRequiredMixin, View):
-    login_url = '/'
-    permission_required = 'product.change_product'
+class ProductReport(View):
 
     def get(self, request):
         SORT_ARRAY = ['미출고품사용',
@@ -491,7 +476,6 @@ class ProductOEMReg(LoginRequiredMixin, View):
 
 
 class ProductOEMList(LoginRequiredMixin, PermissionRequiredMixin, View):
-    login_url = '/'
     permission_required = 'product.change_product'
 
     def get(self, request):

@@ -154,7 +154,7 @@ class Order(Detail):
 
         # if length != -1:
         if not releaseOrder:
-            if checkBoxFilter:  # TODO 담당자 검색
+            if checkBoxFilter:
                 queryset = queryset.filter(orderLocationCode__location_character__in=checkBoxFilter)
                 count = queryset.count()
 

@@ -131,7 +131,7 @@ class Location(Code):
         choices=CHARACTER_TYPE_CHOICES,
         default='99',
     )
-    location_manager = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True,  # TODO 담당자
+    location_manager = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True,
                                          related_name='location_manager')
 
     def __str__(self):

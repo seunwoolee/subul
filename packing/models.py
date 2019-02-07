@@ -1,8 +1,11 @@
 from django.db import models
-from django.db.models import Q, F, Sum
+from django.db.models import Q, F, Sum, Func
 from model_utils import Choices
-
 from core.models import Detail, Location, Code
+
+
+class ABS(Func):
+    function = 'ABS'
 
 
 class PackingCode(Code):
@@ -84,7 +87,7 @@ class Packing(Detail):
             ('4', 'codeName'),
             ('5', 'locationCode_code'),
             ('6', 'locationCodeName'),
-            ('7', 'count'),
+            ('7', 'counts'),
             ('8', 'price'),
             ('9', 'memo'),
         )
@@ -101,8 +104,10 @@ class Packing(Detail):
         productTypeFilter = kwargs.get('productTypeFilter', None)[0]
         locatoinTypeFilter = kwargs.get('locatoinTypeFilter', None)[0]
 
-        queryset = Packing.objects.all().annotate(locationCode_code=F('locationCode__code'))\
+        queryset = Packing.objects.all().annotate(locationCode_code=F('locationCode__code')) \
+                                        .annotate(counts=ABS(F('count'))) \
                                         .filter(ymd__gte=start_date).filter(ymd__lte=end_date)
+
         total = queryset.count()
 
         if releaseTypeFilter != '전체':

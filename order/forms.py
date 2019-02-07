@@ -32,7 +32,7 @@ class OrderForm(forms.Form):
                                  choices=list(Location.objects.values_list('code', 'codeName').filter(type='05')
                                               .filter(delete_state='N').order_by('code')),
                                  required=False)
-    product = forms.ChoiceField(choices=list(ProductCode.objects.values_list('code', 'codeName')))  # TODO delete_State
+    product = forms.ChoiceField(choices=list(ProductCode.objects.values_list('code', 'codeName').filter(delete_state='N')))
     amount = forms.DecimalField(decimal_places=2, max_digits=19, min_value=0)
     amount_kg = forms.DecimalField(decimal_places=2, max_digits=19, min_value=0, widget=forms.HiddenInput())
     count = forms.IntegerField(min_value=0)

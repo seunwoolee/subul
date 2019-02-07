@@ -76,7 +76,7 @@ function setStepOneDataTable(args)
             {"data": "codeName"},
             {"data": "locationCode_code"},
             {"data": "locationCodeName"},
-            {"data": "count" , "render": $.fn.dataTable.render.number( ',')},
+            {"data": "counts" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "price" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "memo"},
             {"data": null, "render": function(data, type, row, meta){return setDataTableActionButton();}}
@@ -148,7 +148,11 @@ function setStepOneDataTable(args)
                             $(node).removeClass('btn-secondary');
                         }
                     }],
-        lengthMenu : [[30, 50, -1], [30, 50, "All"]]
+        lengthMenu : [[30, 50, -1], [30, 50, "All"]],
+        rowCallback: function(row, data, index){
+             $('td:eq(2)', row).html( set_yyyy_mm_dd(data.ymd) );
+        }
+
     });
 }
 
