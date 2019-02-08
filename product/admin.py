@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.db import models
+
+from django_select2.forms import Select2Widget
 from .models import Product, ProductAdmin, ProductCode, ProductMaster, ProductEgg, ProductUnitPrice, SetProductCode \
     , SetProductMatch
 
@@ -46,21 +49,45 @@ class ProductEggAdmin(admin.ModelAdmin):
 
 
 class ProductUnitPriceAdmin(admin.ModelAdmin):
-    # list_filter = ["ymd"]
     list_display = ["locationCode", "productCode", "price", "specialPrice", "delete_state"]
     search_fields = ["locationCode__codeName", "productCode__codeName"]
+    formfield_overrides = {
+        models.ForeignKey: {'widget': Select2Widget}
+    }
+
+    class Media:
+        js = (
+            '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js', # jquery
+            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js',
+        )
 
 
 class SetProductCodeAdmin(admin.ModelAdmin):
-    # list_filter = ["ymd"]
     list_display = ["code", "codeName", "location", "delete_state"]
     search_fields = ["location__codeName", "codeName"]
+    formfield_overrides = {
+        models.ForeignKey: {'widget': Select2Widget}
+    }
+
+    class Media:
+        js = (
+            '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js', # jquery
+            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js',
+        )
 
 
 class SetProductMatchAdmin(admin.ModelAdmin):
-    # list_filter = ["ymd"]
     list_display = ["setProductCode", "productCode", "saleLocation", "price", "delete_state"]
     search_fields = ["setProductCode__codeName", "saleLocation__codeName"]
+    formfield_overrides = {
+        models.ForeignKey: {'widget': Select2Widget}
+    }
+
+    class Media:
+        js = (
+            '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js', # jquery
+            '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js',
+        )
 
 
 admin.site.register(Product, ProductsAdmin)
