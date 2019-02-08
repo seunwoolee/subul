@@ -172,7 +172,7 @@ class ReleaseAdjustment(View): # 재고조정, 미출고품, 반품
                 releaseSeq=release
             )
         else:
-            KCFRESH_CODE = '00301' # TODO KCFRESH 하드코딩
+            KCFRESH_CODE = '00301'
             releaseStoreLocation = Location.objects.get(code=KCFRESH_CODE)
             releaseLocation = Location.objects.get(code=data['storedLocationCode'])
             releaseVat = round(float(data['price']) - (float(data['price']) / 1.1)) if productCode.vat else 0  # vat 계산

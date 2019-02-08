@@ -62,7 +62,7 @@ class Order(Detail):
         checkBoxFilter = None
         gubunFilter = None
 
-        if not releaseOrder :
+        if not releaseOrder:
             checkBoxFilter = kwargs.get('checkBoxFilter', None)[0]
             location_manager = kwargs.get('location_manager', None)[0]
             gubunFilter = kwargs.get('gubunFilter', None)[0]
@@ -161,8 +161,6 @@ class Order(Detail):
             if location_manager == "true":
                 queryset = queryset.filter(orderLocationCode__location_manager=user_instance)
                 count = queryset.count()
-
-
         else:
             queryset = queryset.filter(release_id=None).order_by(order_column)  # 출고가능한 ORDER
 
@@ -209,7 +207,7 @@ class Order(Detail):
             .annotate(supplyPrice=ExpressionWrapper(F('price') - F('releaseVat'), output_field=DecimalField()))
         queryset_egg = Egg.objects.values('id', 'ymd', 'code', 'codeName', 'amount', 'price') \
             .filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(type='판매') \
-            .annotate(count=ABS(F('count')))\
+            .annotate(count=ABS(F('count'))) \
             .annotate(releaseLocationName=F('locationCodeName')).annotate(releaseVat=Value(0, IntegerField())) \
             .annotate(supplyPrice=F('price'))
         mergedProductInfo['recordsTotal'] = queryset_release.count() + queryset_egg.count()

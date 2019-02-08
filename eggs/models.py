@@ -103,6 +103,8 @@ class Egg(Detail):
             ('12', 'memo'),
         )
         draw = int(kwargs.get('draw', None)[0])
+        start = int(kwargs.get('start', None)[0])
+        length = int(kwargs.get('length', None)[0])
         search_value = kwargs.get('search[value]', None)[0]
         order_column = kwargs.get('order[0][column]', None)[0]
         order = kwargs.get('order[0][dir]', None)[0]
@@ -119,6 +121,9 @@ class Egg(Detail):
             .annotate(in_price=Case(When(type='입고', then=F('price')),  default=0))\
             .annotate(out_price=Case(When(type='판매', then=F('price')),  default=0))\
             .annotate(pricePerEa=Case(When(price=0, then=0), When(count=0, then=0), default=F('price') / ABS(F('count'))))
+
+        queryset = queryset.annotate(in_price=Case(When(in_price=None, then=0),  default=F('in_price'), output_field=IntegerField())) \
+                           .annotate(out_price=Case(When(out_price=None, then=0), default=F('out_price'), output_field=IntegerField()))
 
         total = queryset.count()
 
@@ -139,7 +144,10 @@ class Egg(Detail):
             queryset = queryset.filter(Q(memo__icontains=search_value) | Q(locationCodeName__icontains=search_value))
 
         count = queryset.count()
-        queryset = queryset.order_by(order_column)
+        if length != -1:
+            queryset = queryset.order_by(order_column)[start:start + length]
+        else:
+            queryset = queryset.order_by(order_column)
         return {
             'items': queryset,
             'count': count,

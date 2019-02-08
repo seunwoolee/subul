@@ -127,7 +127,10 @@ class Packing(Detail):
                 Q(codeName__icontains=search_value) | Q(locationCodeName__icontains=search_value))
 
         count = queryset.count()
-        queryset = queryset.order_by(order_column)[start:start + length]
+        if length != -1:
+            queryset = queryset.order_by(order_column)[start:start + length]
+        else:
+            queryset = queryset.order_by(order_column)
         return {
             'items': queryset,
             'count': count,

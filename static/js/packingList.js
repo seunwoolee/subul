@@ -81,7 +81,6 @@ function setStepOneDataTable(args)
             {"data": "memo"},
             {"data": null, "render": function(data, type, row, meta){return setDataTableActionButton();}}
         ],
-        stateSave:  true,
         dom: 'Bfrtip',
         buttons: [
                     {
