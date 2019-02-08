@@ -68,7 +68,7 @@ DATABASES = {
        'USER': config('DB_USER'),
        'PASSWORD': config('DB_PASSWORD'),
        'HOST': config('DB_HOST'),
-       'PORT': '',
+       'PORT': config('DB_PORT'),
    }
 }
 
@@ -112,14 +112,6 @@ AUTH_USER_MODEL = 'users.CustomUser'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'login'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
-# email config
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'kcfeed.adm@gmail.com'
-EMAIL_HOST_PASSWORD = 'xbggomvotamotsvx'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
 
 TIME_ZONE = 'Asia/Seoul'
 
