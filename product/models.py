@@ -162,11 +162,11 @@ class ProductEgg(models.Model):
     @staticmethod
     def getLossOpenEggPercent(masterInstance):
         total_rawTank_amount = 0
-        eggs = ProductEgg.objects.filter(master_id=masterInstance).filter(type='할란')
+        eggs = ProductEgg.objects.filter(master_id=masterInstance).filter(type='할란').order_by('id')
         last_item = len(eggs) - 1
+
         if len(eggs) > 0:
-            for egg in eggs:
-                total_rawTank_amount += egg.rawTank_amount
+            for egg in eggs: total_rawTank_amount += egg.rawTank_amount
             total_loss_openEgg_last = masterInstance.total_loss_openEgg
             total_loss_insert_last = masterInstance.total_loss_insert
 
@@ -307,7 +307,8 @@ class Product(Detail):
     @staticmethod
     def getLossProductPercent(masterInstance):
         total_product_amount = 0
-        products = Product.objects.filter(master_id=masterInstance).filter(purchaseYmd=None).filter(type='제품생산')
+        products = Product.objects.filter(master_id=masterInstance).filter(purchaseYmd=None)\
+                                  .filter(type='제품생산').order_by('id')
         last_item = len(products) - 1
 
         if len(products) > 0:
