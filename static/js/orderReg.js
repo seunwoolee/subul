@@ -18,11 +18,12 @@ SEQ = 2;
 function cloneMore(selector, prefix) {
 
     $(selector).find('.location').select2("destroy");
+    var previousLocationValue = $(selector).find('.location').val();
     var newElement = $(selector).clone(true);
     var no = newElement.find('.no');
     var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
 
-    newElement.find(':input').each(function() { setNewElementInputInfo($(this), total); });
+    newElement.find(':input').each(function() { setNewElementInputInfo($(this), total, previousLocationValue); });
     total++;
     no.html(SEQ).css("background-color", "");
     SEQ++;
@@ -34,7 +35,7 @@ function cloneMore(selector, prefix) {
     return false;
 }
 
-function setNewElementInputInfo($this, total)
+function setNewElementInputInfo($this, total, previousLocationValue)
 {
     var name = $this.attr('name');
     if(name) {
@@ -44,6 +45,10 @@ function setNewElementInputInfo($this, total)
         if(name.indexOf("type") >= 0 || name.indexOf("set") >= 0 || name.indexOf("specialTag") >= 0)
         {  // 타입,일반/특인,세트는 판매로 고정한다(사용자 편의)
             $this.attr({'name': name, 'id': id});
+        }
+        else if(name.indexOf("location") >= 0) // 그 전의 location을 그대로 가져온다(사용자 편의)
+        {
+            $this.attr({'name': name, 'id': id}).val(previousLocationValue).trigger('change');
         }
         else if(name.indexOf("product") >= 0) // 이전의 제품 option 값 지우기
         {
