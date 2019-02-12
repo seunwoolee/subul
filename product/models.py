@@ -125,7 +125,6 @@ class ProductEgg(models.Model):
 
     @staticmethod
     def makeVaildinfo(productEggInfo, memo):  # ('이름','실제값') -> ('이름','실제값','메모')
-        # print(productEggInfo, memo)
         j = 0
         for info in productEggInfo:  # ('이름','실제값','메모')
             if '메모' in info[0]:
@@ -347,7 +346,7 @@ class Product(Detail):
             list_count=F('count'), list_loss_openEgg=Value(0, DecimalField()),
             list_loss_insert=Value(0, DecimalField()), list_loss_clean=F('loss_clean'),
             list_loss_fill=F('loss_fill'), list_memo=F('memo')
-        ).filter(ymd__gte=start_date).filter(ymd__lte=end_date)
+        ).filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(purchaseYmd=None)
 
         total = queryset.count()
 

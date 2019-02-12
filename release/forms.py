@@ -49,4 +49,4 @@ class ReleaseForm(forms.Form):
 class ReleaseLocationForm(forms.Form):
     storedLocation = forms.ChoiceField(
         choices=list(Location.objects.values_list('code', 'codeName')
-                     .filter(location_shoppingmall=2).order_by('code')))  # TODO deleteState
+                     .filter(location_shoppingmall=2).order_by('code')))

@@ -130,6 +130,7 @@
             {"data": "list_loss_fill" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {"data": "list_memo"},
             {"data": "list_type", "render": function(data, type, row, meta){
+                    console.log(row.list_ymd);
                     if(data == "제품생산") {  return setDataTableActionButtonWithRecall(); }
                     else if(data.includes("미출고품")){ return setDataTableActionButtonOnlyDelete(); }
                     else { return setDataTableActionButton(); }

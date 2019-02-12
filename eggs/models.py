@@ -39,7 +39,6 @@ class Egg(Detail):
     locationCode = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True)
     locationCodeName = models.CharField(max_length=255, null=True, blank=True)
     eggCode = models.ForeignKey(EggCode, on_delete=models.CASCADE, null=True, blank=True)
-    # amount = models.FloatField(null=True, blank=True)
     amount = models.DecimalField(decimal_places=2, max_digits=19, null=True, blank=True)
 
     def __str__(self):

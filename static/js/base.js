@@ -154,11 +154,3 @@ function setSpecialTagButton(data)
         return '';
     }
 }
-
-//var intVal = function ( i ) {
-//    console.log(typeof(i));
-//    return typeof i === 'string' ?
-//        i.replace(/[\$,]/g, '')*1 :
-//        typeof i === 'number' ?
-//            i : 0;
-//};
