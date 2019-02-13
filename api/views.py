@@ -11,6 +11,7 @@ from api.eggSerializers import EggSerializer
 from api.orderSerializers import OrderSerializer
 from api.packingSerializers import PackingSerializer
 from api.productOEMSerializers import ProductOEMSerializer
+from api.productUnitPriceSerializers import ProductUnitPriceListSerializer
 from api.releaseSerializers import ProductAdminSerializer, ReleaseSerializer
 from core.models import Location
 from eggs.models import Egg
@@ -468,3 +469,20 @@ class ProductOEMUpdate(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = Product.objects.all().exclude(purchaseYmd=None)
     serializer_class = ProductOEMSerializer
+
+
+class ProductUnitPricesAPIView(APIView):
+
+    def get(self, request):
+        try:
+            result = dict()
+            productUnitPrice = ProductUnitPrice.productUnitPriceQuery(**request.query_params)
+            productUnitPriceSerializer = ProductUnitPriceListSerializer(productUnitPrice['items'], many=True)
+            print(productUnitPriceSerializer.data)
+            result['data'] = productUnitPriceSerializer.data
+            result['draw'] = productUnitPrice['draw']
+            # result['recordsTotal'] = productUnitPrice['total']
+            # result['recordsFiltered'] = productUnitPrice['count']
+            return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+        except Exception as e:
+            return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)

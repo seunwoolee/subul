@@ -111,6 +111,14 @@ function cloneSetMore(selector, prefix) {
                 no.html(SEQ).css("background-color", "yellow");
                 SEQ++;
             }
+
+            let parentTR_temp = parentTR;
+            for(i=0;i<data.length-1;i++)
+            {
+                parentTR_temp = parentTR_temp.next('tr');
+                setReadOnly(parentTR_temp);
+            }
+
             $('.django-select2').djangoSelect2();
             deleteForm('form',parentTR.find(':button'));
         }).fail(function() {
@@ -213,6 +221,7 @@ function deleteForm(prefix, btn) {
 $(document).on('click', '.add-form-row', function(e){ //일반상품 + 버튼
     e.preventDefault();
     cloneMore('.forms-row:last', 'form');
+    setReadOnly($(this).parents('tr'));
     return false;
 });
 
@@ -228,6 +237,15 @@ $(document).on('click', '.remove-form-row', function(e){ // 삭제 - 버튼
     return false;
 });
 
+$(document).on('click', '#deleteLastButton', function(e){
+
+    if(confirm('마지막 버튼을 지우시겠습니까?')){
+        let lastButton = $('.add-form-row');
+        e.preventDefault();
+        deleteForm('form', lastButton);
+    }
+    return false;
+});
 
 PRODUCTINFO = [];
 AMOUNT_KG = {};
@@ -334,6 +352,7 @@ $("form").submit(function(){
         $("input[type=hidden][id*='ymd']").each(function (i, element){
             $(element).val(ymd);
         });
+        $("input:disabled").prop('disabled', false);
         $("form").submit();
     }
 })
@@ -360,4 +379,19 @@ function makeNormalStyle(parentTR)
     actonButton.attr('class','btn btn-success add-form-row');
     actonButton.html('+');
     parentTR.find('.specialTag').prop('disabled',false);
+}
+
+function setReadOnly($parentTR)
+{
+    console.log($parentTR);
+    $parentTR.find('.count, .amount, .price').each(function(){
+        $(this).attr('disabled','true');
+    });
+    $parentTR.find('.product').each(function(){
+        $(this).attr('readonly','true');
+        $(this).find('option').not(':selected').remove()
+    });
+    $parentTR.find('.location').each(function(){
+        $(this).find('option').not(':selected').remove()
+    });
 }

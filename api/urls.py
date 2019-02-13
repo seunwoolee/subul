@@ -2,7 +2,8 @@ from django.urls import path
 from .views import ProductsAPIView, ProductUpdate, ProductEggUpdate, OrderProductUnitPrice, OrderSetProductMatch, \
     OrderSetProductCode, ProductCodes, OrdersAPIView, OrderUpdate, ProductAdminsAPIView, ReleasesAPIView, ReleaseUpdate, \
     ProductMasterUpdate, EggsAPIView, EggsListAPIView, EggsUpdate, EggsReportAPIView, PackingListAPIView, PackingUpdate, \
-    PackingAPIView, PackingReportAPIView, ProductSummaryAPIView, ProductOEMsAPIView, ProductOEMUpdate
+    PackingAPIView, PackingReportAPIView, ProductSummaryAPIView, ProductOEMsAPIView, ProductOEMUpdate, \
+    ProductUnitPricesAPIView
 
 urlpatterns = [
     # 생산쪽 API
@@ -35,4 +36,6 @@ urlpatterns = [
     path('packing/<int:pk>', PackingUpdate.as_view()),
     path('packingList/', PackingListAPIView.as_view()),
     path('packingReport/', PackingReportAPIView.as_view()),
+    # 코드쪽 API
+    path('productUnitPrices/', ProductUnitPricesAPIView.as_view()),
 ]

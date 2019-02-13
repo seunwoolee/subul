@@ -88,26 +88,25 @@ class OrderReg(LoginRequiredMixin, View):
                 if form.cleaned_data.get('package'):
                     setProduct = SetProductCode.objects.get(code=form.cleaned_data.get('package'))
 
-                if amount_kg and count and amount:
-                    order = Order.objects.create(
-                        ymd=ymd,
-                        code=code,
-                        codeName=codeName,
-                        amount=amount,
-                        count=count,
-                        amount_kg=amount_kg,
-                        price=price,
-                        memo=memo,
-                        orderLocationCode=location,
-                        orderLocationName=location.codeName,
-                        type=type,
-                        specialTag=specialTag,
-                        productCode=productCode,
-                    )
+                order = Order.objects.create(
+                    ymd=ymd,
+                    code=code,
+                    codeName=codeName,
+                    amount=amount,
+                    count=count,
+                    amount_kg=amount_kg,
+                    price=price,
+                    memo=memo,
+                    orderLocationCode=location,
+                    orderLocationName=location.codeName,
+                    type=type,
+                    specialTag=specialTag,
+                    productCode=productCode,
+                )
 
-                    if setProduct:
-                        order.setProduct = setProduct
-                        order.save()
+                if setProduct:
+                    order.setProduct = setProduct
+                    order.save()
 
         else:
             print(formset.errors)

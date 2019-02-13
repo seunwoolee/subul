@@ -7,6 +7,7 @@ from django.views.generic.base import View
 from core.models import Location
 from eggs.models import Egg
 from eventlog.models import log
+from product.codeForms import  ProductUnitPricesForm
 from product.models import ProductEgg, Product, ProductCode, ProductAdmin, ProductMaster
 from .forms import StepOneForm, StepTwoForm, StepThreeForm, StepFourForm, StepFourFormSet, MainForm, ProductOEMFormSet, \
     ProductOEMForm
@@ -481,3 +482,54 @@ class ProductOEMList(LoginRequiredMixin, PermissionRequiredMixin, View):
     def get(self, request):
         productOEMForm = ProductOEMForm()
         return render(request, 'productOEM/productOEMList.html', {'productOEMForm': productOEMForm})
+
+
+class ProductUnitPricesList(LoginRequiredMixin, View):
+
+    # def post(self, request):
+    #     formset = ProductUnitPricesFormSet(request.POST)
+    #     if formset.is_valid():
+    #         for form in formset:
+    #             setProduct = None
+    #             ymd = form.cleaned_data.get('ymd')
+    #             code = form.cleaned_data.get('product')
+    #             productCode = ProductCode.objects.get(code=code)
+    #             codeName = productCode.codeName
+    #             count = form.cleaned_data.get('count')
+    #             amount = form.cleaned_data.get('amount')
+    #             amount_kg = form.cleaned_data.get('amount_kg')
+    #             memo = form.cleaned_data.get('memo')
+    #             price = form.cleaned_data.get('price')
+    #             type = form.cleaned_data.get('type')
+    #             location = Location.objects.get(code=form.cleaned_data.get('location'))
+    #             specialTag = form.cleaned_data.get('specialTag')
+    #             if amount_kg and count and amount:
+    #                 order = Order.objects.create(
+    #                     ymd=ymd,
+    #                     code=code,
+    #                     codeName=codeName,
+    #                     amount=amount,
+    #                     count=count,
+    #                     amount_kg=amount_kg,
+    #                     price=price,
+    #                     memo=memo,
+    #                     orderLocationCode=location,
+    #                     orderLocationName=location.codeName,
+    #                     type=type,
+    #                     specialTag=specialTag,
+    #                     productCode=productCode,
+    #                 )
+    #
+    #                 if setProduct:
+    #                     order.setProduct = setProduct
+    #                     order.save()
+    #
+    #     else:
+    #         print(formset.errors)
+    #     return redirect('orderList')
+
+    def get(self, request):
+        productUnitPricesForm = ProductUnitPricesForm()
+        return render(request, 'code/productUnitPricesList.html', {'productUnitPricesForm': productUnitPricesForm})
+
+

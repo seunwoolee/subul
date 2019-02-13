@@ -306,8 +306,8 @@ class Product(Detail):
     @staticmethod
     def getLossProductPercent(masterInstance):
         total_product_amount = 0
-        products = Product.objects.filter(master_id=masterInstance).filter(purchaseYmd=None)\
-                                  .filter(type='제품생산').order_by('id')
+        products = Product.objects.filter(master_id=masterInstance).filter(purchaseYmd=None) \
+            .filter(type='제품생산').order_by('id')
         last_item = len(products) - 1
 
         if len(products) > 0:
@@ -513,6 +513,44 @@ class ProductUnitPrice(TimeStampedModel):
     productCode = models.ForeignKey(ProductCode, on_delete=models.CASCADE, related_name='product')
     price = models.IntegerField(default=0)
     specialPrice = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.locationCode.codeName}_ {self.productCode.codeName}_{self.price}"
+
+    @staticmethod
+    def productUnitPriceQuery(**kwargs):
+
+        ORDER_COLUMN_CHOICES = Choices(
+            ('0', 'id'),
+            ('1', 'locationCode'),
+            ('2', 'locationCodeName'),
+            ('3', 'productCode'),
+            ('4', 'productCodeName'),
+            ('5', 'price'),
+            ('6', 'specialPrice'),
+        )
+        draw = int(kwargs.get('draw', None)[0])
+        search_value = kwargs.get('search[value]', None)[0]
+        order_column = kwargs.get('order[0][column]', None)[0]
+        order = kwargs.get('order[0][dir]', None)[0]
+        order_column = ORDER_COLUMN_CHOICES[order_column]
+
+        queryset = ProductUnitPrice.objects.annotate(
+            locationCodeName=F('locationCode__codeName'),
+            productCodeName=F('productCode__codeName'))
+
+        if order == 'desc':
+            order_column = '-' + order_column
+
+        if search_value:
+            queryset = queryset.filter(Q(locationCodeName__icontains=search_value) |
+                                       Q(productCodeName__icontains=search_value))
+
+        queryset = queryset.order_by(order_column)
+        return {
+            'items': queryset,
+            'draw': draw
+        }
 
 
 class SetProductCode(Code):
