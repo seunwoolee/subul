@@ -220,8 +220,15 @@ function deleteForm(prefix, btn) {
 
 $(document).on('click', '.add-form-row', function(e){ //일반상품 + 버튼
     e.preventDefault();
-    cloneMore('.forms-row:last', 'form');
-    setReadOnly($(this).parents('tr'));
+    if($('form')[0].checkValidity())
+    {
+        cloneMore('.forms-row:last', 'form');
+        setReadOnly($(this).parents('tr'));
+    }
+    else
+    {
+        alert('정보를 모두 알맞게 넣어주세요(빨간색->녹색)');
+    }
     return false;
 });
 
@@ -239,7 +246,7 @@ $(document).on('click', '.remove-form-row', function(e){ // 삭제 - 버튼
 
 $(document).on('click', '#deleteLastButton', function(e){
 
-    if(confirm('마지막 버튼을 지우시겠습니까?')){
+    if(confirm('마지막 줄을 지우시겠습니까?')){
         let lastButton = $('.add-form-row');
         e.preventDefault();
         deleteForm('form', lastButton);
@@ -254,11 +261,11 @@ $( ".location" ).change(function() {
     parentTR = $(this).parents('tr');
     data = parentTR.find('.location').val();
     set = parentTR.find('.set').val();
+    type = parentTR.find('.type').val();
     product = parentTR.find('.product');
     price = parentTR.find('.price');
     specialTag = parentTR.find('.specialTag').val();
     (set == '일반') ? url = '/api/OrderProductUnitPrice/'+data : url = '/api/OrderSetProductCode/'+data;
-
     if(data)
     {
         $.ajax({
@@ -276,7 +283,14 @@ $( ".location" ).change(function() {
                 if(i === 0 && set == '일반')
                 {
                     window.AMOUNT_KG = {"parentTR" : parentTR, "AMOUNT_KG" : element["amount_kg"]};
-                    (specialTag == "") ? price.val(element["price"]) : price.val(element["specialPrice"]);
+                    if(type == '판매')
+                    {
+                        (specialTag == "") ? price.val(element["price"]) : price.val(element["specialPrice"]);
+                    }
+                    else
+                    {
+                        price.val(0);
+                    }
                 }
 
                 if(set == '일반')
@@ -296,22 +310,37 @@ $( ".location" ).change(function() {
     {
         return false;
     }
-
 });
 
 $( ".product" ).change(function() {
     parentTR = $(this).parents('tr');
     data = parentTR.find('.product').val();
+    type = parentTR.find('.type').val();
     price = parentTR.find('.price');
     specialTag = parentTR.find('.specialTag').val();
+
     PRODUCTINFO.forEach(function(element){
         if(data == element["code"])
         {
             window.AMOUNT_KG = {"parentTR" : parentTR, "AMOUNT_KG" : element["amount_kg"]};
             window.AMOUNT_KG['AMOUNT_KG'] = element["amount_kg"];
-            (specialTag == "") ? price.val(element["price"]) : price.val(element["specialPrice"]);
+            if(type == '판매')
+            {
+                (specialTag == "") ? price.val(element["price"]) : price.val(element["specialPrice"]);
+            }
+            else
+            {
+                price.val(0);
+            }
         }
     })
+});
+
+$( ".type" ).change(function() {
+    parentTR = $(this).parents('tr');
+    type = parentTR.find('.type').val();
+    price = parentTR.find('.price');
+    if(type != '판매') { price.val(0); } else {  parentTR.find('.location').change(); }
 });
 
 $( ".specialTag" ).change(function() {
@@ -333,6 +362,7 @@ $( ".set" ).change(function() {
     parentTR = $(this).parents('tr');
     set = parentTR.find('.set').val();
     (set == '패키지') ? makeSetStyle(parentTR) : makeNormalStyle(parentTR);
+    parentTR.find('.location').change();
 });
 
 $(".amount").focusout(function(){
@@ -383,7 +413,6 @@ function makeNormalStyle(parentTR)
 
 function setReadOnly($parentTR)
 {
-    console.log($parentTR);
     $parentTR.find('.count, .amount, .price').each(function(){
         $(this).attr('disabled','true');
     });
