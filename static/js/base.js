@@ -66,8 +66,10 @@ function set_yyyy_mm_dd(yyyymmdd)
 var date = new Date();
 var days = 7;
 var minusSevenDate = new Date(date.getTime() - (days * 24 * 60 * 60 * 1000));
+var plusThreeDate = new Date(date.getTime() + (3 * 24 * 60 * 60 * 1000));
 var start_day = minusSevenDate.yyyymmdd();
 var end_day = date.yyyymmdd();
+var plusThree_day = plusThreeDate.yyyymmdd();
 
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()

@@ -34,15 +34,15 @@
     <bookmark url="file://$PROJECT_DIR$/static/js/releaseList.js" line="42" />
     <bookmark url="file://$PROJECT_DIR$/eggs/models.py" line="116" />
     <bookmark url="file://$PROJECT_DIR$/product/models.py" line="335" />
-    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="282" />
     <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="283" />
     <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="284" />
-    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="293" />
-    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="361" />
-    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="360" />
+    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="285" />
+    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="294" />
     <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="362" />
+    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="361" />
     <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="363" />
-    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="365" />
+    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="364" />
+    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="366" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="272b230e-ac37-47c4-8a83-fda4d548c6fa" name="Default" comment="" />
@@ -70,8 +70,8 @@
       <file leaf-file-name="orderReg.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/static/js/orderReg.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="536">
-              <caret line="364" column="40" lean-forward="true" selection-start-line="364" selection-start-column="40" selection-end-line="364" selection-end-column="40" />
+            <state relative-caret-position="350">
+              <caret line="14" column="39" selection-start-line="14" selection-start-column="39" selection-end-line="14" selection-end-column="39" />
             </state>
           </provider>
         </entry>
@@ -79,8 +79,17 @@
       <file leaf-file-name="base.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/js/base.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3375">
-              <caret line="135" column="5" selection-start-line="135" selection-start-column="5" selection-end-line="135" selection-end-column="5" />
+            <state relative-caret-position="150">
+              <caret line="70" column="11" selection-start-line="70" selection-start-column="4" selection-end-line="70" selection-end-column="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="orderList.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/static/js/orderList.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="300">
+              <caret line="12" column="35" lean-forward="true" selection-start-line="12" selection-start-column="35" selection-end-line="12" selection-end-column="35" />
             </state>
           </provider>
         </entry>
@@ -100,8 +109,8 @@
       <file leaf-file-name="orderReg.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/order/orderReg.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="650">
-              <caret line="28" column="47" lean-forward="true" selection-start-line="28" selection-start-column="47" selection-end-line="28" selection-end-column="47" />
+            <state relative-caret-position="700">
+              <caret line="28" column="47" selection-start-line="28" selection-start-column="47" selection-end-line="28" selection-end-column="47" />
               <folding>
                 <element signature="n#style#0;n#th#0;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#0;n#div#1;n#form#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#th#1;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#0;n#div#1;n#form#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
@@ -210,7 +219,6 @@
       <list>
         <option value="$PROJECT_DIR$/templates/includes/modal/productOEMModifyForm.html" />
         <option value="$PROJECT_DIR$/api/eggSerializers.py" />
-        <option value="$PROJECT_DIR$/static/js/orderList.js" />
         <option value="$PROJECT_DIR$/static/js/releaseList.js" />
         <option value="$PROJECT_DIR$/api/serializers.py" />
         <option value="$PROJECT_DIR$/templates/product/productList.html" />
@@ -239,7 +247,6 @@
         <option value="$PROJECT_DIR$/core/9_eggs.py" />
         <option value="$PROJECT_DIR$/templates/includes/modal/productUnitPricesForm.html" />
         <option value="$PROJECT_DIR$/templates/code/productUnitPricesReg.html" />
-        <option value="$APPLICATION_CONFIG_DIR$/scratches/book.py" />
         <option value="$PROJECT_DIR$/templates/includes/productUnitPricesForm.html" />
         <option value="$PROJECT_DIR$/templates/baseHTML.html" />
         <option value="$PROJECT_DIR$/product/urls.py" />
@@ -255,9 +262,11 @@
         <option value="$PROJECT_DIR$/templates/includes/orderForm.html" />
         <option value="$PROJECT_DIR$/order/views.py" />
         <option value="$PROJECT_DIR$/templates/order/orderList.html" />
-        <option value="$PROJECT_DIR$/static/js/base.js" />
         <option value="$PROJECT_DIR$/order/forms.py" />
         <option value="$PROJECT_DIR$/templates/order/orderReg.html" />
+        <option value="$APPLICATION_CONFIG_DIR$/scratches/book.py" />
+        <option value="$PROJECT_DIR$/static/js/orderList.js" />
+        <option value="$PROJECT_DIR$/static/js/base.js" />
         <option value="$PROJECT_DIR$/static/js/orderReg.js" />
       </list>
     </option>
@@ -608,9 +617,9 @@
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50208336" side_tool="true" weight="0.32769555" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32875264" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32875264" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.49791667" visible="true" weight="0.29704016" />
+      <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.49791667" weight="0.2967265" />
       <window_info id="Favorites" order="2" sideWeight="0.5015723" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39957717" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -719,13 +728,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="432">
           <caret line="352" lean-forward="true" selection-start-line="352" selection-end-line="352" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/book.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="6" column="30" selection-start-line="6" selection-start-column="30" selection-end-line="6" selection-end-column="30" />
         </state>
       </provider>
     </entry>
@@ -892,13 +894,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/orderList.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="25">
-          <caret line="25" column="1" selection-start-line="25" selection-start-column="1" selection-end-line="25" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/order/orderList.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="200">
@@ -924,13 +919,6 @@
     <entry file="file://$PROJECT_DIR$/static/js/baseReg.js">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/base.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3375">
-          <caret line="135" column="5" selection-start-line="135" selection-start-column="5" selection-end-line="135" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/includes/orderForm.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="575">
@@ -950,8 +938,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/order/orderReg.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="650">
-          <caret line="28" column="47" lean-forward="true" selection-start-line="28" selection-start-column="47" selection-end-line="28" selection-end-column="47" />
+        <state relative-caret-position="700">
+          <caret line="28" column="47" selection-start-line="28" selection-start-column="47" selection-end-line="28" selection-end-column="47" />
           <folding>
             <element signature="n#style#0;n#th#0;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#0;n#div#1;n#form#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#th#1;n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#0;n#div#1;n#form#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
@@ -966,10 +954,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/book.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/js/orderList.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="12" column="35" lean-forward="true" selection-start-line="12" selection-start-column="35" selection-end-line="12" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/js/base.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="70" column="11" selection-start-line="70" selection-start-column="4" selection-end-line="70" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/static/js/orderReg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="536">
-          <caret line="364" column="40" lean-forward="true" selection-start-line="364" selection-start-column="40" selection-end-line="364" selection-end-column="40" />
+        <state relative-caret-position="350">
+          <caret line="14" column="39" selection-start-line="14" selection-start-column="39" selection-end-line="14" selection-end-column="39" />
         </state>
       </provider>
     </entry>

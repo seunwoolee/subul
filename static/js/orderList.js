@@ -1,6 +1,6 @@
  var LOCATION_MANAGER = false;
- $('#start_date').val(start_day);
- $('#end_date').val(end_day);
+ $('#start_date').val(end_day);
+ $('#end_date').val(plusThree_day);
 fetch_data(start_day, end_day);
  function fetch_data(start_date='', end_date='')
  {

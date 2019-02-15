@@ -12,6 +12,7 @@
 
     $('#id_form-0-product').find('option').remove(); // HACK 장고 select is_valid 특성상 choices를 보내줘야함
                                                         // 보기 지저분하니 Front 단에서 삭제
+    $('input[type=date]').val(end_day);
 });
 
 SEQ = 2;
