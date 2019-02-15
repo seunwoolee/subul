@@ -8,6 +8,10 @@ class EggSerializer(serializers.ModelSerializer):
     out_price = serializers.IntegerField(read_only=True)
     pricePerEa = serializers.DecimalField(read_only=True, decimal_places=2, max_digits=19)
     in_locationCodes = serializers.CharField(read_only=True)
+    locationCode = serializers.SlugRelatedField(
+        slug_field='code',
+        read_only=True
+     )
 
     class Meta:
         model = Egg

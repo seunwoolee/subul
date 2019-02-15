@@ -42,7 +42,6 @@ class EggReg(LoginRequiredMixin, View):
                 count = form.cleaned_data.get('count')
                 price = form.cleaned_data.get('price')
                 memo = form.cleaned_data.get('memo')
-                print(memo)
                 locationCode = Location.objects.get(code=form.cleaned_data.get('location'))
                 locationCodeName = locationCode.codeName
                 Egg.objects.create(
