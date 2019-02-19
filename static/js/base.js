@@ -156,3 +156,8 @@ function setSpecialTagButton(data)
         return '';
     }
 }
+
+function autoSetEndDate(e)
+{
+    $('#end_date').val(e.target.value);
+}

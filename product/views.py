@@ -1,6 +1,6 @@
 from decimal import Decimal
 from itertools import chain
-from django.db.models import Sum, F, Case, When, Value, CharField, Func
+from django.db.models import Sum, F, Case, When, Value, CharField, Func, DecimalField
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic.base import View
@@ -234,7 +234,7 @@ class ProductReport(View):
         location = Location.objects.get(code='00301')
         egg = Egg.objects.values('code', 'codeName').filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
             .filter(type='생산') \
-            .annotate(report_egg_amount=ABS('amount')) \
+            .annotate(report_egg_amount=Case(When(amount=None, then=Value(0, DecimalField())), default=ABS('amount'), output_field=DecimalField())) \
             .annotate(report_egg_count=ABS('count')) \
             .annotate(report_sort_type=Value('원란', CharField())) \
             .annotate(report_rawTank_amount=Value(' ', CharField())) \
@@ -245,6 +245,9 @@ class ProductReport(View):
         total_count = egg.aggregate(Sum('report_egg_count'))['report_egg_count__sum']
         if not total_amount: total_amount = ' '
         if not total_count: total_count = ' '
+        for i, _ in enumerate(egg):
+            if egg[i]['report_egg_amount'] == 0:
+                egg[i]['report_egg_amount'] = ' '
 
         total_egg = [dict(code=' ',
                           codeName='합계',
