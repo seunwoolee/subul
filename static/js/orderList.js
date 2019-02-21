@@ -118,13 +118,26 @@ function setStepOneDataTable(args)
             {"data": "codeName"},
             {"data": "amount" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {"data": "count" , "render": $.fn.dataTable.render.number( ',')},
-            {"data": "price" , "render": $.fn.dataTable.render.number( ',')},
+            {"data": "price" , "render": $.fn.dataTable.render.number( ',', '.', 1)},
             {"data": "totalPrice" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "memo"},
             {"data": "setProduct"},
             {"data": "release_id", "render": function(data, type, row, meta){
-                    if(data > 0) { return setDataTableActionButtonWithoutEdit(); }
-                    else { return setDataTableActionButtonWithPdf(); }
+                    if(SUPERUSER)
+                    {
+                        if(data > 0) { return setDataTableActionButtonWithoutEdit(); }
+                        else { return setDataTableActionButtonWithPdf(); }
+                    }
+
+                    if(row.ymd  < minusFifteen_day)
+                    {
+                        return setDataTableActionButtonOnlyPdf();
+                    }
+                    else
+                    {
+                        if(data > 0) { return setDataTableActionButtonWithoutEdit(); }
+                        else { return setDataTableActionButtonWithPdf(); }
+                    }
             }}
         ],
         dom: 'Bfrtip',

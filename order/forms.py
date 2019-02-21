@@ -36,7 +36,7 @@ class OrderForm(forms.Form):
     amount = forms.DecimalField(decimal_places=2, max_digits=19, min_value=0)
     amount_kg = forms.DecimalField(decimal_places=2, max_digits=19, min_value=0, widget=forms.HiddenInput())
     count = forms.IntegerField(min_value=0)
-    price = forms.IntegerField(min_value=0)
+    price = forms.DecimalField(decimal_places=1, max_digits=19, min_value=0)
     memo = forms.CharField(
         label='',
         widget=forms.Textarea(attrs={'rows': 2}), required=False

@@ -1,11 +1,11 @@
+from decimal import Decimal
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum, F, ExpressionWrapper, FloatField, IntegerField
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.template.loader import get_template
 from django.views import View
 from core.models import Location
-from order.forms import OrderFormSet
 from order.models import Order
 from release.forms import ReleaseForm, ReleaseLocationForm
 from .models import Release
@@ -44,7 +44,6 @@ class GeneratePDF(View):
             "sumData": sumData,
             "location": location,
         }
-        # html = template.render(context_dict)
         pdf = render_to_pdf('invoice/출고거래명세표.html', context_dict)
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
@@ -74,8 +73,7 @@ class ReleaseReg(LoginRequiredMixin, View):
         releaseOrder = int(data['releaseOrder'])
         setProductCode = request.POST.get('setProductCode', None)
         specialTag = request.POST.get('specialTag', '')
-
-        totalPrice = int(data['price']) * int(data['count'])
+        totalPrice = int(Decimal(data['price']) * int(data['count']))
         releaseVat = round(totalPrice - (totalPrice / 1.1)) if productCode.vat else 0  # vat 계산
         release = Release.objects.create(
             ymd=data['ymd'],

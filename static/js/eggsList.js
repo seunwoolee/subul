@@ -126,8 +126,22 @@ function setStepOneDataTable(args)
             {"data": "pricePerEa" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "memo"},
             {"data": "type", "render": function(data, type, row, meta){
-                    if(data == "판매") { return setDataTableActionButtonWithPdf(); }
-                    else { return setDataTableActionButton(); }
+                    if(SUPERUSER)
+                    {
+                        if(data == "판매") { return setDataTableActionButtonWithPdf(); }
+                        else { return setDataTableActionButton(); }
+                    }
+
+                    if(row.ymd  < minusFifteen_day)
+                    {
+                        if(data == "판매") { return setDataTableActionButtonOnlyPdf(); }
+                        else { return ""; }
+                    }
+                    else
+                    {
+                        if(data == "판매") { return setDataTableActionButtonWithPdf(); }
+                        else { return setDataTableActionButton(); }
+                    }
             }}
         ],
         dom: 'Bfrtip',

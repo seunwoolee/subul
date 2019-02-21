@@ -8,19 +8,19 @@ from .models import ProductCode, ProductEgg, ProductMaster
 
 class MainForm(forms.ModelForm):
     ymd = forms.CharField(max_length=8, widget=forms.HiddenInput())
-    total_loss_openEgg = forms.DecimalField(decimal_places=2, max_digits=19, widget=forms.NumberInput(attrs=
-    {
-        'placeholder': '할란',
-        'data-toggle': 'tooltip',
-        'data-placement': 'top',
-        'title': '할란 로스량 입력'
-    }))
     total_loss_insert = forms.DecimalField(decimal_places=2, max_digits=19, widget=forms.NumberInput(attrs=
     {
         'placeholder': '투입',
         'data-toggle': 'tooltip',
         'data-placement': 'top',
         'title': '투입 로스량 입력'
+    }))
+    total_loss_openEgg = forms.DecimalField(decimal_places=2, max_digits=19, widget=forms.NumberInput(attrs=
+    {
+        'placeholder': '할란',
+        'data-toggle': 'tooltip',
+        'data-placement': 'top',
+        'title': '할란 로스량 입력'
     }))
     total_loss_clean = forms.DecimalField(decimal_places=2, max_digits=19, widget=forms.NumberInput(attrs=
     {
@@ -39,7 +39,7 @@ class MainForm(forms.ModelForm):
 
     class Meta:
         model = ProductMaster
-        fields = ['ymd', 'total_loss_openEgg', 'total_loss_insert', 'total_loss_clean', 'total_loss_fill']
+        fields = ['ymd', 'total_loss_insert', 'total_loss_openEgg', 'total_loss_clean', 'total_loss_fill']
 
 
 class StepOneForm(forms.Form):

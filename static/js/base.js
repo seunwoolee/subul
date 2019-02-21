@@ -62,15 +62,16 @@ function set_yyyy_mm_dd(yyyymmdd)
         return yyyymmdd;
     }
 }
-
 var date = new Date();
 var days = 7;
 var minusSevenDate = new Date(date.getTime() - (days * 24 * 60 * 60 * 1000));
 var plusThreeDate = new Date(date.getTime() + (3 * 24 * 60 * 60 * 1000));
+var minusFifteenDate = new Date(date.getTime() - (15 * 24 * 60 * 60 * 1000));
+
 var start_day = minusSevenDate.yyyymmdd();
 var end_day = date.yyyymmdd();
 var plusThree_day = plusThreeDate.yyyymmdd();
-
+var minusFifteen_day = set_yyyymmdd(minusFifteenDate.yyyymmdd());
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
@@ -91,6 +92,11 @@ function setDataTableActionButtonWithoutEdit()
 function setDataTableActionButtonOnlyDelete()
 {
     return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="fa fa-trash-o"></i></button>';
+}
+
+function setDataTableActionButtonOnlyPdf()
+{
+    return '<button class="btn btn-warning btn-sm PDF" href="#"><i class="fas fa-file-pdf"></i></button>';
 }
 
 function setDataTableActionButton()

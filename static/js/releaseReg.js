@@ -1,4 +1,3 @@
-//fetch_data();
 function fetch_data()
 {
     table = $('.datatable').DataTable({
@@ -473,3 +472,9 @@ function manualReleaseAjax(url, data)
         $('.datatable').DataTable().search($("input[type='search']").val()).draw();
     }).fail(function() { alert('수정 에러 전산실로 문의바랍니다.'); });
 }
+
+$("#datepicker").datepicker({
+    autoclose: true,
+    todayHighlight: true,
+    format:'yyyymmdd'
+});

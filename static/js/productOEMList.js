@@ -20,7 +20,6 @@
                         i : 0;
             };
 
-
             let pageTotal_count = api
                 .column( 7, { page: 'current'} )
                 .data()
@@ -89,7 +88,21 @@
             {"data": "purchaseVat" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "totalPrice" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "memo"},
-            {"data": null, "render": function(data, type, row, meta){return setDataTableActionButton();}}
+            {"data": null, "render": function(data, type, row, meta){
+                    if(SUPERUSER)
+                    {
+                        return setDataTableActionButton();
+                    }
+
+                    if(row.ymd  < minusFifteen_day)
+                    {
+                        return "";
+                    }
+                    else
+                    {
+                        return setDataTableActionButton();
+                    }
+            }}
         ],
         dom: 'Bfrtip',
         buttons: [

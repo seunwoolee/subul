@@ -2,6 +2,18 @@
 
 .dt-body-right {text-align: right;}
 
+
+#orderDatatable td, .datatable td
+{
+    padding : 0.45rem !important;
+}
+
+#orderDatatable td, .datatable td:first-child
+{
+    padding : 0.45rem 0.45rem 0.45rem 1.5rem !important;
+}
+
+
 .datatable
 {
     width:100% !important;
@@ -21,7 +33,7 @@
 
 
 .btn-sm{
-    padding : 0 0.25rem 0 0.25rem;
+    padding : 0.1rem 0.3rem !important;
 }
 
 .table th, .table td {

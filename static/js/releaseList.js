@@ -171,12 +171,26 @@ function setStepOneDataTable(args)
             {"data": "memo"},
             {"data": "locationType"},
             {"data": "locationManagerName"},
-            {'data': 'releaseSetProduct', "visible": false},
-            {'data': 'releaseSetProductCodeName', "visible": false},
+            {'data': 'releaseSetProduct'},
+            {'data': 'releaseSetProductCodeName'},
             {"data": 'type', "render": function(data, type, row, meta){
-                    if(data == '이동'){return '';}
-                    else if(data == '판매'){return setDataTableActionButtonWithPdfRecall();}
-                    else{return setDataTableActionButtonWithoutEdit();}
+                    if(SUPERUSER)
+                    {
+                        if(data == '이동'){return '';}
+                        else if(data == '판매'){return setDataTableActionButtonWithPdfRecall();}
+                        else{return setDataTableActionButtonWithoutEdit();}
+                    }
+
+                    if(row.ymd  < minusFifteen_day)
+                    {
+                        return setDataTableActionButtonOnlyPdf();
+                    }
+                    else
+                    {
+                        if(data == '이동'){return '';}
+                        else if(data == '판매'){return setDataTableActionButtonWithPdfRecall();}
+                        else{return setDataTableActionButtonWithoutEdit();}
+                    }
             }}
         ],
         dom: 'Bfrtip',

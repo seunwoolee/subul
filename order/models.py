@@ -34,7 +34,7 @@ class Order(Detail):
         choices=ORDER_TYPE_CHOICES,
         default='판매',
     )
-    price = models.IntegerField()
+    price = models.DecimalField(decimal_places=1, max_digits=19)
     setProduct = models.ForeignKey('product.SetProductCode', on_delete=models.CASCADE, null=True, blank=True)
     release_id = models.ForeignKey('release.Release', on_delete=models.SET_NULL, null=True, blank=True)
     specialTag = models.CharField(
@@ -86,7 +86,7 @@ class Order(Detail):
                 )
                 order_column = ORDER_COLUMN_CHOICES[order_column]
                 queryset = Order.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
-                    .filter(delete_state='N').annotate(totalPrice=Sum(F('count') * F('price'))) \
+                    .filter(delete_state='N').annotate(totalPrice=Sum(F('count') * F('price'), output_field=IntegerField())) \
                     .annotate(setProductCode=F('setProduct__code'))
 
                 total = queryset.count()
@@ -139,7 +139,7 @@ class Order(Detail):
             )
             order_column = ORDER_COLUMN_CHOICES[order_column]
             queryset = Order.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
-                .filter(delete_state='N').annotate(totalPrice=Sum(F('count') * F('price'))) \
+                .filter(delete_state='N').annotate(totalPrice=Sum(F('count') * F('price'), output_field=IntegerField())) \
                 .annotate(setProductCode=F('setProduct__code'))
             total = queryset.count()
             if search_value:  #

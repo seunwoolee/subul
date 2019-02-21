@@ -1,6 +1,4 @@
-$("#datepicker").datepicker({
-    autoclose: true,
-    todayHighlight: true,
-    format:'yyyymmdd'
-});
-
+if(!SUPERUSER)
+{
+    $('input[type=date]').attr("min",minusFifteenDate.yyyymmdd());
+}
