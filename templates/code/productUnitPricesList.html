@@ -26,47 +26,26 @@
             </div>
             <div class="card-header">
                 <div class="row type_filter">
-                    <div class="col-md-3">
+                    <div class="col-md-12">
                         <div class="form-check form-check-inline" id="location">
                             <div class="input-group mb-2 mr-sm-2 ">
                                 <div class="input-group-prepend">
-                                    <div class="input-group-text"><i class="far fa-building"></i></div>
+                                    <div class="input-group-text"><i class="fas fa-sort"></i></div>
                                 </div>
                                 {{ productUnitPricesForm.location }}
                             </div>
                         </div>
-                    </div>
-
-                    <div class="col-md-9">
-                        <div class="form-row" id="locationType">
-                            <div class="form-group col-md-12">
-
-                                <div class="input-daterange  form-row">
-                                    <div class="col-lg-4 input-group mb-2 mr-sm-2">
-                                        <div class="input-group-prepend ">
-                                            <div class="input-group-text"><i class="far fa-calendar-alt"></i>
-                                            </div>
-                                        </div>
-                                        <input type="date" name="start_date" id="start_date"
-                                               class="form-control"/>
-                                    </div>
-                                    <div class="col-lg-4 input-group mb-2 mr-sm-2">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text"><i class="far fa-calendar-alt"></i>
-                                            </div>
-                                        </div>
-                                        <input name="end_date" type="date" class="form-control"
-                                               id="end_date">
-                                    </div>
-                                    <div class="col">
-                                        <input type="button" name="search" id="search" value="검색"
-                                               class="btn btn-info"/>
-                                    </div>
+                        <div class="form-check form-check-inline" id="product">
+                            <div class="input-group mb-2 mr-sm-2 ">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><i class="far fa-building"></i></div>
                                 </div>
+                                {{ productUnitPricesForm.product }}
                             </div>
                         </div>
+                        <input type="button" name="search" id="search" value="검색" class="btn btn-info"/>
+                        <input type="button" name="create" id="create" value="생성" class="btn btn-success"/>
                     </div>
-
                 </div>
             </div>
             <div class="card-body">
@@ -92,6 +71,28 @@
     </div>
 </div>
 
+<!-- Create Modal -->
+<div class="modal fade everyModal" id="createModal" role="dialog">
+    <div class="modal-dialog modal-success">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title codeName"></h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" class="create">
+                    {{ productUnitPricesForm.locationCode }}
+                    {{ productUnitPricesForm.productCode }}
+                    {% include 'includes/modal/productUnitPricesModifyForm.html' %}
+                    <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="post"/>
+                    <button type="submit" class="btn btn-success">OK</button>
+                    <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- EDIT Modal -->
 <div class="modal fade everyModal" id="modifyModal" role="dialog">
     <div class="modal-dialog modal-primary">
@@ -101,9 +102,8 @@
                 <h4 class="modal-title codeName"></h4>
             </div>
             <div class="modal-body">
-                <!--<h5 class="mb-4 "></h5>-->
                 <form role="form" class="deleteAndEdit">
-                    {% include 'includes/modal/productOEMModifyForm.html' %}
+                    {% include 'includes/modal/productUnitPricesModifyForm.html' %}
                     <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="patch"/>
                     <button type="submit" class="btn btn-primary">OK</button>
                     <button type="button" data-dismiss="modal" class="btn">Cancel</button>
@@ -128,7 +128,6 @@
                     <button type="submit" class="btn btn-danger">Delete</button>
                     <button type="button" data-dismiss="modal" class="btn">Cancel</button>
                 </form>
-
             </div>
         </div>
     </div>

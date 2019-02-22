@@ -473,14 +473,14 @@ class ProductAdmin(models.Model):
         if order == 'desc':
             order_column = '-' + order_column
 
-        total = queryset.count()  # TODO 삭제
+        total = queryset.count()
 
         if search_value:
             queryset = queryset.filter(Q(productCodeName__icontains=search_value) |
                                        Q(productYmd__icontains=search_value) |
                                        Q(storedLocationCodeName__icontains=search_value))
 
-        count = queryset.count()  # TODO 삭제
+        count = queryset.count()
         queryset = queryset.order_by(order_column)
         return {
             'items': queryset,
@@ -530,25 +530,41 @@ class ProductUnitPrice(TimeStampedModel):
             ('6', 'specialPrice'),
         )
         draw = int(kwargs.get('draw', None)[0])
+        start = int(kwargs.get('start', None)[0])
+        length = int(kwargs.get('length', None)[0])
         search_value = kwargs.get('search[value]', None)[0]
         order_column = kwargs.get('order[0][column]', None)[0]
         order = kwargs.get('order[0][dir]', None)[0]
         order_column = ORDER_COLUMN_CHOICES[order_column]
+        locationCode = kwargs.get('location', None)[0]
+        productCode = kwargs.get('product', None)[0]
 
         queryset = ProductUnitPrice.objects.annotate(
             locationCodeName=F('locationCode__codeName'),
             productCodeName=F('productCode__codeName'))
 
-        if order == 'desc':
-            order_column = '-' + order_column
+        total = queryset.count()
+
+        if locationCode:
+            queryset = queryset.filter(locationCode=Location.objects.get(code=locationCode))
+
+        if productCode:
+            queryset = queryset.filter(productCode=ProductCode.objects.get(code=productCode))
 
         if search_value:
             queryset = queryset.filter(Q(locationCodeName__icontains=search_value) |
                                        Q(productCodeName__icontains=search_value))
 
-        queryset = queryset.order_by(order_column)
+        count = queryset.count()
+
+        if order == 'desc':
+            order_column = '-' + order_column
+
+        queryset = queryset.order_by(order_column)[start:start + length]
         return {
             'items': queryset,
+            'count': count,
+            'total': total,
             'draw': draw
         }
 
