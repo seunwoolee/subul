@@ -159,14 +159,6 @@ function setStepOneDataTable(args)
                         }
                     },
                     {
-                        extend: 'copy',
-                        className:'btn btn-light',
-                        text : '<i class="fas fa-copy fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    },
-                    {
                         extend: 'excel',
                         className:'btn btn-light',
                         text : '<i class="far fa-file-excel fa-lg"></i>',
@@ -298,14 +290,6 @@ function setStepTwoDataTable(args)
                         }
                     },
                     {
-                        extend: 'copy',
-                        className:'btn btn-light',
-                        text : '<i class="fas fa-copy fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    },
-                    {
                         extend: 'excel',
                         className:'btn btn-light',
                         text : '<i class="far fa-file-excel fa-lg"></i>',
@@ -425,14 +409,6 @@ function setStepThreeDataTable(args)
                         extend: 'colvis',
                         className:'btn btn-light',
                         text : '<i class="far fa-eye fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    },
-                    {
-                        extend: 'copy',
-                        className:'btn btn-light',
-                        text : '<i class="fas fa-copy fa-lg"></i>',
                         init : function(api, node, config){
                             $(node).removeClass('btn-secondary');
                         }

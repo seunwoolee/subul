@@ -2,13 +2,12 @@
 
 .dt-body-right {text-align: right;}
 
-
-#orderDatatable td, .datatable td
+#items td, #orderDatatable td, .datatable td
 {
     padding : 0.45rem !important;
 }
 
-#orderDatatable td, .datatable td:first-child
+#items td, #orderDatatable td, .datatable td:first-child
 {
     padding : 0.45rem 0.45rem 0.45rem 1.5rem !important;
 }

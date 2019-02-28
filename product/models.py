@@ -585,3 +585,56 @@ class SetProductMatch(TimeStampedModel):
 
     def __str__(self):
         return f"{self.setProductCode.codeName}_{self.saleLocation.codeName}_{self.productCode.codeName}"
+
+    @staticmethod
+    def setProductMatchQuery(**kwargs):
+
+        ORDER_COLUMN_CHOICES = Choices(
+            ('0', 'id'),
+            ('1', 'saleLocation'),
+            ('2', 'saleLocationCodeName'),
+            ('3', 'setProductCode'),
+            ('4', 'setProductCodeName'),
+            ('5', 'productCode'),
+            ('6', 'productCodeName'),
+            ('7', 'price'),
+            ('8', 'count'),
+        )
+        draw = int(kwargs.get('draw', None)[0])
+        start = int(kwargs.get('start', None)[0])
+        length = int(kwargs.get('length', None)[0])
+        search_value = kwargs.get('search[value]', None)[0]
+        order_column = kwargs.get('order[0][column]', None)[0]
+        order = kwargs.get('order[0][dir]', None)[0]
+        order_column = ORDER_COLUMN_CHOICES[order_column]
+        saleLocation = kwargs.get('location', None)[0]
+        setProductCode = kwargs.get('setProduct', None)[0]
+
+        queryset = SetProductMatch.objects.filter(setProductCode__delete_state='N').annotate(
+            saleLocationCodeName=F('saleLocation__codeName'),
+            setProductCodeName=F('setProductCode__codeName'),
+            productCodeName=F('productCode__codeName'))
+
+        total = queryset.count()
+
+        if saleLocation:
+            queryset = queryset.filter(saleLocation=Location.objects.get(code=saleLocation))
+
+        if setProductCode:
+            queryset = queryset.filter(setProductCode=SetProductCode.objects.get(code=setProductCode))
+
+        if search_value:
+            queryset = queryset.filter(Q(productCodeName__icontains=search_value))
+
+        count = queryset.count()
+
+        if order == 'desc':
+            order_column = '-' + order_column
+
+        queryset = queryset.order_by(order_column)[start:start + length]
+        return {
+            'items': queryset,
+            'count': count,
+            'total': total,
+            'draw': draw
+        }

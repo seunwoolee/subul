@@ -36,7 +36,7 @@ class EggForm(forms.Form):
     locationSale = forms.ChoiceField(widget=Select2Widget, required=False,
                                      choices=list(Location.objects.filter(type='07').values_list('code', 'codeName')
                                                   .order_by('code')))
-    in_locatoin = forms.CharField(max_length=255, widget=forms.HiddenInput(), required=False)
+    in_location = forms.CharField(max_length=255, widget=forms.HiddenInput(), required=False)
 
 
 EggFormSet = formset_factory(EggForm)

@@ -1,15 +1,13 @@
-
 from django.db.models import Sum, Func, F
-from django.http import HttpResponse
+from django.http import HttpResponse, QueryDict
 from django.shortcuts import render, redirect
 from django.views import View
 
 from core.models import Location
-from order.forms import OrderForm
 from .forms import EggForm
 from .models import Egg, EggCode
 from .forms import EggFormSet
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from core.utils import render_to_pdf
 
 
@@ -67,37 +65,53 @@ class EggReg(LoginRequiredMixin, View):
 
 class EggRelease(View):
     def post(self, request):
-        data = request.POST.dict()
-        try:
-            location = data['locationSale']
-            price = data['price']
-        except KeyError:
-            location = None
-            price = None
+        amount = request.POST.get('amount',None)
+        data = dict(request.POST.copy())
+        pks = []
 
-        product = EggCode.objects.get(code=data['productCode'])
-        in_location = Location.objects.get(code=data['in_locatoin'])
-        egg = Egg.objects.create(
-            in_ymd=data['in_ymd'],
-            code=data['productCode'],
-            codeName=product.codeName,
-            in_locationCode=in_location,
-            in_locationCodeName=in_location.codeName,
-            type=data['type'],
-            ymd=data['ymd'],
-            count=-int(data['count']),
-            eggCode=product
-        )
+        for i in range(len(data['in_ymd'])):
+            in_ymd = data['in_ymd'][i]
+            ymd = data['ymd'][i]
+            productCode = data['productCode'][i]
+            in_location = data['in_location'][i]
+            type = data['type'][i]
+            count = data['count'][i]
+            location = data['locationSale'][i]
+            price = data['price'][i]
+            memo = data['memo'][i]
 
-        if location:
-            location = Location.objects.get(code=location)
-            egg.locationCode = location
-            egg.locationCodeName = location.codeName
+            product = EggCode.objects.get(code=productCode)
+            in_location = Location.objects.get(code=in_location)
+            egg = Egg.objects.create(
+                in_ymd=in_ymd,
+                code=productCode,
+                codeName=product.codeName,
+                in_locationCode=in_location,
+                in_locationCodeName=in_location.codeName,
+                type=type,
+                ymd=ymd,
+                count=-int(count),
+                eggCode=product,
+                memo=memo,
+            )
 
-        if price:
-            egg.price = price
+            if location:
+                location = Location.objects.get(code=location)
+                egg.locationCode = location
+                egg.locationCodeName = location.codeName
 
-        egg.save()
+            if price:
+                egg.price = price
+
+            egg.save()
+            if amount:
+                if egg.type == '생산':
+                    pks.append(str(egg.id))
+
+        if pks:
+            pks = ','.join(pks)
+            Egg.calculateAmount(int(amount), pks)
+
         return HttpResponse(status=200)
 
 
@@ -105,22 +119,22 @@ class EggCalculateAmount(View):
     def post(self, request):
         data = request.POST.dict()
         amount = int(data['amount'])
-        amount_last = amount
         pks = data['pks']
-        arr = pks.split(',')
-        eggs = Egg.objects.filter(id__in=arr)
-        last_item = len(eggs) - 1
-        totalCount = Egg.objects.filter(id__in=arr).aggregate(Sum('count'))
-
-        for egg in eggs[:last_item]:
-            percent = egg.count / totalCount['count__sum']
-            egg.amount = round(percent * amount)
-            egg.save()
-            amount_last -= egg.amount
-
-        lastEgg = eggs.last()
-        lastEgg.amount = amount_last
-        lastEgg.save()
+        Egg.calculateAmount(amount, pks)
+        # arr = pks.split(',')
+        # eggs = Egg.objects.filter(id__in=arr)
+        # last_item = len(eggs) - 1
+        # totalCount = Egg.objects.filter(id__in=arr).aggregate(Sum('count'))
+        #
+        # for egg in eggs[:last_item]:
+        #     percent = egg.count / totalCount['count__sum']
+        #     egg.amount = round(percent * amount)
+        #     egg.save()
+        #     amount_last -= egg.amount
+        #
+        # lastEgg = eggs.last()
+        # lastEgg.amount = amount_last
+        # lastEgg.save()
         return HttpResponse(status=200)
 
 
@@ -130,9 +144,11 @@ class EggPricePerEa(View):
         eggs = Egg.objects.filter(ymd__gte=data['start_date']).filter(ymd__lte=data['end_date']).filter(type='생산')
 
         for egg in eggs:
-            in_price = Egg.objects.values('price','count').filter(in_ymd=egg.in_ymd).filter(type='입고').filter(code=egg.code)\
+            in_price = Egg.objects.values('price', 'count').filter(in_ymd=egg.in_ymd).filter(type='입고').filter(
+                code=egg.code) \
                 .filter(in_locationCode=egg.in_locationCode).first()
-            egg.price = round(in_price['price'] / in_price['count']) * abs(egg.count) # 구매단가=in_price['price']/abs(egg.count)
+            egg.price = round(in_price['price'] / in_price['count']) * abs(
+                egg.count)  # 구매단가=in_price['price']/abs(egg.count)
             egg.save()
         return HttpResponse(status=200)
 

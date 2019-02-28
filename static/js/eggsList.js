@@ -1,3 +1,7 @@
+var IN_LOCATIONCODENAME;
+var IN_YMD;
+var CODENAME;
+
 $('#start_date').val(start_day);
 $('#end_date').val(end_day);
 fetch_data(start_day, end_day);
@@ -163,14 +167,6 @@ function setStepOneDataTable(args)
                         }
                     },
                     {
-                        extend: 'copy',
-                        className:'btn btn-light',
-                        text : '<i class="fas fa-copy fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    },
-                    {
                         extend: 'excel',
                         className:'btn btn-light',
                         text : '<i class="far fa-file-excel fa-lg"></i>',
@@ -194,6 +190,7 @@ function setStepTwoDataTable(args)
     releaseTable = args['table'].DataTable({
         "language": {searchPlaceholder: "제품명, 농장명"},
         "paging": false,
+
         "processing": true,
         "serverSide": true,
         "ajax": {
@@ -201,6 +198,7 @@ function setStepTwoDataTable(args)
             "type": "GET"
         },
         "responsive" : true,
+        "select": true,
         "columnDefs": [
             { targets: 3, className: "dt-body-right"  },
         ],
@@ -229,14 +227,6 @@ function setStepTwoDataTable(args)
                         }
                     },
                     {
-                        extend: 'copy',
-                        className:'btn btn-light',
-                        text : '<i class="fas fa-copy fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    },
-                    {
                         extend: 'excel',
                         className:'btn btn-light',
                         text : '<i class="far fa-file-excel fa-lg"></i>',
@@ -254,6 +244,91 @@ function setStepTwoDataTable(args)
 function setStepThreeDataTable(args)
 {
     eggReportTable = args['table'].DataTable({
+    	"footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
+            let numberFormat = $.fn.dataTable.render.number( ',').display;
+
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+
+            let pageTotal_previousStock = api
+                .column( 3, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_in = api
+                .column( 4, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_in_price = api
+                .column( 5, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_out = api
+                .column( 6, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_out_price = api
+                .column( 7, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_loss = api
+                .column( 8, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_insert = api
+                .column( 9, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_release = api
+                .column( 10, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_currentStock = api
+                .column( 11, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            $( api.column( 3 ).footer() ).html( numberFormat(pageTotal_previousStock));
+            $( api.column( 4 ).footer() ).html( numberFormat(pageTotal_in));
+            $( api.column( 5 ).footer() ).html( numberFormat(pageTotal_in_price) );
+            $( api.column( 6 ).footer() ).html( numberFormat(pageTotal_out) );
+            $( api.column( 7 ).footer() ).html( numberFormat(pageTotal_out_price));
+            $( api.column( 8 ).footer() ).html( numberFormat(pageTotal_loss));
+            $( api.column( 9 ).footer() ).html( numberFormat(pageTotal_insert) );
+            $( api.column( 10 ).footer() ).html( numberFormat(pageTotal_release) );
+            $( api.column( 11 ).footer() ).html( numberFormat(pageTotal_currentStock) );
+        },
         "language": {searchPlaceholder: "제품명, 메모"},
         "processing": true,
         "serverSide": true,
@@ -298,14 +373,6 @@ function setStepThreeDataTable(args)
                         }
                     },
                     {
-                        extend: 'copy',
-                        className:'btn btn-light',
-                        text : '<i class="fas fa-copy fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    },
-                    {
                         extend: 'excel',
                         className:'btn btn-light',
                         text : '<i class="far fa-file-excel fa-lg"></i>',
@@ -342,6 +409,9 @@ function setTypeButton(data)
 $(document).on('click', "#releaseEgg tbody tr", function()
 {
     let data = releaseTable.row($(this)).data();
+    IN_LOCATIONCODENAME = data['egg_in_locationCodeName'];
+    IN_YMD = data['egg_in_ymd'];
+    CODENAME = data['egg_codeName'];
     manualReleaseModal(data);
 });
 
@@ -352,7 +422,7 @@ function manualReleaseModal(data)
     $("#id_in_ymd").val(data['egg_in_ymd']);
     $("#id_fakeYmd").val("");
     $("#id_locationSale").val(null).trigger('change');
-    $("#id_in_locatoin").val(data['egg_in_locationCode']);
+    $("#id_in_location").val(data['egg_in_locationCode']);
     $('#id_count').val("").attr("max",data['totalCount']);
     $('#id_price').val("");
     $('#id_memo').val("");
@@ -360,7 +430,6 @@ function manualReleaseModal(data)
 }
 function editButtonClick(data)
 {
-    console.log(data);
     $('#modify_id_count').val(data['count']).removeAttr( "min" );
     $('#modify_id_price').val(data['price']);
     $('#modify_id_memo').val(data['memo']);
@@ -398,21 +467,21 @@ $( "#id_type" ).change(function() {
 function setNormalStyle()
 {
     $("#id_locationSale").val(null).trigger('change');
-    $("#id_locationSale").parent().hide("slow");
+    $("#id_locationSale").prop('required',false).parent().hide("slow");
     $("#releaseLocation").hide("slow");
 
     $("#releasePrice").hide("slow");
     $("#id_price").parent().hide("slow");
-    $("#id_price").val(null);
+    $("#id_price").val(null).prop('required',false);
 }
 
 function setSaleStyle()
 {
-    $("#id_locationSale").parent().show("slow");
+    $("#id_locationSale").prop('required',true).parent().show("slow");
     $("#releaseLocation").show("slow");
 
     $("#releasePrice").show("slow");
-    $("#id_price").parent().show("slow");
+    $("#id_price").prop('required',true).parent().show("slow");
 }
 
 $('.deleteAndEdit').on('submit', function (e)
@@ -547,4 +616,89 @@ $('#pricePerEa').click( function () {
         });
     }
 });
+
+$('#addItem').click( function (e) {
+    e.preventDefault();
+    if($('form')[0].checkValidity())
+    {
+        let newElement = $("#originTR").clone(true).removeAttr('id');
+        let fakeYmd = set_yyyymmdd(newElement.find(":input[name='fakeYmd']").val());
+        //공통
+        let type = $("#id_type option:selected");
+        let in_ymd = newElement.find(":input[name='in_ymd']");
+        let ymd = newElement.find(":input[name='ymd']").val(fakeYmd);
+        let productCode = newElement.find(":input[name='productCode']");
+        let in_location = newElement.find(":input[name='in_location']");
+        let count = newElement.find(":input[name='count']");
+        let memo = newElement.find(":input[name='memo']");
+        // 판매
+        let locationSaleCode = $("#id_locationSale option:selected").val();
+        let locationSaleCodeName = $("#id_locationSale option:selected").text();
+        let price = newElement.find(":input[name='price']");
+
+        items_DataTable.row.add([
+            in_ymd[0].outerHTML+
+            ymd[0].outerHTML+
+            productCode[0].outerHTML+
+            in_location[0].outerHTML+
+            IN_YMD,
+            `<input type="hidden" name="type" value=${type.val()}> ${type.val()}`,
+            IN_LOCATIONCODENAME,
+            CODENAME,
+            `<input type="hidden" name="count" value=${count.val()}> ${count.val()}`,
+            `<input type="hidden" name="locationSale" value=${locationSaleCode}> ${locationSaleCodeName}`,
+            `<input type="hidden" name="price" value=${price.val()}> ${price.val()}`,
+            `${ymd.val()}`,
+            `<input type="hidden" name="memo" value=${memo.val()}> ${memo.val()}`
+        ]).draw(false);
+         $(".everyModal").modal('hide');
+    }
+    else
+    {
+        alert('출고일자,수량을 입력해주세요, 판매 시 판매금액, 판매처 입력 필수');
+    }
+});
+
+$('#save').click( function (e) {
+    e.preventDefault();
+    let data = items_DataTable.$('input, select').serializeArray();
+    if(data.length > 0)
+    {
+        if (confirm("생산 중량(KG)을 입력하시겠습니까?"))
+        {
+            let amount = parseInt(prompt("생산 총 중량(KG)을 입력하세요"));
+            if(amount)
+            {
+                data.push({"name" : "amount", "value" : amount});
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        $.ajax({
+        url: '/eggs/release',
+        type: 'post',
+        data: data,
+        }).done(function(data) {
+            alert('완료');
+            $(".everyModal").modal('hide');
+            $('#stepTwo .datatable').DataTable().search($("input[type='search']").val()).draw();
+            items_DataTable.clear().draw();
+        }).fail(function() { alert('수정 에러 전산실로 문의바랍니다.'); });
+    }
+
+});
+
+$('#delete_item').click( function () {
+    items_DataTable.row('.selected').remove().draw( false );
+} );
+
+var items_DataTable = $('#items').DataTable( {
+    "paging": false,
+    "select": true,
+    "responsive" : true,
+    "info": false
+} );
 

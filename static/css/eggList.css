@@ -11,3 +11,8 @@
 .nav-fill .nav-link.active{
     border-top : 2px solid #673ab7;
 }
+
+.tab-content > .active
+{
+    display : flex;
+}

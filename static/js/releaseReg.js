@@ -135,7 +135,6 @@ $(document).on('click', ".datatable tbody tr", function()
 
 function manualReleaseModal(data)
 {
-    console.log(data);
     window.AMOUNT_KG = { "AMOUNT_KG" : data["amount_kg"]};
     $('#id_productId').val(data['productId']);
     $('#id_productYmd').val(data['productYmd']);
@@ -339,12 +338,12 @@ $('#orderRelease').on('submit', function (e)
     url = '/release/';
     for(var i=0; i<len; i++)
     {
+
         let count = $("#orderRelease tbody tr:eq("+i+")").find('.count').val();
         let ymd = $("#orderRelease tbody tr:eq("+i+")").find('input[name="ymd"]').val();
         if(ymd.length == 8 && count.length > 0)
         {
             var data = $("#orderRelease tbody tr:eq("+i+") :input").serialize();
-            console.log(data);
             var request = $.ajax({
             url: url,
             type: 'post',
@@ -356,7 +355,6 @@ $('#orderRelease').on('submit', function (e)
                 alert('수정 에러 전산실로 문의바랍니다.');
             });
         }
-
     }
 });
 
@@ -379,7 +377,6 @@ function setOrderReleaseTrModal(data, row)
                     <input type="hidden" name="storedLocationCode">
                     <input type="hidden" name="location">
                     <input type="hidden" name="type">
-                    <input type="hidden" name="ymd" class="datepicker">
                     <input type="hidden" name="price">
                     <input type="hidden" name="releaseOrder">
                     <input type="hidden" name="amount_kg">

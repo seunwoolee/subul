@@ -13,6 +13,7 @@ class ABS(Func):
 class EggCode(Code):
     type = models.CharField(max_length=255, null=True, blank=True)
     size = models.IntegerField(null=True, blank=True)
+    sorts = models.IntegerField(default=10)
 
     def __str__(self):
         return self.codeName + '(' + self.code + ')'
@@ -144,7 +145,7 @@ class Egg(Detail):
 
         count = queryset.count()
         if length != -1:
-            queryset = queryset.order_by(order_column)[start:start + length]
+            queryset = queryset.order_by(order_column, 'eggCode__type')[start:start + length]
         else:
             queryset = queryset.order_by(order_column)
         return {
@@ -316,3 +317,23 @@ class Egg(Detail):
     def getAmount(start_date, end_date):
         return Egg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(type__in=['입고', '생산']) \
             .aggregate(totalAmount=Sum('amount'))['totalAmount']
+
+    @staticmethod
+    def calculateAmount(amount: int, pks: str):
+        print(amount, pks)
+        amount_last = amount
+        arr = pks.split(',')
+        print(arr)
+        eggs = Egg.objects.filter(id__in=arr)
+        last_item = len(eggs) - 1
+        totalCount = Egg.objects.filter(id__in=arr).aggregate(Sum('count'))
+
+        for egg in eggs[:last_item]:
+            percent = egg.count / totalCount['count__sum']
+            egg.amount = round(percent * amount)
+            egg.save()
+            amount_last -= egg.amount
+
+        lastEgg = eggs.last()
+        lastEgg.amount = amount_last
+        lastEgg.save()

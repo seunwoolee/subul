@@ -1,12 +1,3 @@
-/**
- * --------------------------------------------------------------------------
- * CoreUI Pro Boostrap Admin Template (2.1.1): datatables.js
- * Licensed under MIT (https://coreui.io/license)
- * --------------------------------------------------------------------------
- */
-
-
-
 SEQ = 2;
 function cloneMore(selector, prefix) {
 

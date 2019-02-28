@@ -125,65 +125,106 @@
                 <div class="tab-content">
 
                     <div class="tab-pane active animated fadeIn" id="stepOne" role="tabpanel">
-                        <table class="table table-striped table-bordered datatable">
-                            <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>구분</th>
-                                <th>입고일</th>
-                                <th>원란종류</th>
-                                <th style="white-space: nowrap;">구매거래처</th>
-                                <th style="white-space: nowrap;">판매처명</th>
-                                <th>출고일</th>
-                                <th>수량</th>
-                                <th>중량(KG)</th>
-                                <th>구매금액</th>
-                                <th>판매금액</th>
-                                <th>단가</th>
-                                <th>메모</th>
-                                <th>Actions</th>
-                            </tr>
-                            </thead>
+                        <div class="col-md-12">
+                            <table class="table table-striped table-bordered datatable">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>구분</th>
+                                    <th>입고일</th>
+                                    <th>원란종류</th>
+                                    <th style="white-space: nowrap;">구매거래처</th>
+                                    <th style="white-space: nowrap;">판매처명</th>
+                                    <th>출고일</th>
+                                    <th>수량</th>
+                                    <th>중량(KG)</th>
+                                    <th>구매금액</th>
+                                    <th>판매금액</th>
+                                    <th>단가</th>
+                                    <th>메모</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
 
-                            <tfoot>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                            </tfoot>
+                                <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                                </tfoot>
 
-                            <tbody>
-                            </tbody>
-                        </table>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
-                    <div class="row tab-pane animated fadeIn " id="stepTwo" role="tabpanel">
-                        <div class="col-md-12">
-                            <table class="table table-striped table-bordered datatable" id="releaseEgg"
+                    <div class="row justify-content-between tab-pane animated fadeIn " id="stepTwo" role="tabpanel">
+                        <div class="col-md-4">
+                            <table class="table table-hover table-striped table-bordered datatable" id="releaseEgg"
                                    style="width:100% !important;">
                                 <thead>
                                 <tr>
                                     <th>거래처명</th>
                                     <th>제품명</th>
-                                    <th>생산일</th>
+                                    <th>입고일</th>
                                     <th>재고수량</th>
                                 </tr>
                                 </thead>
+
                                 <tbody>
                                 </tbody>
+
                             </table>
+                        </div><!-- / .col-->
+                        <div class="col-md-7">
+                            <table class="table table-bordered table-hover " id="items" style="width:100% !important;">
+                                <thead>
+                                <tr>
+                                    <th>입고일</th>
+                                    <th>구분</th>
+                                    <th>구매처</th>
+                                    <th>원란명</th>
+                                    <th>수량</th>
+                                    <th>판매처</th>
+                                    <th>금액</th>
+                                    <th>출고일</th>
+                                    <th>메모</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                </tbody>
+
+                                <!--<tfoot>-->
+                                <!--<tr>-->
+                                    <!--<th></th>-->
+                                    <!--<th></th>-->
+                                    <!--<th></th>-->
+                                    <!--<th></th>-->
+                                    <!--<th></th>-->
+                                    <!--<th></th>-->
+                                    <!--<th></th>-->
+                                    <!--<th></th>-->
+                                    <!--<th></th>-->
+                                <!--</tr>-->
+                                <!--</tfoot>-->
+
+                            </table>
+                            <input type="button" name="submit" value="저장" class="btn btn-dark btn-sm" id="save"/>
+                            <input type="button" name="submit" value="선택삭제" class="btn btn-danger btn-sm" id="delete_item"/>
                         </div><!-- / .col-->
                     </div><!-- / .row-->
 
@@ -208,8 +249,26 @@
                                 </tr>
                                 </thead>
 
+                                <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                                </tfoot>
+
                                 <tbody>
                                 </tbody>
+
                             </table>
                         </div><!-- / .col-->
                     </div><!-- / .row-->
@@ -243,12 +302,13 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr class="forms-row">
+                        <tr class="forms-row" id="originTR">
                             {% include 'includes/modal/eggsReleaseForm.html' %}
                         </tr>
                         </tbody>
                     </table>
-                    <button type="submit" class="btn btn-success">OK</button>
+                    <!--<button type="submit" class="btn btn-success">OK</button>-->
+                    <button id="addItem" class="btn btn-success">OK</button>
                     <button type="button" data-dismiss="modal" class="btn">Cancel</button>
                 </form>
             </div>
