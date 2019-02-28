@@ -145,7 +145,7 @@ class Egg(Detail):
 
         count = queryset.count()
         if length != -1:
-            queryset = queryset.order_by(order_column, 'eggCode__type')[start:start + length]
+            queryset = queryset.order_by(order_column, 'eggCode__sorts')[start:start + length]
         else:
             queryset = queryset.order_by(order_column)
         return {

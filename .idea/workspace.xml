@@ -70,7 +70,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="eggsList.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="eggsList.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/js/eggsList.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="587">
@@ -91,11 +91,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/eggs/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="413">
-              <caret line="334" column="37" lean-forward="true" selection-start-line="334" selection-start-column="37" selection-end-line="334" selection-end-column="37" />
+            <state relative-caret-position="500">
+              <caret line="147" column="94" lean-forward="true" selection-start-line="147" selection-start-column="94" selection-end-line="147" selection-end-column="94" />
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
               </folding>
@@ -254,13 +254,13 @@
         <option value="$PROJECT_DIR$/eggs/forms.py" />
         <option value="$PROJECT_DIR$/static/css/style.css" />
         <option value="$PROJECT_DIR$/templates/eggs/eggsList.html" />
-        <option value="$PROJECT_DIR$/eggs/models.py" />
         <option value="$PROJECT_DIR$/eggs/views.py" />
         <option value="$PROJECT_DIR$/static/js/eggsList.js" />
+        <option value="$PROJECT_DIR$/eggs/models.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-98" />
     <option name="y" value="189" />
     <option name="width" value="1936" />
@@ -631,17 +631,17 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49842766" visible="true" weight="0.25" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49842766" visible="true" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3284055" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50208336" side_tool="true" weight="0.32769555" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32875264" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="8" sideWeight="0.49791667" visible="true" weight="0.29598308" />
+      <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.49791667" visible="true" weight="0.29598308" />
       <window_info id="Favorites" order="2" sideWeight="0.5015723" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39957717" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -983,16 +983,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/eggs/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="413">
-          <caret line="334" column="37" lean-forward="true" selection-start-line="334" selection-start-column="37" selection-end-line="334" selection-end-column="37" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/eggs/views.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="500">
@@ -1007,6 +997,16 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="587">
           <caret line="679" column="16" lean-forward="true" selection-start-line="679" selection-start-column="16" selection-end-line="679" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eggs/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="500">
+          <caret line="147" column="94" lean-forward="true" selection-start-line="147" selection-start-column="94" selection-end-line="147" selection-end-column="94" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
