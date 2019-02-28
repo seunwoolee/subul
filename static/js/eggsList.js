@@ -89,7 +89,7 @@ function setStepOneDataTable(args)
             $( api.column( 10 ).footer() ).html( numberFormat(pageTotal_out_price) );
         },
         "language": {searchPlaceholder: "판매처명, 메모"},
-        "order": [[ 2, "desc" ]],
+        "order": [[ 2, "asc" ]],
         "select": true,
         "processing": true,
         "serverSide": true,

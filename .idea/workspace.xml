@@ -70,20 +70,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="eggsList.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="eggsList.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/static/js/eggsList.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="487">
-              <caret line="546" column="17" lean-forward="true" selection-start-line="546" selection-start-column="17" selection-end-line="546" selection-end-column="17" />
+            <state relative-caret-position="332">
+              <caret line="95" column="17" lean-forward="true" selection-start-line="95" selection-start-column="17" selection-end-line="95" selection-end-column="17" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="orderReg.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="orderReg.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/js/orderReg.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="364" selection-start-line="364" selection-end-line="364" />
+            <state relative-caret-position="325">
+              <caret line="359" column="13" lean-forward="true" selection-start-line="359" selection-start-column="13" selection-end-line="359" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -163,7 +163,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>tab-</find>
       <find>setDatePicker</find>
       <find>insertInputValue</find>
       <find>setOrderReleaseTrModal</find>
@@ -193,6 +192,7 @@
       <find>order</find>
       <find>sort</find>
       <find>specialTag</find>
+      <find>desc</find>
     </findStrings>
     <replaceStrings>
       <replace>,</replace>
@@ -282,8 +282,8 @@
         <option value="$PROJECT_DIR$/templates/eggs/eggsList.html" />
         <option value="$PROJECT_DIR$/eggs/views.py" />
         <option value="$PROJECT_DIR$/eggs/models.py" />
-        <option value="$PROJECT_DIR$/static/js/eggsList.js" />
         <option value="$PROJECT_DIR$/static/js/orderReg.js" />
+        <option value="$PROJECT_DIR$/static/js/eggsList.js" />
       </list>
     </option>
   </component>
@@ -1016,13 +1016,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/eggsList.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="487">
-          <caret line="546" column="17" lean-forward="true" selection-start-line="546" selection-start-column="17" selection-end-line="546" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/eggs/eggsList.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="55">
@@ -1032,8 +1025,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/static/js/orderReg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="364" selection-start-line="364" selection-end-line="364" />
+        <state relative-caret-position="325">
+          <caret line="359" column="13" lean-forward="true" selection-start-line="359" selection-start-column="13" selection-end-line="359" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/js/eggsList.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="332">
+          <caret line="95" column="17" lean-forward="true" selection-start-line="95" selection-start-column="17" selection-end-line="95" selection-end-column="17" />
         </state>
       </provider>
     </entry>
