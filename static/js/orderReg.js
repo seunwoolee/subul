@@ -354,7 +354,14 @@ $( ".specialTag" ).change(function() {
         {
             window.AMOUNT_KG = {"parentTR" : parentTR, "AMOUNT_KG" : element["amount_kg"]};
             window.AMOUNT_KG['AMOUNT_KG'] = element["amount_kg"];
-            (specialTag == "일반") ? price.val(element["price"]) : price.val(element["specialPrice"]);
+            if(specialTag == "")
+            {
+                price.val(element["price"]);
+            }
+            else
+            {
+                price.val(element["specialPrice"]);
+            }
         }
     })
 });
