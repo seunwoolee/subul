@@ -106,7 +106,7 @@ class ReleaseReg(LoginRequiredMixin, View):
         ProductAdmin.objects.create(
             product_id=Product.objects.get(id=data['productId']),
             count=-int(data['count']),
-            amount=-float(data['amount']),
+            amount=-Decimal(data['amount']),
             ymd=data['ymd'],
             location=releaseStoreLocation,
             releaseType=data['type'],
@@ -117,7 +117,7 @@ class ReleaseReg(LoginRequiredMixin, View):
             ProductAdmin.objects.create(
                 product_id=Product.objects.get(id=data['productId']),
                 count=int(data['count']),
-                amount=float(data['amount']),
+                amount=Decimal(data['amount']),
                 ymd=data['ymd'],
                 location=releaseLocation,
                 releaseType='생성',

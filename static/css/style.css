@@ -12,7 +12,6 @@
     padding : 0.45rem 0.45rem 0.45rem 1.5rem !important;
 }
 
-
 .datatable
 {
     width:100% !important;
@@ -50,6 +49,11 @@
 .tab-content .tab-pane {
     overflow-x : scroll;
 }
+
+@media only screen and (min-width: 800px) {
+
+}
+
 /* Mobile Card View Form */
 
 @media only screen and (max-width: 800px) {

@@ -93,7 +93,7 @@ for i, row in enumerate(cursor):
     ProductAdmin.objects.create(
         product_id=product,
         count=-int(count),
-        amount=-float(amount),
+        amount=-Decimal(amount),
         ymd=ymd,
         location=fromLocation_instance,
         releaseType=type,
