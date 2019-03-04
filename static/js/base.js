@@ -72,6 +72,7 @@ var start_day = minusSevenDate.yyyymmdd();
 var end_day = date.yyyymmdd();
 var plusThree_day = plusThreeDate.yyyymmdd();
 var minusFifteen_day = set_yyyymmdd(minusFifteenDate.yyyymmdd());
+
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })

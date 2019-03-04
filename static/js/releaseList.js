@@ -31,6 +31,8 @@ fetch_data(start_day, end_day);
      groupByFilter = groupByFilter.substring(1);
      let releaseTypeFilter = $('.type_filter #releaseType select').val();
      let productTypeFilter = $('.type_filter #productType select').val();
+     let productYmdFilter = $('.type_filter #productYmd input').val();
+    if(productYmdFilter){ productYmdFilter = set_yyyymmdd(productYmdFilter); }
      let checkBoxFilter = $('.type_filter input:checkbox:checked')
                                 .not('#moneyMark').map(function(){ return $(this).val(); }).get().join(',');
      let table = $('#'+groupByFilter +' .datatable');
@@ -39,6 +41,7 @@ fetch_data(start_day, end_day);
             'end_date' : end_date,
             'releaseTypeFilter':releaseTypeFilter,
             'productTypeFilter':productTypeFilter,
+            'productYmdFilter':productYmdFilter,
             'checkBoxFilter':checkBoxFilter,
             'location_manager':window.LOCATION_MANAGER,
             'groupByFilter':groupByFilter };
@@ -131,6 +134,7 @@ function setStepOneDataTable(args)
                 end_date:args['end_date'],
                 releaseTypeFilter:args['releaseTypeFilter'],
                 productTypeFilter:args['productTypeFilter'],
+                productYmdFilter:args['productYmdFilter'],
                 checkBoxFilter:args['checkBoxFilter'],
                 location_manager:args['location_manager'],
                 groupByFilter:args['groupByFilter']
@@ -150,13 +154,13 @@ function setStepOneDataTable(args)
             { targets: 13, className: "dt-body-right" },
         ],
         "columns": [
-            {'data': 'id'},
-            {'data': 'ymd'},
             {'data': 'releaseLocationName'},
-            {'data': 'contentType'},
-            {"data": "specialTag", "render" : function(data, type, row, meta){return setSpecialTagButton(data);}},
-            {'data': 'code'},
+            {"data": "releaseStoreLocationCodeName"},
+            {'data': 'ymd'},
             {'data': 'codeName'},
+            {"data": "productYmd"},
+            {"data": "type" , "render": function(data, type, row, meta){return setTypeButton(data);}},
+            {"data": "specialTag", "render" : function(data, type, row, meta){return setSpecialTagButton(data);}},
             {'data': 'amount' , "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {'data': 'count'},
             {'data': 'kgPrice' , "render": $.fn.dataTable.render.number( ',')},
@@ -164,15 +168,15 @@ function setStepOneDataTable(args)
             {'data': 'supplyPrice' , "render": $.fn.dataTable.render.number( ',')},
             {'data': 'releaseVat' , "render": $.fn.dataTable.render.number( ',')},
             {"data": "eaPrice" , "render": $.fn.dataTable.render.number( ',')},
-            {"data": "productYmd"},
-            {"data": "type" , "render": function(data, type, row, meta){return setTypeButton(data);}},
-            {"data": "releaseStoreLocationCodeName"},
+            {'data': 'contentType'},
             {"data": "orderMemo"},
             {"data": "memo"},
             {"data": "locationType"},
             {"data": "locationManagerName"},
             {'data': 'releaseSetProduct'},
             {'data': 'releaseSetProductCodeName'},
+            {'data': 'id'},
+            {'data': 'code'},
             {"data": 'type', "render": function(data, type, row, meta){
                     if(SUPERUSER)
                     {
@@ -220,10 +224,10 @@ function setStepOneDataTable(args)
                         }
                     }],
         lengthMenu : [[30, 50, -1], [30, 50, "All"]],
-        rowCallback: function(row, data, index){
-             $('td:eq(1)', row).html( set_yyyy_mm_dd(data.ymd) );
-             $('td:eq(14)', row).html( set_yyyy_mm_dd(data.productYmd) );
-        }
+//        rowCallback: function(row, data, index){
+//             $('td:eq(1)', row).html( set_yyyy_mm_dd(data.ymd) );
+//             $('td:eq(14)', row).html( set_yyyy_mm_dd(data.productYmd) );
+//        }
     });
 }
 
@@ -967,5 +971,17 @@ $('#locationManagerSearch').click(function(){
     else
     {
        alert("날짜를 모두 입력해주세요");
+    }
+});
+
+$('.nav-item a').click(function(){ // 탭별 style 주기
+    let nav_item_id = $(this).attr('href');
+    if (nav_item_id == "#stepOne")
+    {
+        $('.type_filter #productYmd').show("slow");
+    }
+    else
+    {
+        $('.type_filter #productYmd').hide("slow");
     }
 });

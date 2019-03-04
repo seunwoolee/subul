@@ -316,8 +316,15 @@ $('form').on('submit', function (e)
         alert('완료');
         $('.datatable').DataTable().search($("input[type='search']").val()).draw();
         $(".everyModal").modal('hide');
-    }).fail(function() {
-        alert('수정 에러 전산실로 문의바랍니다.');
+    }).fail(function(e) {
+        if(e.status == 403)
+        {
+            alert('재고를 확인해 주세요');
+        }
+        else
+        {
+            alert('수정 에러 전산실로 문의바랍니다.');
+        }
     });
 });
 

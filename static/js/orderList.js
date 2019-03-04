@@ -20,7 +20,7 @@ fetch_data(end_day, plusThree_day);
 
     let gubunFilter = $('#tabnavigator a.nav-link.active').attr('href');
     gubunFilter = gubunFilter.substring(1);
-    let eggTypeFilter = $('.type_filter #releaseType select').val();
+//    let eggTypeFilter = $('.type_filter #releaseType select').val();
     let checkBoxFilter = $('.type_filter input:checkbox:checked').not('#moneyMark')
                                 .map(function(){ return $(this).val(); }).get().join(',');
     let table = $('#'+gubunFilter +' .datatable');
@@ -28,7 +28,6 @@ fetch_data(end_day, plusThree_day);
             'table' : table,
             'start_date' : start_date,
             'end_date' : end_date,
-            'eggTypeFilter':eggTypeFilter,
             'checkBoxFilter':checkBoxFilter,
             'location_manager':window.LOCATION_MANAGER,
             'gubunFilter':gubunFilter };
@@ -371,7 +370,6 @@ function setStepThreeDataTable(args)
             "data": {
                 start_date:args['start_date'],
                 end_date:args['end_date'],
-                eggTypeFilter:args['eggTypeFilter'],
                 gubunFilter:args['gubunFilter']
             }
         },

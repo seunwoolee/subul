@@ -59,6 +59,7 @@ class Release(Detail):
         order = kwargs.get('order[0][dir]', None)[0]
         releaseTypeFilter = kwargs.get('releaseTypeFilter', None)[0]
         productTypeFilter = kwargs.get('productTypeFilter', None)[0]
+        productYmdFilter = kwargs.get('productYmdFilter', [''])[0]
         groupByFilter = kwargs.get('groupByFilter', None)[0]
         checkBoxFilter = kwargs.get('checkBoxFilter', None)[0]
         location_manager = kwargs.get('location_manager', None)[0]
@@ -67,13 +68,13 @@ class Release(Detail):
 
         if groupByFilter == 'stepOne':
             RELEASE_COLUMN_CHOICES = Choices(
-                ('0', 'id'),
-                ('1', 'ymd'),
-                ('2', 'releaseLocationName'),
-                ('3', 'contentType'),
-                ('4', 'specialTag'),
-                ('5', 'code'),
-                ('6', 'codeName'),
+                ('0', 'releaseLocationName'),
+                ('1', 'releaseStoreLocationCodeName'),
+                ('2', 'ymd'),
+                ('3', 'codeName'),
+                ('4', 'productYmd'),
+                ('5', 'type'),
+                ('6', 'specialTag'),
                 ('7', 'amount'),
                 ('8', 'count'),
                 ('9', 'kgPrice'),
@@ -81,15 +82,15 @@ class Release(Detail):
                 ('11', 'supplyPrice'),
                 ('12', 'releaseVat'),
                 ('13', 'eaPrice'),
-                ('14', 'productYmd'),
-                ('15', 'type'),
-                ('16', 'releaseStoreLocationCodeName'),
-                ('17', 'orderMemo'),
-                ('18', 'memo'),
-                ('19', 'locationType'),
-                ('20', 'locationManagerName'),
-                ('21', 'releaseSetProduct'),
-                ('22', 'releaseSetProductCodeName'),
+                ('14', 'contentType'),
+                ('15', 'orderMemo'),
+                ('16', 'memo'),
+                ('17', 'locationType'),
+                ('18', 'locationManagerName'),
+                ('19', 'releaseSetProduct'),
+                ('20', 'releaseSetProductCodeName'),
+                ('21', 'id'),
+                ('22', 'code'),
             )
             order_column = RELEASE_COLUMN_CHOICES[order_column]
             queryset = Release.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
@@ -413,6 +414,9 @@ class Release(Detail):
 
         if productTypeFilter != '전체':
             queryset = queryset.filter(product_id__productCode__type=productTypeFilter)
+
+        if groupByFilter == 'stepOne' and productYmdFilter:
+            queryset = queryset.filter(productYmd=productYmdFilter)
 
         if checkBoxFilter:
             queryset = queryset.filter(releaseLocationCode__location_character__in=checkBoxFilter)

@@ -42,6 +42,7 @@ function order_fetch_data(start_date='', end_date='')
     end_date = set_yyyymmdd(end_date);
     $('#orderDatatable').DataTable().destroy();
     orderTable = $('#orderDatatable').DataTable({
+        "responsive" : true,
         "paging": false,
         "processing": true,
         "serverSide": true,

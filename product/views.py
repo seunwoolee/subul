@@ -169,7 +169,6 @@ class ProductRecall(View):
                 memo=memo,
                 productCode=product.productCode
             )
-            # productAdmin = ProductAdmin.objects.filter(product_id=product).filter(releaseType='생성').first()
             ProductAdmin.objects.create(
                 product_id=product,
                 amount=-amount,
@@ -207,7 +206,7 @@ class ProductRecall(View):
             )
             return HttpResponse(status=200)
         else:
-            return HttpResponse(status=400)
+            return HttpResponse(status=403)
 
 
 class ProductReport(View):
@@ -382,6 +381,10 @@ class ProductReport(View):
             .aggregate(Sum('report_product_amount'))['report_product_amount__sum']
         total_move_amount = productAdmin.filter(report_sort_type='이동') \
             .aggregate(Sum('report_product_amount'))['report_product_amount__sum']
+        if total_amount is None:
+            total_amount = 0
+        # if total_move_amount is None:
+        #     total_move_amount = 0
         if total_move_amount: total_amount += total_move_amount
         if not total_rawTank: total_rawTank = ' '
         if not total_amount: total_amount = ' '

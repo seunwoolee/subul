@@ -2,19 +2,31 @@
 
 .dt-body-right {text-align: right;}
 
-#items td, #orderDatatable td, .datatable td
+#items td,
+#orderDatatable td,
+.datatable td,
+#items th,
+#orderDatatable th,
+.datatable th
 {
     padding : 0.45rem !important;
 }
 
-#items td, #orderDatatable td, .datatable td:first-child
+
+table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
+ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>th:first-child:before
 {
-    padding : 0.45rem 0.45rem 0.45rem 1.5rem !important;
+    left : -10px !important;
 }
 
 .datatable
 {
     width:100% !important;
+}
+
+.dataTable > thead > tr > th[class*="sort"]:after,
+.dataTable > thead > tr > th[class*="sort"]:before{
+    content: "" !important;
 }
 
 .table th{
@@ -49,11 +61,6 @@
 .tab-content .tab-pane {
     overflow-x : scroll;
 }
-
-@media only screen and (min-width: 800px) {
-
-}
-
 /* Mobile Card View Form */
 
 @media only screen and (max-width: 800px) {
