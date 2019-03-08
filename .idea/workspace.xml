@@ -143,13 +143,37 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/order/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="525">
-              <caret line="51" selection-start-line="51" selection-end-line="51" />
+            <state relative-caret-position="468">
+              <caret line="47" selection-start-line="47" selection-end-line="56" selection-end-column="40" />
               <folding>
                 <element signature="e#0#45#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/release/views.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="667">
+              <caret line="56" column="40" lean-forward="true" selection-start-line="56" selection-start-column="40" selection-end-line="56" selection-end-column="40" />
+              <folding>
+                <element signature="e#0#27#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/eggs/views.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="642">
+              <caret line="174" column="24" lean-forward="true" selection-start-line="174" selection-start-column="24" selection-end-line="174" selection-end-column="24" />
+              <folding>
+                <element signature="e#0#41#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -279,8 +303,6 @@
         <option value="$PROJECT_DIR$/templates/invoice/주문거래명세표.html" />
         <option value="$PROJECT_DIR$/order/templatetags/custom.py" />
         <option value="$PROJECT_DIR$/templates/invoice/원란거래명세표.html" />
-        <option value="$PROJECT_DIR$/eggs/views.py" />
-        <option value="$PROJECT_DIR$/release/views.py" />
         <option value="$PROJECT_DIR$/templates/invoice/출고거래명세표.html" />
         <option value="$PROJECT_DIR$/packing/forms.py" />
         <option value="$PROJECT_DIR$/product/forms.py" />
@@ -288,6 +310,8 @@
         <option value="$PROJECT_DIR$/product/codeForms.py" />
         <option value="$PROJECT_DIR$/eggs/forms.py" />
         <option value="$PROJECT_DIR$/order/views.py" />
+        <option value="$PROJECT_DIR$/release/views.py" />
+        <option value="$PROJECT_DIR$/eggs/views.py" />
       </list>
     </option>
   </component>
@@ -969,26 +993,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/eggs/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="169" selection-start-line="169" selection-end-line="178" selection-end-column="40" />
-          <folding>
-            <element signature="e#0#41#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/release/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1000">
-          <caret line="64" lean-forward="true" selection-start-line="64" selection-end-line="64" />
-          <folding>
-            <element signature="e#0#27#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/invoice/주문거래명세표.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="142">
@@ -1065,10 +1069,30 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/order/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="51" selection-start-line="51" selection-end-line="51" />
+        <state relative-caret-position="468">
+          <caret line="47" selection-start-line="47" selection-end-line="56" selection-end-column="40" />
           <folding>
             <element signature="e#0#45#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/release/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="667">
+          <caret line="56" column="40" lean-forward="true" selection-start-line="56" selection-start-column="40" selection-end-line="56" selection-end-column="40" />
+          <folding>
+            <element signature="e#0#27#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eggs/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="642">
+          <caret line="174" column="24" lean-forward="true" selection-start-line="174" selection-start-column="24" selection-end-line="174" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
           </folding>
         </state>
       </provider>
