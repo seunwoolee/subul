@@ -48,10 +48,10 @@ class GeneratePDF(View):
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
             filename = "거래명세표_{}_{}.pdf".format(yyyymmdd, location.codeName)
-            content = "inline; filename={}".format(filename).encode('utf-8')
+            content = "inline; filename={}".format(filename).encode('utf-8').strip()
             download = request.GET.get("download")
             if download:
-                content = "attachment; filename={}".format(filename)
+                content = "attachment; filename*=UTF-8{}".format(filename)
             response['Content-Disposition'] = content
             return response
         return HttpResponse("Not found")

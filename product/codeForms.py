@@ -18,8 +18,8 @@ class ProductUnitPricesForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(ProductUnitPricesForm, self).__init__(*args, **kwargs)
         self.fields['location'] = forms.ChoiceField(widget=Select2Widget,
-                                                    choices=Location.objects.values_list('code', 'codeName')
-                                                    .filter(type='05').filter(delete_state='N').order_by('code'))
+                                                    choices=[('', '')] + list(Location.objects.values_list('code', 'codeName')
+                                                    .filter(type='05').filter(delete_state='N').order_by('code')))
 
 
 class SetProductMatchForm(forms.Form):
@@ -38,5 +38,5 @@ class SetProductMatchForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(SetProductMatchForm, self).__init__(*args, **kwargs)
         self.fields['location'] = forms.ChoiceField(widget=Select2Widget,
-                                                    choices=Location.objects.values_list('code', 'codeName')
-                                                    .filter(type='05').filter(delete_state='N').order_by('code'))
+                                                    choices=[('', '')] + list(Location.objects.values_list('code', 'codeName')
+                                                    .filter(type='05').filter(delete_state='N').order_by('code')))

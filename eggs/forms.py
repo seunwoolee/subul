@@ -37,9 +37,12 @@ class EggForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(EggForm, self).__init__(*args, **kwargs)
         self.fields['location'] = forms.ChoiceField(widget=Select2Widget,
-                                                    choices=[('', '')] + list(Location.objects.values_list('code', 'codeName')
-                                                    .filter(type='03').filter(delete_state='N').order_by('code')))
+                                                    choices=[('', '')] + list(
+                                                        Location.objects.values_list('code', 'codeName')
+                                                        .filter(type='03').filter(delete_state='N').order_by('code')))
         self.fields['product'] = forms.ChoiceField(widget=Select2Widget,
-                                                   choices=[('', '')] + list(EggCode.objects.values_list('code', 'codeName')))
+                                                   choices=[('', '')] + list(
+                                                       EggCode.objects.values_list('code', 'codeName')))
+
 
 EggFormSet = formset_factory(EggForm)
