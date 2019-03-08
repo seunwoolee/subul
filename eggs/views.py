@@ -121,20 +121,6 @@ class EggCalculateAmount(View):
         amount = int(data['amount'])
         pks = data['pks']
         Egg.calculateAmount(amount, pks)
-        # arr = pks.split(',')
-        # eggs = Egg.objects.filter(id__in=arr)
-        # last_item = len(eggs) - 1
-        # totalCount = Egg.objects.filter(id__in=arr).aggregate(Sum('count'))
-        #
-        # for egg in eggs[:last_item]:
-        #     percent = egg.count / totalCount['count__sum']
-        #     egg.amount = round(percent * amount)
-        #     egg.save()
-        #     amount_last -= egg.amount
-        #
-        # lastEgg = eggs.last()
-        # lastEgg.amount = amount_last
-        # lastEgg.save()
         return HttpResponse(status=200)
 
 
@@ -183,11 +169,11 @@ class GeneratePDF(View):
         pdf = render_to_pdf('invoice/원란거래명세표.html', context_dict)
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
-            filename = "Invoice%s.pdf" % ("")
-            content = "inline; filename='%s'" % (filename)
+            filename = "거래명세표_{}_{}.pdf".format(yyyymmdd, location.codeName)
+            content = "inline; filename={}".format(filename).encode('utf-8')
             download = request.GET.get("download")
             if download:
-                content = "attachment; filename='%s'" % (filename)
+                content = "attachment; filename={}".format(filename)
             response['Content-Disposition'] = content
             return response
         return HttpResponse("Not found")

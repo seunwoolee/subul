@@ -30,7 +30,7 @@
                         <div class="form-check form-check-inline" id="location">
                             <div class="input-group mb-2 mr-sm-2 ">
                                 <div class="input-group-prepend">
-                                    <div class="input-group-text"><i class="fas fa-sort"></i></div>
+                                    <div class="input-group-text"><i class="far fa-building"></i></div>
                                 </div>
                                 {{ productUnitPricesForm.location }}
                             </div>
@@ -38,7 +38,7 @@
                         <div class="form-check form-check-inline" id="setProduct">
                             <div class="input-group mb-2 mr-sm-2 ">
                                 <div class="input-group-prepend">
-                                    <div class="input-group-text"><i class="far fa-building"></i></div>
+                                    <div class="input-group-text"><i class="fas fa-sort"></i></div>
                                 </div>
                                 {{ productUnitPricesForm.setProduct }}
                             </div>
@@ -83,7 +83,8 @@
             </div>
             <div class="modal-body">
                 <form role="form" class="create">
-                    {{ productUnitPricesForm.product }}
+                    {{ productUnitPricesForm.locationCode }}
+                    {{ productUnitPricesForm.setProductCode }}
                     {% include 'includes/modal/setProductMatchsCreateForm.html' %}
                     <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="post"/>
                     <button type="submit" class="btn btn-success">OK</button>

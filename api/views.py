@@ -523,21 +523,25 @@ class SetProductMatchsAPIView(APIView):
         except Exception as e:
             return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
 
-    # def post(self, request):
-    #     location_instance = Location.objects.get(code=request.data['locationCode'])
-    #     product_instance = ProductCode.objects.get(code=request.data['productCode'])
-    #     specialPrice = request.data['specialPrice']
-    #     if not specialPrice: specialPrice=0
-    #     if not ProductUnitPrice.objects.filter(locationCode=location_instance).filter(productCode=product_instance):
-    #         ProductUnitPrice.objects.create(
-    #             locationCode=location_instance,
-    #             productCode=product_instance,
-    #             price=request.data['price'],
-    #             specialPrice=specialPrice
-    #         )
-    #         return Response(status=status.HTTP_201_CREATED, template_name=None, content_type=None)
-    #     else:
-    #         return Response(status=status.HTTP_400_BAD_REQUEST, template_name=None, content_type=None)
+    def post(self, request):
+        location_instance = Location.objects.get(code=request.data['locationCode'])
+        product_instance = ProductCode.objects.get(code=request.data['product'])
+        setProduct_instance = SetProductCode.objects.get(code=request.data['setProductCode'])
+        print(product_instance, setProduct_instance)
+        count = int(request.data['count'])
+        price = int(request.data['price'])
+        if not SetProductMatch.objects.filter(saleLocation=location_instance)\
+                .filter(productCode=product_instance).filter(setProductCode=setProduct_instance) :
+            SetProductMatch.objects.create(
+                saleLocation=location_instance,
+                productCode=product_instance,
+                setProductCode=setProduct_instance,
+                price=price,
+                count=count
+            )
+            return Response(status=status.HTTP_201_CREATED, template_name=None, content_type=None)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST, template_name=None, content_type=None)
 
 
 class SetProductMatchsUpdate(generics.RetrieveUpdateDestroyAPIView):

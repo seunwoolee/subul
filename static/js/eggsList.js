@@ -417,6 +417,7 @@ $(document).on('click', "#releaseEgg tbody tr", function()
 
 function manualReleaseModal(data)
 {
+    console.log(data);
     $("#id_type").val("생산").change();
     $("#id_productCode").val(data['egg_code']);
     $("#id_in_ymd").val(data['egg_in_ymd']);
@@ -625,16 +626,16 @@ $('#addItem').click( function (e) {
         let fakeYmd = set_yyyymmdd(newElement.find(":input[name='fakeYmd']").val());
         //공통
         let type = $("#id_type option:selected");
-        let in_ymd = newElement.find(":input[name='in_ymd']");
-        let ymd = newElement.find(":input[name='ymd']").val(fakeYmd);
-        let productCode = newElement.find(":input[name='productCode']");
-        let in_location = newElement.find(":input[name='in_location']");
-        let count = newElement.find(":input[name='count']");
-        let memo = newElement.find(":input[name='memo']");
+        let in_ymd = newElement.find(":input[name='in_ymd']").removeAttr('id');
+        let ymd = newElement.find(":input[name='ymd']").val(fakeYmd).removeAttr('id');
+        let productCode = newElement.find(":input[name='productCode']").removeAttr('id');
+        let in_location = newElement.find(":input[name='in_location']").removeAttr('id');
+        let count = newElement.find(":input[name='count']").removeAttr('id');
+        let memo = newElement.find(":input[name='memo']").removeAttr('id');
         // 판매
         let locationSaleCode = $("#id_locationSale option:selected").val();
         let locationSaleCodeName = $("#id_locationSale option:selected").text();
-        let price = newElement.find(":input[name='price']");
+        let price = newElement.find(":input[name='price']").removeAttr('id');
 
         items_DataTable.row.add([
             in_ymd[0].outerHTML+
@@ -699,6 +700,7 @@ var items_DataTable = $('#items').DataTable( {
     "paging": false,
     "select": true,
     "responsive" : true,
-    "info": false
+    "info": false,
+    "sort": false
 } );
 

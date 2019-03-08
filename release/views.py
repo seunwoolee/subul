@@ -47,11 +47,11 @@ class GeneratePDF(View):
         pdf = render_to_pdf('invoice/출고거래명세표.html', context_dict)
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
-            filename = "Invoice%s.pdf" % ("")
-            content = "inline; filename='%s'" % (filename)
+            filename = "거래명세표_{}_{}.pdf".format(yyyymmdd, location.codeName)
+            content = "inline; filename={}".format(filename).encode('utf-8')
             download = request.GET.get("download")
             if download:
-                content = "attachment; filename='%s'" % (filename)
+                content = "attachment; filename={}".format(filename)
             response['Content-Disposition'] = content
             return response
         return HttpResponse("Not found")

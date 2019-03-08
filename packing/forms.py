@@ -13,12 +13,8 @@ class PackingForm(forms.Form):
         ('조정', '조정'),
     )
     type = forms.ChoiceField(choices=PACKING_TYPE_CHOICES, required=False)
-    location = forms.ChoiceField(widget=Select2Widget,
-                                 choices=[('', '')] + list(
-                                     Location.objects.filter(type='01').values_list('code', 'codeName')
-                                     .order_by('code')))
-    product = forms.ChoiceField(widget=Select2Widget,
-                                choices=[('', '')] + list(PackingCode.objects.values_list('code', 'codeName')))
+    location = forms.ChoiceField(widget=Select2Widget, choices=Location.objects.none)
+    product = forms.ChoiceField(widget=Select2Widget, choices=PackingCode.objects.none)
     code = forms.CharField(widget=forms.HiddenInput(), required=False)
     count = forms.IntegerField(min_value=0)
     price = forms.IntegerField(min_value=0)
@@ -30,6 +26,14 @@ class PackingForm(forms.Form):
     fakeYmd = forms.DateField(required=False, widget=forms.DateInput(
         attrs={'type': 'date'}
     ))
+
+    def __init__(self, *args, **kwargs):
+        super(PackingForm, self).__init__(*args, **kwargs)
+        self.fields['location'] = forms.ChoiceField(widget=Select2Widget,
+                                                    choices=[('', '')] + list(Location.objects.values_list('code', 'codeName')
+                                                    .filter(type='01').filter(delete_state='N').order_by('code')))
+        self.fields['product'] = forms.ChoiceField(widget=Select2Widget,
+                                                   choices=[('', '')] + list(PackingCode.objects.values_list('code', 'codeName')))
 
 
 PackingFormSet = formset_factory(PackingForm)

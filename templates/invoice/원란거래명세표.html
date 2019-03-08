@@ -250,13 +250,25 @@ th
                 <td class="blue text-center border-bold">
                     <table>
                         <tr>
-                            <td class="blue text-center border-bold-bottom">{{sumData.sumSupplyPrice|intcomma}}</td>
+                            {% if sumData.moneyMark == "true"%}
+                                <td class="blue text-center border-bold-bottom">{{sumData.sumSupplyPrice|intcomma}}</td>
+                            {% else %}
+                                <td class="blue text-center border-bold-bottom">&nbsp</td>
+                            {% endif %}
                         </tr>
                         <tr>
-                            <td class="blue text-center border-bold-bottom">{{sumData.sumVat|intcomma}}</td>
+                            {% if sumData.moneyMark == "true"%}
+                                <td class="blue text-center border-bold-bottom">{{sumData.sumVat|intcomma}}</td>
+                            {% else %}
+                                <td class="blue text-center border-bold-bottom">&nbsp</td>
+                            {% endif %}
                         </tr>
                         <tr>
-                            <td class="blue text-center ">{{sumData.sumTotal|intcomma}}</td>
+                            {% if sumData.moneyMark == "true"%}
+                                <td class="blue text-center ">{{sumData.sumTotal|intcomma}}</td>
+                            {% else %}
+                                <td class="blue text-center border-bold-bottom">&nbsp</td>
+                            {% endif %}
                         </tr>
                     </table>
                 </td>
@@ -393,13 +405,25 @@ th
                 <td class="blue text-center border-bold">
                     <table>
                         <tr>
-                            <td class="blue text-center border-bold-bottom">{{sumData.sumSupplyPrice|intcomma}}</td>
+                            {% if sumData.moneyMark == "true"%}
+                                <td class="blue text-center border-bold-bottom">{{sumData.sumSupplyPrice|intcomma}}</td>
+                            {% else %}
+                                <td class="blue text-center border-bold-bottom">&nbsp</td>
+                            {% endif %}
                         </tr>
                         <tr>
-                            <td class="blue text-center border-bold-bottom">{{sumData.sumVat|intcomma}}</td>
+                            {% if sumData.moneyMark == "true"%}
+                                <td class="blue text-center border-bold-bottom">{{sumData.sumVat|intcomma}}</td>
+                            {% else %}
+                                <td class="blue text-center border-bold-bottom">&nbsp</td>
+                            {% endif %}
                         </tr>
                         <tr>
-                            <td class="blue text-center ">{{sumData.sumTotal|intcomma}}</td>
+                            {% if sumData.moneyMark == "true"%}
+                                <td class="blue text-center ">{{sumData.sumTotal|intcomma}}</td>
+                            {% else %}
+                                <td class="blue text-center border-bold-bottom">&nbsp</td>
+                            {% endif %}
                         </tr>
                     </table>
                 </td>

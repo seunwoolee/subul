@@ -36,6 +36,10 @@
           <option value="eggs.models.Egg.objects" />
           <option value="core.models.Location.objects" />
           <option value="product.models.ProductAdmin.objects" />
+          <option value="product.models.ProductCode.objects" />
+          <option value="product.models.ProductUnitPrice.objects" />
+          <option value="product.models.SetProductCode.objects" />
+          <option value="product.models.SetProductMatch.objects" />
         </list>
       </option>
     </inspection_tool>

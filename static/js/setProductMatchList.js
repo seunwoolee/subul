@@ -92,13 +92,13 @@ $(document).on('click', "#create", function()
     let location = $('.type_filter #location select').val();
     let setProduct = $('.type_filter #setProduct select').val();
     let locationCodeName = $('.type_filter #location select option:selected').text();
-    let productCodeName = $('.type_filter #product select option:selected').text();
+    let setProductCodeName = $('.type_filter #product select option:selected').text();
 
     if (location && setProduct)
     {
         $('#createModal #id_locationCode').val(location);
-        $('#createModal #id_productCode').val(product);
-        $('#createModal .codeName').text(locationCodeName + '('+productCodeName+')');
+        $('#createModal #id_setProductCode').val(setProduct);
+        $('#createModal .codeName').text(locationCodeName + '('+setProductCodeName+')');
         $("#createModal").modal();
     }
     else
@@ -114,7 +114,7 @@ $('.create').on('submit', function (e)
     let $this = $(this);
     let data = $this.serialize();
     let type = $this.find('.ajaxUrlType').val();
-    let url = '/api/productUnitPrices/';
+    let url = '/api/setProductMatch/';
 
     $.ajax({
     url: url,
@@ -125,6 +125,6 @@ $('.create').on('submit', function (e)
         $('.datatable').DataTable().search($("input[type='search']").val()).draw();
         $(".everyModal").modal('hide');
     }).fail(function() {
-        alert('수정 에러 전산실로 문의바랍니다.');
+        alert('이미 존재하는 제품입니다. 수정이나 삭제를 해주세요.');
     });
 });

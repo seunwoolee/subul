@@ -25,14 +25,12 @@ class OrderForm(forms.Form):
         ('', '일반'),
         ('특인가', '특인가'),
     )
-
     set = forms.ChoiceField(choices=SET_TYPE_CHOICES)
     type = forms.ChoiceField(choices=ORDER_TYPE_CHOICES)
     location = forms.ChoiceField(widget=Select2Widget,
-                                 choices=list(Location.objects.values_list('code', 'codeName').filter(type='05')
-                                              .filter(delete_state='N').order_by('code')),
-                                 required=False)
-    product = forms.ChoiceField(choices=list(ProductCode.objects.values_list('code', 'codeName').filter(delete_state='N')))
+                                 choices=Location.objects.none)
+    product = forms.ChoiceField(
+        choices=list(ProductCode.objects.values_list('code', 'codeName').filter(delete_state='N')))
     amount = forms.DecimalField(decimal_places=2, max_digits=19, min_value=0)
     amount_kg = forms.DecimalField(decimal_places=2, max_digits=19, min_value=0, widget=forms.HiddenInput())
     count = forms.IntegerField(min_value=0)
@@ -47,6 +45,13 @@ class OrderForm(forms.Form):
     fakeYmd = forms.DateField(required=False, widget=forms.DateInput(  # 수정 Modal Ymd
         attrs={'type': 'date'}
     ))
+
+    def __init__(self, *args, **kwargs):
+        super(OrderForm, self).__init__(*args, **kwargs)
+        self.fields['location'] = forms.ChoiceField(widget=Select2Widget,
+                                                    choices=Location.objects.values_list('code', 'codeName')
+                                                    .filter(type='05').filter(delete_state='N').order_by('code'),
+                                                    required=False)
 
 
 OrderFormSet = formset_factory(OrderForm)

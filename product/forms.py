@@ -309,9 +309,7 @@ class StepThreeForm(forms.Form):
 
 
 class StepFourForm(forms.Form):
-    product = forms.ChoiceField(widget=Select2Widget,
-                                choices=list(ProductCode.objects.values_list('code', 'codeName')
-                                             .filter(delete_state='N').order_by('code')), required=False)
+    product = forms.ChoiceField(widget=Select2Widget, choices=ProductCode.objects.none)
     amount = forms.DecimalField(decimal_places=2, max_digits=19, min_value=0)
     amount_kg = forms.DecimalField(decimal_places=2, max_digits=19, min_value=0, widget=forms.HiddenInput())
     count = forms.IntegerField(min_value=0)
@@ -320,18 +318,20 @@ class StepFourForm(forms.Form):
         widget=forms.Textarea(attrs={'rows': 2}), required=False
     )
 
+    def __init__(self, *args, **kwargs):
+        super(StepFourForm, self).__init__(*args, **kwargs)
+        self.fields['product'] = forms.ChoiceField(widget=Select2Widget,
+                                                   choices=list(ProductCode.objects.values_list('code', 'codeName')
+                                                                .filter(delete_state='N').order_by('code')),
+                                                   required=False)
+
 
 StepFourFormSet = formset_factory(StepFourForm)
 
 
 class ProductOEMForm(forms.Form):
-    product = forms.ChoiceField(widget=Select2Widget,
-                                choices=[('', '')] + list(ProductCode.objects.values_list('code', 'codeName')
-                                                          .filter(delete_state='N').filter(oem='Y').order_by('code')))
-    location = forms.ChoiceField(widget=Select2Widget,
-                                 choices=[('', '')] + list(Location.objects.values_list('code', 'codeName')
-                                     .filter(delete_state='N').filter(type='09').order_by(
-                                     'code')))
+    product = forms.ChoiceField(widget=Select2Widget, choices=ProductCode.objects.none)
+    location = forms.ChoiceField(widget=Select2Widget, choices=Location.objects.none)
     count = forms.IntegerField(min_value=0)
     purchaseSupplyPrice = forms.IntegerField(min_value=0)
     purchaseVat = forms.IntegerField(min_value=0, required=False)
@@ -347,6 +347,18 @@ class ProductOEMForm(forms.Form):
     ))
     ymd = forms.CharField(max_length=8, widget=forms.HiddenInput())
     purchaseYmd = forms.CharField(max_length=8, widget=forms.HiddenInput())
+
+    def __init__(self, *args, **kwargs):
+        super(ProductOEMForm, self).__init__(*args, **kwargs)
+        self.fields['location'] = forms.ChoiceField(widget=Select2Widget,
+                                                    choices=[('', '')] + list(
+                                                        Location.objects.values_list('code', 'codeName')
+                                                            .filter(delete_state='N').filter(type='09').order_by(
+                                                            'code')))
+        self.fields['product'] = forms.ChoiceField(widget=Select2Widget,
+                                                   choices=[('', '')] + list(
+                                                       ProductCode.objects.values_list('code', 'codeName')
+                                                           .filter(delete_state='N').filter(oem='Y').order_by('code')))
 
 
 ProductOEMFormSet = formset_factory(ProductOEMForm)

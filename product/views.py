@@ -475,7 +475,7 @@ class ProductOEMReg(LoginRequiredMixin, View):
                 product.save()
                 productAdmin.save()
 
-        return redirect('productList')
+        return redirect('productOEMList')
 
     def get(self, request):
         ProductOEMForm = ProductOEMFormSet(request.GET or None)
