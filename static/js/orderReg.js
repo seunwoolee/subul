@@ -224,6 +224,7 @@ $(document).on('click', '.add-form-row', function(e){ //일반상품 + 버튼
     if($('form')[0].checkValidity())
     {
         cloneMore('.forms-row:last', 'form');
+        console.log($('.price'));
         setReadOnly($(this).parents('tr'));
     }
     else
@@ -431,4 +432,12 @@ function setReadOnly($parentTR)
     $parentTR.find('.location').each(function(){
         $(this).find('option').not(':selected').remove()
     });
+}
+
+function calculatePriceCount()
+{
+    let total = $('.price').length;
+    $('.price').each(function(){
+	    alert($(this).val());
+    })
 }

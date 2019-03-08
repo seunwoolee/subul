@@ -7,7 +7,7 @@
     <meta http-equiv=Content-Type content="text/html;charset=utf-8">
 
     <!--TODO 서버 이전후 폰트 절대경로 변경! -->
-
+    <!--src: url("C:\malgun.ttf");-->
 <style type="text/css">
 @font-face {
     font-family: malgun;
@@ -154,7 +154,7 @@ th
                 <td class="blue" colspan="4">경남 거창군 남상면 홍덕길 22</td>
                 <td class="blue" style="padding : 1px;">주소</td>
                 {% if location.location_address %}
-                    <td colspan="4">{{ location.location_address|cut:" " }}</td>
+                    <td colspan="4">{{ location.location_address|slice:":30"}}</td>
                 {% else %}
                     <td  colspan="4"> </td>
                 {% endif %}

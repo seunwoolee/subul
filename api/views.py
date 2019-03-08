@@ -77,9 +77,13 @@ class ProductsAPIView(APIView):
         if order == 'desc':
             order_column = '-' + order_column
 
-        mergedProductInfo['data'] = mergedProductInfo['data'].order_by(order_column)
+        if length > 0:
+            mergedProductInfo['data'] = mergedProductInfo['data'].order_by(order_column)[start:start + length]
+        else:
+            mergedProductInfo['data'] = mergedProductInfo['data'].order_by(order_column)
+
         result = dict()
-        result['data'] = mergedProductInfo['data'][start:start + length]
+        result['data'] = mergedProductInfo['data']
         result['draw'] = draw
         result['recordsTotal'] = mergedProductInfo['total']
         result['recordsFiltered'] = mergedProductInfo['count']

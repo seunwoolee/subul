@@ -126,6 +126,7 @@ function setStepOneDataTable(args)
         "language": {searchPlaceholder: "거래처, 제품, 메모, 주문메모"},
         "processing": true,
         "serverSide": true,
+        "order": [[ 2, "asc" ]],
         "ajax": {
             "url": "/api/release/",
             "type": "GET",
@@ -223,7 +224,7 @@ function setStepOneDataTable(args)
                             $(node).removeClass('btn-secondary');
                         }
                     }],
-        lengthMenu : [[30, 50, -1], [30, 50, "All"]],
+        lengthMenu : [[100, -1], [100, "All"]],
 //        rowCallback: function(row, data, index){
 //             $('td:eq(1)', row).html( set_yyyy_mm_dd(data.ymd) );
 //             $('td:eq(14)', row).html( set_yyyy_mm_dd(data.productYmd) );
@@ -371,7 +372,7 @@ function setStepTwoDataTable(args)
                             $(node).removeClass('btn-secondary');
                         }
                     }],
-        lengthMenu : [[30, 50, -1], [30, 50, "All"]]
+        lengthMenu : [[100, -1], [100, "All"]],
     });
 }
 
@@ -516,7 +517,7 @@ function setStepThreeDataTable(args)
                             $(node).removeClass('btn-secondary');
                         }
                     }],
-        lengthMenu : [[30, 50, -1], [30, 50, "All"]]
+        lengthMenu : [[100, -1], [100, "All"]],
     });
 }
 
@@ -635,7 +636,7 @@ function setStepFourDataTable(args)
                             $(node).removeClass('btn-secondary');
                         }
                     }],
-        lengthMenu : [[30, 50, -1], [30, 50, "All"]]
+        lengthMenu : [[100, -1], [100, "All"]],
     });
 }
 

@@ -145,7 +145,7 @@ function setStepOneDataTable(args)
                             $(node).removeClass('btn-secondary');
                         }
                     }],
-        lengthMenu : [[30, 50, -1], [30, 50, "All"]],
+        lengthMenu : [[100, -1], [100, "All"]],
         rowCallback: function(row, data, index){
              $('td:eq(2)', row).html( set_yyyy_mm_dd(data.ymd) );
         }
