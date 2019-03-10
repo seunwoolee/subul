@@ -62,11 +62,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="orderReg.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="orderReg.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/templates/order/orderReg.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="36" column="28" lean-forward="true" selection-start-line="36" selection-start-column="28" selection-end-line="36" selection-end-column="28" />
+            <state relative-caret-position="625">
+              <caret line="38" column="26" lean-forward="true" selection-start-line="38" selection-start-column="26" selection-end-line="38" selection-end-column="26" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#div#1;n#form#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
               </folding>
@@ -77,8 +77,8 @@
       <file leaf-file-name="orderReg.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/js/orderReg.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="436" column="30" lean-forward="true" selection-start-line="436" selection-start-column="30" selection-end-line="436" selection-end-column="30" />
+            <state relative-caret-position="10900">
+              <caret line="436" column="30" selection-start-line="436" selection-start-column="30" selection-end-line="436" selection-end-column="30" />
             </state>
           </provider>
         </entry>
@@ -86,8 +86,8 @@
       <file leaf-file-name="orderList.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/js/orderList.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="421" column="8" lean-forward="true" selection-start-line="421" selection-start-column="8" selection-end-line="421" selection-end-column="47" />
+            <state relative-caret-position="10525">
+              <caret line="421" column="8" selection-start-line="421" selection-start-column="8" selection-end-line="421" selection-end-column="47" />
             </state>
           </provider>
         </entry>
@@ -95,8 +95,8 @@
       <file leaf-file-name="releaseList.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/js/releaseList.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="322">
-              <caret line="642" column="35" lean-forward="true" selection-start-line="642" selection-start-column="35" selection-end-line="642" selection-end-column="35" />
+            <state relative-caret-position="16050">
+              <caret line="642" column="35" selection-start-line="642" selection-start-column="35" selection-end-line="642" selection-end-column="35" />
             </state>
           </provider>
         </entry>
@@ -104,8 +104,8 @@
       <file leaf-file-name="eggsList.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/js/eggsList.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="322">
-              <caret line="386" column="7" lean-forward="true" selection-start-line="386" selection-start-column="7" selection-end-line="386" selection-end-column="7" />
+            <state relative-caret-position="9650">
+              <caret line="386" column="7" selection-start-line="386" selection-start-column="7" selection-end-line="386" selection-end-column="7" />
             </state>
           </provider>
         </entry>
@@ -113,17 +113,17 @@
       <file leaf-file-name="packingList.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/js/packingList.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="222">
+            <state relative-caret-position="3675">
               <caret line="147" column="18" selection-start-line="147" selection-start-column="8" selection-end-line="147" selection-end-column="18" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="productOEMList.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="productOEMList.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/js/productOEMList.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="275">
-              <caret line="131" column="23" lean-forward="true" selection-start-line="131" selection-start-column="23" selection-end-line="131" selection-end-column="23" />
+            <state relative-caret-position="450">
+              <caret line="138" selection-start-line="138" selection-end-line="138" />
             </state>
           </provider>
         </entry>
@@ -131,8 +131,8 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="78" lean-forward="true" selection-start-line="78" selection-end-line="78" />
+            <state relative-caret-position="1350">
+              <caret line="78" selection-start-line="78" selection-end-line="78" />
               <folding>
                 <element signature="e#0#27#0" expanded="true" />
               </folding>
@@ -143,8 +143,8 @@
       <file leaf-file-name="productList.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/product/productList.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="30" column="82" lean-forward="true" selection-start-line="30" selection-start-column="82" selection-end-line="30" selection-end-column="82" />
+            <state relative-caret-position="750">
+              <caret line="30" column="82" selection-start-line="30" selection-start-column="82" selection-end-line="30" selection-end-column="82" />
             </state>
           </provider>
         </entry>
@@ -152,8 +152,8 @@
       <file leaf-file-name="productList.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/js/productList.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="177" column="47" lean-forward="true" selection-start-line="177" selection-start-column="47" selection-end-line="177" selection-end-column="47" />
+            <state relative-caret-position="4425">
+              <caret line="177" column="47" selection-start-line="177" selection-start-column="47" selection-end-line="177" selection-end-column="47" />
             </state>
           </provider>
         </entry>
@@ -282,7 +282,6 @@
         <option value="$PROJECT_DIR$/templates/invoice/원란거래명세표.html" />
         <option value="$PROJECT_DIR$/templates/product/productList.html" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/study/멀티스레딩(세마포어).py" />
-        <option value="$PROJECT_DIR$/templates/order/orderReg.html" />
         <option value="$PROJECT_DIR$/static/js/orderReg.js" />
         <option value="$PROJECT_DIR$/static/js/orderList.js" />
         <option value="$PROJECT_DIR$/static/js/productList.js" />
@@ -291,6 +290,7 @@
         <option value="$PROJECT_DIR$/static/js/eggsList.js" />
         <option value="$PROJECT_DIR$/static/js/packingList.js" />
         <option value="$PROJECT_DIR$/static/js/productOEMList.js" />
+        <option value="$PROJECT_DIR$/templates/order/orderReg.html" />
       </list>
     </option>
   </component>
@@ -306,6 +306,53 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope">
+        <subPane subId="Project Files">
+          <expand>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="subul" type="cbb8eebc:String" user="subul" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="subul" type="cbb8eebc:String" user="subul" />
+              <item name="product" type="cbb8eebc:String" user="product" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="subul" type="cbb8eebc:String" user="subul" />
+              <item name="templates" type="cbb8eebc:String" user="templates" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="subul" type="cbb8eebc:String" user="subul" />
+              <item name="templates" type="cbb8eebc:String" user="templates" />
+              <item name="productOEM" type="cbb8eebc:String" user="productOEM" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+        <subPane subId="Default">
+          <expand>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="subul" type="cbb8eebc:String" user="subul" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="subul" type="cbb8eebc:String" user="subul" />
+              <item name="static" type="cbb8eebc:String" user="static" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="subul" type="cbb8eebc:String" user="subul" />
+              <item name="static" type="cbb8eebc:String" user="static" />
+              <item name="js" type="cbb8eebc:String" user="js" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -442,53 +489,6 @@
               <item name="Scratches and Consoles" type="1a2a3e82:ScratchProjectViewPane$MyProjectNode" />
               <item name="Scratches" type="d62648e6:ScratchProjectViewPane$MyRootNode" />
               <item name="study" type="1e004dc1:ScratchProjectViewPane$MyRootNode$1$1" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope">
-        <subPane subId="Project Files">
-          <expand>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="subul" type="cbb8eebc:String" user="subul" />
-            </path>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="subul" type="cbb8eebc:String" user="subul" />
-              <item name="product" type="cbb8eebc:String" user="product" />
-            </path>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="subul" type="cbb8eebc:String" user="subul" />
-              <item name="templates" type="cbb8eebc:String" user="templates" />
-            </path>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="subul" type="cbb8eebc:String" user="subul" />
-              <item name="templates" type="cbb8eebc:String" user="templates" />
-              <item name="productOEM" type="cbb8eebc:String" user="productOEM" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-        <subPane subId="Default">
-          <expand>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="subul" type="cbb8eebc:String" user="subul" />
-            </path>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="subul" type="cbb8eebc:String" user="subul" />
-              <item name="static" type="cbb8eebc:String" user="static" />
-            </path>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="subul" type="cbb8eebc:String" user="subul" />
-              <item name="static" type="cbb8eebc:String" user="static" />
-              <item name="js" type="cbb8eebc:String" user="js" />
             </path>
           </expand>
           <select />
@@ -678,7 +678,7 @@
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50208336" side_tool="true" weight="0.32769555" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32875264" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32875264" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.49791667" weight="0.29598308" />
       <window_info id="Favorites" order="2" sideWeight="0.5015723" side_tool="true" weight="0.25" />
@@ -862,9 +862,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="325">
           <caret line="45" column="1" lean-forward="true" selection-start-line="45" selection-start-column="1" selection-end-line="45" selection-end-column="1" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -886,9 +883,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="668">
           <caret line="54" lean-forward="true" selection-start-line="54" selection-end-line="54" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -896,9 +890,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="368">
           <caret line="15" selection-start-line="15" selection-end-line="15" selection-end-column="85" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -906,9 +897,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="693">
           <caret line="362" lean-forward="true" selection-start-line="362" selection-end-line="362" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -926,9 +914,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="593">
           <caret line="35" column="74" lean-forward="true" selection-start-line="35" selection-start-column="74" selection-end-line="35" selection-end-column="74" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -936,9 +921,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="642">
           <caret line="174" column="24" lean-forward="true" selection-start-line="174" selection-start-column="24" selection-end-line="174" selection-end-column="24" />
-          <folding>
-            <element signature="e#0#41#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -966,9 +948,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="250">
           <caret line="27" column="69" lean-forward="true" selection-start-line="27" selection-start-column="69" selection-end-line="27" selection-end-column="69" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1008,18 +987,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/product/productList.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="30" column="82" lean-forward="true" selection-start-line="30" selection-start-column="82" selection-end-line="30" selection-end-column="82" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/order/orderReg.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="36" column="28" lean-forward="true" selection-start-line="36" selection-start-column="28" selection-end-line="36" selection-end-column="28" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#div#1;n#form#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-          </folding>
+        <state relative-caret-position="750">
+          <caret line="30" column="82" selection-start-line="30" selection-start-column="82" selection-end-line="30" selection-end-column="82" />
         </state>
       </provider>
     </entry>
@@ -1027,30 +996,27 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="475">
           <caret line="61" column="25" lean-forward="true" selection-start-line="61" selection-start-column="25" selection-end-line="61" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/static/js/orderReg.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="436" column="30" lean-forward="true" selection-start-line="436" selection-start-column="30" selection-end-line="436" selection-end-column="30" />
+        <state relative-caret-position="10900">
+          <caret line="436" column="30" selection-start-line="436" selection-start-column="30" selection-end-line="436" selection-end-column="30" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/static/js/productList.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="177" column="47" lean-forward="true" selection-start-line="177" selection-start-column="47" selection-end-line="177" selection-end-column="47" />
+        <state relative-caret-position="4425">
+          <caret line="177" column="47" selection-start-line="177" selection-start-column="47" selection-end-line="177" selection-end-column="47" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/api/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="78" lean-forward="true" selection-start-line="78" selection-end-line="78" />
+        <state relative-caret-position="1350">
+          <caret line="78" selection-start-line="78" selection-end-line="78" />
           <folding>
             <element signature="e#0#27#0" expanded="true" />
           </folding>
@@ -1059,36 +1025,46 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/static/js/orderList.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="421" column="8" lean-forward="true" selection-start-line="421" selection-start-column="8" selection-end-line="421" selection-end-column="47" />
+        <state relative-caret-position="10525">
+          <caret line="421" column="8" selection-start-line="421" selection-start-column="8" selection-end-line="421" selection-end-column="47" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/static/js/releaseList.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="322">
-          <caret line="642" column="35" lean-forward="true" selection-start-line="642" selection-start-column="35" selection-end-line="642" selection-end-column="35" />
+        <state relative-caret-position="16050">
+          <caret line="642" column="35" selection-start-line="642" selection-start-column="35" selection-end-line="642" selection-end-column="35" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/static/js/eggsList.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="322">
-          <caret line="386" column="7" lean-forward="true" selection-start-line="386" selection-start-column="7" selection-end-line="386" selection-end-column="7" />
+        <state relative-caret-position="9650">
+          <caret line="386" column="7" selection-start-line="386" selection-start-column="7" selection-end-line="386" selection-end-column="7" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/static/js/packingList.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="222">
+        <state relative-caret-position="3675">
           <caret line="147" column="18" selection-start-line="147" selection-start-column="8" selection-end-line="147" selection-end-column="18" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/static/js/productOEMList.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="131" column="23" lean-forward="true" selection-start-line="131" selection-start-column="23" selection-end-line="131" selection-end-column="23" />
+        <state relative-caret-position="450">
+          <caret line="138" selection-start-line="138" selection-end-line="138" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/order/orderReg.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="625">
+          <caret line="38" column="26" lean-forward="true" selection-start-line="38" selection-start-column="26" selection-end-line="38" selection-end-column="26" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#div#1;n#form#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
