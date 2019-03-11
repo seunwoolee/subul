@@ -23,7 +23,7 @@
     <bookmark url="file://$PROJECT_DIR$/release/models.py" line="408" />
     <bookmark url="file://$PROJECT_DIR$/release/models.py" line="282" />
     <bookmark url="file://$PROJECT_DIR$/eggs/models.py" line="206" />
-    <bookmark url="file://$PROJECT_DIR$/templates/invoice/주문거래명세표.html" line="155" />
+    <bookmark url="file://$PROJECT_DIR$/templates/invoice/주문거래명세표.html" line="156" />
     <bookmark url="file://$PROJECT_DIR$/order/views.py" line="24" />
     <bookmark url="file://$PROJECT_DIR$/packing/models.py" line="182" />
     <bookmark url="file://$PROJECT_DIR$/api/views.py" line="116" />
@@ -33,15 +33,6 @@
     <bookmark url="file://$PROJECT_DIR$/static/js/releaseList.js" line="45" />
     <bookmark url="file://$PROJECT_DIR$/eggs/models.py" line="117" />
     <bookmark url="file://$PROJECT_DIR$/product/models.py" line="335" />
-    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="284" />
-    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="285" />
-    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="286" />
-    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="295" />
-    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="370" />
-    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="369" />
-    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="371" />
-    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="372" />
-    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="374" />
     <bookmark url="file://$PROJECT_DIR$/release/views.py" line="75" />
     <bookmark url="file://$PROJECT_DIR$/release/views.py" line="76" />
     <bookmark url="file://$PROJECT_DIR$/product/models.py" line="519" />
@@ -50,6 +41,10 @@
     <bookmark url="file://$PROJECT_DIR$/product/models.py" line="522" />
     <bookmark url="file://$PROJECT_DIR$/product/models.py" line="523" />
     <bookmark url="file://$APPLICATION_CONFIG_DIR$/scratches/build/book.py" line="16" mnemonic="9" />
+    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="439" />
+    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="222" />
+    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="237" />
+    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="244" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="272b230e-ac37-47c4-8a83-fda4d548c6fa" name="Default" comment="" />
@@ -62,98 +57,29 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="orderReg.html" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/templates/order/orderReg.html">
+      <file leaf-file-name="주문거래명세표.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/templates/invoice/주문거래명세표.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="625">
-              <caret line="38" column="26" lean-forward="true" selection-start-line="38" selection-start-column="26" selection-end-line="38" selection-end-column="26" />
-              <folding>
-                <element signature="n#style#0;n#div#0;n#div#1;n#form#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-              </folding>
+            <state relative-caret-position="300">
+              <caret line="13" lean-forward="true" selection-start-line="13" selection-end-line="13" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="orderReg.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/static/js/orderReg.js">
+      <file leaf-file-name="원란거래명세표.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/invoice/원란거래명세표.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="10900">
-              <caret line="436" column="30" selection-start-line="436" selection-start-column="30" selection-end-line="436" selection-end-column="30" />
+            <state relative-caret-position="25">
+              <caret line="1" column="5" lean-forward="true" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="5" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="orderList.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/static/js/orderList.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="10525">
-              <caret line="421" column="8" selection-start-line="421" selection-start-column="8" selection-end-line="421" selection-end-column="47" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="releaseList.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/static/js/releaseList.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="16050">
-              <caret line="642" column="35" selection-start-line="642" selection-start-column="35" selection-end-line="642" selection-end-column="35" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="eggsList.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/static/js/eggsList.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="9650">
-              <caret line="386" column="7" selection-start-line="386" selection-start-column="7" selection-end-line="386" selection-end-column="7" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="packingList.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/static/js/packingList.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3675">
-              <caret line="147" column="18" selection-start-line="147" selection-start-column="8" selection-end-line="147" selection-end-column="18" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="productOEMList.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/static/js/productOEMList.js">
+      <file leaf-file-name="출고거래명세표.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/invoice/출고거래명세표.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="450">
-              <caret line="138" selection-start-line="138" selection-end-line="138" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/api/views.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1350">
-              <caret line="78" selection-start-line="78" selection-end-line="78" />
-              <folding>
-                <element signature="e#0#27#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="productList.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/product/productList.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="750">
-              <caret line="30" column="82" selection-start-line="30" selection-start-column="82" selection-end-line="30" selection-end-column="82" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="productList.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/static/js/productList.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4425">
-              <caret line="177" column="47" selection-start-line="177" selection-start-column="47" selection-end-line="177" selection-end-column="47" />
+              <caret line="18" column="21" lean-forward="true" selection-start-line="18" selection-start-column="21" selection-end-line="18" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -170,12 +96,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Release</find>
-      <find>stepOne</find>
-      <find>set_yyyymmdd</find>
-      <find>20190102</find>
-      <find>productYmd</find>
-      <find>productYmdFilter</find>
       <find>releaseType</find>
       <find>eggTypeFilter</find>
       <find>egg</find>
@@ -200,6 +120,12 @@
       <find>order</find>
       <find>openEggPercent</find>
       <find>lengthMenu</find>
+      <find>parseFloat</find>
+      <find>parentTR</find>
+      <find>calculatePriceCount</find>
+      <find>cloneSetMore</find>
+      <find>give</find>
+      <find>line</find>
     </findStrings>
     <replaceStrings>
       <replace>,</replace>
@@ -269,7 +195,6 @@
         <option value="$PROJECT_DIR$/subul/settings.py" />
         <option value="$PROJECT_DIR$/order/forms.py" />
         <option value="$PROJECT_DIR$/order/templatetags/custom.py" />
-        <option value="$PROJECT_DIR$/templates/invoice/출고거래명세표.html" />
         <option value="$PROJECT_DIR$/packing/forms.py" />
         <option value="$PROJECT_DIR$/product/forms.py" />
         <option value="$PROJECT_DIR$/product/views.py" />
@@ -278,11 +203,8 @@
         <option value="$PROJECT_DIR$/order/views.py" />
         <option value="$PROJECT_DIR$/release/views.py" />
         <option value="$PROJECT_DIR$/eggs/views.py" />
-        <option value="$PROJECT_DIR$/templates/invoice/주문거래명세표.html" />
-        <option value="$PROJECT_DIR$/templates/invoice/원란거래명세표.html" />
         <option value="$PROJECT_DIR$/templates/product/productList.html" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/study/멀티스레딩(세마포어).py" />
-        <option value="$PROJECT_DIR$/static/js/orderReg.js" />
         <option value="$PROJECT_DIR$/static/js/orderList.js" />
         <option value="$PROJECT_DIR$/static/js/productList.js" />
         <option value="$PROJECT_DIR$/api/views.py" />
@@ -291,11 +213,15 @@
         <option value="$PROJECT_DIR$/static/js/packingList.js" />
         <option value="$PROJECT_DIR$/static/js/productOEMList.js" />
         <option value="$PROJECT_DIR$/templates/order/orderReg.html" />
+        <option value="$PROJECT_DIR$/static/js/orderReg.js" />
+        <option value="$PROJECT_DIR$/templates/invoice/원란거래명세표.html" />
+        <option value="$PROJECT_DIR$/templates/invoice/출고거래명세표.html" />
+        <option value="$PROJECT_DIR$/templates/invoice/주문거래명세표.html" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1641" />
+    <option name="x" value="-306" />
     <option name="y" value="-8" />
     <option name="width" value="1936" />
     <option name="height" value="1056" />
@@ -670,12 +596,13 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1912" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49842766" visible="true" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3284055" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50208336" side_tool="true" weight="0.32769555" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32980973" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32875264" />
@@ -690,7 +617,6 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32980973" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -872,13 +798,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/invoice/출고거래명세표.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="301" column="49" lean-forward="true" selection-start-line="301" selection-start-column="49" selection-end-line="301" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/order/forms.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="668">
@@ -964,20 +883,6 @@
     <entry file="file://$USER_HOME$/AppData/Local/Temp/원란조회.url">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/invoice/주문거래명세표.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="156" column="64" selection-start-line="156" selection-start-column="64" selection-end-line="156" selection-end-column="76" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/invoice/원란거래명세표.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/study/멀티스레딩(세마포어).py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="407">
@@ -996,37 +901,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="475">
           <caret line="61" column="25" lean-forward="true" selection-start-line="61" selection-start-column="25" selection-end-line="61" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/orderReg.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="10900">
-          <caret line="436" column="30" selection-start-line="436" selection-start-column="30" selection-end-line="436" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/productList.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4425">
-          <caret line="177" column="47" selection-start-line="177" selection-start-column="47" selection-end-line="177" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/api/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1350">
-          <caret line="78" selection-start-line="78" selection-end-line="78" />
-          <folding>
-            <element signature="e#0#27#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/orderList.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="10525">
-          <caret line="421" column="8" selection-start-line="421" selection-start-column="8" selection-end-line="421" selection-end-column="47" />
         </state>
       </provider>
     </entry>
@@ -1058,13 +932,66 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/api/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="25">
+          <caret line="78" selection-start-line="78" selection-end-line="78" />
+          <folding>
+            <element signature="e#0#27#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/js/productList.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="177" column="47" selection-start-line="177" selection-start-column="47" selection-end-line="177" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/templates/order/orderReg.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="625">
-          <caret line="38" column="26" lean-forward="true" selection-start-line="38" selection-start-column="26" selection-end-line="38" selection-end-column="26" />
+        <state relative-caret-position="600">
+          <caret line="36" column="87" selection-start-line="36" selection-start-column="87" selection-end-line="36" selection-end-column="87" />
           <folding>
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#form#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#div#0;n#div#1;n#form#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/js/orderReg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="767">
+          <caret line="261" column="17" lean-forward="true" selection-start-line="261" selection-start-column="17" selection-end-line="261" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/js/orderList.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="465">
+          <caret line="184" column="47" lean-forward="true" selection-start-line="184" selection-start-column="47" selection-end-line="184" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/invoice/출고거래명세표.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="18" column="21" lean-forward="true" selection-start-line="18" selection-start-column="21" selection-end-line="18" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/invoice/원란거래명세표.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="25">
+          <caret line="1" column="5" lean-forward="true" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/invoice/주문거래명세표.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="13" lean-forward="true" selection-start-line="13" selection-end-line="13" />
         </state>
       </provider>
     </entry>

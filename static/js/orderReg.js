@@ -89,6 +89,7 @@ function cloneSetMore(selector, prefix) {
         $.ajax({
         url: url,
         type: 'get',
+        async: false,
         data: data,
         }).done(function(data) {
             parentTR.find('.location').select2("destroy");
@@ -224,8 +225,8 @@ $(document).on('click', '.add-form-row', function(e){ //일반상품 + 버튼
     if($('form')[0].checkValidity())
     {
         cloneMore('.forms-row:last', 'form');
-        console.log($('.price'));
         setReadOnly($(this).parents('tr'));
+        calculatePriceCount();
     }
     else
     {
@@ -237,12 +238,14 @@ $(document).on('click', '.add-form-row', function(e){ //일반상품 + 버튼
 $(document).on('click', '.add-form-set', function(e){ // 패키지 상품 버튼
     e.preventDefault();
     cloneSetMore('.forms-row:last', 'form');
+    calculatePriceCount();
     return false;
 });
 
 $(document).on('click', '.remove-form-row', function(e){ // 삭제 - 버튼
     e.preventDefault();
     deleteForm('form', $(this));
+    calculatePriceCount();
     return false;
 });
 
@@ -436,8 +439,24 @@ function setReadOnly($parentTR)
 
 function calculatePriceCount()
 {
+    let total_amount = 0;
+    let total_count = 0;
+    let total_price = 0;
     let total = $('.price').length;
-    $('.price').each(function(){
-	    alert($(this).val());
+    $('.price').each(function(index){
+        if(index < total - 1)
+        {
+            let parentTR = $(this).parents('tr');
+            let amount = parseFloat(parentTR.find('.amount').val());
+            let count = parseInt(parentTR.find('.count').val());
+            let price = parseInt($(this).val()) * count;
+            total_amount += amount;
+            total_count += count;
+            total_price += price;
+        }
     })
+
+    $('#totalAmount').html(total_amount.toFixed(2));
+    $('#totalCount').html(total_count.toLocaleString());
+    $('#totalPrice').html(total_price.toLocaleString());
 }
