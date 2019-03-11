@@ -7,6 +7,8 @@
     <meta http-equiv=Content-Type content="text/html;charset=utf-8">
 
     <!--TODO 서버 이전후 폰트 절대경로 변경! -->
+    <!--src: url("C:\malgun.ttf");-->
+    <!--src: url("/home/kcfeed/subul/templates/invoice/malgun.ttf");-->
 
 <style type="text/css">
 @font-face {
@@ -16,7 +18,7 @@
 
 * {
     font-family: malgun;
-    font-size:13.5px;
+    font-size:11px;
 }
 
 
@@ -37,7 +39,7 @@
 
 td
 {
-    padding-top : 2.5px;
+    padding-top : 2px;
     padding-right : 2px;
     padding-left : 2px;
     padding-bottom : 0px;
@@ -97,7 +99,7 @@ th
 
 .line
 {
-    margin-top : 50px;
+    margin-top : 30px;
     margin-bottom : 10px;
 }
 
@@ -135,7 +137,7 @@ th
                 <th class="blue">성명</th>
                 <td class="blue">정한식</td>
                 <th class="blue">상호</th>
-                <td class="blue" style="font-size : 12px; padding : 0.1;">(주)케이씨피드</td>
+                <td class="blue" style="padding : 0.1;">(주)케이씨피드</td>
                 <th class="blue">성명</th>
                 {% if location.location_owner %}
                     <td>{{ location.location_owner|slice:":3"}}</td>
@@ -144,7 +146,7 @@ th
                 {% endif %}
                 <th class="blue">상호</th>
                 {% if location.codeName %}
-                    <td style="font-size : 12px;">{{ location.codeName|cut:" " }}</td>
+                    <td style="font-size : 9.5px;">{{ location.codeName|cut:" " }}</td>
                 {% else %}
                     <td> </td>
                 {% endif %}
@@ -173,7 +175,7 @@ th
                 {% endif %}
             </tr>
             {% if sumData.moneyMark == "true"%}
-                {% for i in "xxxxxxx" %} <!-- 금액 -->
+                {% for i in "xxxxxxxxxxxx" %} <!-- 금액 -->
                 <tr class="border-bold">
                     <td class="blue text-center border-bold-left" style="width : 35px; ">{{ forloop.counter }}</td>
                     {% if orders|lookup_specialTag:forloop.counter0 %}
@@ -196,7 +198,7 @@ th
                 </tr>
                 {% endfor %}
             {% else %} <!-- 메모 -->
-                {% for i in "xxxxxxx" %}
+                {% for i in "xxxxxxxxxxxx" %}
                 <tr class="border-bold">
                     <td class="blue text-center border-bold-left" style="width : 35px; ">{{ forloop.counter }}</td>
                     {% if orders|lookup_specialTag:forloop.counter0 %}
@@ -223,7 +225,7 @@ th
                 <td class="blue text-center border-bold">
                     <table>
                         <tr>
-                            <td class="blue text-center border-bold-bottom">합계(EA)</td>
+                            <td class="blue text-center border-bold-bottom" style="padding-top:-5px;">합계(EA)</td>
                         </tr>
                         <tr>
                             <td class="blue text-center ">기표자 및 책임자</td>
@@ -233,12 +235,11 @@ th
                 <td class="blue text-center border-bold">
                     <table>
                         <tr>
-                            <td class="blue text-center border-bold-bottom">{{sumData.sumTotalCount|intcomma}}</td>
+                            <td class="blue text-center border-bold-bottom" style="padding-top:-5px;">{{sumData.sumTotalCount|intcomma}}</td>
                         </tr>
                         <tr>
                             <td class="blue text-center ">
-                                <br>
-                                <br>
+                                &nbsp
                             </td>
                         </tr>
                     </table>
@@ -293,13 +294,13 @@ th
 
 
 <div class="line">
-    --------------------------------------------------------- 절 취 선
-    ------------------------------------------------------------
+    ----------------------------------------------------------------------- 절 취 선
+    ----------------------------------------------------------------------------
 </div>
 
 
 <div id="take">
-    <div class="top" style="padding-top : 15px;">
+    <div class="top" style="padding-top : 5px;">
         <div class="header">
             <div class="title blue" style="font-size:28px; font-weight : 800; padding-bottom:-10px;">제 품 인 수 증</div>
             <div><span style="color : red;">(고객용)</span></div>
@@ -352,7 +353,7 @@ th
                 {% endif %}
             </tr>
             {% if sumData.moneyMark == "true"%}
-                {% for i in "xxxxxxx" %} <!-- 금액 -->
+                {% for i in "xxxxxxxxxxxx" %} <!-- 금액 -->
                 <tr class="border-bold">
                     <td class="blue text-center border-bold-left" style="width : 35px; ">{{ forloop.counter }}</td>
                     {% if orders|lookup_specialTag:forloop.counter0 %}
@@ -375,7 +376,7 @@ th
                 </tr>
                 {% endfor %}
             {% else %} <!-- 메모 -->
-                {% for i in "xxxxxxx" %}
+                {% for i in "xxxxxxxxxxxx" %}
                 <tr class="border-bold">
                     <td class="blue text-center border-bold-left" style="width : 35px; ">{{ forloop.counter }}</td>
                     {% if orders|lookup_specialTag:forloop.counter0 %}

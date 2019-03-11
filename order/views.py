@@ -110,7 +110,7 @@ class OrderReg(LoginRequiredMixin, View):
 
         else:
             print(formset.errors)
-        return redirect('orderList')
+        return redirect('orderReg')
 
     def get(self, request):
         orderForm = OrderFormSet(request.GET or None)

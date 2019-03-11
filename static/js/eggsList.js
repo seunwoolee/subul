@@ -704,3 +704,8 @@ var items_DataTable = $('#items').DataTable( {
     "sort": false
 } );
 
+$( "#eggsReport" ).click(function() {
+    let start_date = set_yyyymmdd($('#start_date').val());
+    let end_date = set_yyyymmdd($('#end_date').val());
+    window.open('/eggs/eggsReport?start_date=' + start_date + '&end_date=' + end_date);
+});

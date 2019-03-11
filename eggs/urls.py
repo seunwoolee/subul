@@ -9,4 +9,5 @@ urlpatterns = [
     path('calculateAmount', views.EggCalculateAmount.as_view(), name='eggsRelease'),
     path('pricePerEa', views.EggPricePerEa.as_view(), name='pricePerEa'),
     path('pdf', views.GeneratePDF.as_view()),
+    path('eggsReport', views.EggReport.as_view(), name='eggsReport'),
 ]
