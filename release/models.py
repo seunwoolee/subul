@@ -413,7 +413,12 @@ class Release(Detail):
             queryset = queryset.filter(type=releaseTypeFilter)
 
         if productTypeFilter != '전체':
-            queryset = queryset.filter(product_id__productCode__type=productTypeFilter)
+            if productTypeFilter == '상품':
+                queryset = queryset.filter(product_id__productCode__oem='Y')
+            elif productTypeFilter == '제외':
+                queryset = queryset.exclude(product_id__productCode__oem='Y')
+            else:
+                queryset = queryset.filter(product_id__productCode__type=productTypeFilter)
 
         if groupByFilter == 'stepOne' and productYmdFilter:
             queryset = queryset.filter(productYmd=productYmdFilter)

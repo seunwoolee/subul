@@ -57,20 +57,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="productReport.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/product/productReport.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6175">
-              <caret line="247" column="26" selection-start-line="247" selection-start-column="26" selection-end-line="247" selection-end-column="26" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="eggsReport.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/eggs/eggsReport.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3575">
-              <caret line="143" column="24" selection-start-line="143" selection-start-column="24" selection-end-line="143" selection-end-column="24" />
+            <state relative-caret-position="319">
+              <caret line="152" column="61" lean-forward="true" selection-start-line="152" selection-start-column="61" selection-end-line="152" selection-end-column="61" />
               <folding>
                 <element signature="n#style#0;n#h1#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -83,24 +74,36 @@
         </entry>
       </file>
       <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/product/views.py">
+        <entry file="file://$PROJECT_DIR$/eggs/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="9975">
-              <caret line="412" column="2" selection-start-line="412" selection-start-column="2" selection-end-line="412" selection-end-column="2" />
+            <state relative-caret-position="544">
+              <caret line="212" column="22" lean-forward="true" selection-start-line="212" selection-start-column="22" selection-end-line="212" selection-end-column="22" />
               <folding>
-                <element signature="e#0#27#0" expanded="true" />
+                <element signature="e#0#41#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/release/models.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="384">
+              <caret line="420" column="91" lean-forward="true" selection-start-line="420" selection-start-column="91" selection-end-line="420" selection-end-column="91" />
+              <folding>
+                <element signature="e#0#28#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/eggs/views.py">
+        <entry file="file://$PROJECT_DIR$/product/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="400">
-              <caret line="193" column="83" selection-start-line="193" selection-start-column="83" selection-end-line="193" selection-end-column="83" />
+            <state relative-caret-position="288">
+              <caret line="418" column="63" selection-start-line="418" selection-start-column="63" selection-end-line="418" selection-end-column="63" />
               <folding>
-                <element signature="e#0#41#0" expanded="true" />
+                <element signature="e#0#27#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -109,7 +112,7 @@
       <file leaf-file-name="releaseReg.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/release/releaseReg.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="433">
+            <state relative-caret-position="1425">
               <caret line="57" column="80" selection-start-line="57" selection-start-column="61" selection-end-line="57" selection-end-column="80" />
             </state>
           </provider>
@@ -119,7 +122,7 @@
         <entry file="file://$PROJECT_DIR$/templates/includes/releaseLocationForm.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="50">
-              <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
+              <caret line="2" selection-start-line="2" selection-end-line="2" />
             </state>
           </provider>
         </entry>
@@ -128,21 +131,9 @@
         <entry file="file://$PROJECT_DIR$/release/forms.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="463">
-              <caret line="52" lean-forward="true" selection-start-line="52" selection-end-line="52" />
+              <caret line="52" selection-start-line="52" selection-end-line="52" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/order/views.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="338">
-              <caret line="112" selection-start-line="112" selection-end-line="112" />
-              <folding>
-                <element signature="e#0#45#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -151,8 +142,8 @@
       <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/eggs/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="275">
-              <caret line="249" lean-forward="true" selection-start-line="249" selection-end-line="249" />
+            <state relative-caret-position="6100">
+              <caret line="249" selection-start-line="249" selection-end-line="249" />
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
               </folding>
@@ -172,8 +163,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>lookup_price</find>
-      <find>openEggPercent</find>
       <find>lengthMenu</find>
       <find>parseFloat</find>
       <find>parentTR</find>
@@ -202,6 +191,8 @@
       <find>합계</find>
       <find>합ㄱ{</find>
       <find>storedLocation</find>
+      <find>union</find>
+      <find>productTypeFilter</find>
     </findStrings>
     <replaceStrings>
       <replace>setAjaxUrl</replace>
@@ -255,7 +246,6 @@
         <option value="$PROJECT_DIR$/static/js/releaseReg.js" />
         <option value="$PROJECT_DIR$/static/css/style.css" />
         <option value="$PROJECT_DIR$/static/js/base.js" />
-        <option value="$PROJECT_DIR$/release/models.py" />
         <option value="$PROJECT_DIR$/templates/order/orderList.html" />
         <option value="$PROJECT_DIR$/templates/release/releaseList.html" />
         <option value="$PROJECT_DIR$/templates/includes/modal/setProductMatchsCreateForm.html" />
@@ -284,20 +274,21 @@
         <option value="$PROJECT_DIR$/templates/order/orderReg.html" />
         <option value="$PROJECT_DIR$/static/js/orderReg.js" />
         <option value="$PROJECT_DIR$/templates/invoice/원란거래명세표.html" />
-        <option value="$PROJECT_DIR$/templates/eggs/eggsReport.html" />
         <option value="$PROJECT_DIR$/templates/eggs/eggsList.html" />
         <option value="$PROJECT_DIR$/static/js/eggsList.js" />
         <option value="$PROJECT_DIR$/eggs/urls.py" />
         <option value="$PROJECT_DIR$/eggs/models.py" />
         <option value="$PROJECT_DIR$/templates/invoice/출고거래명세표.html" />
         <option value="$PROJECT_DIR$/templates/invoice/주문거래명세표.html" />
-        <option value="$PROJECT_DIR$/eggs/views.py" />
         <option value="$PROJECT_DIR$/order/views.py" />
+        <option value="$PROJECT_DIR$/templates/eggs/eggsReport.html" />
+        <option value="$PROJECT_DIR$/eggs/views.py" />
+        <option value="$PROJECT_DIR$/release/models.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-306" />
+    <option name="x" value="-63" />
     <option name="y" value="-8" />
     <option name="width" value="1936" />
     <option name="height" value="1056" />
@@ -669,14 +660,15 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49842766" visible="true" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49842766" visible="true" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3284055" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50208336" side_tool="true" weight="0.32769555" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32980973" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32875264" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.49791667" visible="true" weight="0.29598308" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="8" sideWeight="0.49791667" visible="true" weight="0.26321355" />
       <window_info id="Favorites" order="2" sideWeight="0.5015723" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39957717" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -686,7 +678,6 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32980973" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -702,13 +693,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/templates/release/releaseList.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="24" column="131" lean-forward="true" selection-start-line="24" selection-start-column="131" selection-end-line="24" selection-end-column="131" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/includes/modal/productUnitPricesCreateForm.html">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -933,13 +917,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/product/productReport.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6175">
-          <caret line="247" column="26" selection-start-line="247" selection-start-column="26" selection-end-line="247" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/static/js/productList.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="387">
@@ -979,30 +956,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="362">
           <caret line="21" selection-start-line="21" selection-end-line="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/eggs/eggsReport.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3575">
-          <caret line="143" column="24" selection-start-line="143" selection-start-column="24" selection-end-line="143" selection-end-column="24" />
-          <folding>
-            <element signature="n#style#0;n#h1#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#tr#0;n#table#0;n#div#2;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#2;n#tr#0;n#table#0;n#div#2;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/product/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9975">
-          <caret line="412" column="2" selection-start-line="412" selection-start-column="2" selection-end-line="412" selection-end-column="2" />
-          <folding>
-            <element signature="e#0#27#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1129,19 +1082,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/eggs/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="193" column="83" selection-start-line="193" selection-start-column="83" selection-end-line="193" selection-end-column="83" />
-          <folding>
-            <element signature="e#0#41#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/release/releaseReg.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="433">
+        <state relative-caret-position="1425">
           <caret line="57" column="80" selection-start-line="57" selection-start-column="61" selection-end-line="57" selection-end-column="80" />
         </state>
       </provider>
@@ -1149,16 +1092,26 @@
     <entry file="file://$PROJECT_DIR$/templates/includes/releaseLocationForm.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="50">
-          <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
+          <caret line="2" selection-start-line="2" selection-end-line="2" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/eggs/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="249" lean-forward="true" selection-start-line="249" selection-end-line="249" />
+        <state relative-caret-position="6100">
+          <caret line="249" selection-start-line="249" selection-end-line="249" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="464">
+          <caret line="117" lean-forward="true" selection-start-line="117" selection-end-line="117" />
+          <folding>
+            <element signature="e#0#45#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1166,19 +1119,60 @@
     <entry file="file://$PROJECT_DIR$/release/forms.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="463">
-          <caret line="52" lean-forward="true" selection-start-line="52" selection-end-line="52" />
+          <caret line="52" selection-start-line="52" selection-end-line="52" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/order/views.py">
+    <entry file="file://$PROJECT_DIR$/templates/product/productReport.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="338">
-          <caret line="112" selection-start-line="112" selection-end-line="112" />
+        <state relative-caret-position="563">
+          <caret line="247" column="26" selection-start-line="247" selection-start-column="26" selection-end-line="247" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/product/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="418" column="63" selection-start-line="418" selection-start-column="63" selection-end-line="418" selection-end-column="63" />
           <folding>
-            <element signature="e#0#45#0" expanded="true" />
+            <element signature="e#0#27#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/eggs/eggsReport.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="319">
+          <caret line="152" column="61" lean-forward="true" selection-start-line="152" selection-start-column="61" selection-end-line="152" selection-end-column="61" />
+          <folding>
+            <element signature="n#style#0;n#h1#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#tr#0;n#table#0;n#div#2;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#2;n#tr#0;n#table#0;n#div#2;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eggs/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="544">
+          <caret line="212" column="22" lean-forward="true" selection-start-line="212" selection-start-column="22" selection-end-line="212" selection-end-column="22" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/release/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="384">
+          <caret line="420" column="91" lean-forward="true" selection-start-line="420" selection-start-column="91" selection-end-line="420" selection-end-column="91" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
           </folding>
         </state>
       </provider>

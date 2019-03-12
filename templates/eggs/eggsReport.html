@@ -134,7 +134,7 @@ td, th {
 
 	<div>
 		<table class="mainTable">
-		  <tr style="height:50px; background-color:yellow;">
+		  <tr style="height:50px; background-color:#dcf0ff;">
 			<th>구분</th>
 			<th>입고일</th>
             <th style="width : 30%">농장명</th>
@@ -150,32 +150,26 @@ td, th {
                     {% if "합계" in ele.report_sort_type %}
                      {% if ele.code != "pass" %}
                       <tr>
-                        <td class="sum"> </td>
                         <td class="sum">{{ele.codeName}}</td>
-                        <td class="sum">{{ele.report_egg_count|intcomma }}</td>
-                        <td class="sum">{{ele.report_egg_amount|intcomma }}</td>
-                        <td class="sum">{{ele.report_rawTank_amount|intcomma }}</td>
-                        <td class="sum">{{ele.report_pastTank_amount|intcomma }}</td>
-                        <td class="sum">{{ele.report_product_amount|intcomma }}</td>
+                        <td class="sum">{{ele.in_ymd}}</td>
+                        <td class="sum">{{ele.in_locationCodeName}}</td>
+                        <td class="sum">{{ele.previousStock}}</td>
+                        <td class="sum">{{ele.in|intcomma }}</td>
+                        <td class="sum">{{ele.insert|intcomma }}</td>
+                        <td class="sum">{{ele.release|intcomma }}</td>
+                        <td class="sum">{{ele.currentStock|intcomma }}</td>
                       </tr>
                      {% endif %}
                     {% else %}
                       <tr>
-                        <td>{{ele.report_sort_type}}</td>
-                        <td class="blue">{{ele.codeName}}</td>
-                        <td class="number">{{ele.report_egg_count|intcomma }}</td>
-                        <td class="number">{{ele.report_egg_amount|intcomma }}</td>
-                        {% if ele.report_rawTank_amount %}
-                            <td class="number">{{ele.report_rawTank_amount|intcomma }}</td>
-                        {% else %}
-                            <td> </td>
-                        {% endif %}
-                        {% if ele.report_pastTank_amount %}
-                            <td class="number">{{ele.report_pastTank_amount|intcomma }}</td>
-                        {% else %}
-                            <td> </td>
-                        {% endif %}
-                        <td class="number">{{ele.report_product_amount|intcomma }}</td>
+                        <td>{{ele.codeName}}</td>
+                        <td class="blue">{{ele.in_ymd}}</td>
+                        <td class="number">{{ele.in_locationCodeName}}</td>
+                        <td class="number">{{ele.previousStock}}</td>
+                        <td class="number">{{ele.in|intcomma }}</td>
+                        <td class="number">{{ele.insert|intcomma }}</td>
+                        <td class="number">{{ele.release|intcomma }}</td>
+                        <td class="number">{{ele.currentStock|intcomma }}</td>
                       </tr>
                     {% endif %}
 			{% endfor %}

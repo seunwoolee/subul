@@ -188,21 +188,28 @@ class EggReport(View):
             .annotate(totalCount=Sum('count')) \
             .filter(ymd__lt=start_date) \
             .filter(totalCount__gt=0).order_by('eggCode__sorts', 'in_ymd')  # 재고가 0초과인 이전 재고
+        egg_period = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName') \
+            .annotate(totalCount=Sum('count')) \
+            .filter(ymd__gte=start_date) \
+            .filter(ymd__lte=end_date) \
+            .filter(type='입고') \
+            .order_by('eggCode__sorts', 'in_ymd')
+        queryset = egg_previous.union(egg_period)
+        queryset = queryset.order_by('code')
+        print(queryset)
 
-        #TODO egg_previous.filter(code='00005').aggregate(Sum('totalCount'))
-
-        for previous in egg_previous:  # 기간 내 전일재고의 각 타입별(LOSS, RELEASE) count를 구한다
+        for egg in queryset:
             result = {}
             countPerType = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName', 'type') \
                 .annotate(totalCount=Sum('count')) \
                 .annotate(totalPrice=Sum('price')) \
-                .filter(code=previous['code']) \
-                .filter(in_ymd=previous['in_ymd']) \
-                .filter(in_locationCodeName=previous['in_locationCodeName']) \
+                .filter(code=egg['code']) \
+                .filter(in_ymd=egg['in_ymd']) \
+                .filter(in_locationCodeName=egg['in_locationCodeName']) \
                 .filter(ymd__gte=start_date) \
                 .filter(ymd__lte=end_date)
 
-            PREVIOUS_STOCK = previous["totalCount"]
+            PREVIOUS_STOCK = egg["totalCount"]
             INSERT = 0
             OTHER = 0
             for element in countPerType:  # 전일재고니깐 생성 없음
@@ -217,9 +224,9 @@ class EggReport(View):
             if INSERT == 0: INSERT = None
             if OTHER == 0: OTHER = None
             if RELEASE == 0: RELEASE = None
-            result['codeName'] = previous['codeName']
-            result['in_ymd'] = previous['in_ymd']
-            result['in_locationCodeName'] = previous['in_locationCodeName']
+            result['codeName'] = egg['codeName']
+            result['in_ymd'] = egg['in_ymd']
+            result['in_locationCodeName'] = egg['in_locationCodeName']
             result['previousStock'] = PREVIOUS_STOCK
             result['in'] = None
             result['insert'] = INSERT
@@ -227,53 +234,15 @@ class EggReport(View):
             result['currentStock'] = CURRENT_STOCK
             arr.append(result)
 
-        # 기간 내 생산되고 출고된 것들의 현재고 구하기(전일재고 당연히 없음)
-        egg_period = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName') \
-            .annotate(totalCount=Sum('count')) \
-            .filter(ymd__gte=start_date) \
-            .filter(ymd__lte=end_date) \
-            .filter(type='입고') \
-            .order_by('eggCode__sorts', 'in_ymd')
-
-        for period in egg_period:  # 기간 내 생성된 각 타입별(IN, SALE, LOSS, INSERT) count를 구한다
-            result = {}
-            countPerType = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName', 'type') \
-                .annotate(totalCount=Sum('count')) \
-                .annotate(totalPrice=Sum('price')) \
-                .filter(code=period['code']) \
-                .filter(in_ymd=period['in_ymd']) \
-                .filter(in_locationCodeName=period['in_locationCodeName']) \
-                .filter(ymd__gte=start_date) \
-                .filter(ymd__lte=end_date)
-
-            IN = 0
-            INSERT = 0
-            OTHER = 0
-            for element in countPerType:  # 전일재고니깐 생성 없음
-                number = element["totalCount"]
-                if element['type'] == '생산':
-                    INSERT += number
-                elif element['type'] == '입고':
-                    IN += number
-                else:
-                    OTHER += number
-
-            RELEASE = INSERT + OTHER
-            CURRENT_STOCK = IN + RELEASE
-            if INSERT == 0: INSERT = None
-            if OTHER == 0: OTHER = None
-            if RELEASE == 0: RELEASE = None
-            result['codeName'] = period['codeName']
-            result['in_ymd'] = period['in_ymd']
-            result['in_locationCodeName'] = period['in_locationCodeName']
-            result['previousStock'] = None
-            result['in'] = IN
-            result['insert'] = INSERT
-            result['release'] = RELEASE
-            result['currentStock'] = CURRENT_STOCK
-            arr.append(result)
-
-        result_list = []
-        return render(request, 'eggs/eggsReport.html', {'result_list': result_list,
-                                                                  'start_date': start_date,
-                                                                  'end_date': end_date})
+        if len(arr) > 37:
+            first_loop_reuslt = arr[:37]
+            loop_reuslt = arr[37:]
+            return render(request, 'eggs/eggsReport.html',
+                          {'first_loop_reuslt': first_loop_reuslt,
+                           'loop_reuslt': loop_reuslt,
+                           'start_date': start_date,
+                           'end_date': end_date})
+        else: # 한장짜리
+            return render(request, 'eggs/eggsReport.html', {'result_list': arr,
+                                                                'start_date': start_date,
+                                                                'end_date': end_date})
