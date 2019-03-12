@@ -1,4 +1,4 @@
-from django.db.models import Sum, Func, F
+from django.db.models import Sum, Func, F, Value, IntegerField, CharField
 from django.http import HttpResponse, QueryDict
 from django.shortcuts import render, redirect
 from django.views import View
@@ -180,25 +180,41 @@ class GeneratePDF(View):
 
 
 class EggReport(View):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.arr = []
+        self.codeName = ''
+        self.previous_stock_sum = 0
+        self.in_sum = 0
+        self.insert_sum = 0
+        self.release_sum = 0
+        self.current_stock_sum = 0
+
+        self.total_previous_stock_sum = 0
+        self.total_in_sum = 0
+        self.total_insert_sum = 0
+        self.total_release_sum = 0
+        self.total_current_stock_sum = 0
+
     def get(self, request):
         start_date = request.GET.get('start_date')
         end_date = request.GET.get('end_date')
-        arr = []
         egg_previous = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName') \
-            .annotate(totalCount=Sum('count')) \
+            .annotate(totalCount=Sum('count')).annotate(gubun=Value('previous', output_field=CharField())) \
             .filter(ymd__lt=start_date) \
-            .filter(totalCount__gt=0).order_by('eggCode__sorts', 'in_ymd')  # 재고가 0초과인 이전 재고
+            .filter(totalCount__gt=0).order_by('eggCode__sorts', 'in_ymd')
         egg_period = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName') \
-            .annotate(totalCount=Sum('count')) \
+            .annotate(totalCount=Sum('count')).annotate(gubun=Value('period', output_field=CharField())) \
             .filter(ymd__gte=start_date) \
             .filter(ymd__lte=end_date) \
             .filter(type='입고') \
             .order_by('eggCode__sorts', 'in_ymd')
         queryset = egg_previous.union(egg_period)
         queryset = queryset.order_by('code')
-        print(queryset)
-
-        for egg in queryset:
+        self.codeName = queryset[0]['codeName']
+        last_index = len(queryset)
+        for i, egg in enumerate(queryset):
             result = {}
             countPerType = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName', 'type') \
                 .annotate(totalCount=Sum('count')) \
@@ -209,40 +225,137 @@ class EggReport(View):
                 .filter(ymd__gte=start_date) \
                 .filter(ymd__lte=end_date)
 
-            PREVIOUS_STOCK = egg["totalCount"]
+            PREVIOUS_STOCK = egg["totalCount"] if egg['gubun'] == 'previous' else 0
+            IN = 0
             INSERT = 0
             OTHER = 0
-            for element in countPerType:  # 전일재고니깐 생성 없음
+            for element in countPerType:
                 number = element["totalCount"]
                 if element['type'] == '생산':
                     INSERT += number
+                elif element['type'] == '입고':
+                    IN += number
                 else:
                     OTHER += number
 
             RELEASE = INSERT + OTHER
-            CURRENT_STOCK = PREVIOUS_STOCK + RELEASE
-            if INSERT == 0: INSERT = None
-            if OTHER == 0: OTHER = None
-            if RELEASE == 0: RELEASE = None
-            result['codeName'] = egg['codeName']
-            result['in_ymd'] = egg['in_ymd']
-            result['in_locationCodeName'] = egg['in_locationCodeName']
-            result['previousStock'] = PREVIOUS_STOCK
-            result['in'] = None
-            result['insert'] = INSERT
-            result['release'] = RELEASE
-            result['currentStock'] = CURRENT_STOCK
-            arr.append(result)
+            CURRENT_STOCK = IN + PREVIOUS_STOCK + RELEASE
+            if INSERT:
+                INSERT = abs(int(INSERT))
+            else:
+                INSERT = ''
+            if IN:
+                IN = abs(int(IN))
+            else:
+                IN = ''
+            if RELEASE:
+                RELEASE = abs(int(RELEASE))
+            else:
+                RELEASE = ''
 
-        if len(arr) > 37:
-            first_loop_reuslt = arr[:37]
-            loop_reuslt = arr[37:]
+            if self.codeName == egg['codeName']:
+                result['codeName'] = egg['codeName']
+                result['in_ymd'] = '{}/{}'.format(egg['in_ymd'][4:6], egg['in_ymd'][6:8])
+                result['in_locationCodeName'] = egg['in_locationCodeName']
+                if PREVIOUS_STOCK:
+                    result['previousStock'] = PREVIOUS_STOCK
+                else:
+                    result['previousStock'] = ''
+                result['in'] = IN
+                result['insert'] = INSERT
+                result['release'] = RELEASE
+                if CURRENT_STOCK:
+                    result['currentStock'] = CURRENT_STOCK
+                else:
+                    result['currentStock'] = ''
+                self.arr.append(result)
+                self.increase_sum_data(PREVIOUS_STOCK, IN, INSERT, RELEASE, CURRENT_STOCK)
+            else:
+                self.insert_sum_data(egg['codeName'])
+                self.reset_sum_data(egg['codeName'], PREVIOUS_STOCK, IN, INSERT, RELEASE, CURRENT_STOCK)
+                result = {}
+                result['codeName'] = egg['codeName']
+                result['in_ymd'] = '{}/{}'.format(egg['in_ymd'][4:6], egg['in_ymd'][6:8])
+                result['in_locationCodeName'] = egg['in_locationCodeName']
+                if PREVIOUS_STOCK:
+                    result['previousStock'] = PREVIOUS_STOCK
+                else:
+                    result['previousStock'] = ''
+                result['in'] = IN
+                result['insert'] = INSERT
+                result['release'] = RELEASE
+                if CURRENT_STOCK:
+                    result['currentStock'] = CURRENT_STOCK
+                else:
+                    result['currentStock'] = ''
+                self.arr.append(result)
+
+            if i == last_index - 1:
+                self.insert_sum_data(egg['codeName'])
+
+        self.insert_total_sum_data()
+        if len(self.arr) > 37:
+            first_loop_reuslt = self.arr[:37]
+            loop_reuslt = self.arr[37:]
             return render(request, 'eggs/eggsReport.html',
                           {'first_loop_reuslt': first_loop_reuslt,
                            'loop_reuslt': loop_reuslt,
                            'start_date': start_date,
                            'end_date': end_date})
-        else: # 한장짜리
-            return render(request, 'eggs/eggsReport.html', {'result_list': arr,
-                                                                'start_date': start_date,
-                                                                'end_date': end_date})
+        else:  # 한장짜리
+            return render(request, 'eggs/eggsReport.html', {'result_list': self.arr,
+                                                            'start_date': start_date,
+                                                            'end_date': end_date})
+
+    def insert_sum_data(self, codeName):
+        result = {}
+        result['codeName'] = '소계'
+        if self.previous_stock_sum:
+            result['previousStock'] = self.previous_stock_sum
+        else:
+            result['previousStock'] = 0
+        result['in'] = self.in_sum
+        result['insert'] = self.insert_sum
+        result['release'] = self.release_sum
+        if self.current_stock_sum:
+            result['currentStock'] = self.current_stock_sum
+        else:
+            result['currentStock'] = 0
+
+        self.total_previous_stock_sum += self.previous_stock_sum
+        self.total_in_sum += self.in_sum
+        self.total_insert_sum += self.insert_sum
+        self.total_release_sum += self.release_sum
+        self.total_current_stock_sum += self.current_stock_sum
+        self.arr.append(result)
+
+    def increase_sum_data(self, *args):
+        self.previous_stock_sum += args[0]
+        if args[1]: self.in_sum += args[1]
+        if args[2]: self.insert_sum += args[2]
+        if args[3]: self.release_sum += args[3]
+        if args[4]: self.current_stock_sum += args[4]
+
+    def reset_sum_data(self, *args):
+        self.codeName = args[0]
+        self.previous_stock_sum = int(args[1]) if args[1] else 0
+        self.in_sum = int(args[2]) if args[2] else 0
+        self.insert_sum = int(args[3]) if args[3] else 0
+        self.release_sum = int(args[4]) if args[4] else 0
+        self.current_stock_sum = int(args[5]) if args[5] else 0
+
+    def insert_total_sum_data(self):
+        result = {}
+        result['codeName'] = '합계'
+        if self.total_previous_stock_sum:
+            result['previousStock'] = self.total_previous_stock_sum
+        else:
+            result['previousStock'] = ''
+        result['in'] = self.total_in_sum
+        result['insert'] = self.total_insert_sum
+        result['release'] = self.total_release_sum
+        if self.total_current_stock_sum:
+            result['currentStock'] = self.total_current_stock_sum
+        else:
+            result['currentStock'] = ''
+        self.arr.append(result)
