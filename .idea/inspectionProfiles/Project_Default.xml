@@ -41,6 +41,8 @@
           <option value="product.models.ProductUnitPrice.objects" />
           <option value="product.models.SetProductCode.objects" />
           <option value="product.models.SetProductMatch.objects" />
+          <option value="order.models.Order.objects" />
+          <option value="datetime.strptime" />
         </list>
       </option>
     </inspection_tool>

@@ -20,7 +20,6 @@ fetch_data(end_day, plusThree_day);
 
     let gubunFilter = $('#tabnavigator a.nav-link.active').attr('href');
     gubunFilter = gubunFilter.substring(1);
-//    let eggTypeFilter = $('.type_filter #releaseType select').val();
     let checkBoxFilter = $('.type_filter input:checkbox:checked').not('#moneyMark')
                                 .map(function(){ return $(this).val(); }).get().join(',');
     let table = $('#'+gubunFilter +' .datatable');
@@ -51,38 +50,38 @@ function setStepOneDataTable(args)
             };
 
             let pageTotal_amount = api
-                .column( 6, { page: 'current'} )
-                .data()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
-
-            let pageTotal_count = api
                 .column( 7, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
-            let pageTotal_pricePerEa = api
+            let pageTotal_count = api
                 .column( 8, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
-            let pageTotal_price = api
+            let pageTotal_pricePerEa = api
                 .column( 9, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
+            let pageTotal_price = api
+                .column( 10, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
             // Update footer
-            $( api.column( 6 ).footer() ).html( numberFormatWithDot(pageTotal_amount) + '(KG)' );
-            $( api.column( 7 ).footer() ).html( numberFormat(pageTotal_count) + '(EA)' );
-            $( api.column( 8 ).footer() ).html( numberFormat(pageTotal_pricePerEa) );
-            $( api.column( 9 ).footer() ).html( numberFormat(pageTotal_price) );
+            $( api.column( 7 ).footer() ).html( numberFormatWithDot(pageTotal_amount) + '(KG)' );
+            $( api.column( 8 ).footer() ).html( numberFormat(pageTotal_count) + '(EA)' );
+            $( api.column( 9 ).footer() ).html( numberFormat(pageTotal_pricePerEa) );
+            $( api.column( 10 ).footer() ).html( numberFormat(pageTotal_price) );
         },
         "language": {searchPlaceholder: "거래처, 제품명, 메모"},
         "processing": true,
@@ -103,16 +102,18 @@ function setStepOneDataTable(args)
             { responsivePriority: 1, targets: 0 },
             { responsivePriority: 2, targets: 3 },
             { responsivePriority: 3, targets: -1, orderable: false },
-            { targets: 6, className: "dt-body-right" },
+            { targets: 4, orderable: false },
             { targets: 7, className: "dt-body-right" },
             { targets: 8, className: "dt-body-right" },
-            { targets: 9, className: "dt-body-right" }
+            { targets: 9, className: "dt-body-right" },
+            { targets: 10, className: "dt-body-right" }
         ],
         "columns": [
             {"data": "id"},
             {"data": "type", "render" : function(data, type, row, meta){return setTypeButton(data);}},
             {"data": "specialTag", "render" : function(data, type, row, meta){return setSpecialTagButton(data);}},
             {"data": "ymd"},
+            {"data": "weekday", "render" : function(data, type, row, meta){return setWeekdayButton(data);}},
             {"data": "orderLocationName"},
             {"data": "codeName"},
             {"data": "amount" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
@@ -459,6 +460,36 @@ function setTypeButton(data)
             break;
         default :
             return ''
+    }
+}
+
+function setWeekdayButton(data)
+{
+    switch(data)
+    {
+        case '월':
+            return '<span class="badge badge-pill badge-primary">'+ data +'</span>'
+            break;
+        case '화':
+            return '<span class="badge badge-pill badge-secondary">'+ data +'</span>'
+            break;
+        case '수':
+            return '<span class="badge badge-pill badge-success">'+ data +'</span>'
+            break;
+        case '목':
+            return '<span class="badge badge-pill badge-danger">'+ data +'</span>'
+            break;
+        case '금':
+            return '<span class="badge badge-pill badge-warning">'+ data +'</span>'
+            break;
+        case '토':
+            return '<span class="badge badge-pill badge-info">'+ data +'</span>'
+            break;
+        case '일':
+            return '<span class="badge badge-pill badge-dark">'+ data +'</span>'
+            break;
+        default :
+            return '오류'
     }
 }
 

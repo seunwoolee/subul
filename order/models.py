@@ -1,5 +1,9 @@
+from datetime import datetime
+from operator import itemgetter, attrgetter
+
 from django.db import models
-from django.db.models import Q, Sum, F, ExpressionWrapper, FloatField, DecimalField, Value, IntegerField, Func
+from django.db.models import Q, Sum, F, ExpressionWrapper, FloatField, DecimalField, Value, IntegerField, Func, \
+    CharField
 from model_utils import Choices
 from itertools import chain
 
@@ -59,13 +63,10 @@ class Order(Detail):
         order = kwargs.get('order[0][dir]', None)[0]
         releaseOrder = kwargs.get("releaseOrder", None)
         user_instance = kwargs.get("user_instance", None)[0]
-        checkBoxFilter = None
-        gubunFilter = None
+        checkBoxFilter = kwargs.get('checkBoxFilter', [''])[0]
+        location_manager = kwargs.get('location_manager', [''])[0]
+        gubunFilter = kwargs.get('gubunFilter', [''])[0]
 
-        if not releaseOrder:
-            checkBoxFilter = kwargs.get('checkBoxFilter', None)[0]
-            location_manager = kwargs.get('location_manager', None)[0]
-            gubunFilter = kwargs.get('gubunFilter', None)[0]
         if checkBoxFilter: checkBoxFilter = checkBoxFilter.split(',')
 
         if not releaseOrder:  # 주문내역조회
@@ -90,10 +91,12 @@ class Order(Detail):
                     .annotate(setProductCode=F('setProduct__code'))
 
                 total = queryset.count()
+
                 if search_value:
                     queryset = queryset.filter(Q(orderLocationName__icontains=search_value) |
                                                Q(codeName__icontains=search_value) |
                                                Q(memo__icontains=search_value))
+
             elif gubunFilter == 'stepTwo':
                 ORDER_COLUMN_CHOICES = Choices(
                     ('0', 'id'),
@@ -152,7 +155,6 @@ class Order(Detail):
 
         count = queryset.count()
 
-        # if length != -1:
         if not releaseOrder:
             if checkBoxFilter:
                 queryset = queryset.filter(orderLocationCode__location_character__in=checkBoxFilter)

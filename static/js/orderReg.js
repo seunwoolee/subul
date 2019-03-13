@@ -387,15 +387,23 @@ $(".count").focusout(function(){
     if(set == '일반' && AMOUNT_KG['parentTR'][0] == parentTR[0]) { setAutoAmountValue($(this)); }
 })
 
-$("form").submit(function(){
-    ymd = set_yyyymmdd($('input[type=date]').val());
-    if(ymd)
+$("#submitButton").click(function(e){
+    if($('form')[0].checkValidity())
     {
-        $("input[type=hidden][id*='ymd']").each(function (i, element){
-            $(element).val(ymd);
-        });
-        $("input:disabled").prop('disabled', false);
-        $("form").submit();
+        let dayOfWeek = getDayOfWeek($('input[type=date]').val());
+        if(confirm(`주문일자가 ${$('input[type=date]').val()} ${dayOfWeek}요일이 맞습니까?`))
+        {
+            ymd = set_yyyymmdd($('input[type=date]').val());
+            $("input[type=hidden][id*='ymd']").each(function (i, element){
+                $(element).val(ymd);
+            });
+            $("input:disabled").prop('disabled', false);
+            $("form").submit();
+        }
+        else
+        {
+            return false;
+        }
     }
 })
 

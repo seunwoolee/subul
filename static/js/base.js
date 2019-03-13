@@ -39,6 +39,28 @@ Date.prototype.yyyymmdd = function() {
   return [this.getFullYear(), (mm>9 ? '' : '0') + mm,  (dd>9 ? '' : '0') + dd ].join('-');
 };
 
+function getDayOfWeek(date)
+{
+    let weekArray = [
+        '일',
+        '월',
+        '화',
+        '수',
+        '목',
+        '금',
+        '토'
+    ];
+    let dayOfweek = new Date(date).getDay();
+    if(isNaN(dayOfweek))
+    {
+        return false;
+    }
+    else
+    {
+        return weekArray[dayOfweek]
+    }
+}
+
 function set_yyyymmdd(yyyy_mm_dd)
 {
     temp = yyyy_mm_dd.split('-');
