@@ -76,14 +76,15 @@ class Order(Detail):
                     ('1', 'type'),
                     ('2', 'specialTag'),
                     ('3', 'ymd'),
-                    ('4', 'orderLocationName'),
-                    ('5', 'codeName'),
-                    ('6', 'amount'),
-                    ('7', 'count'),
-                    ('8', 'price'),
-                    ('9', 'totalPrice'),
-                    ('10', 'memo'),
-                    ('11', 'setProduct'),
+                    ('4', 'weekday'),
+                    ('5', 'orderLocationName'),
+                    ('6', 'codeName'),
+                    ('7', 'amount'),
+                    ('8', 'count'),
+                    ('9', 'price'),
+                    ('10', 'totalPrice'),
+                    ('11', 'memo'),
+                    ('12', 'setProduct'),
                 )
                 order_column = ORDER_COLUMN_CHOICES[order_column]
                 queryset = Order.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
