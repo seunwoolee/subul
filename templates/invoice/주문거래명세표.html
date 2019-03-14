@@ -130,7 +130,11 @@ th
                 <td class="blue" colspan="3">505-81-00799</td>
                 <th class="blue" rowspan="2" style="width : 35px; padding:2px; line-height:10%">피<br>공<br>급<br>자</th>
                 <th class="blue">등록번호</th>
-                <td colspan="3">105-87-81968</td>
+                {% if location.location_companyNumber %}
+                    <td colspan="3">{{location.location_companyNumber}}</td>
+                {% else %}
+                    <td colspan="3"> </td>
+                {% endif %}
             </tr>
             <tr class="border-bold">
                 <th class="blue">성명</th>
@@ -139,7 +143,7 @@ th
                 <td class="blue" style="padding : 0.1;">(주)케이씨피드</td>
                 <th class="blue">성명</th>
                 {% if location.location_owner %}
-                    <td>{{ location.location_owner|slice:":3"}}</td>
+                    <td>{{ location.location_owner|cut:" "}}</td>
                 {% else %}
                     <td> </td>
                 {% endif %}

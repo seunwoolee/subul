@@ -222,8 +222,21 @@ function deleteForm(prefix, btn) {
 
 $(document).on('click', '.add-form-row', function(e){ //일반상품 + 버튼
     e.preventDefault();
+    let OLAP_SHOPPINGMALL = '00416';
+    let parentTR = $(this).parents('tr');
+    let location = parentTR.find('.location').val();
+    let price = parentTR.find('.price');
+
     if($('form')[0].checkValidity())
     {
+        if(OLAP_SHOPPINGMALL == location)
+        {
+            if(confirm("직원가 30%를 적용하시겠습니까?"))
+            {
+                price.val(price.val() * 0.7);
+            }
+        }
+
         cloneMore('.forms-row:last', 'form');
         setReadOnly($(this).parents('tr'));
         calculatePriceCount();
