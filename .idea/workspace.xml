@@ -41,10 +41,10 @@
     <bookmark url="file://$PROJECT_DIR$/product/models.py" line="522" />
     <bookmark url="file://$PROJECT_DIR$/product/models.py" line="523" />
     <bookmark url="file://$APPLICATION_CONFIG_DIR$/scratches/build/book.py" line="16" mnemonic="9" />
-    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="460" />
+    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="468" />
     <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="222" />
-    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="250" />
-    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="257" />
+    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="247" />
+    <bookmark url="file://$PROJECT_DIR$/static/js/orderReg.js" line="254" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="272b230e-ac37-47c4-8a83-fda4d548c6fa" name="Default" comment="" />
@@ -57,35 +57,24 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="토큰라이징.py" pinned="false" current-in-tab="false">
-        <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/study/토큰라이징.py">
+      <file leaf-file-name="orderReg.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/static/js/orderReg.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret lean-forward="true" selection-end-line="7" selection-end-column="16" />
-              <folding>
-                <element signature="e#75#104#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="375">
+              <caret line="285" column="33" selection-start-line="285" selection-start-column="33" selection-end-line="285" selection-end-column="33" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="추상구문트리.py" pinned="false" current-in-tab="false">
-        <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/study/추상구문트리.py">
+      <file leaf-file-name="orderReg.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/order/orderReg.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="275">
-              <caret line="11" column="20" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
+              <caret line="29" column="97" lean-forward="true" selection-start-line="29" selection-start-column="97" selection-end-line="29" selection-end-column="97" />
               <folding>
-                <element signature="e#0#29#0" expanded="true" />
+                <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#form#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#form#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test.py" pinned="false" current-in-tab="true">
-        <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/study/test.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="3" column="6" lean-forward="true" selection-start-line="3" selection-start-column="6" selection-end-line="3" selection-end-column="6" />
             </state>
           </provider>
         </entry>
@@ -186,7 +175,6 @@
         <option value="$PROJECT_DIR$/templates/eggs/eggsList.html" />
         <option value="$PROJECT_DIR$/templates/product/productReport.html" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/study/캡슐화(@property).py" />
-        <option value="$PROJECT_DIR$/templates/order/orderReg.html" />
         <option value="$PROJECT_DIR$/api/orderSerializers.py" />
         <option value="$PROJECT_DIR$/templates/order/orderList.html" />
         <option value="$PROJECT_DIR$/static/css/orderList.css" />
@@ -195,7 +183,6 @@
         <option value="$PROJECT_DIR$/templates/invoice/주문거래명세표.html" />
         <option value="$PROJECT_DIR$/templates/invoice/출고거래명세표.html" />
         <option value="$PROJECT_DIR$/templates/invoice/원란거래명세표.html" />
-        <option value="$PROJECT_DIR$/static/js/orderReg.js" />
         <option value="$PROJECT_DIR$/subul/urls.py" />
         <option value="$PROJECT_DIR$/subul/settings.py" />
         <option value="$PROJECT_DIR$/templates/code/locationReg.html" />
@@ -223,6 +210,8 @@
         <option value="$APPLICATION_CONFIG_DIR$/scratches/study/멀티스레딩(세마포어).py" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/study/추상구문트리" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/study/추상구문트리.py" />
+        <option value="$PROJECT_DIR$/templates/order/orderReg.html" />
+        <option value="$PROJECT_DIR$/static/js/orderReg.js" />
       </list>
     </option>
   </component>
@@ -623,12 +612,12 @@
     <frame x="1912" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49842766" visible="true" weight="0.25" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49842766" visible="true" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3284055" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50208336" side_tool="true" weight="0.32769555" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32875264" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32875264" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.49791667" weight="0.26215646" />
       <window_info id="Favorites" order="2" sideWeight="0.5015723" side_tool="true" weight="0.25" />
@@ -656,18 +645,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/eggs/forms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="27" column="69" lean-forward="true" selection-start-line="27" selection-start-column="69" selection-end-line="27" selection-end-column="69" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/order/forms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-930" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/packing/forms.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-480" />
@@ -976,16 +953,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/study/추상구문트리.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="11" column="20" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/study/토큰라이징.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -996,10 +963,38 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/study/추상구문트리.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="275">
+          <caret line="11" column="20" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#29#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/study/test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
           <caret line="3" column="6" lean-forward="true" selection-start-line="3" selection-start-column="6" selection-end-line="3" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/order/orderReg.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="275">
+          <caret line="29" column="97" lean-forward="true" selection-start-line="29" selection-start-column="97" selection-end-line="29" selection-end-column="97" />
+          <folding>
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#form#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#form#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/js/orderReg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="285" column="33" selection-start-line="285" selection-start-column="33" selection-end-line="285" selection-end-column="33" />
         </state>
       </provider>
     </entry>

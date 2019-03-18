@@ -229,12 +229,9 @@ $(document).on('click', '.add-form-row', function(e){ //일반상품 + 버튼
 
     if($('form')[0].checkValidity())
     {
-        if(OLAP_SHOPPINGMALL == location)
+        if(OLAP_SHOPPINGMALL == location && $("#employeePrice input:checkbox").is(":checked"))
         {
-            if(confirm("직원가 30%를 적용하시겠습니까?"))
-            {
-                price.val(price.val() * 0.7);
-            }
+            price.val(Math.round(price.val() * 0.7));
         }
 
         cloneMore('.forms-row:last', 'form');
@@ -276,6 +273,7 @@ PRODUCTINFO = [];
 AMOUNT_KG = {};
 $( ".location" ).change(function() {
 
+    let OLAP_SHOPPINGMALL = '00416';
     parentTR = $(this).parents('tr');
     data = parentTR.find('.location').val();
     set = parentTR.find('.set').val();
@@ -284,6 +282,17 @@ $( ".location" ).change(function() {
     price = parentTR.find('.price');
     specialTag = parentTR.find('.specialTag').val();
     (set == '일반') ? url = '/api/OrderProductUnitPrice/'+data : url = '/api/OrderSetProductCode/'+data;
+
+    if(OLAP_SHOPPINGMALL == data)
+    {
+        $('#employeePrice').show();
+    }
+    else
+    {
+        $("#employeePrice input:checkbox").prop("checked", false);
+        $('#employeePrice').hide();
+    }
+
     if(data)
     {
         $.ajax({
@@ -291,7 +300,6 @@ $( ".location" ).change(function() {
         type: 'get',
         data: data,
         }).done(function(data) {
-            console.log(data);
             window.PRODUCTINFO = [];
             product.empty();
             data.forEach(function(element, i){
