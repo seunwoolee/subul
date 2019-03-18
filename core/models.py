@@ -1,5 +1,6 @@
 from django.db import models
-from django.db.models import SET_DEFAULT
+from django.db.models import F, Q, When, Case, CharField, Value
+from model_utils import Choices
 from users.models import CustomUser
 
 DELETE_STATE_CHOICES = (
@@ -136,3 +137,66 @@ class Location(Code):
 
     def __str__(self):
         return self.codeName
+
+    @staticmethod
+    def locationQuery(**kwargs):
+
+        ORDER_COLUMN_CHOICES = Choices(
+            ('0', 'id'),
+            ('1', 'codeName'),
+            ('2', 'location_owner'),
+            ('3', 'location_phone'),
+            ('4', 'location_companyNumber'),
+            ('5', 'location_address'),
+            ('6', 'character_string'),
+            ('7', 'character_string'),
+            ('8', 'location_manager_string'),
+        )
+        draw = int(kwargs.get('draw', None)[0])
+        start = int(kwargs.get('start', None)[0])
+        length = int(kwargs.get('length', None)[0])
+        search_value = kwargs.get('search[value]', None)[0]
+        order_column = kwargs.get('order[0][column]', None)[0]
+        order = kwargs.get('order[0][dir]', None)[0]
+        order_column = ORDER_COLUMN_CHOICES[order_column]
+        type = kwargs.get('type', None)[0]
+
+        queryset = Location.objects.all().filter(delete_state='N').filter(type=type)\
+                    .annotate(type_string=Case(
+                                    When(type='01', then=Value('포장재입고')),
+                                    When(type='03', then=Value('원란입고')),
+                                    When(type='07', then=Value('원란판매')),
+                                    When(type='09', then=Value('OEM입고거래처')),
+                                    default=Value('판매'),
+                                    output_field=CharField()))\
+                    .annotate(character_string=Case(
+                                    When(location_character='01', then=Value('B2B')),
+                                    When(location_character='02', then=Value('급식')),
+                                    When(location_character='03', then=Value('미군납')),
+                                    When(location_character='04', then=Value('백화점')),
+                                    When(location_character='05', then=Value('온라인')),
+                                    When(location_character='06', then=Value('자사몰')),
+                                    When(location_character='07', then=Value('직거래')),
+                                    When(location_character='08', then=Value('특판')),
+                                    When(location_character='09', then=Value('하이퍼')),
+                                    default=Value('기타'),
+                                    output_field=CharField())) \
+                    .annotate(location_manager_string=F('location_manager__first_name'))
+
+        if order == 'desc':
+            order_column = '-' + order_column
+
+        total = queryset.count()
+
+        if search_value:
+            queryset = queryset.filter(codeName__icontains=search_value)
+
+        count = queryset.count()
+        queryset = queryset.order_by(order_column)[start:start + length]
+        return {
+            'items': queryset,
+            'count': count,
+            'total': total,
+            'draw': draw
+        }
+#

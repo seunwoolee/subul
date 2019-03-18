@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'mathfilters',
     'rest_framework',
+    'crispy_forms',
 
     # local
     'core',

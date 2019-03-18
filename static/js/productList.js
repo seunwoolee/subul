@@ -169,6 +169,7 @@
                     },
                     {
                         extend: 'excel',
+                        footer: true,
                         className:'btn btn-light',
                         text : '<i class="far fa-file-excel fa-lg"></i>',
                         init : function(api, node, config){
@@ -201,7 +202,7 @@
                     $("#insertLoss").html(`투입LOSS : ${data['insertLoss']} %`);
                     $("#openEggLoss").html(`할란LOSS : ${data['openEggLoss']} %`);
                 }).fail(function() {
-                    alert('수정 에러 전산실로 문의바랍니다(Summary Error).');
+                    console.log('수정 에러 전산실로 문의바랍니다(Summary Error).');
                 });
                 $('[data-toggle="tooltip"]').tooltip();
             }

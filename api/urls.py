@@ -3,7 +3,8 @@ from .views import ProductsAPIView, ProductUpdate, ProductEggUpdate, OrderProduc
     OrderSetProductCode, ProductCodes, OrdersAPIView, OrderUpdate, ProductAdminsAPIView, ReleasesAPIView, ReleaseUpdate, \
     ProductMasterUpdate, EggsAPIView, EggsListAPIView, EggsUpdate, EggsReportAPIView, PackingListAPIView, PackingUpdate, \
     PackingAPIView, PackingReportAPIView, ProductSummaryAPIView, ProductOEMsAPIView, ProductOEMUpdate, \
-    ProductUnitPricesAPIView, ProductUnitPricesUpdate, SetProductMatchsAPIView, SetProductMatchsUpdate
+    ProductUnitPricesAPIView, ProductUnitPricesUpdate, SetProductMatchsAPIView, SetProductMatchsUpdate, \
+    LocationsAPIView, LocationUpdate
 
 urlpatterns = [
     # 생산쪽 API
@@ -37,6 +38,8 @@ urlpatterns = [
     path('packingList/', PackingListAPIView.as_view()),
     path('packingReport/', PackingReportAPIView.as_view()),
     # 코드쪽 API
+    path('location/', LocationsAPIView.as_view()),
+    path('location/<int:pk>', LocationUpdate.as_view()),
     path('productUnitPrices/', ProductUnitPricesAPIView.as_view()),
     path('productUnitPrices/<int:pk>', ProductUnitPricesUpdate.as_view()),
     path('setProductMatch/', SetProductMatchsAPIView.as_view()),

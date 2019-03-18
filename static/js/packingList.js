@@ -115,30 +115,7 @@ function setStepOneDataTable(args)
                     },
                     {
                         extend: 'excel',
-                        className:'btn btn-light',
-                        text : '<i class="far fa-file-excel fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    }],        buttons: [
-                    {
-                        extend: 'pageLength',
-                        className:'btn btn-light',
-                        text : '<i class="fas fa-list-ol fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    },
-                    {
-                        extend: 'colvis',
-                        className:'btn btn-light',
-                        text : '<i class="far fa-eye fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    },
-                    {
-                        extend: 'excel',
+                        footer: true,
                         className:'btn btn-light',
                         text : '<i class="far fa-file-excel fa-lg"></i>',
                         init : function(api, node, config){
@@ -198,30 +175,7 @@ function setStepTwoDataTable(args)
                     },
                     {
                         extend: 'excel',
-                        className:'btn btn-light',
-                        text : '<i class="far fa-file-excel fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    }],        buttons: [
-                    {
-                        extend: 'pageLength',
-                        className:'btn btn-light',
-                        text : '<i class="fas fa-list-ol fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    },
-                    {
-                        extend: 'colvis',
-                        className:'btn btn-light',
-                        text : '<i class="far fa-eye fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    },
-                    {
-                        extend: 'excel',
+                        footer: true,
                         className:'btn btn-light',
                         text : '<i class="far fa-file-excel fa-lg"></i>',
                         init : function(api, node, config){
@@ -282,30 +236,7 @@ function setStepThreeDataTable(args)
                     },
                     {
                         extend: 'excel',
-                        className:'btn btn-light',
-                        text : '<i class="far fa-file-excel fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    }],        buttons: [
-                    {
-                        extend: 'pageLength',
-                        className:'btn btn-light',
-                        text : '<i class="fas fa-list-ol fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    },
-                    {
-                        extend: 'colvis',
-                        className:'btn btn-light',
-                        text : '<i class="far fa-eye fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    },
-                    {
-                        extend: 'excel',
+                        footer: true,
                         className:'btn btn-light',
                         text : '<i class="far fa-file-excel fa-lg"></i>',
                         init : function(api, node, config){
@@ -350,6 +281,8 @@ function manualReleaseModal(data)
     $('#id_memo').val("");
     $("#Modal").modal();
 }
+
+
 
 function editButtonClick(data)
 {

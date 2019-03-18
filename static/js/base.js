@@ -128,6 +128,11 @@ function setDataTableActionButton()
             '<button class="btn btn-info btn-sm MODIFY" href="#"><i class="fa fa-edit"></i></button>';
 }
 
+function setDataTableActionButtonOnlyModify()
+{
+    return '<button class="btn btn-info btn-sm MODIFY" href="#"><i class="fa fa-edit"></i></button>';
+}
+
 function setDataTableActionButtonWithRecall()
 {
     return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="fa fa-trash-o"></i></button>' +

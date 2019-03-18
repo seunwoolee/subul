@@ -320,10 +320,8 @@ class Egg(Detail):
 
     @staticmethod
     def calculateAmount(amount: int, pks: str):
-        print(amount, pks)
         amount_last = amount
         arr = pks.split(',')
-        print(arr)
         eggs = Egg.objects.filter(id__in=arr)
         last_item = len(eggs) - 1
         totalCount = Egg.objects.filter(id__in=arr).aggregate(Sum('count'))

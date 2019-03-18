@@ -88,94 +88,81 @@
             </div>
         </li>
     </ul>
-    <!--<button class="navbar-toggler aside-menu-toggler d-md-down-none" type="button" data-toggle="aside-menu-lg-show">-->
-    <!--<span class="navbar-toggler-icon"></span>-->
-    <!--</button>-->
-    <!--<button class="navbar-toggler aside-menu-toggler d-lg-none" type="button" data-toggle="aside-menu-show">-->
-    <!--<span class="navbar-toggler-icon"></span>-->
-    <!--</button>-->
 </header>
 <div class="app-body">
     <div class="sidebar">
         <nav class="sidebar-nav">
             <ul class="nav">
-                <!--<li class="nav-item">-->
-                <!--<a class="nav-link" href="{% url 'index' %}">-->
-                <!--<i class="nav-icon icon-speedometer"></i> HOME-->
-                <!--</a>-->
-                <!--</li>-->
                 <li class="nav-title">생산등록</li>
-                <!--{% if perms.order.add_order %}-->
-                <!--<li>asdfasdfasdfas</li>-->
-                <!--{% endif %}-->
-                <!--{% if perms.order.delete_order %}-->
-                <!--<li>delete</li>-->
-                <!--{% endif %}-->
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'productRegister' %}">
                         <i class="nav-icon icon-pencil"></i>제품생산등록</a>
                 </li>
-                <!--<li class="nav-item">-->
-                <!--<a class="nav-link" >-->
-                <!--<i class="nav-icon icon-pencil"></i>생산추가등록</a>-->
-                <!--</li>-->
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'productList' %}">
-                        <i class="nav-icon icon-drop"></i>생산내역조회</a>
+                        <i class="nav-icon icon-pencil"></i>생산내역조회</a>
                 </li>
                 <li class="nav-title">주문발주</li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'orderReg' %}">
-                        <i class="nav-icon icon-puzzle"></i>주문등록</a>
+                        <i class="nav-icon icon-star"></i>주문등록</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'orderList' %}">
-                        <i class="nav-icon icon-puzzle"></i>주문조회</a>
+                        <i class="nav-icon icon-star"></i>주문조회</a>
                 </li>
                 <li class="nav-title">출고</li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'releaseReg' %}">
-                        <i class="nav-icon icon-puzzle"></i>출고등록</a>
+                        <i class="nav-icon icon-star"></i>출고등록</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'releaseList' %}">
-                        <i class="nav-icon icon-puzzle"></i>출고조회</a>
+                        <i class="nav-icon icon-star"></i>출고조회</a>
                 </li>
                 <li class="nav-title">원란</li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'eggsReg' %}">
-                        <i class="nav-icon icon-puzzle"></i>원란등록</a>
+                        <i class="nav-icon icon-bell"></i>원란등록</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'eggsList' %}">
-                        <i class="nav-icon icon-puzzle"></i>원란조회</a>
+                        <i class="nav-icon icon-bell"></i>원란조회</a>
                 </li>
                 <li class="nav-title">포장재</li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'packingReg' %}">
-                        <i class="nav-icon icon-puzzle"></i>포장재등록</a>
+                        <i class="nav-icon icon-energy"></i>포장재등록</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'packingList' %}">
-                        <i class="nav-icon icon-puzzle"></i>포장재조회</a>
+                        <i class="nav-icon icon-energy"></i>포장재조회</a>
                 </li>
                 <li class="nav-title">OEM 상품</li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'productOEMReg' %}">
-                        <i class="nav-icon icon-puzzle"></i>OEM 등록</a>
+                        <i class="nav-icon icon-list"></i>OEM 등록</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'productOEMList' %}">
-                        <i class="nav-icon icon-puzzle"></i>OEM 조회</a>
+                        <i class="nav-icon icon-list"></i>OEM 조회</a>
                 </li>
                 <li class="nav-title">코드관리</li>
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'locationReg' %}">
+                        <i class="nav-icon icon-calculator"></i>거래처 등록</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'locationList' %}">
+                        <i class="nav-icon icon-calculator"></i>거래처 조회</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'productUnitPricesList' %}">
-                        <i class="nav-icon icon-puzzle"></i>거래처별 제품단가</a>
+                        <i class="nav-icon icon-calculator"></i>거래처별 제품단가</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'setProductMatchList' %}">
-                        <i class="nav-icon icon-puzzle"></i>세트상품관리</a>
+                        <i class="nav-icon icon-calculator"></i>세트상품관리</a>
                 </li>
             </ul>
         </nav>

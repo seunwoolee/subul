@@ -218,6 +218,7 @@ function setStepOneDataTable(args)
                     },
                     {
                         extend: 'excel',
+                        footer: true,
                         className:'btn btn-light',
                         text : '<i class="far fa-file-excel fa-lg"></i>',
                         init : function(api, node, config){
@@ -366,6 +367,7 @@ function setStepTwoDataTable(args)
                     },
                     {
                         extend: 'excel',
+                        footer: true,
                         className:'btn btn-light',
                         text : '<i class="far fa-file-excel fa-lg"></i>',
                         init : function(api, node, config){
@@ -511,6 +513,7 @@ function setStepThreeDataTable(args)
                     },
                     {
                         extend: 'excel',
+                        footer: true,
                         className:'btn btn-light',
                         text : '<i class="far fa-file-excel fa-lg"></i>',
                         init : function(api, node, config){
@@ -630,6 +633,7 @@ function setStepFourDataTable(args)
                     },
                     {
                         extend: 'excel',
+                        footer: true,
                         className:'btn btn-light',
                         text : '<i class="far fa-file-excel fa-lg"></i>',
                         init : function(api, node, config){
@@ -775,6 +779,7 @@ function setStepFiveDataTable(args)
                     },
                     {
                         extend: 'excel',
+                        footer: true,
                         className:'btn btn-light',
                         text : '<i class="far fa-file-excel fa-lg"></i>',
                         init : function(api, node, config){
@@ -840,6 +845,7 @@ function setStepSixDataTable(args)
                     },
                     {
                         extend: 'excel',
+                        footer: true,
                         className:'btn btn-light',
                         text : '<i class="far fa-file-excel fa-lg"></i>',
                         init : function(api, node, config){

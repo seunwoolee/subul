@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework import mixins
 
 from api.eggSerializers import EggSerializer
+from api.locationSerializers import LocationSerializer
 from api.orderSerializers import OrderSerializer
 from api.packingSerializers import PackingSerializer
 from api.productOEMSerializers import ProductOEMSerializer
@@ -557,3 +558,26 @@ class SetProductMatchsUpdate(generics.RetrieveUpdateDestroyAPIView):
     queryset = SetProductMatch.objects.all()
     serializer_class = SetProductMatchListSerializer
 
+
+class LocationsAPIView(APIView):
+
+    def get(self, request):
+        try:
+            result = dict()
+            location = Location.locationQuery(**request.query_params)
+            locationSerializer = LocationSerializer(location['items'], many=True)
+            result['data'] = locationSerializer.data
+            result['draw'] = location['draw']
+            result['recordsTotal'] = location['total']
+            result['recordsFiltered'] = location['count']
+            return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+        except Exception as e:
+            return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+
+
+class LocationUpdate(generics.RetrieveUpdateDestroyAPIView):
+    '''
+    거래처 조회에서 Update
+    '''
+    queryset = Location.objects.all()
+    serializer_class = LocationSerializer

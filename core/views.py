@@ -1,218 +1,32 @@
-import csv
-
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 
-from eggs.models import EggCode
-from packing.models import PackingCode
-from product.models import ProductCode, ProductUnitPrice, SetProductCode, SetProductMatch
 from .models import Location
-
-import cx_Oracle
-import os
-
-# cx_Oracle 한글처리 시작
-os.environ["NLS_LANG"] = ".AL32UTF8"
-START_VALUE = u"Unicode \u3042 3".encode('utf-8')
-END_VALUE = u"Unicode \u3042 6".encode('utf-8')
-# cx_Oracle 한글처리 끝
+from .forms import LocationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class LocationMigrate(View):
+class LocationList(LoginRequiredMixin, View):
+
     def get(self, request):
-        con = cx_Oracle.connect('system/kcerp@155.1.19.2/kcerp')
-        cursor = con.cursor()
-        query = " select \
-                        코드 as code ,\
-                        이름 as codeName,\
-                        구분 as type,\
-                        주소 as location_address,\
-                        전화 as location_phone,\
-                        담당자 as location_owner,\
-                        사업자번호 as  location_companyNumber, \
-                        쇼핑몰 as location_shoppingmall, \
-                        분류 as location_character,\
-                        사용유무 as delete_state  \
-                    from KCFEED.FRESH장소CD"
-        cursor.execute(query)
-
-        for row in cursor:
-            delete_state = 'N' if row[9] == 'Y' else 'Y'
-            Location.objects.create(
-                code=row[0],
-                codeName=row[1],
-                type=row[2],
-                location_address=row[3],
-                location_phone=row[4],
-                location_owner=row[5],
-                location_companyNumber=row[6],
-                location_shoppingmall=row[7],
-                location_character=row[8],
-                delete_state=delete_state
-            )
+        form = LocationForm()
+        return render(request, 'code/locationList.html', {'form': form})
 
 
-class ProductCodeMigrate(View):
+class LocationReg(LoginRequiredMixin, View):
+
+    def post(self, request):
+        formset = LocationForm(request.POST)
+        if formset.is_valid():
+            code = str(int(Location.objects.order_by('-code').first().code) + 1)
+            code = '00'+code if len(code) == 3 else '0'+code
+            form = formset.save(commit=False)
+            form.code = code
+            form.save()
+        else:
+            print(formset.errors)
+        return redirect('locationReg')
+
     def get(self, request):
-        con = cx_Oracle.connect('system/kcerp@155.1.19.2/kcerp')
-        cursor = con.cursor()
-        query = " select \
-                        코드 as code ,\
-                        품명 as codeName,\
-                        내용구분 as type,\
-                        그램수량 as amount_kg,\
-                        단가 as price,\
-                        포장 as store_type, \
-                        세율 as vat, \
-                        유통기한 as expiration, \
-                        사용유무 as delete_state \
-                    from KCFEED.FRESHCD1"
-        cursor.execute(query)
-
-        for row in cursor:
-            try:
-
-                type = row[2]
-                if type is None:
-                    type = '난백'
-
-                delete_state = row[8]
-                if delete_state == 'N': #사용유무가 N이면 삭제 나머지 다 사용
-                    delete_state = 'Y'
-                else:
-                    delete_state = 'N'
-
-                location = ProductCode.objects.create(
-                    code=row[0],
-                    codeName=row[1],
-                    type=type,
-                    amount_kg=row[3],
-                    price=row[4],
-                    store_type=row[5],
-                    vat=row[6],
-                    expiration=row[7],
-                    delete_state=delete_state
-                )
-            except Exception as e:
-                print(e)
-
-
-class ProductUnitPriceMigrate(View):
-    def get(self, request):
-        con = cx_Oracle.connect('system/kcerp@155.1.19.2/kcerp')
-        cursor = con.cursor()
-        query = " select 거래처 as location , 제품 as product, 금액 as price , 사용유무 as delete_state from  KCFEED.FRESH단가"
-        cursor.execute(query)
-
-        for row in cursor:
-            try:
-
-                location = Location.objects.get(code=row[0])
-                product = ProductCode.objects.get(code=row[1])
-                price = row[2]
-                delete_state = 'N' if row[3] == 'Y' else 'Y'
-
-                location = ProductUnitPrice.objects.create(
-                    locationCode=location,
-                    productCode=product,
-                    price=price,
-                    delete_state=delete_state
-                )
-            except Exception as e:
-                print(e)
-
-
-class SetProductCodeMigrate(View):
-    def get(self, request):
-        con = cx_Oracle.connect('system/kcerp@155.1.19.2/kcerp')
-        cursor = con.cursor()
-        query = " select * from KCFEED.FRESHCD4 "
-        cursor.execute(query)
-
-        for row in cursor:
-            try:
-                delete_state = 'N' if row[3] == 'Y' else 'Y'
-                location = Location.objects.get(code=row[8])
-
-                setProductCode = SetProductCode.objects.create(
-                    code=row[0],
-                    codeName=row[1],
-                    type='세트상품',
-                    location=location,
-                    delete_state=delete_state
-                )
-            except Exception as e:
-                print(e)
-
-
-class SetProductMatchMigrate(View):
-    def get(self, request):
-        con = cx_Oracle.connect('system/kcerp@155.1.19.2/kcerp')
-        cursor = con.cursor()
-        query = " select * from KCFEED.FRESHCP "
-        cursor.execute(query)
-
-        for row in cursor:
-            try:
-                delete_state = 'N' if row[6] == 'Y' else 'Y'
-                location = Location.objects.get(code=row[5])
-                product = ProductCode.objects.get(code=row[1])
-                setProduct = SetProductCode.objects.get(code=row[0])
-
-                setProductCode = SetProductMatch.objects.create(
-                    setProductCode=setProduct,
-                    productCode=product,
-                    count=row[3],
-                    price=row[2],
-                    saleLocation=location,
-                    delete_state=delete_state
-                )
-            except Exception as e:
-                print(e)
-
-
-class EggCodeMigrate(View):
-    def get(self, request):
-        con = cx_Oracle.connect('system/kcerp@155.1.19.2/kcerp')
-        cursor = con.cursor()
-        query = " select * FROM KCFEED.FRESHCD2 "
-        cursor.execute(query)
-
-        for row in cursor:
-
-            delete_state = row[6]
-            if delete_state == 'N':  # 사용유무가 N이면 삭제 나머지 다 사용
-                delete_state = 'Y'
-            else:
-                delete_state = 'N'
-
-            EggCode.objects.create(
-                code=row[0],
-                codeName=row[1],
-                type=row[2],
-                size=row[3],
-                delete_state=delete_state
-            )
-
-
-class PackingCodeMigrate(View):
-    def get(self, request):
-        con = cx_Oracle.connect('system/kcerp@155.1.19.2/kcerp')
-        cursor = con.cursor()
-        query = " select * FROM KCFEED.FRESHCD "
-        cursor.execute(query)
-
-        for row in cursor:
-            delete_state = row[6]
-            if delete_state == 'N':  # 사용유무가 N이면 삭제 나머지 다 사용
-                delete_state = 'Y'
-            else:
-                delete_state = 'N'
-
-            PackingCode.objects.create(
-                code=row[0],
-                codeName=row[3],
-                type=row[2],
-                size=row[4],
-                delete_state=delete_state
-            )
+        form = LocationForm(request.GET or None)
+        return render(request, 'code/locationReg.html', {'form': form})
