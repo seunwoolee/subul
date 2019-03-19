@@ -60,7 +60,7 @@ class GeneratePDF(View):
 class OrderList(LoginRequiredMixin, View):
 
     def get(self, request):
-        print(request.user.has_perm('order.delete_order')) # TODO 권한 문제!!
+        # print(request.user.has_perm('order.delete_order')) # TODO 권한 문제!!
         form = OrderForm()
         return render(request, 'order/orderList.html', {'form': form})
 

@@ -11,6 +11,7 @@ from eggs.models import Egg
 from product.models import ProductCode
 from core.models import Master, Detail, Location
 from release.models import Release
+from users.models import CustomUser
 
 
 class ABS(Func):
@@ -64,6 +65,8 @@ class Order(Detail):
         releaseOrder = kwargs.get("releaseOrder", None)
         user_instance = kwargs.get("user_instance", None)[0]
         checkBoxFilter = kwargs.get('checkBoxFilter', [''])[0]
+        locationFilter = kwargs.get('locationFilter', [''])[0]
+        managerFilter = kwargs.get('managerFilter', [''])[0]
         location_manager = kwargs.get('location_manager', [''])[0]
         gubunFilter = kwargs.get('gubunFilter', [''])[0]
 
@@ -93,9 +96,14 @@ class Order(Detail):
 
                 total = queryset.count()
 
+                if locationFilter:
+                    queryset = queryset.filter(orderLocationCode__code=locationFilter)
+
+                if managerFilter:
+                    queryset = queryset.filter(orderLocationCode__location_manager=CustomUser.objects.get(username=managerFilter))
+
                 if search_value:
-                    queryset = queryset.filter(Q(orderLocationName__icontains=search_value) |
-                                               Q(codeName__icontains=search_value) |
+                    queryset = queryset.filter(Q(codeName__icontains=search_value) |
                                                Q(memo__icontains=search_value))
 
             elif gubunFilter == 'stepTwo':
@@ -126,9 +134,16 @@ class Order(Detail):
                     .annotate(release_count=F('release_id__count')) \
                     .annotate(release_price=F('release_id__price'))
                 total = queryset.count()
+
+                if locationFilter:
+                    queryset = queryset.filter(orderLocationCode__code=locationFilter)
+
+                if managerFilter:
+                    queryset = queryset.filter(orderLocationCode__location_manager=CustomUser.objects.get(username=managerFilter))
+
                 if search_value:
-                    queryset = queryset.filter(Q(orderLocationName__icontains=search_value) |
-                                               Q(codeName__icontains=search_value))
+                    queryset = queryset.filter(codeName__icontains=search_value)
+
         else:  # 주문내역출고등록(출고)
             ORDER_COLUMN_CHOICES = Choices(
                 ('0', 'id'),
@@ -145,8 +160,10 @@ class Order(Detail):
             queryset = Order.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
                 .filter(delete_state='N').annotate(totalPrice=Sum(F('count') * F('price'), output_field=IntegerField())) \
                 .annotate(setProductCode=F('setProduct__code'))
+
             total = queryset.count()
-            if search_value:  #
+
+            if search_value:
                 queryset = queryset.filter(Q(orderLocationName__icontains=search_value) |
                                            Q(codeName__icontains=search_value) |
                                            Q(memo__icontains=search_value))

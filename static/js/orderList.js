@@ -23,13 +23,17 @@ fetch_data(end_day, plusThree_day);
     let checkBoxFilter = $('.type_filter input:checkbox:checked').not('#moneyMark')
                                 .map(function(){ return $(this).val(); }).get().join(',');
     let table = $('#'+gubunFilter +' .datatable');
+    let locationFilter = $('#locationFilter select').val();
+    let managerFilter = $('#managerFilter select').val();
     var args={
-            'table' : table,
-            'start_date' : start_date,
-            'end_date' : end_date,
-            'checkBoxFilter':checkBoxFilter,
-            'location_manager':window.LOCATION_MANAGER,
-            'gubunFilter':gubunFilter };
+                'table' : table,
+                'start_date' : start_date,
+                'end_date' : end_date,
+                'checkBoxFilter':checkBoxFilter,
+                'locationFilter':locationFilter,
+                'managerFilter':managerFilter,
+                'location_manager':window.LOCATION_MANAGER,
+                'gubunFilter':gubunFilter };
     table.DataTable().destroy();
     LOOKUP_TABLE[gubunFilter](args);
  }
@@ -83,7 +87,7 @@ function setStepOneDataTable(args)
             $( api.column( 9 ).footer() ).html( numberFormat(pageTotal_pricePerEa) );
             $( api.column( 10 ).footer() ).html( numberFormat(pageTotal_price) );
         },
-        "language": {searchPlaceholder: "거래처, 제품명, 메모"},
+        "language": {searchPlaceholder: "제품명, 메모"},
         "processing": true,
         "serverSide": true,
         "ajax": {
@@ -93,6 +97,8 @@ function setStepOneDataTable(args)
                         start_date:args['start_date'],
                         end_date:args['end_date'],
                         checkBoxFilter:args['checkBoxFilter'],
+                        locationFilter:args['locationFilter'],
+                        managerFilter:args['managerFilter'],
                         location_manager:args['location_manager'],
                         gubunFilter:args['gubunFilter']
             }
@@ -231,7 +237,7 @@ function setStepTwoDataTable(args)
             $( api.column( 13 ).footer() ).html( numberFormat(pageTotal_release_count) + '(EA)' );
             $( api.column( 14 ).footer() ).html( numberFormat(pageTotal_release_price) );
         },
-        "language": {searchPlaceholder: "거래처, 제품명"},
+        "language": {searchPlaceholder: "제품명"},
         "processing": true,
         "serverSide": true,
         "ajax": {
@@ -241,6 +247,8 @@ function setStepTwoDataTable(args)
                         start_date:args['start_date'],
                         end_date:args['end_date'],
                         checkBoxFilter:args['checkBoxFilter'],
+                        locationFilter:args['locationFilter'],
+                        managerFilter:args['managerFilter'],
                         location_manager:args['location_manager'],
                         gubunFilter:args['gubunFilter']
             }
@@ -567,19 +575,21 @@ $('form').on('submit', function (e)
 
 $('.nav-item a').click(function(){ // 탭별 style 주기
     let nav_item_id = $(this).attr('href');
-    $('.type_filter input:checkbox').attr("disabled", true);
-    $('.type_filter select').attr("disabled", true);
     if (nav_item_id == "#stepThree")
     {
-        $('.type_filter input:checkbox').attr("disabled", true);
-        $(".type_filter select").removeAttr("disabled").val('전체');
-        $('#locationManagerSearch').attr("disabled", true);
+        $('#locationFilter').hide('slow');
+        $('#managerFilter').hide('slow');
+        $("#moneyMarkFilter").hide('slow');
+        $("#characterFilter").hide('slow');
+        $('#locationManagerSearch').hide('slow');
     }
     else
     {
-        $(".type_filter input:checkbox").removeAttr("disabled");
-        $('#locationManagerSearch').removeAttr("disabled");
-        $('.type_filter select').attr("disabled", true);
+        $('#locationFilter').show('slow');
+        $('#managerFilter').show('slow');
+        $("#moneyMarkFilter").show('slow');
+        $("#characterFilter").show('slow');
+        $('#locationManagerSearch').show('slow');
     }
 });
 

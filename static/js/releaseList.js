@@ -32,10 +32,12 @@ fetch_data(start_day, end_day);
      let releaseTypeFilter = $('.type_filter #releaseType select').val();
      let productTypeFilter = $('.type_filter #productType select').val();
      let productYmdFilter = $('.type_filter #productYmd input').val();
-    if(productYmdFilter){ productYmdFilter = set_yyyymmdd(productYmdFilter); }
-     let checkBoxFilter = $('.type_filter input:checkbox:checked')
+     if(productYmdFilter){ productYmdFilter = set_yyyymmdd(productYmdFilter); }
+     let checkBoxFilter = $('.type_filter #locationType input:checkbox:checked')
                                 .not('#moneyMark').map(function(){ return $(this).val(); }).get().join(',');
      let table = $('#'+groupByFilter +' .datatable');
+     let locationFilter = $('#locationFilter select').val();
+     let managerFilter = $('#managerFilter select').val();
      args={ 'table' : table,
             'start_date' : start_date,
             'end_date' : end_date,
@@ -43,6 +45,8 @@ fetch_data(start_day, end_day);
             'productTypeFilter':productTypeFilter,
             'productYmdFilter':productYmdFilter,
             'checkBoxFilter':checkBoxFilter,
+            'locationFilter':locationFilter,
+            'managerFilter':managerFilter,
             'location_manager':window.LOCATION_MANAGER,
             'groupByFilter':groupByFilter };
     table.DataTable().destroy();
@@ -123,7 +127,7 @@ function setStepOneDataTable(args)
             $( api.column( 12 ).footer() ).html( numberFormat(pageTotal_vat) );
             $( api.column( 13 ).footer() ).html( numberFormat(pageTotal_pricePerEa) );
         },
-        "language": {searchPlaceholder: "거래처, 제품, 메모, 주문메모"},
+        "language": {searchPlaceholder: "제품, 메모, 주문메모"},
         "processing": true,
         "serverSide": true,
         "order": [[ 2, "asc" ]],
@@ -137,6 +141,8 @@ function setStepOneDataTable(args)
                 productTypeFilter:args['productTypeFilter'],
                 productYmdFilter:args['productYmdFilter'],
                 checkBoxFilter:args['checkBoxFilter'],
+                locationFilter:args['locationFilter'],
+                managerFilter:args['managerFilter'],
                 location_manager:args['location_manager'],
                 groupByFilter:args['groupByFilter']
             }
@@ -986,9 +992,13 @@ $('.nav-item a').click(function(){ // 탭별 style 주기
     if (nav_item_id == "#stepOne")
     {
         $('.type_filter #productYmd').show("slow");
+        $('.type_filter #managerFilter').show("slow");
+        $('.type_filter #locationFilter').show("slow");
     }
     else
     {
         $('.type_filter #productYmd').hide("slow");
+        $('.type_filter #managerFilter').hide("slow");
+        $('.type_filter #locationFilter').hide("slow");
     }
 });

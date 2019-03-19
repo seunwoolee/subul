@@ -101,20 +101,20 @@ $(function () {
 
 function setDataTableActionButtonWithPdf()
 {
-    return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="fa fa-trash-o"></i></button>' +
+    return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="far fa-trash-alt"></i></button>' +
             '<button class="btn btn-info btn-sm MODIFY" href="#"><i class="fa fa-edit"></i></button>'+
             '<button class="btn btn-warning btn-sm PDF" href="#"><i class="fas fa-file-pdf"></i></button>';
 }
 
 function setDataTableActionButtonWithoutEdit()
 {
-    return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="fa fa-trash-o"></i></button>' +
+    return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="far fa-trash-alt"></i></button>' +
             '<button class="btn btn-warning btn-sm PDF" href="#"><i class="fas fa-file-pdf"></i></button>';
 }
 
 function setDataTableActionButtonOnlyDelete()
 {
-    return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="fa fa-trash-o"></i></button>';
+    return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="far fa-trash-alt"></i></button>';
 }
 
 function setDataTableActionButtonOnlyPdf()
@@ -124,7 +124,7 @@ function setDataTableActionButtonOnlyPdf()
 
 function setDataTableActionButton()
 {
-    return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="fa fa-trash-o"></i></button>' +
+    return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="far fa-trash-alt"></i></button>' +
             '<button class="btn btn-info btn-sm MODIFY" href="#"><i class="fa fa-edit"></i></button>';
 }
 
@@ -135,14 +135,14 @@ function setDataTableActionButtonOnlyModify()
 
 function setDataTableActionButtonWithRecall()
 {
-    return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="fa fa-trash-o"></i></button>' +
+    return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="far fa-trash-alt"></i></button>' +
             '<button class="btn btn-info btn-sm MODIFY" href="#"><i class="fa fa-edit"></i></button>' +
             '<button class="btn btn-success btn-sm RECALL" href="#"><i class="fas fa-undo-alt"></i></button>';
 }
 
 function setDataTableActionButtonWithPdfRecall()
 {
-    return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="fa fa-trash-o"></i></button>' +
+    return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="far fa-trash-alt"></i></button>' +
             '<button class="btn btn-warning btn-sm PDF" href="#"><i class="fas fa-file-pdf"></i></button>' +
             '<button class="btn btn-success btn-sm RECALL" href="#"><i class="fas fa-undo-alt"></i></button>';
 }

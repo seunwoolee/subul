@@ -109,8 +109,6 @@ class OrdersAPIView(APIView):
                 request.GET = request.GET.copy()
                 request.GET['user_instance'] = request.user
                 orders = Order.orderQuery(**request.GET)
-                # for ele in orders['items']:
-                #     print(ele.weekday)
                 orderSerializer = OrderSerializer(orders['items'], many=True)
                 result['data'] = orderSerializer.data
                 result['draw'] = orders['draw']

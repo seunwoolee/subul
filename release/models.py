@@ -3,6 +3,7 @@ from django.db.models import Q, F, ExpressionWrapper, Sum, DecimalField, When, C
 from django.db.models.functions import Cast
 from model_utils import Choices
 from core.models import Master, Detail, Location
+from users.models import CustomUser
 
 
 class Release(Detail):
@@ -62,6 +63,8 @@ class Release(Detail):
         productYmdFilter = kwargs.get('productYmdFilter', [''])[0]
         groupByFilter = kwargs.get('groupByFilter', None)[0]
         checkBoxFilter = kwargs.get('checkBoxFilter', None)[0]
+        locationFilter = kwargs.get('locationFilter', [''])[0]
+        managerFilter = kwargs.get('managerFilter', [''])[0]
         location_manager = kwargs.get('location_manager', None)[0]
         user_instance = kwargs.get("user_instance", None)[0]
         if checkBoxFilter: checkBoxFilter = checkBoxFilter.split(',')
@@ -409,6 +412,18 @@ class Release(Detail):
             }
 
         total = queryset.count()
+
+        if groupByFilter == 'stepOne':
+            if locationFilter:
+                queryset = queryset.filter(releaseLocationCode__code=locationFilter)
+
+            if managerFilter:
+                queryset = queryset.filter(
+                    releaseLocationCode__location_manager=CustomUser.objects.get(username=managerFilter))
+
+            if productYmdFilter:
+                queryset = queryset.filter(productYmd=productYmdFilter)
+
         if releaseTypeFilter != '전체':
             queryset = queryset.filter(type=releaseTypeFilter)
 
@@ -419,9 +434,6 @@ class Release(Detail):
                 queryset = queryset.exclude(product_id__productCode__oem='Y')
             else:
                 queryset = queryset.filter(product_id__productCode__type=productTypeFilter)
-
-        if groupByFilter == 'stepOne' and productYmdFilter:
-            queryset = queryset.filter(productYmd=productYmdFilter)
 
         if checkBoxFilter:
             queryset = queryset.filter(releaseLocationCode__location_character__in=checkBoxFilter)
@@ -434,8 +446,7 @@ class Release(Detail):
 
         if search_value:
             if groupByFilter == 'stepOne':
-                queryset = queryset.filter(Q(releaseLocationName__icontains=search_value) |
-                                           Q(codeName__icontains=search_value) |
+                queryset = queryset.filter(Q(codeName__icontains=search_value) |
                                            Q(memo__icontains=search_value) |
                                            Q(orderMemo__icontains=search_value))
             elif groupByFilter == 'stepTwo':

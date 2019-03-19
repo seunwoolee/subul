@@ -20,8 +20,7 @@
             </div>
             <div class="card-header">
                 <div class="row type_filter">
-                    <div class="col-md-4">
-                        <!--출고타입 시작-->
+                    <div class="col-md-5">
                         <div class="form-check form-check-inline" id="releaseType" data-toggle="tooltip" data-original-title="출고구분">
                             <div class="input-group mb-2 mr-sm-2 ">
                                 <div class="input-group-prepend">
@@ -39,8 +38,6 @@
                                 </select>
                             </div>
                         </div>
-                        <!--출고타입 끝-->
-                        <!--제품 타입 시작-->
                         <div class="form-check form-check-inline" id="productType" data-toggle="tooltip" data-original-title="액란구분">
                             <div class="input-group mb-2 mr-sm-2 ">
                                 <div class="input-group-prepend">
@@ -64,6 +61,22 @@
                                 <input type="date" class="form-control"/>
                             </div>
                         </div>
+                        <div class="form-check form-check-inline" id="managerFilter" data-toggle="tooltip" data-original-title="담당자">
+                            <div class="input-group mb-2 mr-sm-2 ">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><i class="fas fa-user"></i></div>
+                                </div>
+                                {{ form.location_manager }}
+                            </div>
+                        </div>
+                        <div class="form-check form-check-inline" id="locationFilter" data-toggle="tooltip" data-original-title="장소">
+                            <div class="input-group mb-2 mr-sm-2 ">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><i class="far fa-building"></i></div>
+                                </div>
+                                {{ form.location_filter }}
+                            </div>
+                        </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" id="moneyMark">
                             <label class="form-check-label" for="moneyMark"><span
@@ -71,7 +84,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-8">
+                    <div class="col-md-7">
                         <!--장소타입 checkbox 시작-->
                         <div class="form-row" id="locationType">
                             <div class="form-group col-md-4">
@@ -528,4 +541,5 @@
 <script src="https://cdn.datatables.net/fixedcolumns/3.2.6/js/dataTables.fixedColumns.min.js"></script>
 <script src="{% static 'js/baseList.js' %}"></script>
 <script src="{% static 'js/releaseList.js' %}"></script>
+{{ form.media.js }}
 {% endblock %}

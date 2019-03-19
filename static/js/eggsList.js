@@ -420,7 +420,6 @@ $(document).on('click', "#releaseEgg tbody tr", function()
 
 function manualReleaseModal(data)
 {
-    console.log(data);
     $("#id_type").val("생산").change();
     $("#id_productCode").val(data['egg_code']);
     $("#id_in_ymd").val(data['egg_in_ymd']);

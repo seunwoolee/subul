@@ -9,3 +9,7 @@
 .datatable .badge{
     font-size: 100% !important;
 }
+
+#managerFilter .select2{
+    width : 100px !important;
+}
