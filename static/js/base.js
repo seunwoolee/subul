@@ -94,6 +94,7 @@ var start_day = minusSevenDate.yyyymmdd();
 var end_day = date.yyyymmdd();
 var plusThree_day = plusThreeDate.yyyymmdd();
 var minusFifteen_day = set_yyyymmdd(minusFifteenDate.yyyymmdd());
+var today = set_yyyymmdd(date.yyyymmdd());
 
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
@@ -194,4 +195,24 @@ function setSpecialTagButton(data)
 function autoSetEndDate(e)
 {
     $('#end_date').val(e.target.value);
+}
+
+function getYearMonth(yyyymmdd)
+{
+    return parseInt(yyyymmdd.substring(0,6));
+}
+
+function getMonth(yyyymmdd)
+{
+    return parseInt(yyyymmdd.substring(4,6));
+}
+
+function getYear(yyyymmdd)
+{
+    return parseInt(yyyymmdd.substring(0,4));
+}
+
+function getMiddleDay(yyyymmdd)
+{
+    return yyyymmdd.substring(0,6)+"15";
 }

@@ -130,23 +130,26 @@
             {"data": "list_loss_fill" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {"data": "list_memo"},
             {"data": "list_type", "render": function(data, type, row, meta){
-                    if(SUPERUSER)
+
+                    if(SUPERUSER || getYearMonth(row.list_ymd) >= getYearMonth(today))
                     {
                         if(data == "제품생산") {  return setDataTableActionButtonWithRecall(); }
                         else if(data.includes("미출고품")){ return setDataTableActionButtonOnlyDelete(); }
                         else { return setDataTableActionButton(); }
                     }
 
-                    if(row.list_ymd  < minusFifteen_day)
+
+                    if(getYear(row.list_ymd) == getYear(today) && getMonth(row.list_ymd) == getMonth(today) - 1) // 이전달의 데이터
                     {
-                        return "";
+                        if(today <= getMiddleDay(today)) // 한달전의 1일부터 30일까지 자료는 수정 삭제 가능
+                        {
+                            if(data == "제품생산") {  return setDataTableActionButtonWithRecall(); }
+                            else if(data.includes("미출고품")){ return setDataTableActionButtonOnlyDelete(); }
+                            else { return setDataTableActionButton(); }
+                        }
                     }
-                    else
-                    {
-                        if(data == "제품생산") {  return setDataTableActionButtonWithRecall(); }
-                        else if(data.includes("미출고품")){ return setDataTableActionButtonOnlyDelete(); }
-                        else { return setDataTableActionButton(); }
-                    }
+
+                    return "";
             }}
         ],
         dom: 'Bfrtip',

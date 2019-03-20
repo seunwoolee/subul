@@ -131,22 +131,25 @@ function setStepOneDataTable(args)
             {"data": "pricePerEa" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "memo"},
             {"data": "type", "render": function(data, type, row, meta){
-                    if(SUPERUSER)
+
+                    if(SUPERUSER || getYearMonth(row.ymd) >= getYearMonth(today))
                     {
                         if(data == "판매") { return setDataTableActionButtonWithPdf(); }
                         else { return setDataTableActionButton(); }
                     }
 
-                    if(row.ymd  < minusFifteen_day)
+                    if(getYear(row.ymd) == getYear(today) && getMonth(row.ymd) == getMonth(today) - 1)
                     {
-                        if(data == "판매") { return setDataTableActionButtonOnlyPdf(); }
-                        else { return ""; }
+                        if(today <= getMiddleDay(today))
+                        {
+                            if(data == "판매") { return setDataTableActionButtonWithPdf(); }
+                            else { return setDataTableActionButton(); }
+                        }
                     }
-                    else
-                    {
-                        if(data == "판매") { return setDataTableActionButtonWithPdf(); }
-                        else { return setDataTableActionButton(); }
-                    }
+
+                    if(data == "판매") { return setDataTableActionButtonOnlyPdf(); }
+                    else { return ""; }
+
             }}
         ],
         dom: 'Bfrtip',

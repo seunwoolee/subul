@@ -89,19 +89,22 @@
             {"data": "totalPrice" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "memo"},
             {"data": null, "render": function(data, type, row, meta){
-                    if(SUPERUSER)
+
+                    if(SUPERUSER || getYearMonth(row.ymd) >= getYearMonth(today))
                     {
                         return setDataTableActionButton();
                     }
 
-                    if(row.ymd  < minusFifteen_day)
+                    if(getYear(row.ymd) == getYear(today) && getMonth(row.ymd) == getMonth(today) - 1)
                     {
-                        return "";
+                        if(today <= getMiddleDay(today))
+                        {
+                            return setDataTableActionButton();
+                        }
                     }
-                    else
-                    {
-                        return setDataTableActionButton();
-                    }
+
+                    return "";
+
             }}
         ],
         dom: 'Bfrtip',

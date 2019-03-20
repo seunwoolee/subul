@@ -129,21 +129,24 @@ function setStepOneDataTable(args)
             {"data": "memo"},
             {"data": "setProduct"},
             {"data": "release_id", "render": function(data, type, row, meta){
-                    if(SUPERUSER)
+
+                    if(SUPERUSER || getYearMonth(row.ymd) >= getYearMonth(today))
                     {
                         if(data > 0) { return setDataTableActionButtonWithoutEdit(); }
                         else { return setDataTableActionButtonWithPdf(); }
                     }
 
-                    if(row.ymd  < minusFifteen_day)
+
+                    if(getYear(row.ymd) == getYear(today) && getMonth(row.ymd) == getMonth(today) - 1)
                     {
-                        return setDataTableActionButtonOnlyPdf();
+                        if(today <= getMiddleDay(today))
+                        {
+                            if(data > 0) { return setDataTableActionButtonWithoutEdit(); }
+                            else { return setDataTableActionButtonWithPdf(); }
+                        }
                     }
-                    else
-                    {
-                        if(data > 0) { return setDataTableActionButtonWithoutEdit(); }
-                        else { return setDataTableActionButtonWithPdf(); }
-                    }
+
+                    return setDataTableActionButtonOnlyPdf();
             }}
         ],
         dom: 'Bfrtip',

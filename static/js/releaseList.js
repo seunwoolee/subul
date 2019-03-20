@@ -185,23 +185,27 @@ function setStepOneDataTable(args)
             {'data': 'id'},
             {'data': 'code'},
             {"data": 'type', "render": function(data, type, row, meta){
-                    if(SUPERUSER)
+
+                    if(SUPERUSER || getYearMonth(row.ymd) >= getYearMonth(today))
                     {
                         if(data == '이동'){return '';}
                         else if(data == '판매'){return setDataTableActionButtonWithPdfRecall();}
                         else{return setDataTableActionButtonWithoutEdit();}
                     }
 
-                    if(row.ymd  < minusFifteen_day)
+
+                    if(getYear(row.ymd) == getYear(today) && getMonth(row.ymd) == getMonth(today) - 1)
                     {
-                        return setDataTableActionButtonOnlyPdf();
+                        if(today <= getMiddleDay(today))
+                        {
+                            if(data == '이동'){return '';}
+                            else if(data == '판매'){return setDataTableActionButtonWithPdfRecall();}
+                            else{return setDataTableActionButtonWithoutEdit();}
+                        }
                     }
-                    else
-                    {
-                        if(data == '이동'){return '';}
-                        else if(data == '판매'){return setDataTableActionButtonWithPdfRecall();}
-                        else{return setDataTableActionButtonWithoutEdit();}
-                    }
+
+                    return setDataTableActionButtonOnlyPdf();
+
             }}
         ],
         dom: 'Bfrtip',
