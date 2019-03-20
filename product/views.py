@@ -230,7 +230,7 @@ class ProductReport(View):
                       '합계제품생산']
         start_date = request.GET.get('start_date')
         end_date = request.GET.get('end_date')
-        location = Location.objects.get(code='00301')
+
         egg = Egg.objects.values('code', 'codeName').filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
             .filter(type='생산') \
             .annotate(report_egg_amount=Case(When(amount=None, then=Value(0, DecimalField())), default=ABS('amount'), output_field=DecimalField())) \
@@ -363,31 +363,13 @@ class ProductReport(View):
         if total_product[0]['report_product_amount'] == ' ':
             total_product[0]['code'] = 'pass'
 
-        productAdmin = ProductAdmin.objects.values(code=F('product_id__code')) \
-            .values(codeName=F('product_id__codeName')) \
-            .filter(product_id__purchaseYmd=None) \
-            .filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
-            .filter(location=location).filter(releaseType='이동').filter(count__lt=0) \
-            .annotate(report_egg_amount=Value(' ', CharField())) \
-            .annotate(report_egg_count=Value(' ', CharField())) \
-            .annotate(report_sort_type=F('releaseType')) \
-            .annotate(report_rawTank_amount=Value(' ', CharField())) \
-            .annotate(report_pastTank_amount=Value(' ', CharField())) \
-            .annotate(report_product_amount=F('amount')).order_by('codeName')
-
         total_rawTank = productEgg.filter(report_sort_type__in=['미출고품사용', '미출고품투입']) \
             .aggregate(Sum('report_rawTank_amount'))['report_rawTank_amount__sum']
         total_amount = product.filter(report_sort_type='미출고품사용') \
             .aggregate(Sum('report_product_amount'))['report_product_amount__sum']
-        total_move_amount = productAdmin.filter(report_sort_type='이동') \
-            .aggregate(Sum('report_product_amount'))['report_product_amount__sum']
+
         if total_amount is None:
             total_amount = 0
-        # if total_move_amount is None:
-        #     total_move_amount = 0
-        if total_move_amount: total_amount += total_move_amount
-        if not total_rawTank: total_rawTank = ' '
-        if not total_amount: total_amount = ' '
         total_other = [dict(code=' ',
                             codeName='합계',
                             report_sort_type='합계기타',
@@ -408,8 +390,7 @@ class ProductReport(View):
                   total_insert,
                   total_create,
                   product,
-                  total_product,
-                  productAdmin),
+                  total_product),
             key=lambda x: SORT_ARRAY.index(x['report_sort_type']))
         percentSummary = ProductEgg.percentSummary(start_date, end_date)
         if len(result_list) > 37:

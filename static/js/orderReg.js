@@ -273,7 +273,7 @@ PRODUCTINFO = [];
 AMOUNT_KG = {};
 $( ".location" ).change(function() {
 
-    let OLAP_SHOPPINGMALL = '00416';
+    OLAP_SHOPPINGMALL = '00416';
     parentTR = $(this).parents('tr');
     data = parentTR.find('.location').val();
     set = parentTR.find('.set').val();
