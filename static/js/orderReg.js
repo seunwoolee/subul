@@ -300,6 +300,7 @@ $( ".location" ).change(function() {
         type: 'get',
         data: data,
         }).done(function(data) {
+            console.log(data);
             window.PRODUCTINFO = [];
             product.empty();
             data.forEach(function(element, i){
