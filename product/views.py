@@ -230,7 +230,6 @@ class ProductReport(View):
                       '합계제품생산']
         start_date = request.GET.get('start_date')
         end_date = request.GET.get('end_date')
-
         egg = Egg.objects.values('code', 'codeName').filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
             .filter(type='생산') \
             .annotate(report_egg_amount=Case(When(amount=None, then=Value(0, DecimalField())), default=ABS('amount'), output_field=DecimalField())) \
@@ -370,6 +369,8 @@ class ProductReport(View):
 
         if total_amount is None:
             total_amount = 0
+        if total_rawTank is None:
+            total_rawTank = 0
         total_other = [dict(code=' ',
                             codeName='합계',
                             report_sort_type='합계기타',
@@ -378,7 +379,7 @@ class ProductReport(View):
                             report_rawTank_amount=total_rawTank,
                             report_pastTank_amount=' ',
                             report_product_amount=total_amount)]
-        if total_other[0]['report_product_amount'] == ' ' and total_other[0]['report_rawTank_amount'] == ' ':
+        if total_other[0]['report_product_amount'] == 0 and total_other[0]['report_rawTank_amount'] == 0:
             total_other[0]['code'] = 'pass'
         result_list = sorted(
             chain(egg,
