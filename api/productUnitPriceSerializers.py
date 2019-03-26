@@ -21,6 +21,7 @@ class SetProductMatchListSerializer(serializers.ModelSerializer):
     setProductCode = serializers.SlugRelatedField(slug_field='code', read_only=True)
     productCode = serializers.SlugRelatedField(slug_field='code', read_only=True)
 
+
     class Meta:
         model = SetProductMatch
         fields = '__all__'

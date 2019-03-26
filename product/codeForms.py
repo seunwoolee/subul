@@ -7,9 +7,7 @@ from .models import ProductCode, ProductEgg, ProductMaster, SetProductCode
 
 class ProductUnitPricesForm(forms.Form):
     location = forms.ChoiceField(widget=Select2Widget, choices=Location.objects.none)
-    product = forms.ChoiceField(widget=Select2Widget,
-                                choices=[('', '')] + list(ProductCode.objects.values_list('code', 'codeName')
-                                                          .filter(delete_state='N').order_by('code')))
+    product = forms.ChoiceField(widget=Select2Widget, choices=ProductCode.objects.none)
     price = forms.IntegerField(min_value=0)
     specialPrice = forms.IntegerField(min_value=0, required=False)
     locationCode = forms.CharField(widget=forms.HiddenInput()) # 생성 form
@@ -20,6 +18,9 @@ class ProductUnitPricesForm(forms.Form):
         self.fields['location'] = forms.ChoiceField(widget=Select2Widget,
                                                     choices=[('', '')] + list(Location.objects.values_list('code', 'codeName')
                                                     .filter(type='05').filter(delete_state='N').order_by('code')))
+        self.fields['product'] = forms.ChoiceField(widget=Select2Widget,
+                                                    choices=[('', '')] + list(ProductCode.objects.values_list('code', 'codeName')
+                                                    .filter(delete_state='N').order_by('code')))
 
 
 class SetProductMatchForm(forms.Form):
@@ -27,9 +28,7 @@ class SetProductMatchForm(forms.Form):
     setProduct = forms.ChoiceField(widget=Select2Widget,
                                    choices=[('', '')] + list(SetProductCode.objects.values_list('code', 'codeName')
                                                           .filter(delete_state='N').order_by('code')))
-    product = forms.ChoiceField(widget=Select2Widget,
-                                choices=[('', '')] + list(ProductCode.objects.values_list('code', 'codeName')
-                                                          .filter(delete_state='N').order_by('code')))
+    product = forms.ChoiceField(widget=Select2Widget, choices=ProductCode.objects.none)
     price = forms.IntegerField(min_value=0)
     count = forms.IntegerField(min_value=0)
     locationCode = forms.CharField(widget=forms.HiddenInput()) # 생성 form
@@ -40,3 +39,6 @@ class SetProductMatchForm(forms.Form):
         self.fields['location'] = forms.ChoiceField(widget=Select2Widget,
                                                     choices=[('', '')] + list(Location.objects.values_list('code', 'codeName')
                                                     .filter(type='05').filter(delete_state='N').order_by('code')))
+        self.fields['product'] = forms.ChoiceField(widget=Select2Widget,
+                                                    choices=[('', '')] + list(ProductCode.objects.values_list('code', 'codeName')
+                                                    .filter(delete_state='N').order_by('code')))
