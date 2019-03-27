@@ -216,3 +216,33 @@ function getMiddleDay(yyyymmdd)
 {
     return yyyymmdd.substring(0,6)+"15";
 }
+
+function getFirstDay(yyyymmdd)
+{
+    return set_yyyy_mm_dd(yyyymmdd.substring(0,6)+"01");
+}
+
+function getPreviousMonthFirstDay(yyyymmdd)
+{
+    let year = yyyymmdd.substring(0,4);
+    let month = yyyymmdd.substring(4,6);
+    let day = "01";
+    if(month=="01")
+    {
+        year -= 1;
+        month = "12";
+        day = "01";
+    }
+    else
+    {
+        month -= 1;
+        if(month>9) {
+            month = ''+month;
+        }
+        else {
+            month = '0'+month;
+        }
+    }
+    let temp = year+month+day;
+    return set_yyyy_mm_dd(temp);
+}

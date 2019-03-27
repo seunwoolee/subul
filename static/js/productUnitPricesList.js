@@ -30,8 +30,8 @@
             {"data": "locationCodeName"},
             {"data": "productCode"},
             {"data": "productCodeName"},
-            {"data": "price", "render": $.fn.dataTable.render.number( ',')},
-            {"data": "specialPrice", "render": $.fn.dataTable.render.number( ',')},
+            {"data": "price", "render": $.fn.dataTable.render.number( ',', '.', 1)},
+            {"data": "specialPrice", "render": $.fn.dataTable.render.number( ',', '.', 1)},
             {"data": null, "render": function(data, type, row, meta){return setDataTableActionButton();}}
         ],
         dom: 'Bfrtip',

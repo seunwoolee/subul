@@ -511,8 +511,8 @@ class ProductAdmin(models.Model):
 class ProductUnitPrice(TimeStampedModel):
     locationCode = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='location')
     productCode = models.ForeignKey(ProductCode, on_delete=models.CASCADE, related_name='product')
-    price = models.IntegerField(default=0)
-    specialPrice = models.IntegerField(default=0)
+    price = models.DecimalField(decimal_places=1, max_digits=19, default=0)
+    specialPrice = models.DecimalField(decimal_places=1, max_digits=19, default=0)
 
     def __str__(self):
         return f"{self.locationCode.codeName}_ {self.productCode.codeName}_{self.price}"

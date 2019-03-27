@@ -8,8 +8,8 @@ from .models import ProductCode, ProductEgg, ProductMaster, SetProductCode
 class ProductUnitPricesForm(forms.Form):
     location = forms.ChoiceField(widget=Select2Widget, choices=Location.objects.none)
     product = forms.ChoiceField(widget=Select2Widget, choices=ProductCode.objects.none)
-    price = forms.IntegerField(min_value=0)
-    specialPrice = forms.IntegerField(min_value=0, required=False)
+    price = forms.DecimalField(decimal_places=1, max_digits=19, min_value=0)
+    specialPrice = forms.DecimalField(decimal_places=1, max_digits=19, min_value=0, required=False)
     locationCode = forms.CharField(widget=forms.HiddenInput()) # 생성 form
     productCode = forms.CharField(widget=forms.HiddenInput()) # 생성 form
 

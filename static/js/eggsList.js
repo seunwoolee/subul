@@ -82,7 +82,9 @@ function setStepOneDataTable(args)
                     return intVal(a) + intVal(b);
                 }, 0 );
 
-            // Update footer
+            console.log(api.column(7).data());
+
+
             $( api.column( 7 ).footer() ).html( numberFormat(pageTotal_count));
             $( api.column( 8 ).footer() ).html( numberFormat(pageTotal_amount));
             $( api.column( 9 ).footer() ).html( numberFormat(pageTotal_in_price) );
@@ -516,7 +518,6 @@ $('#manualRelease').on('submit', function (e)
 {
     e.preventDefault();
     $this = $(this);
-    console.log($this);
     let type = $this.find('#id_type').val();
     let fakeYmd = set_yyyymmdd($this.find('#id_fakeYmd').val());
     $this.find('#id_ymd').val(fakeYmd);
@@ -647,17 +648,23 @@ $('#addItem').click( function (e) {
             ymd[0].outerHTML+
             productCode[0].outerHTML+
             in_location[0].outerHTML+
+            `<input type="hidden" name="type" value=${type.val()}>`+
+            `<input type="hidden" name="count" value=${count.val()}>`+
+            `<input type="hidden" name="locationSale" value=${locationSaleCode}>`+
+            `<input type="hidden" name="price" value=${price.val()}>`+
+            `<input type="hidden" name="memo" value=${memo.val()}>`+
             IN_YMD,
-            `<input type="hidden" name="type" value=${type.val()}> ${type.val()}`,
+            type.val(),
             IN_LOCATIONCODENAME,
             CODENAME,
-            `<input type="hidden" name="count" value=${count.val()}> ${count.val()}`,
-            `<input type="hidden" name="locationSale" value=${locationSaleCode}> ${locationSaleCodeName}`,
-            `<input type="hidden" name="price" value=${price.val()}> ${price.val()}`,
-            `${ymd.val()}`,
-            `<input type="hidden" name="memo" value=${memo.val()}> ${memo.val()}`
+            count.val(),
+            locationSaleCodeName,
+            price.val(),
+            ymd.val(),
+            memo.val()
         ]).draw(false);
-         $(".everyModal").modal('hide');
+        $(".everyModal").modal('hide');
+
     }
     else
     {
@@ -706,7 +713,34 @@ var items_DataTable = $('#items').DataTable( {
     "select": true,
     "responsive" : true,
     "info": false,
-    "sort": false
+    "sort": false,
+    "footerCallback": function ( row, data, start, end, display ) {
+        var api = this.api(), data;
+        let numberFormat = $.fn.dataTable.render.number( ',').display;
+        var intVal = function ( i ) {
+            return typeof i === 'string' ?
+                i.replace(/[\$,]/g, '')*1 :
+                typeof i === 'number' ?
+                    i : 0;
+        };
+
+        let count = api
+            .column( 4, { page: 'current'} )
+            .data()
+            .reduce( function (a, b) {
+                return intVal(a) + intVal(b);
+            }, 0 );
+
+        let price = api
+            .column( 6, { page: 'current'} )
+            .data()
+            .reduce( function (a, b) {
+                return intVal(a) + intVal(b);
+            }, 0 );
+
+        $( api.column( 4 ).footer() ).html( numberFormat(count));
+        $( api.column( 6 ).footer() ).html( numberFormat(price));
+    }
 } );
 
 $( "#eggsReport" ).click(function() {
