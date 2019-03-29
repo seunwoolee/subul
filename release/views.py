@@ -74,7 +74,12 @@ class ReleaseReg(LoginRequiredMixin, View):
         setProductCode = request.POST.get('setProductCode', None)
         specialTag = request.POST.get('specialTag', '')
         totalPrice = int(Decimal(data['price']) * int(data['count']))
-        releaseVat = round(totalPrice - (totalPrice / 1.1)) if productCode.vat else 0  # vat 계산
+
+        if setProductCode:  # 세트 상품 존재 시 부가세 0원
+            releaseVat = 0
+        else:
+            releaseVat = round(totalPrice - (totalPrice / 1.1)) if productCode.vat else 0  # vat 계산
+
         release = Release.objects.create(
             ymd=data['ymd'],
             productYmd=data['productYmd'],
