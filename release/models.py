@@ -336,6 +336,7 @@ class Release(Detail):
                     if BROKEN == 0: BROKEN = None
                     if NOTPRODUCT == 0: NOTPRODUCT = None
                     if RECALL == 0: RECALL = None
+                    if ADJUST == 0: ADJUST = None
                     if CURRENT_STOCK == 0: CURRENT_STOCK = None
 
                     result['id'] = period['productId']
