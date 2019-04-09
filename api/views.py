@@ -104,13 +104,17 @@ class OrdersAPIView(APIView):
 
     def get(self, request, format=None):
         result = dict()
+        gubun_filter = request.query_params.get("gubunFilter", None)
         try:
-            if request.query_params.get("gubunFilter", None) != "stepThree":
+            if gubun_filter != "stepThree":
                 request.GET = request.GET.copy()
                 request.GET['user_instance'] = request.user
                 orders = Order.orderQuery(**request.GET)
-                orderSerializer = OrderSerializer(orders['items'], many=True)
-                result['data'] = orderSerializer.data
+                if gubun_filter == "stepTwo":
+                    result['data'] = orders['items']
+                else:
+                    orderSerializer = OrderSerializer(orders['items'], many=True)
+                    result['data'] = orderSerializer.data
                 result['draw'] = orders['draw']
                 result['recordsTotal'] = orders['total']
                 result['recordsFiltered'] = orders['count']
@@ -492,7 +496,7 @@ class ProductUnitPricesAPIView(APIView):
         location_instance = Location.objects.get(code=request.data['locationCode'])
         product_instance = ProductCode.objects.get(code=request.data['productCode'])
         specialPrice = request.data['specialPrice']
-        if not specialPrice: specialPrice=0
+        if not specialPrice: specialPrice = 0
         if not ProductUnitPrice.objects.filter(locationCode=location_instance).filter(productCode=product_instance):
             ProductUnitPrice.objects.create(
                 locationCode=location_instance,
@@ -532,11 +536,10 @@ class SetProductMatchsAPIView(APIView):
         location_instance = Location.objects.get(code=request.data['locationCode'])
         product_instance = ProductCode.objects.get(code=request.data['product'])
         setProduct_instance = SetProductCode.objects.get(code=request.data['setProductCode'])
-        print(product_instance, setProduct_instance)
         count = int(request.data['count'])
         price = int(request.data['price'])
-        if not SetProductMatch.objects.filter(saleLocation=location_instance)\
-                .filter(productCode=product_instance).filter(setProductCode=setProduct_instance) :
+        if not SetProductMatch.objects.filter(saleLocation=location_instance) \
+                .filter(productCode=product_instance).filter(setProductCode=setProduct_instance):
             SetProductMatch.objects.create(
                 saleLocation=location_instance,
                 productCode=product_instance,

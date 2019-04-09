@@ -127,6 +127,7 @@ $('#stockFind').click(function(){
 var AMOUNT_KG = {};
 var totalAmount = 0;
 var totalCount = 0;
+
 $(document).on('click', ".datatable tbody tr", function()
 {
     let data = table.row($(this)).data();
@@ -272,9 +273,12 @@ function calculateReleaseAmount($TR, DATA)
     {
         window.ORDER_AMOUNT = Math.round(window.ORDER_AMOUNT * 100) / 100;
         window.ORDER_COUNT = Math.round(window.ORDER_COUNT * 100) / 100;
-        $TR.find('.amount').val(window.ORDER_AMOUNT);
-        $TR.find('.count').val(window.ORDER_COUNT);
-        $TR.find('.datepicker').val(DATA['ymd']);
+        if(window.ORDER_COUNT > 0)
+        {
+            $TR.find('.amount').val(window.ORDER_AMOUNT);
+            $TR.find('.count').val(window.ORDER_COUNT);
+            $TR.find('.datepicker').val(DATA['ymd']);
+        }
         window.BOOL = false; // 이제 내밑으론 안타도된다! 주문량이 이젠 없으니
     }
 }

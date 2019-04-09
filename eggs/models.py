@@ -180,7 +180,7 @@ class Egg(Detail):
         end_date = kwargs.get('end_date', None)[0]
         arr = []
 
-        egg_previous = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName') \
+        egg_previous = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName', 'eggCode__sorts') \
             .annotate(totalCount=Sum('count')) \
             .filter(ymd__lt=start_date) \
             .filter(totalCount__gt=0)  # 재고가 0초과인 이전 재고
@@ -188,7 +188,8 @@ class Egg(Detail):
         if search_value:
             egg_previous = egg_previous.filter(Q(codeName__icontains=search_value) |
                                                Q(in_locationCodeName__icontains=search_value))
-        for previous in egg_previous:  # 기간 내 전일재고의 각 타입별(IN, SALE, LOSS, INSERT) count를 구한다
+
+        for previous in egg_previous:
             result = {}
             countPerType = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName', 'type') \
                 .annotate(totalCount=Sum('count')) \
@@ -199,7 +200,6 @@ class Egg(Detail):
                 .filter(ymd__gte=start_date) \
                 .filter(ymd__lte=end_date)
             PREVIOUS_STOCK = previous["totalCount"]
-            # IN = 0
             SALE = 0
             SALE_PRICE = 0
             LOSS = 0
@@ -222,7 +222,6 @@ class Egg(Detail):
             if LOSS == 0: LOSS = None
             if INSERT == 0: INSERT = None
             if RELEASE == 0: RELEASE = None
-            # if CURRENT_STOCK == 0: CURRENT_STOCK = None
             result['codeName'] = previous['codeName']
             result['in_ymd'] = previous['in_ymd']
             result['in_locationCodeName'] = previous['in_locationCodeName']
@@ -235,10 +234,10 @@ class Egg(Detail):
             result['insert'] = INSERT
             result['release'] = RELEASE
             result['currentStock'] = CURRENT_STOCK
+            result['sorts'] = previous['eggCode__sorts']
             arr.append(result)
 
-        # 기간 내 생산되고 출고된 것들의 현재고 구하기(전일재고 당연히 없음)
-        egg_period = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName') \
+        egg_period = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName', 'eggCode__sorts') \
             .annotate(totalCount=Sum('count')) \
             .filter(ymd__gte=start_date) \
             .filter(ymd__lte=end_date) \
@@ -248,7 +247,7 @@ class Egg(Detail):
             egg_period = egg_period.filter(Q(codeName__icontains=search_value) |
                                                Q(in_locationCodeName__icontains=search_value))
 
-        for period in egg_period:  # 기간 내 생성된 각 타입별(IN, SALE, LOSS, INSERT) count를 구한다
+        for period in egg_period:
             result = {}
             countPerType = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName', 'type') \
                 .annotate(totalCount=Sum('count')) \
@@ -264,7 +263,7 @@ class Egg(Detail):
             SALE_PRICE = 0
             LOSS = 0
             INSERT = 0
-            for element in countPerType:  # 전일재고니깐 생성 없음
+            for element in countPerType:
                 number = element["totalCount"]
                 price = element["totalPrice"]
                 if element['type'] == '판매':
@@ -300,12 +299,14 @@ class Egg(Detail):
             result['insert'] = INSERT
             result['release'] = RELEASE
             result['currentStock'] = CURRENT_STOCK
+            result['sorts'] = period['eggCode__sorts']
             arr.append(result)
 
         if order == 'desc':
-            arr = sorted(arr, key=lambda k: k[order_column] if k[order_column] is not None else 0, reverse=True)
+            arr = sorted(arr, key=lambda k: (k['sorts'], k[order_column]) if k[order_column] is not None else 0, reverse=True)
         else:
-            arr = sorted(arr, key=lambda k: k[order_column] if k[order_column] is not None else 0)
+            arr = sorted(arr, key=lambda k: (k['sorts'], k[order_column]) if k[order_column] is not None else 0)
+
         return {
             'items': arr,
             'count': 10,

@@ -1,13 +1,13 @@
 from django.contrib import admin
 from django.db import models
 
+from core.admin import DumbPaginator
 from django_select2.forms import Select2Widget
 from .models import Product, ProductAdmin, ProductCode, ProductMaster, ProductEgg, ProductUnitPrice, SetProductCode \
     , SetProductMatch
 
 
 class ProductsAdmin(admin.ModelAdmin):
-    list_filter = ["id"]
     list_display = ["id", "ymd", "codeName", 'type']
     search_fields = ["id", "ymd", "codeName"]
 
@@ -19,10 +19,9 @@ class ProductsCodeAdmin(admin.ModelAdmin):
 
 
 class ProductAdminAdmin(admin.ModelAdmin):
-    raw_id_fields = ["product_id"]
-    list_filter = ["id"]
     list_display = ["product_id", "ymd", "releaseType", "releaseSeq", "location"]
-    exclude = ["releaseSeq", "product_id"]
+    raw_id_fields = ("product_id", "releaseSeq", "product_id")
+    paginator = DumbPaginator
 
 
 class ProductMasterAdmin(admin.ModelAdmin):

@@ -12,11 +12,11 @@
 /* eslint-disable no-magic-numbers */
 // Disable the on-canvas tooltip
 Chart.defaults.global.pointHitDetectionRadius = 1;
-Chart.defaults.global.tooltips.enabled = false;
+Chart.defaults.global.tooltips.enabled = true;
 Chart.defaults.global.tooltips.mode = 'index';
 Chart.defaults.global.tooltips.position = 'nearest';
-Chart.defaults.global.tooltips.custom = CustomTooltips; // eslint-disable-next-line no-unused-vars
-
+//Chart.defaults.global.tooltips.custom = CustomTooltips; // eslint-disable-next-line no-unused-vars
+//
 var cardChart1 = new Chart($('#card-chart1'), {
   type: 'line',
   data: {
@@ -184,29 +184,29 @@ var cardChart4 = new Chart($('#card-chart4'), {
 var mainChart = new Chart($('#main-chart'), {
   type: 'line',
   data: {
-    labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S', 'M', 'T', 'W', 'T', 'F', 'S', 'S', 'M', 'T', 'W', 'T', 'F', 'S', 'S', 'M', 'T', 'W', 'T', 'F', 'S', 'S'],
+    labels: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
     datasets: [{
-      label: 'My First dataset',
+      label: '현재 매출액',
       backgroundColor: hexToRgba(getStyle('--info'), 10),
       borderColor: getStyle('--info'),
       pointHoverBackgroundColor: '#fff',
       borderWidth: 2,
-      data: [165, 180, 70, 69, 77, 57, 125, 165, 172, 91, 173, 138, 155, 89, 50, 161, 65, 163, 160, 103, 114, 185, 125, 196, 183, 64, 137, 95, 112, 175]
+      data: [165, 180, 70, 69, 77, 57, 125, 165]
     }, {
-      label: 'My Second dataset',
+      label: '작년 매출액',
       backgroundColor: 'transparent',
       borderColor: getStyle('--success'),
       pointHoverBackgroundColor: '#fff',
       borderWidth: 2,
-      data: [92, 97, 80, 100, 86, 97, 83, 98, 87, 98, 93, 83, 87, 98, 96, 84, 91, 97, 88, 86, 94, 86, 95, 91, 98, 91, 92, 80, 83, 82]
+      data: [92, 97, 80, 100, 86, 97, 83, 98, 87, 98, 93, 83, 87, 98]
     }, {
-      label: 'My Third dataset',
+      label: '재작년 매출액',
       backgroundColor: 'transparent',
       borderColor: getStyle('--danger'),
       pointHoverBackgroundColor: '#fff',
       borderWidth: 1,
       borderDash: [8, 5],
-      data: [65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65]
+      data: [65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65]
     }]
   },
   options: {
@@ -239,92 +239,92 @@ var mainChart = new Chart($('#main-chart'), {
     }
   }
 });
-var brandBoxChartLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-var brandBoxChartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  legend: {
-    display: false
-  },
-  scales: {
-    xAxes: [{
-      display: false
-    }],
-    yAxes: [{
-      display: false
-    }]
-  },
-  elements: {
-    point: {
-      radius: 0,
-      hitRadius: 10,
-      hoverRadius: 4,
-      hoverBorderWidth: 3
-    }
-  } // eslint-disable-next-line no-unused-vars
-
-};
-var brandBoxChart1 = new Chart($('#social-box-chart-1'), {
-  type: 'line',
-  data: {
-    labels: brandBoxChartLabels,
-    datasets: [{
-      label: 'My First dataset',
-      backgroundColor: 'rgba(255,255,255,.1)',
-      borderColor: 'rgba(255,255,255,.55)',
-      pointHoverBackgroundColor: '#fff',
-      borderWidth: 2,
-      data: [65, 59, 84, 84, 51, 55, 40]
-    }]
-  },
-  options: brandBoxChartOptions
-}); // eslint-disable-next-line no-unused-vars
-
-var brandBoxChart2 = new Chart($('#social-box-chart-2'), {
-  type: 'line',
-  data: {
-    labels: brandBoxChartLabels,
-    datasets: [{
-      label: 'My First dataset',
-      backgroundColor: 'rgba(255,255,255,.1)',
-      borderColor: 'rgba(255,255,255,.55)',
-      pointHoverBackgroundColor: '#fff',
-      borderWidth: 2,
-      data: [1, 13, 9, 17, 34, 41, 38]
-    }]
-  },
-  options: brandBoxChartOptions
-}); // eslint-disable-next-line no-unused-vars
-
-var brandBoxChart3 = new Chart($('#social-box-chart-3'), {
-  type: 'line',
-  data: {
-    labels: brandBoxChartLabels,
-    datasets: [{
-      label: 'My First dataset',
-      backgroundColor: 'rgba(255,255,255,.1)',
-      borderColor: 'rgba(255,255,255,.55)',
-      pointHoverBackgroundColor: '#fff',
-      borderWidth: 2,
-      data: [78, 81, 80, 45, 34, 12, 40]
-    }]
-  },
-  options: brandBoxChartOptions
-}); // eslint-disable-next-line no-unused-vars
-
-var brandBoxChart4 = new Chart($('#social-box-chart-4'), {
-  type: 'line',
-  data: {
-    labels: brandBoxChartLabels,
-    datasets: [{
-      label: 'My First dataset',
-      backgroundColor: 'rgba(255,255,255,.1)',
-      borderColor: 'rgba(255,255,255,.55)',
-      pointHoverBackgroundColor: '#fff',
-      borderWidth: 2,
-      data: [35, 23, 56, 22, 97, 23, 64]
-    }]
-  },
-  options: brandBoxChartOptions
-});
+//var brandBoxChartLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+//var brandBoxChartOptions = {
+//  responsive: true,
+//  maintainAspectRatio: false,
+//  legend: {
+//    display: false
+//  },
+//  scales: {
+//    xAxes: [{
+//      display: false
+//    }],
+//    yAxes: [{
+//      display: false
+//    }]
+//  },
+//  elements: {
+//    point: {
+//      radius: 0,
+//      hitRadius: 10,
+//      hoverRadius: 4,
+//      hoverBorderWidth: 3
+//    }
+//  } // eslint-disable-next-line no-unused-vars
+//
+//};
+//var brandBoxChart1 = new Chart($('#social-box-chart-1'), {
+//  type: 'line',
+//  data: {
+//    labels: brandBoxChartLabels,
+//    datasets: [{
+//      label: 'My First dataset',
+//      backgroundColor: 'rgba(255,255,255,.1)',
+//      borderColor: 'rgba(255,255,255,.55)',
+//      pointHoverBackgroundColor: '#fff',
+//      borderWidth: 2,
+//      data: [65, 59, 84, 84, 51, 55, 40]
+//    }]
+//  },
+//  options: brandBoxChartOptions
+//}); // eslint-disable-next-line no-unused-vars
+//
+//var brandBoxChart2 = new Chart($('#social-box-chart-2'), {
+//  type: 'line',
+//  data: {
+//    labels: brandBoxChartLabels,
+//    datasets: [{
+//      label: 'My First dataset',
+//      backgroundColor: 'rgba(255,255,255,.1)',
+//      borderColor: 'rgba(255,255,255,.55)',
+//      pointHoverBackgroundColor: '#fff',
+//      borderWidth: 2,
+//      data: [1, 13, 9, 17, 34, 41, 38]
+//    }]
+//  },
+//  options: brandBoxChartOptions
+//}); // eslint-disable-next-line no-unused-vars
+//
+//var brandBoxChart3 = new Chart($('#social-box-chart-3'), {
+//  type: 'line',
+//  data: {
+//    labels: brandBoxChartLabels,
+//    datasets: [{
+//      label: 'My First dataset',
+//      backgroundColor: 'rgba(255,255,255,.1)',
+//      borderColor: 'rgba(255,255,255,.55)',
+//      pointHoverBackgroundColor: '#fff',
+//      borderWidth: 2,
+//      data: [78, 81, 80, 45, 34, 12, 40]
+//    }]
+//  },
+//  options: brandBoxChartOptions
+//}); // eslint-disable-next-line no-unused-vars
+//
+//var brandBoxChart4 = new Chart($('#social-box-chart-4'), {
+//  type: 'line',
+//  data: {
+//    labels: brandBoxChartLabels,
+//    datasets: [{
+//      label: 'My First dataset',
+//      backgroundColor: 'rgba(255,255,255,.1)',
+//      borderColor: 'rgba(255,255,255,.55)',
+//      pointHoverBackgroundColor: '#fff',
+//      borderWidth: 2,
+//      data: [35, 23, 56, 22, 97, 23, 64]
+//    }]
+//  },
+//  options: brandBoxChartOptions
+//});
 //# sourceMappingURL=main.js.map

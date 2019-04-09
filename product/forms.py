@@ -322,7 +322,7 @@ class StepFourForm(forms.Form):
         super(StepFourForm, self).__init__(*args, **kwargs)
         self.fields['product'] = forms.ChoiceField(widget=Select2Widget,
                                                    choices=list(ProductCode.objects.values_list('code', 'codeName')
-                                                                .filter(delete_state='N').order_by('code')),
+                                                                .filter(delete_state='N').filter(oem='N').order_by('code')),
                                                    required=False)
 
 

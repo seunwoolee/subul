@@ -718,8 +718,15 @@ function setStepFiveDataTable(args)
                     return intVal(a) + intVal(b);
                 }, 0 );
 
-            let pageTotal_currentStock = api
+            let pageTotal_adjust = api
                 .column( 11, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let pageTotal_currentStock = api
+                .column( 12, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
@@ -733,7 +740,8 @@ function setStepFiveDataTable(args)
             $( api.column( 8 ).footer() ).html( numberFormatWithDot(pageTotal_broken));
             $( api.column( 9 ).footer() ).html( numberFormatWithDot(pageTotal_notProduct));
             $( api.column( 10 ).footer() ).html( numberFormatWithDot(pageTotal_recall));
-            $( api.column( 11 ).footer() ).html( numberFormatWithDot(pageTotal_currentStock));
+            $( api.column( 11 ).footer() ).html( numberFormatWithDot(pageTotal_adjust));
+            $( api.column( 12 ).footer() ).html( numberFormatWithDot(pageTotal_currentStock));
         },
         "language": {searchPlaceholder: "거래처"},
         "processing": true,
@@ -775,6 +783,7 @@ function setStepFiveDataTable(args)
             {'data': 'broken', "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {'data': 'notProduct', "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {'data': 'recall', "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {'data': 'adjust', "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {'data': 'currentStock', "render": $.fn.dataTable.render.number( ',', '.', 2)}
         ],
         dom: 'Bfrtip',

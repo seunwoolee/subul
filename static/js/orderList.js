@@ -212,22 +212,29 @@ function setStepTwoDataTable(args)
                     return intVal(a) + intVal(b);
                 }, 0 );
 
+            let pageTotal_price = api
+                .column( 8, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
             let pageTotal_release_amount = api
-                .column( 12, { page: 'current'} )
+                .column( 10, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
             let pageTotal_release_count = api
-                .column( 13, { page: 'current'} )
+                .column( 11, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
             let pageTotal_release_price = api
-                .column( 14, { page: 'current'} )
+                .column( 12, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
@@ -236,9 +243,10 @@ function setStepTwoDataTable(args)
             // Update footer
             $( api.column( 6 ).footer() ).html( numberFormatWithDot(pageTotal_amount) + '(KG)' );
             $( api.column( 7 ).footer() ).html( numberFormat(pageTotal_count) + '(EA)' );
-            $( api.column( 12 ).footer() ).html( numberFormatWithDot(pageTotal_release_amount) + '(KG)' );
-            $( api.column( 13 ).footer() ).html( numberFormat(pageTotal_release_count) + '(EA)' );
-            $( api.column( 14 ).footer() ).html( numberFormat(pageTotal_release_price) );
+            $( api.column( 8 ).footer() ).html( numberFormat(pageTotal_price) );
+            $( api.column( 10 ).footer() ).html( numberFormat(pageTotal_release_amount) + '(KG)' );
+            $( api.column( 11 ).footer() ).html( numberFormat(pageTotal_release_count) + '(EA)'  );
+            $( api.column( 12 ).footer() ).html( numberFormat(pageTotal_release_price)  );
         },
         "language": {searchPlaceholder: "제품명"},
         "processing": true,
@@ -263,25 +271,25 @@ function setStepTwoDataTable(args)
             { responsivePriority: 3, targets: 3 },
             { targets: 6, className: "dt-body-right" },
             { targets: 7, className: "dt-body-right" },
-            { targets: 13, className: "dt-body-right" },
-            { targets: 14, className: "dt-body-right" },
+            { targets: 8, className: "dt-body-right" },
+            { targets: 10, className: "dt-body-right" },
+            { targets: 11, className: "dt-body-right" },
+            { targets: 12, className: "dt-body-right" },
         ],
         "columns": [
-            {"data": "id"},
-            {"data": "type", "render" : function(data, type, row, meta){return setTypeButton(data);}},
-            {"data": "specialTag", "render" : function(data, type, row, meta){return setSpecialTagButton(data);}},
-            {"data": "ymd"},
-            {"data": "orderLocationName"},
-            {"data": "codeName"},
-            {"data": "amount" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
-            {"data": "count" , "render": $.fn.dataTable.render.number( ',')},
+            {"data": "order_id"},
+            {"data": "order_type", "render" : function(data, type, row, meta){return setTypeButton(data);}},
+            {"data": "order_specialTag", "render" : function(data, type, row, meta){return setSpecialTagButton(data);}},
+            {"data": "order_ymd"},
+            {"data": "order_orderLocationName"},
+            {"data": "order_codeName"},
+            {"data": "order_amount" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {"data": "order_count" , "render": $.fn.dataTable.render.number( ',')},
+            {"data": "order_totalPrice" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "release_ymd" , "render" : function(data, type, row, meta){return setRelease_ymd(data);}},
-            {"data": "release_type" , "render" : function(data, type, row, meta){return setTypeButton(data);}},
-            {"data": "release_locationName"},
-            {"data": "release_codeName"},
             {"data": "release_amount" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
             {"data": "release_count" , "render": $.fn.dataTable.render.number( ',')},
-            {"data": "release_price" , "render": $.fn.dataTable.render.number( ',')},
+            {"data": "release_totalPrice" , "render": $.fn.dataTable.render.number( ',')},
         ],
         dom: 'Bfrtip',
         buttons: [
@@ -313,7 +321,10 @@ function setStepTwoDataTable(args)
         lengthMenu : [[100, -1], [100, "All"]],
         rowCallback: function(row, data, index){
              $('td:eq(3)', row).html( set_yyyy_mm_dd(data.ymd) );
-             $('td:eq(8)', row).html( set_yyyy_mm_dd(data.release_ymd)).css('color', 'blue');
+             $('td:eq(9)', row).html( set_yyyy_mm_dd(data.release_ymd)).css('color', 'blue');
+             if(data.release_amount == 0) { $('td:eq(10)', row).html( '' ); }
+             if(data.release_count == 0) { $('td:eq(11)', row).html( '' ); }
+             if(data.release_totalPrice == 0) { $('td:eq(12)', row).html( '' ); }
         }
     });
 }
@@ -585,6 +596,14 @@ $('.nav-item a').click(function(){ // 탭별 style 주기
         $("#moneyMarkFilter").hide('slow');
         $("#characterFilter").hide('slow');
         $('#locationManagerSearch').hide('slow');
+    }
+    else if(nav_item_id == "#stepTwo")
+    {
+        $('#locationFilter').show('slow');
+        $('#managerFilter').show('slow');
+        $("#moneyMarkFilter").show('slow');
+        $("#characterFilter").show('slow');
+        $('#locationManagerSearch').show('slow');
     }
     else
     {

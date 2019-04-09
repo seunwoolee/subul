@@ -3,7 +3,7 @@ from operator import itemgetter, attrgetter
 
 from django.db import models
 from django.db.models import Q, Sum, F, ExpressionWrapper, FloatField, DecimalField, Value, IntegerField, Func, \
-    CharField
+    CharField, Max
 from model_utils import Choices
 from itertools import chain
 
@@ -91,7 +91,7 @@ class Order(Detail):
                 )
                 order_column = ORDER_COLUMN_CHOICES[order_column]
                 queryset = Order.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
-                    .filter(delete_state='N').annotate(totalPrice=Sum(F('count') * F('price'), output_field=IntegerField())) \
+                    .annotate(totalPrice=Sum(F('count') * F('price'), output_field=IntegerField())) \
                     .annotate(setProductCode=F('setProduct__code'))
 
                 total = queryset.count()
@@ -100,7 +100,14 @@ class Order(Detail):
                     queryset = queryset.filter(orderLocationCode__code=locationFilter)
 
                 if managerFilter:
-                    queryset = queryset.filter(orderLocationCode__location_manager=CustomUser.objects.get(username=managerFilter))
+                    queryset = queryset.filter(
+                        orderLocationCode__location_manager=CustomUser.objects.get(username=managerFilter))
+
+                if checkBoxFilter:
+                    queryset = queryset.filter(orderLocationCode__location_character__in=checkBoxFilter)
+
+                if location_manager == "true":
+                    queryset = queryset.filter(orderLocationCode__location_manager=user_instance)
 
                 if search_value:
                     queryset = queryset.filter(Q(codeName__icontains=search_value) |
@@ -108,41 +115,82 @@ class Order(Detail):
 
             elif gubunFilter == 'stepTwo':
                 ORDER_COLUMN_CHOICES = Choices(
-                    ('0', 'id'),
-                    ('1', 'type'),
-                    ('2', 'specialTag'),
-                    ('3', 'ymd'),
-                    ('4', 'orderLocationName'),
-                    ('5', 'codeName'),
-                    ('6', 'amount'),
-                    ('7', 'count'),
-                    ('8', 'release_ymd'),
-                    ('9', 'release_type'),
-                    ('10', 'release_locationName'),
-                    ('11', 'release_codeName'),
-                    ('12', 'release_amount'),
-                    ('13', 'release_count'),
-                    ('14', 'release_price'),
+                    ('0', 'order_id'),
+                    ('1', 'order_type'),
+                    ('2', 'order_specialTag'),
+                    ('3', 'order_ymd'),
+                    ('4', 'order_orderLocationName'),
+                    ('5', 'order_codeName'),
+                    ('6', 'order_amount'),
+                    ('7', 'order_count'),
+                    ('8', 'order_totalPrice'),
+                    ('9', 'release_ymd'),
+                    ('10', 'release_amount'),
+                    ('11', 'release_count'),
+                    ('12', 'release_totalPrice'),
                 )
                 order_column = ORDER_COLUMN_CHOICES[order_column]
-                queryset = Order.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(delete_state='N') \
-                    .annotate(release_ymd=F('release_id__ymd')) \
-                    .annotate(release_type=F('release_id__type')) \
-                    .annotate(release_locationName=F('release_id__releaseLocationName')) \
-                    .annotate(release_codeName=F('release_id__codeName')) \
-                    .annotate(release_amount=F('release_id__amount')) \
-                    .annotate(release_count=F('release_id__count')) \
-                    .annotate(release_price=F('release_id__price'))
-                total = queryset.count()
+
+                queryset0 = Order.objects.values(
+                    order_id=F('id'),
+                    order_type=F('type'),
+                    order_specialTag=F('specialTag'),
+                    order_ymd=F('ymd'),
+                    order_orderLocationName=F('orderLocationName'),
+                    order_codeName=F('codeName'),
+                    order_amount=F('amount'),
+                    order_count=F('count'))\
+                    .filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(release_id=None)\
+                    .annotate(order_totalPrice=ExpressionWrapper(F('count') * F('price'),
+                                                                 output_field=IntegerField()))\
+                    .annotate(release_ymd=Value('', output_field=CharField())) \
+                    .annotate(release_amount=Value(0, output_field=DecimalField())) \
+                    .annotate(release_count=Value(0, output_field=IntegerField())) \
+                    .annotate(release_totalPrice=Value(0, output_field=IntegerField()))
+
+                queryset = Release.objects.values(
+                    order_id=F('releaseOrder__id'),
+                    order_type=F('releaseOrder__type'),
+                    order_specialTag=F('releaseOrder__specialTag'),
+                    order_ymd=F('releaseOrder__ymd'),
+                    order_orderLocationName=F('releaseOrder__orderLocationName'),
+                    order_codeName=F('releaseOrder__codeName'),
+                    order_amount=F('releaseOrder__amount'),
+                    order_count=F('releaseOrder__count')) \
+                    .filter(releaseOrder__ymd__gte=start_date) \
+                    .filter(releaseOrder__ymd__lte=end_date) \
+                    .annotate(order_totalPrice=ExpressionWrapper(F('releaseOrder__count') * F('releaseOrder__price'),
+                                                                 output_field=IntegerField())) \
+                    .annotate(release_ymd=F('ymd')) \
+                    .annotate(release_amount=Sum('amount')) \
+                    .annotate(release_count=Sum('count')) \
+                    .annotate(release_totalPrice=Sum('price'))
+
+                total = queryset0.count() + queryset.count()
 
                 if locationFilter:
-                    queryset = queryset.filter(orderLocationCode__code=locationFilter)
+                    queryset0 = queryset0.filter(orderLocationCode__code=locationFilter)
+                    queryset = queryset.filter(releaseOrder__orderLocationCode__code=locationFilter)
 
                 if managerFilter:
-                    queryset = queryset.filter(orderLocationCode__location_manager=CustomUser.objects.get(username=managerFilter))
+                    queryset0 = queryset0.filter(orderLocationCode__location_manager=
+                                                 CustomUser.objects.get(username=managerFilter))
+                    queryset = queryset.filter(releaseOrder__orderLocationCode__location_manager=
+                                               CustomUser.objects.get(username=managerFilter))
+
+                if checkBoxFilter:
+                    queryset0 = queryset0.filter(orderLocationCode__location_character__in=checkBoxFilter)
+                    queryset = queryset.filter(releaseOrder__orderLocationCode__location_character__in=checkBoxFilter)
+
+                if location_manager == "true":
+                    queryset0 = queryset0.filter(orderLocationCode__location_manager=user_instance)
+                    queryset = queryset.filter(releaseOrder__orderLocationCode__location_manager=user_instance)
 
                 if search_value:
-                    queryset = queryset.filter(codeName__icontains=search_value)
+                    queryset0 = queryset0.filter(codeName__icontains=search_value)
+                    queryset = queryset.filter(order_codeName__icontains=search_value)
+
+                queryset = queryset.union(queryset0)
 
         else:  # 주문내역출고등록(출고)
             ORDER_COLUMN_CHOICES = Choices(
@@ -171,18 +219,10 @@ class Order(Detail):
         if order == 'desc':
             order_column = '-' + order_column
 
+        if releaseOrder:
+            queryset = queryset.filter(release_id=None)
+
         count = queryset.count()
-
-        if not releaseOrder:
-            if checkBoxFilter:
-                queryset = queryset.filter(orderLocationCode__location_character__in=checkBoxFilter)
-                count = queryset.count()
-
-            if location_manager == "true":
-                queryset = queryset.filter(orderLocationCode__location_manager=user_instance)
-                count = queryset.count()
-        else:
-            queryset = queryset.filter(release_id=None).order_by(order_column)  # 출고가능한 ORDER
 
         if length != -1:
             queryset = queryset.order_by(order_column)[start:start + length]
@@ -219,25 +259,33 @@ class Order(Detail):
             '8': 'supplyPrice',
             '9': 'releaseVat'
         }
+
         order_column = ORDER_COLUMN_CHOICES[order_column]
+
         queryset_release = Release.objects.values('id', 'ymd', 'releaseLocationName', 'code', 'codeName', 'count',
                                                   'amount', 'price', 'releaseVat') \
             .filter(ymd__gte=start_date) \
             .filter(ymd__lte=end_date).filter(type='판매') \
             .annotate(supplyPrice=ExpressionWrapper(F('price') - F('releaseVat'), output_field=DecimalField()))
+
         queryset_egg = Egg.objects.values('id', 'ymd', 'code', 'codeName', 'amount', 'price') \
             .filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(type='판매') \
             .annotate(count=ABS(F('count'))) \
             .annotate(releaseLocationName=F('locationCodeName')).annotate(releaseVat=Value(0, IntegerField())) \
             .annotate(supplyPrice=F('price'))
+
         mergedProductInfo['recordsTotal'] = queryset_release.count() + queryset_egg.count()
+
         if search_value:
             queryset_release = queryset_release.filter(Q(releaseLocationName__icontains=search_value) |
                                                        Q(codeName__icontains=search_value))
+
             queryset_egg = queryset_egg.filter(Q(locationCodeName__icontains=search_value) |
                                                Q(codeName__icontains=search_value))
+
         mergedProductInfo['recordsFiltered'] = queryset_release.count() + queryset_egg.count()
         mergedProductInfo['data'] = list(chain(queryset_release, queryset_egg))
+
         if order == 'desc':
             mergedProductInfo['data'] = sorted(mergedProductInfo['data'],
                                                key=lambda k: k[order_column] if k[order_column] is not None
@@ -246,6 +294,8 @@ class Order(Detail):
             mergedProductInfo['data'] = sorted(mergedProductInfo['data'],
                                                key=lambda k: k[order_column] if k[order_column] is not None
                                                else 0)
-        mergedProductInfo['data'] = mergedProductInfo['data'][start:start + length]  # 페이징
+
+        mergedProductInfo['data'] = mergedProductInfo['data'][start:start + length]
         mergedProductInfo['draw'] = draw
+
         return mergedProductInfo

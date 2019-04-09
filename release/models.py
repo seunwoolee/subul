@@ -207,7 +207,8 @@ class Release(Detail):
                 '8': 'broken',
                 '9': 'notProduct',
                 '10': 'recall',
-                '11': 'currentStock'
+                '11': 'adjust',
+                '12': 'currentStock'
             }
             order_column = RELEASE_COLUMN_CHOICES[order_column]
             arr = []
@@ -238,6 +239,7 @@ class Release(Detail):
                 BROKEN = 0
                 NOTPRODUCT = 0
                 RECALL = 0
+                ADJUST = 0
 
                 for element in countPerType:  # 전일재고니깐 생성 없음
                     number = element["totalAmount"]
@@ -251,12 +253,16 @@ class Release(Detail):
                         NOTPRODUCT += number
                     elif element['type'] == '반품':
                         RECALL += number
-                CURRENT_STOCK = PREVIOUS_STOCK + SALE + SAMPLE + BROKEN + NOTPRODUCT + RECALL
+                    elif element['type'] == '재고조정':
+                        ADJUST += number
+
+                CURRENT_STOCK = PREVIOUS_STOCK + SALE + SAMPLE + BROKEN + NOTPRODUCT + RECALL + ADJUST
                 if SALE == 0: SALE = None
                 if SAMPLE == 0: SAMPLE = None
                 if BROKEN == 0: BROKEN = None
                 if NOTPRODUCT == 0: NOTPRODUCT = None
                 if RECALL == 0: RECALL = None
+                if ADJUST == 0: ADJUST = None
                 if CURRENT_STOCK == 0: CURRENT_STOCK = None
                 result['id'] = previous['productId']
                 result['code'] = previous['productCode']
@@ -269,6 +275,7 @@ class Release(Detail):
                 result['broken'] = BROKEN
                 result['notProduct'] = NOTPRODUCT
                 result['recall'] = RECALL
+                result['adjust'] = ADJUST
                 result['currentStock'] = CURRENT_STOCK
                 arr.append(result)
 
@@ -299,6 +306,7 @@ class Release(Detail):
                 BROKEN = 0
                 NOTPRODUCT = 0
                 RECALL = 0
+                ADJUST = 0
 
                 for element in countPerType:
                     number = element["totalAmount"]
@@ -317,9 +325,11 @@ class Release(Detail):
                         NOTPRODUCT += number
                     elif element['type'] == '반품':
                         RECALL += number
+                    elif element['type'] == '재고조정':
+                        ADJUST += number
 
                 if IN > 0:  # IN 데이터가 존재하지 않으면 위에서 계산된거임
-                    CURRENT_STOCK = IN + SALE + SAMPLE + BROKEN + NOTPRODUCT + RECALL
+                    CURRENT_STOCK = IN + SALE + SAMPLE + BROKEN + NOTPRODUCT + RECALL + ADJUST
                     if IN == 0: IN = None
                     if SALE == 0: SALE = None
                     if SAMPLE == 0: SAMPLE = None
@@ -339,6 +349,7 @@ class Release(Detail):
                     result['broken'] = BROKEN
                     result['notProduct'] = NOTPRODUCT
                     result['recall'] = RECALL
+                    result['adjust'] = ADJUST
                     result['currentStock'] = CURRENT_STOCK
                     arr.append(result)
 
@@ -381,8 +392,6 @@ class Release(Detail):
                         break
 
                 CURRENT_STOCK = eachTank['amount'] + IN
-                # if IN == 0: IN = None
-                # if eachTank['amount'] == 0: eachTank['amount'] = None
 
                 result = {}
                 result['id'] = 99999
@@ -396,6 +405,7 @@ class Release(Detail):
                 result['broken'] = None
                 result['notProduct'] = None
                 result['recall'] = None
+                result['adjust'] = None
                 result['currentStock'] = CURRENT_STOCK
                 arr.append(result)
 
