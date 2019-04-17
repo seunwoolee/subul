@@ -21,7 +21,6 @@ class ReleaseForm(forms.Form):
         ('재고조정', '재고조정'),
     )
 
-    # Hidden fields
     productCode = forms.CharField(widget=forms.HiddenInput())
     storedLocationCode = forms.CharField(widget=forms.HiddenInput())
     productYmd = forms.CharField(widget=forms.HiddenInput())
@@ -30,13 +29,13 @@ class ReleaseForm(forms.Form):
     amount_kg = forms.DecimalField(decimal_places=2, max_digits=19, min_value=0, widget=forms.HiddenInput())
     setProductCode = forms.CharField(widget=forms.HiddenInput())
     totalCount = forms.CharField(widget=forms.HiddenInput(), disabled=True)
-
     type = forms.ChoiceField(choices=RELEASE_TYPE_CHOICES, widget=Select2Widget)
     location = forms.ChoiceField(widget=Select2Widget, choices=Location.objects.none)
     ymd = forms.CharField(max_length=8)
     amount = forms.DecimalField(decimal_places=2, max_digits=19, min_value=0)
     count = forms.IntegerField(min_value=0)
     price = forms.IntegerField(min_value=0)
+    releaseVat = forms.IntegerField(min_value=0)
     memo = forms.CharField( label='', widget=forms.Textarea(attrs={'rows': 2}), required=False)
     fakeYmd = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}))
     location_filter = forms.ChoiceField(widget=Select2Widget, choices=Location.objects.none)

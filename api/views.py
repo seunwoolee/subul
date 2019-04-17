@@ -152,8 +152,8 @@ class ProductUpdate(generics.RetrieveUpdateDestroyAPIView):
         productAdmin.save()
         return Response(status=status.HTTP_200_OK)
 
-    def delete(self, request, *args, **kwargs):
-        instance = Product.objects.get(pk=kwargs['pk'])
+    def delete(self, request, *args, **kwargs) -> Response:
+        instance: Product = Product.objects.get(pk=kwargs['pk'])
         if instance.type == "미출고품사용":
             origin_instance = Product.objects.filter(ymd=instance.ymd).filter(code=instance.code).filter(
                 type="제품생산").first()
@@ -290,6 +290,22 @@ class ReleaseUpdate(generics.RetrieveUpdateDestroyAPIView):
     queryset = Release.objects.all()
     serializer_class = ReleaseSerializer
 
+    def patch(self, request, *args, **kwargs):
+        instance: object = Release.objects.get(pk=kwargs['pk'])
+        log(
+            user=request.user,
+            action="출고수정",
+            obj=instance,
+            extra={
+                "날짜": "{}".format(instance.ymd),
+                "이름": "{}".format(instance.codeName),
+                "총금액": "{}->{}".format(instance.price, request.data['price']),
+                "부가세": "{}->{}".format(instance.releaseVat, request.data['releaseVat']),
+                "메모": "{}->{}".format(instance.memo, request.data['memo']),
+            }
+        )
+        self.partial_update(request, *args, **kwargs)
+        return Response(status=status.HTTP_200_OK)
 
 class ProductAdminsAPIView(APIView):
 

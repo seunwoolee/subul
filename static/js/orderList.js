@@ -43,15 +43,6 @@ function setStepOneDataTable(args)
     table = args['table'].DataTable({
     	"footerCallback": function ( row, data, start, end, display ) {
             var api = this.api(), data;
-            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
-            let numberFormat = $.fn.dataTable.render.number( ',').display;
-
-            var intVal = function ( i ) {
-                return typeof i === 'string' ?
-                    i.replace(/[\$,]/g, '')*1 :
-                    typeof i === 'number' ?
-                        i : 0;
-            };
 
             let pageTotal_amount = api
                 .column( 7, { page: 'current'} )
@@ -188,15 +179,6 @@ function setStepTwoDataTable(args)
     args['table'].DataTable({
     	"footerCallback": function ( row, data, start, end, display ) {
             var api = this.api(), data;
-            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
-            let numberFormat = $.fn.dataTable.render.number( ',').display;
-
-            var intVal = function ( i ) {
-                return typeof i === 'string' ?
-                    i.replace(/[\$,]/g, '')*1 :
-                    typeof i === 'number' ?
-                        i : 0;
-            };
 
             let pageTotal_amount = api
                 .column( 6, { page: 'current'} )
@@ -322,9 +304,19 @@ function setStepTwoDataTable(args)
         rowCallback: function(row, data, index){
              $('td:eq(3)', row).html( set_yyyy_mm_dd(data.ymd) );
              $('td:eq(9)', row).html( set_yyyy_mm_dd(data.release_ymd)).css('color', 'blue');
-             if(data.release_amount == 0) { $('td:eq(10)', row).html( '' ); }
-             if(data.release_count == 0) { $('td:eq(11)', row).html( '' ); }
              if(data.release_totalPrice == 0) { $('td:eq(12)', row).html( '' ); }
+
+             if(data.release_count == 0 || data.release_amount == 0)
+             {
+                 $('td:eq(10)', row).html( '' );
+                 $('td:eq(11)', row).html( '' );
+             }
+             else if(data.release_count != data.order_count || data.release_amount != data.order_amount)
+             {
+                $('td:eq(10)', row).html( data.release_amount).css('color', 'red');
+                $('td:eq(11)', row).html( data.release_count).css('color', 'red');
+             }
+
         }
     });
 }
@@ -334,15 +326,6 @@ function setStepThreeDataTable(args)
     args['table'].DataTable({
     	"footerCallback": function ( row, data, start, end, display ) {
             var api = this.api(), data;
-            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
-            let numberFormat = $.fn.dataTable.render.number( ',').display;
-
-            var intVal = function ( i ) {
-                return typeof i === 'string' ?
-                    i.replace(/[\$,]/g, '')*1 :
-                    typeof i === 'number' ?
-                        i : 0;
-            };
 
             let pageTotal_count = api
                 .column( 5, { page: 'current'} )

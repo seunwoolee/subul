@@ -10,15 +10,6 @@
     table = $('.datatable').DataTable({
     	"footerCallback": function ( row, data, start, end, display ) {
             var api = this.api(), data;
-            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
-            let numberFormat = $.fn.dataTable.render.number( ',').display;
-
-            var intVal = function ( i ) {
-                return typeof i === 'string' ?
-                    i.replace(/[\$,]/g, '')*1 :
-                    typeof i === 'number' ?
-                        i : 0;
-            };
 
             let pageTotal_count = api
                 .column( 7, { page: 'current'} )
@@ -178,24 +169,3 @@ $('.deleteAndEdit').on('submit', function (e)
         alert('수정 에러 전산실로 문의바랍니다.');
     });
 });
-
-//$('form').on('submit', function (e)
-//{
-//    e.preventDefault();
-//    $this = $(this);
-//    let data = $this.serialize();
-//    let type = $this.find('.ajaxUrlType').val();
-//    url = setAjaxUrl($this);
-//
-//    $.ajax({
-//    url: url,
-//    type: type,
-//    data: data,
-//    }).done(function(data) {
-//        alert('완료');
-//        $('.datatable').DataTable().search($("input[type='search']").val()).draw();
-//        $(".everyModal").modal('hide');
-//    }).fail(function() {
-//        alert('수정 에러 전산실로 문의바랍니다.');
-//    });
-//});

@@ -89,7 +89,6 @@ var days = 7;
 var minusSevenDate = new Date(date.getTime() - (days * 24 * 60 * 60 * 1000));
 var plusThreeDate = new Date(date.getTime() + (3 * 24 * 60 * 60 * 1000));
 var minusFifteenDate = new Date(date.getTime() - (15 * 24 * 60 * 60 * 1000));
-
 var start_day = minusSevenDate.yyyymmdd();
 var end_day = date.yyyymmdd();
 var plusThree_day = plusThreeDate.yyyymmdd();
@@ -134,16 +133,16 @@ function setDataTableActionButtonOnlyModify()
     return '<button class="btn btn-info btn-sm MODIFY" href="#"><i class="fa fa-edit"></i></button>';
 }
 
-function setDataTableActionButtonWithRecall()
-{
-    return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="far fa-trash-alt"></i></button>' +
+function setDataTableActionButtonWithRecall() {
+    return  '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="far fa-trash-alt"></i></button>' +
             '<button class="btn btn-info btn-sm MODIFY" href="#"><i class="fa fa-edit"></i></button>' +
             '<button class="btn btn-success btn-sm RECALL" href="#"><i class="fas fa-undo-alt"></i></button>';
 }
 
 function setDataTableActionButtonWithPdfRecall()
 {
-    return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="far fa-trash-alt"></i></button>' +
+    return  '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="far fa-trash-alt"></i></button>' +
+            '<button class="btn btn-info btn-sm MODIFY" href="#"><i class="fa fa-edit"></i></button>' +
             '<button class="btn btn-warning btn-sm PDF" href="#"><i class="fas fa-file-pdf"></i></button>' +
             '<button class="btn btn-success btn-sm RECALL" href="#"><i class="fas fa-undo-alt"></i></button>';
 }
@@ -246,3 +245,12 @@ function getPreviousMonthFirstDay(yyyymmdd)
     let temp = year+month+day;
     return set_yyyy_mm_dd(temp);
 }
+
+var numberFormatWithDot = $.fn.dataTable.render.number(',', '.', 2).display;
+var numberFormat = $.fn.dataTable.render.number(',').display;
+var intVal = function (i) {
+    return typeof i === 'string' ?
+        i.replace(/[\$,]/g, '') * 1 :
+        typeof i === 'number' ?
+            i : 0;
+};

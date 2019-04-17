@@ -59,15 +59,6 @@ function setStepOneDataTable(args)
     table = args['table'].DataTable({
     	"footerCallback": function ( row, data, start, end, display ) {
             var api = this.api(), data;
-            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
-            let numberFormat = $.fn.dataTable.render.number( ',').display;
-
-            var intVal = function ( i ) {
-                return typeof i === 'string' ?
-                    i.replace(/[\$,]/g, '')*1 :
-                    typeof i === 'number' ?
-                        i : 0;
-            };
 
             let pageTotal_amount = api
                 .column( 7, { page: 'current'} )
@@ -236,10 +227,6 @@ function setStepOneDataTable(args)
                         }
                     }],
         lengthMenu : [[100, -1], [100, "All"]],
-//        rowCallback: function(row, data, index){
-//             $('td:eq(1)', row).html( set_yyyy_mm_dd(data.ymd) );
-//             $('td:eq(14)', row).html( set_yyyy_mm_dd(data.productYmd) );
-//        }
     });
 }
 
@@ -248,15 +235,6 @@ function setStepTwoDataTable(args)
     args['table'].DataTable({
     	"footerCallback": function ( row, data, start, end, display ) {
             var api = this.api(), data;
-            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
-            let numberFormat = $.fn.dataTable.render.number( ',').display;
-
-            var intVal = function ( i ) {
-                return typeof i === 'string' ?
-                    i.replace(/[\$,]/g, '')*1 :
-                    typeof i === 'number' ?
-                        i : 0;
-            };
 
             let pageTotal_amount = api
                 .column( 5, { page: 'current'} )
@@ -393,15 +371,6 @@ function setStepThreeDataTable(args)
     args['table'].DataTable({
     	"footerCallback": function ( row, data, start, end, display ) {
             var api = this.api(), data;
-            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
-            let numberFormat = $.fn.dataTable.render.number( ',').display;
-
-            var intVal = function ( i ) {
-                return typeof i === 'string' ?
-                    i.replace(/[\$,]/g, '')*1 :
-                    typeof i === 'number' ?
-                        i : 0;
-            };
 
             let pageTotal_amount = api
                 .column( 6, { page: 'current'} )
@@ -539,15 +508,6 @@ function setStepFourDataTable(args)
     args['table'].DataTable({
     	"footerCallback": function ( row, data, start, end, display ) {
             var api = this.api(), data;
-            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
-            let numberFormat = $.fn.dataTable.render.number( ',').display;
-
-            var intVal = function ( i ) {
-                return typeof i === 'string' ?
-                    i.replace(/[\$,]/g, '')*1 :
-                    typeof i === 'number' ?
-                        i : 0;
-            };
 
             let pageTotal_amount = api
                 .column( 1, { page: 'current'} )
@@ -589,7 +549,7 @@ function setStepFourDataTable(args)
             $( api.column( 2 ).footer() ).html( numberFormat(pageTotal_count) + '(EA)' );
             $( api.column( 3 ).footer() ).html( numberFormat(pageTotal_price) );
             $( api.column( 4 ).footer() ).html( numberFormat(pageTotal_supplyPrice) );
-            $( api.column( 5).footer() ).html( numberFormat(pageTotal_vat) );
+            $( api.column( 5 ).footer() ).html( numberFormat(pageTotal_vat) );
         },
         "language": {searchPlaceholder: "거래처"},
         "processing": true,
@@ -659,15 +619,6 @@ function setStepFiveDataTable(args)
     args['table'].DataTable({
     	"footerCallback": function ( row, data, start, end, display ) {
             var api = this.api(), data;
-            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
-            let numberFormat = $.fn.dataTable.render.number( ',').display;
-
-            var intVal = function ( i ) {
-                return typeof i === 'string' ?
-                    i.replace(/[\$,]/g, '')*1 :
-                    typeof i === 'number' ?
-                        i : 0;
-            };
 
             let pageTotal_previousStock = api
                 .column( 4, { page: 'current'} )
@@ -812,69 +763,6 @@ function setStepFiveDataTable(args)
     });
 }
 
-function setStepSixDataTable(args)
-{
-    args['table'].DataTable({
-        "language": {
-            "lengthMenu": "_MENU_ 페이지당 개수",
-            "zeroRecords": "결과 없음",
-            "info": "",
-            "infoEmpty": "No records available",
-            "infoFiltered": "(검색된결과 from _MAX_ total records)"
-        },
-        "processing": true,
-        "serverSide": true,
-        "paging": false,
-        "ajax": {
-            "url": "/api/release/",
-            "type": "GET",
-            "data": {
-                start_date:args['start_date'],
-                end_date:args['end_date'],
-                releaseTypeFilter:args['releaseTypeFilter'],
-                productTypeFilter:args['productTypeFilter'],
-                checkBoxFilter:args['checkBoxFilter'],
-                groupByFilter:args['groupByFilter']
-            }
-        },
-        "responsive" : true,
-        "columns": [
-            {'data': 'id'},
-            {'data': 'locationCode'},
-            {'data': 'locationCodeName'},
-            {'data': 'productCode'},
-            {'data': 'productCodeName'},
-            {'data': 'ymd'},
-            {'data': 'previousStock', "render": $.fn.dataTable.render.number( ',', '.', 2)},
-            {'data': 'in', "render": $.fn.dataTable.render.number( ',', '.', 2)},
-            {'data': 'move', "render": $.fn.dataTable.render.number( ',', '.', 2)},
-            {'data': 'sale', "render": $.fn.dataTable.render.number( ',', '.', 2)},
-            {'data': 'currentStock', "render": $.fn.dataTable.render.number( ',', '.', 2)}
-        ],
-        stateSave:  true,
-        dom: 'Bfrtip',
-        buttons: [
-                    {
-                        extend: 'colvis',
-                        className:'btn btn-light',
-                        text : '<i class="far fa-eye fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    },
-                    {
-                        extend: 'excel',
-                        footer: true,
-                        className:'btn btn-light',
-                        text : '<i class="far fa-file-excel fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    }],
-        lengthMenu : [[30, 50, -1], [30, 50, "All"]]
-    });
-}
-
 function setTypeButton(data)
 {
     switch(data)
@@ -917,13 +805,12 @@ function editButtonClick(data)
 {
     let fakeYmd = set_yyyy_mm_dd(data['ymd']);
     window.AMOUNT_KG = { "AMOUNT_KG" : data["amount_kg"]};
-    $('#id_ymd').val(data['ymd']);
-    $('#id_fakeYmd').val(fakeYmd);
+    $('#id_price').val(data['price']);
+    $('#id_releaseVat').val(data['releaseVat']);
     $('#id_amount').val(data['amount']);
     $('#id_count').val(data['count']);
-    $('#id_price').val(data['price']);
     $('#id_memo').val(data['memo']);
-    $('.codeName').text(data['codeName']);
+    $('#releaseModal .codeName').text(data['codeName']);
     $("#releaseModal").modal();
 }
 

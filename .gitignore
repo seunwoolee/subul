@@ -2,7 +2,10 @@ __pycache__/
 *.py[cod]
 .env
 venv/
-
+.vs/
+*.sln
+subul/.vs/
+.idea/
 
 # SQLite database files
 

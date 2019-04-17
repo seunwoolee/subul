@@ -11,15 +11,6 @@
     table = $('.datatable').DataTable({
     	"footerCallback": function ( row, data, start, end, display ) {
             var api = this.api(), data;
-            let numberFormatWithDot = $.fn.dataTable.render.number( ',', '.', 2).display;
-            let numberFormat = $.fn.dataTable.render.number( ',').display;
-
-            var intVal = function ( i ) {
-                return typeof i === 'string' ?
-                    i.replace(/[\$,]/g, '')*1 :
-                    typeof i === 'number' ?
-                        i : 0;
-            };
 
             let pageTotal_amount = api
                 .column( 5, { page: 'current'} )
