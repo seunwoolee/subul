@@ -55,8 +55,8 @@ class Packing(Detail):
         order = kwargs.get('order[0][dir]', None)[0]
         order_column = ORDER_COLUMN_CHOICES[order_column]
 
-        queryset = Packing.objects.values('code', packing_codeName=F('codeName'))\
-                                  .annotate(totalCount=Sum('count')).filter(totalCount__gt=0)
+        queryset = Packing.objects.values('code', packing_codeName=F('codeName')) \
+            .annotate(totalCount=Sum('count')).filter(totalCount__gt=0)
 
         # django orm '-' -> desc
         if order == 'desc':
@@ -105,8 +105,8 @@ class Packing(Detail):
         locatoinTypeFilter = kwargs.get('locatoinTypeFilter', None)[0]
 
         queryset = Packing.objects.all().annotate(locationCode_code=F('locationCode__code')) \
-                                        .annotate(counts=ABS(F('count'))) \
-                                        .filter(ymd__gte=start_date).filter(ymd__lte=end_date)
+            .annotate(counts=ABS(F('count'))) \
+            .filter(ymd__gte=start_date).filter(ymd__lte=end_date)
 
         total = queryset.count()
 
@@ -160,13 +160,13 @@ class Packing(Detail):
         end_date = kwargs.get('end_date', None)[0]
         arr = []
 
-        packing_previous = Packing.objects.values('code', 'codeName') \
+        packing_previous: Packing = Packing.objects.values('code', 'codeName') \
             .annotate(totalCount=Sum('count')) \
             .filter(ymd__lt=start_date) \
             .filter(totalCount__gt=0)  # 재고가 0초과인 이전 재고
 
         if search_value:
-            packing_previous = packing_previous.filter(productCodeName__icontains=search_value)
+            packing_previous = packing_previous.filter(codeName__icontains=search_value)
 
         for previous in packing_previous:  # 기간 내 전일재고의 각 타입별(IN, SALE, LOSS, INSERT) count를 구한다
             result = {}
@@ -213,7 +213,7 @@ class Packing(Detail):
             .filter(type='입고')
 
         if search_value:
-            packing_period = packing_period.filter(productCodeName__icontains=search_value)
+            packing_period = packing_period.filter(codeName__icontains=search_value)
 
         for period in packing_period:  # 기간 내 생성된 각 타입별(IN, SALE, LOSS, INSERT) count를 구한다
             result = {}
@@ -260,6 +260,24 @@ class Packing(Detail):
             result['adjust'] = ADJUST
             result['currentStock'] = CURRENT_STOCK
             arr.append(result)
+
+        arr: list = sorted(arr, key=lambda k: k['codeName'])
+        temp: list = [item['codeName'] for item in arr]
+
+        if len(temp) != len(set(temp)):
+            for i in range(len(arr)):
+                if len(arr) > i + 1 and arr[i]['codeName'] == arr[i + 1]['codeName']:
+                    pass
+                    if not arr[i]['previousStock']:
+                        arr[i]['previousStock'] = arr[i + 1]['previousStock']
+                    if not arr[i]['in']:
+                        arr[i]['in'] = arr[i + 1]['in']
+                    if not arr[i]['in_price']:
+                        arr[i]['in_price'] = arr[i + 1]['in_price']
+                    arr[i]['currentStock'] = arr[i]['previousStock'] + arr[i]['in'] + int(arr[i]['release'] or 0)
+                    arr.pop(i + 1)
+                else:
+                    continue
 
         if order == 'desc':
             arr = sorted(arr, key=lambda k: k[order_column] if k[order_column] is not None else 0, reverse=True)
