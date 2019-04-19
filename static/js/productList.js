@@ -170,7 +170,7 @@
                             $(node).removeClass('btn-secondary');
                         }
                     }],
-        lengthMenu : [[100, -1], [100, "All"]],
+        lengthMenu : [[-1, 100], ["All", 100]],
         rowCallback: function(row, data, index){
              $('td:eq(4)', row).html( set_yyyy_mm_dd(data.list_ymd) );
             if(data.list_rawTank_amount <  0){ $(row).find('td:eq(7)').css('color', 'red'); }

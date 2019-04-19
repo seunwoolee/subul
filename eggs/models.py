@@ -303,9 +303,9 @@ class Egg(Detail):
             arr.append(result)
 
         if order == 'desc':
-            arr = sorted(arr, key=lambda k: (k['sorts'], k[order_column]) if k[order_column] is not None else 0, reverse=True)
+            arr = sorted(arr, key=lambda k: (k['sorts'], k['in_ymd'], k[order_column]) if k[order_column] is not None else 0, reverse=True)
         else:
-            arr = sorted(arr, key=lambda k: (k['sorts'], k[order_column]) if k[order_column] is not None else 0)
+            arr = sorted(arr, key=lambda k: (k['sorts'], k['in_ymd'], k[order_column]) if k[order_column] is not None else 0)
 
         return {
             'items': arr,

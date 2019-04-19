@@ -167,7 +167,7 @@ function setStepOneDataTable(args)
                             $(node).removeClass('btn-secondary');
                         }
                     }],
-        lengthMenu : [[100, -1], [100, "All"]],
+        lengthMenu : [[-1, 100], ["All", 100]],
         rowCallback: function(row, data, index){
              $('td:eq(3)', row).html( set_yyyy_mm_dd(data.ymd) );
         }
@@ -300,7 +300,7 @@ function setStepTwoDataTable(args)
                             $(node).removeClass('btn-secondary');
                         }
                     }],
-        lengthMenu : [[100, -1], [100, "All"]],
+        lengthMenu : [[-1, 100], ["All", 100]],
         rowCallback: function(row, data, index){
              $('td:eq(3)', row).html( set_yyyy_mm_dd(data.ymd) );
              $('td:eq(9)', row).html( set_yyyy_mm_dd(data.release_ymd)).css('color', 'blue');
@@ -428,7 +428,7 @@ function setStepThreeDataTable(args)
                             $(node).removeClass('btn-secondary');
                         }
                     }],
-        lengthMenu : [[100, -1], [100, "All"]],
+        lengthMenu : [[-1, 100], ["All", 100]],
         rowCallback: function(row, data, index){
              $('td:eq(1)', row).html( set_yyyy_mm_dd(data.ymd) );
         }

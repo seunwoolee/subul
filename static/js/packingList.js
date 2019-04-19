@@ -124,7 +124,7 @@ function setStepOneDataTable(args)
                             $(node).removeClass('btn-secondary');
                         }
                     }],
-        lengthMenu : [[100, -1], [100, "All"]],
+        lengthMenu : [[-1, 100], ["All", 100]],
         rowCallback: function(row, data, index){
              $('td:eq(2)', row).html( set_yyyy_mm_dd(data.ymd) );
         }
@@ -245,7 +245,7 @@ function setStepThreeDataTable(args)
                             $(node).removeClass('btn-secondary');
                         }
                     }],
-        lengthMenu : [[30, 50, -1], [30, 50, "All"]]
+        lengthMenu : [[-1, 100], ["All", 100]],
     });
 }
 

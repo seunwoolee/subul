@@ -128,13 +128,10 @@ class EggPricePerEa(View):
     def post(self, request):
         data = request.POST.dict()
         eggs = Egg.objects.filter(ymd__gte=data['start_date']).filter(ymd__lte=data['end_date']).filter(type='생산')
-
         for egg in eggs:
-            in_price = Egg.objects.values('price', 'count').filter(in_ymd=egg.in_ymd).filter(type='입고').filter(
-                code=egg.code) \
-                .filter(in_locationCode=egg.in_locationCode).first()
-            egg.price = round(in_price['price'] / in_price['count']) * abs(
-                egg.count)  # 구매단가=in_price['price']/abs(egg.count)
+            in_price = Egg.objects.values('price', 'count').filter(in_ymd=egg.in_ymd).filter(type='입고')\
+                .filter(code=egg.code).filter(in_locationCode=egg.in_locationCode).first()
+            egg.price = round(in_price['price'] / in_price['count']) * abs(egg.count)  # 구매단가=in_price['price']/abs(egg.count)
             egg.save()
         return HttpResponse(status=200)
 
