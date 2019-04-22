@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from core.models import Location
+from eggs.models import Egg
 from order.forms import OrderFormSet, OrderForm
-from order.models import Order
+from order.models import Order, ABS
 from product.models import ProductCode, SetProductCode
-from django.db.models import Sum, F, ExpressionWrapper, FloatField, IntegerField, Func
+from django.db.models import Sum, F, ExpressionWrapper, FloatField, IntegerField, Func, Value, CharField
 from core.utils import render_to_pdf
 from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -22,6 +23,7 @@ class GeneratePDF(View):
         orderLocationCode = request.GET['orderLocationCode']
         moneyMark = request.GET['moneyMark']
         location = Location.objects.get(code=orderLocationCode)
+        egg_location = Location.objects.filter(codeName=location.codeName).filter(type='07').first()
         orders = Order.objects.filter(ymd=ymd).filter(orderLocationCode=location) \
             .values('code', 'codeName', 'price', 'specialTag', 'memo') \
             .annotate(totalCount=Sum('count')) \
@@ -29,6 +31,19 @@ class GeneratePDF(View):
             .annotate(vat=ExpressionWrapper(F('productCode__vat') * 0.01 + 1, output_field=FloatField())) \
             .annotate(supplyPrice=ExpressionWrapper(Round(F('totalPrice') / F('vat')), output_field=IntegerField())) \
             .annotate(vatPrice=F('totalPrice') - F('supplyPrice'))
+
+        if egg_location:
+            eggs = Egg.objects.filter(ymd=ymd).filter(locationCode=egg_location) \
+                .values('code', 'codeName', 'price') \
+                .annotate(specialTag=Value('', CharField())) \
+                .annotate(memo=F('memo')) \
+                .annotate(totalCount=ABS(Sum('count'))) \
+                .annotate(totalPrice=F('price')) \
+                .annotate(vat=Value(1, IntegerField())) \
+                .annotate(supplyPrice=ExpressionWrapper(Round(F('totalPrice') / F('vat')), output_field=IntegerField())) \
+                .annotate(vatPrice=F('totalPrice') - F('supplyPrice'))
+            orders = orders.union(eggs)
+
         sumTotalCount = orders.aggregate(sumTotalCount=Sum('totalCount'))
         sumSupplyPrice = orders.aggregate(sumSupplyPrice=Sum('supplyPrice'))
         sumVat = orders.aggregate(sumVat=Sum('vatPrice'))
@@ -60,7 +75,6 @@ class GeneratePDF(View):
 class OrderList(LoginRequiredMixin, View):
 
     def get(self, request):
-        # print(request.user.has_perm('order.delete_order')) # TODO 권한 문제!!
         form = OrderForm()
         return render(request, 'order/orderList.html', {'form': form})
 

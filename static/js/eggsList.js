@@ -127,22 +127,18 @@ function setStepOneDataTable(args)
 
                     if(SUPERUSER || getYearMonth(row.ymd) >= getYearMonth(today))
                     {
-                        if(data == "판매") { return setDataTableActionButtonWithPdf(); }
-                        else { return setDataTableActionButton(); }
+                        return setDataTableActionButton();
                     }
 
                     if(getYear(row.ymd) == getYear(today) && getMonth(row.ymd) == getMonth(today) - 1)
                     {
                         if(today <= getMiddleDay(today))
                         {
-                            if(data == "판매") { return setDataTableActionButtonWithPdf(); }
-                            else { return setDataTableActionButton(); }
+                            return setDataTableActionButton();
                         }
                     }
 
-                    if(data == "판매") { return setDataTableActionButtonOnlyPdf(); }
-                    else { return ""; }
-
+                    return "";
             }}
         ],
         dom: 'Bfrtip',
