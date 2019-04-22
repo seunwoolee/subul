@@ -42,7 +42,7 @@ def lookup_totalCount(d, key):
 @register.filter
 def lookup_price(d, key):
     try:
-        result = int(d[key]["price"])
+        result = int(d[key]["pricePerEa"])
     except:
         result = ' '
     return result

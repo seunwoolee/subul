@@ -27,6 +27,7 @@ class GeneratePDF(View):
         orders = Order.objects.filter(ymd=ymd).filter(orderLocationCode=location) \
             .values('code', 'codeName', 'price', 'specialTag', 'memo') \
             .annotate(totalCount=Sum('count')) \
+            .annotate(pricePerEa=F('price')) \
             .annotate(totalPrice=ExpressionWrapper(F('totalCount') * F('price'), output_field=IntegerField())) \
             .annotate(vat=ExpressionWrapper(F('productCode__vat') * 0.01 + 1, output_field=FloatField())) \
             .annotate(supplyPrice=ExpressionWrapper(Round(F('totalPrice') / F('vat')), output_field=IntegerField())) \
@@ -38,6 +39,7 @@ class GeneratePDF(View):
                 .annotate(specialTag=Value('', CharField())) \
                 .annotate(memo=F('memo')) \
                 .annotate(totalCount=ABS(Sum('count'))) \
+                .annotate(pricePerEa=ExpressionWrapper(Round(F('price') / F('totalCount')), output_field=IntegerField())) \
                 .annotate(totalPrice=F('price')) \
                 .annotate(vat=Value(1, IntegerField())) \
                 .annotate(supplyPrice=ExpressionWrapper(Round(F('totalPrice') / F('vat')), output_field=IntegerField())) \
