@@ -159,8 +159,8 @@ function setStepOneDataTable(args)
             {"data": "productYmd"},
             {"data": "type" , "render": function(data, type, row, meta){return setTypeButton(data);}},
             {"data": "specialTag", "render" : function(data, type, row, meta){return setSpecialTagButton(data);}},
-            {'data': 'amount' , "render": $.fn.dataTable.render.number( ',', '.', 2)},
-            {'data': 'count'},
+            {'data': 'amounts' , "render": $.fn.dataTable.render.number( ',', '.', 2)},
+            {'data': 'counts'},
             {'data': 'kgPrice' , "render": $.fn.dataTable.render.number( ',')},
             {'data': 'totalPrice', "render": $.fn.dataTable.render.number( ',')},
             {'data': 'supplyPrice' , "render": $.fn.dataTable.render.number( ',')},
@@ -179,6 +179,8 @@ function setStepOneDataTable(args)
 
                     if(SUPERUSER || getYearMonth(row.ymd) >= getYearMonth(today))
                     {
+                        if(row.locationType == '원란판매'){return '';}
+
                         if(data == '이동'){return '';}
                         else if(data == '판매'){return setDataTableActionButtonWithPdfRecall();}
                         else{return setDataTableActionButtonWithoutEdit();}
@@ -189,6 +191,8 @@ function setStepOneDataTable(args)
                     {
                         if(today <= getMiddleDay(today))
                         {
+                            if(row.locationType == '원란판매'){return '';}
+
                             if(data == '이동'){return '';}
                             else if(data == '판매'){return setDataTableActionButtonWithPdfRecall();}
                             else{return setDataTableActionButtonWithoutEdit();}
@@ -795,7 +799,7 @@ function deleteButtonClick(data)
 function pdfButtonClick(data)
 {
     let ymd = data['ymd'];
-    let releaseLocationCode = data['releaseLocationCode'];
+    let releaseLocationCode = data['releaseLocationCodes'];
     let moneyMark = $("#moneyMark").is(":checked");
     window.open('/release/pdf?ymd=' + ymd + '&releaseLocationCode=' + releaseLocationCode + "&moneyMark=" + moneyMark, '_blank');
 }
@@ -825,7 +829,7 @@ function recallButtonClick(data)
     $('#id_price_recall').val(data['price']);
     // hiddenFiled
     $('#id_productCode_recall').val(data['code']);
-    $('#id_storedLocationCode_recall').val(data['releaseLocationCode']);
+    $('#id_storedLocationCode_recall').val(data['releaseLocationCodes']);
     $('#id_productYmd_recall').val(data['productYmd']);
     $('#id_productId_recall').val(data['product_id']);
     $('#id_amount_kg_recall').val(data["amount_kg"]);

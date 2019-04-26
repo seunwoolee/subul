@@ -307,6 +307,7 @@ class ReleaseUpdate(generics.RetrieveUpdateDestroyAPIView):
         self.partial_update(request, *args, **kwargs)
         return Response(status=status.HTTP_200_OK)
 
+
 class ProductAdminsAPIView(APIView):
 
     def get(self, request, format=None):
@@ -337,19 +338,14 @@ class ProductAdminsAPIView(APIView):
 
 class ReleasesAPIView(APIView):
 
-    def get(self, request, format=None):
+    def get(self, request):
         try:
             groupByFilter = request.query_params['groupByFilter']
             request.GET = request.GET.copy()
             request.GET['user_instance'] = request.user
             result = dict()
-            if groupByFilter == 'stepOne':
-                releases = Release.releaseQuery(**request.GET)
-                releaseSerializer = ReleaseSerializer(releases['items'], many=True)
-                result['data'] = releaseSerializer.data
-            else:
-                releases = Release.releaseQuery(**request.GET)
-                result['data'] = releases['items']
+            releases = Release.releaseQuery(**request.GET)
+            result['data'] = releases['items']
             result['draw'] = releases['draw']
             result['recordsTotal'] = releases['total']
             result['recordsFiltered'] = releases['count']

@@ -1,8 +1,10 @@
 from django.db import models
-from django.db.models import Q, F, ExpressionWrapper, Sum, DecimalField, When, Case
+from django.db.models import Q, F, ExpressionWrapper, Sum, DecimalField, When, Case, CharField, Value, IntegerField, \
+    QuerySet
 from django.db.models.functions import Cast
 from model_utils import Choices
 from core.models import Master, Detail, Location
+from eggs.models import Egg, ABS
 from users.models import CustomUser
 
 
@@ -66,7 +68,9 @@ class Release(Detail):
         locationFilter = kwargs.get('locationFilter', [''])[0]
         managerFilter = kwargs.get('managerFilter', [''])[0]
         location_manager = kwargs.get('location_manager', None)[0]
-        user_instance = kwargs.get("user_instance", None)[0]
+        user_instance: CustomUser = kwargs.get("user_instance", None)[0]
+        KCFRESH_LOCATION: Location = Location.objects.get(code='00301')
+        egg_queryset: QuerySet = Egg.objects.none()
         if checkBoxFilter: checkBoxFilter = checkBoxFilter.split(',')
 
         if groupByFilter == 'stepOne':
@@ -78,8 +82,8 @@ class Release(Detail):
                 ('4', 'productYmd'),
                 ('5', 'type'),
                 ('6', 'specialTag'),
-                ('7', 'amount'),
-                ('8', 'count'),
+                ('7', 'amounts'),
+                ('8', 'counts'),
                 ('9', 'kgPrice'),
                 ('10', 'totalPrice'),
                 ('11', 'supplyPrice'),
@@ -97,19 +101,63 @@ class Release(Detail):
             )
             order_column = RELEASE_COLUMN_CHOICES[order_column]
             queryset = Release.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
+                .values('id', 'ymd', 'code', 'codeName', 'count', 'amount', 'amount_kg', 'memo', 'type', 'price',
+                        'releaseLocationCode', 'releaseLocationName', 'productYmd', 'releaseVat', 'specialTag',
+                        'product_id') \
+                .annotate(counts=F('count')) \
+                .annotate(amounts=F('amount')) \
+                .annotate(releaseStoreLocationCodeName=F('releaseStoreLocation__codeName')) \
                 .annotate(kgPrice=Case(When(price=0, then=0), When(amount=0, then=0),
-                                       default=ExpressionWrapper(F('price') / F('amount'), output_field=DecimalField()))) \
-                .annotate(contentType=F('product_id__productCode__type')) \
+                                       default=ExpressionWrapper(F('price') / F('amount'),
+                                                                 output_field=DecimalField()))) \
                 .annotate(totalPrice=F('price')) \
                 .annotate(supplyPrice=ExpressionWrapper(F('price') - F('releaseVat'), output_field=DecimalField())) \
                 .annotate(eaPrice=Case(When(price=0, then=0), When(count=0, then=0),
                                        default=ExpressionWrapper(F('price') / F('count'), output_field=DecimalField()))) \
-                .annotate(releaseStoreLocationCodeName=F('releaseStoreLocation__codeName')) \
+                .annotate(contentType=F('product_id__productCode__type')) \
                 .annotate(orderMemo=F('releaseOrder__memo')) \
-                .annotate(locationType=F('releaseLocationCode__location_character')) \
+                .annotate(locationType_temp=F('releaseLocationCode__location_character')) \
                 .annotate(locationManagerName=F('releaseLocationCode__location_manager__first_name')) \
                 .annotate(releaseSetProduct=F('releaseSetProductCode__code')) \
-                .annotate(releaseSetProductCodeName=F('releaseSetProductCode__codeName'))
+                .annotate(releaseLocationCodes=F('releaseLocationCode__code')) \
+                .annotate(releaseSetProductCodeName=F('releaseSetProductCode__codeName')) \
+                .annotate(locationType=Case(
+                                            When(locationType_temp='01', then=Value('B2B')),
+                                            When(locationType_temp='02', then=Value('급식')),
+                                            When(locationType_temp='03', then=Value('미군납')),
+                                            When(locationType_temp='04', then=Value('백화점')),
+                                            When(locationType_temp='05', then=Value('온라인')),
+                                            When(locationType_temp='06', then=Value('자사몰')),
+                                            When(locationType_temp='07', then=Value('직거래')),
+                                            When(locationType_temp='08', then=Value('특판')),
+                                            When(locationType_temp='09', then=Value('하이퍼')),
+                                            default=Value('기타'),
+                                            output_field=CharField()))
+            egg_queryset = Egg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(type='판매') \
+                .values('id', 'ymd', 'code', 'codeName', 'count', 'amount', 'amount_kg', 'memo', 'type', 'price') \
+                .annotate(releaseLocationCode=F('locationCode')) \
+                .annotate(releaseLocationName=F('locationCode__codeName')) \
+                .annotate(productYmd=F('in_ymd')) \
+                .annotate(releaseVat=Value(0, output_field=IntegerField())) \
+                .annotate(specialTag=Value('', output_field=CharField())) \
+                .annotate(product_id=Value(0, output_field=IntegerField())) \
+                .annotate(counts=ABS(F('count'))) \
+                .annotate(amounts=F('counts')) \
+                .annotate(releaseStoreLocationCodeName=Value(KCFRESH_LOCATION.codeName, output_field=CharField())) \
+                .annotate(kgPrice=Case(When(price=0, then=0), When(counts=0, then=0),
+                                       default=ExpressionWrapper(F('price') / F('counts'), output_field=DecimalField()))) \
+                .annotate(totalPrice=F('price')) \
+                .annotate(supplyPrice=ExpressionWrapper(F('price') - F('releaseVat'), output_field=DecimalField())) \
+                .annotate(eaPrice=Case(When(price=0, then=0), When(count=0, then=0),
+                                       default=ExpressionWrapper(F('price') / F('counts'), output_field=DecimalField()))) \
+                .annotate(contentType=Value('원란', output_field=CharField())) \
+                .annotate(orderMemo=Value('', output_field=CharField())) \
+                .annotate(locationType_temp=F('locationCode__location_character')) \
+                .annotate(locationManagerName=F('locationCode__location_manager__first_name')) \
+                .annotate(releaseSetProduct=Value('', output_field=CharField())) \
+                .annotate(releaseLocationCodes=F('locationCode__code')) \
+                .annotate(releaseSetProductCodeName=Value('', output_field=CharField())) \
+                .annotate(locationType=Value('원란판매', output_field=CharField()))
         elif groupByFilter == 'stepTwo':
             RELEASE_COLUMN_CHOICES = Choices(
                 ('0', 'code'),
@@ -354,8 +402,6 @@ class Release(Detail):
                     result['currentStock'] = CURRENT_STOCK
                     arr.append(result)
 
-            # print(arr)
-
             # 전일 재고 액란 구하기
             tankValue_previous = ProductEgg.objects.values('code', 'codeName') \
                 .filter(delete_state='N').annotate(rawSum=Sum('rawTank_amount')) \
@@ -425,32 +471,65 @@ class Release(Detail):
         total = queryset.count()
 
         if groupByFilter == 'stepOne':
+            total = queryset.count() + egg_queryset.count()
+
             if locationFilter:
+                location: Location = Location.objects.get(code=locationFilter)
+                egg_location: Location = Location.objects.filter(codeName=location.codeName).filter(type='07').first()
                 queryset = queryset.filter(releaseLocationCode__code=locationFilter)
+                if egg_location:
+                    egg_queryset = egg_queryset.filter(releaseLocationCode=egg_location.id)
+                else:
+                    egg_queryset = egg_queryset.none()
 
             if managerFilter:
-                queryset = queryset.filter(
-                    releaseLocationCode__location_manager=CustomUser.objects.get(username=managerFilter))
+                user: CustomUser= CustomUser.objects.get(username=managerFilter)
+                queryset = queryset.filter(releaseLocationCode__location_manager=user)
+                egg_queryset = egg_queryset.filter(locationManagerName=user.first_name)
 
             if productYmdFilter:
                 queryset = queryset.filter(productYmd=productYmdFilter)
+                egg_queryset = egg_queryset.filter(productYmd=productYmdFilter)
 
-        if releaseTypeFilter != '전체':
-            queryset = queryset.filter(type=releaseTypeFilter)
+            if releaseTypeFilter != '전체':
+                queryset = queryset.filter(type=releaseTypeFilter)
+                egg_queryset = egg_queryset.filter(type=releaseTypeFilter)
 
-        if productTypeFilter != '전체':
-            if productTypeFilter == '상품':
-                queryset = queryset.filter(product_id__productCode__oem='Y')
-            elif productTypeFilter == '제외':
-                queryset = queryset.exclude(product_id__productCode__oem='Y')
-            else:
-                queryset = queryset.filter(product_id__productCode__type=productTypeFilter)
+            if productTypeFilter != '전체':
+                if productTypeFilter == '상품':
+                    queryset = queryset.filter(product_id__productCode__oem='Y')
+                    egg_queryset = egg_queryset.none()
+                elif productTypeFilter == '제외':
+                    queryset = queryset.exclude(product_id__productCode__oem='Y')
+                    egg_queryset = egg_queryset.none()
+                else:
+                    queryset = queryset.filter(product_id__productCode__type=productTypeFilter)
+                    egg_queryset = egg_queryset.filter(contentType=productTypeFilter)
 
-        if checkBoxFilter:
-            queryset = queryset.filter(releaseLocationCode__location_character__in=checkBoxFilter)
+            if checkBoxFilter:
+                queryset = queryset.filter(releaseLocationCode__location_character__in=checkBoxFilter)
+                egg_queryset = egg_queryset.none()
 
-        if location_manager == "true":
-            queryset = queryset.filter(releaseLocationCode__location_manager=user_instance)
+            if location_manager == "true":
+                queryset = queryset.filter(releaseLocationCode__location_manager=user_instance)
+                egg_queryset = egg_queryset.filter(locationManagerName=user_instance.first_name)
+        else:
+            if releaseTypeFilter != '전체':
+                queryset = queryset.filter(type=releaseTypeFilter)
+
+            if productTypeFilter != '전체':
+                if productTypeFilter == '상품':
+                    queryset = queryset.filter(product_id__productCode__oem='Y')
+                elif productTypeFilter == '제외':
+                    queryset = queryset.exclude(product_id__productCode__oem='Y')
+                else:
+                    queryset = queryset.filter(product_id__productCode__type=productTypeFilter)
+
+            if checkBoxFilter:
+                queryset = queryset.filter(releaseLocationCode__location_character__in=checkBoxFilter)
+
+            if location_manager == "true":
+                queryset = queryset.filter(releaseLocationCode__location_manager=user_instance)
 
         if order == 'desc':
             order_column = '-' + order_column
@@ -460,6 +539,9 @@ class Release(Detail):
                 queryset = queryset.filter(Q(codeName__icontains=search_value) |
                                            Q(memo__icontains=search_value) |
                                            Q(orderMemo__icontains=search_value))
+                egg_queryset = egg_queryset.filter(Q(codeName__icontains=search_value) |
+                                                   Q(memo__icontains=search_value) |
+                                                   Q(orderMemo__icontains=search_value))
             elif groupByFilter == 'stepTwo':
                 queryset = queryset.filter(Q(releaseStoreLocationCodeName__icontains=search_value) |
                                            Q(codeName__icontains=search_value))
@@ -468,6 +550,9 @@ class Release(Detail):
                                            Q(codeName__icontains=search_value))
             elif groupByFilter == 'stepFour':
                 queryset = queryset.filter(releaseLocationName__icontains=search_value)
+
+        if egg_queryset:
+            queryset = queryset.union(egg_queryset)
 
         count = queryset.count()
 

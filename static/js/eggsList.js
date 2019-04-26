@@ -27,14 +27,13 @@ function fetch_data(start_date='', end_date='')
     let productTypeFilter = $('.type_filter #releaseProduct_List select').val();
     let locatoinTypeFilter = $('.type_filter #releaseLocation_List select').val();
     let table = $('#'+gubunFilter +' .datatable');
-    var args={
-            'table' : table,
-            'start_date' : start_date,
-            'end_date' : end_date,
-            'releaseTypeFilter':releaseTypeFilter,
-            'productTypeFilter':productTypeFilter,
-            'locatoinTypeFilter':locatoinTypeFilter,
-             'gubunFilter': gubunFilter };
+    var args={ 'table' : table,
+               'start_date' : start_date,
+               'end_date' : end_date,
+               'releaseTypeFilter':releaseTypeFilter,
+               'productTypeFilter':productTypeFilter,
+               'locatoinTypeFilter':locatoinTypeFilter,
+               'gubunFilter': gubunFilter };
     table.DataTable().destroy();
     LOOKUP_TABLE[gubunFilter](args);
 }
@@ -72,9 +71,6 @@ function setStepOneDataTable(args)
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
-
-            console.log(api.column(7).data());
-
 
             $( api.column( 7 ).footer() ).html( numberFormat(pageTotal_count));
             $( api.column( 8 ).footer() ).html( numberFormat(pageTotal_amount));
