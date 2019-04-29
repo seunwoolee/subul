@@ -12,10 +12,7 @@ fetch_data(end_day, plusThree_day);
         },
         "stepTwo": function(args) {
             return setStepTwoDataTable(args);
-        },
-        "stepThree": function(args) {
-            return setStepThreeDataTable(args);
-        },
+        }
     };
 
     let gubunFilter = $('#tabnavigator a.nav-link.active').attr('href');
@@ -321,120 +318,6 @@ function setStepTwoDataTable(args)
     });
 }
 
-function setStepThreeDataTable(args)
-{
-    args['table'].DataTable({
-    	"footerCallback": function ( row, data, start, end, display ) {
-            var api = this.api(), data;
-
-            let pageTotal_count = api
-                .column( 5, { page: 'current'} )
-                .data()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
-
-            let pageTotal_amount = api
-                .column( 6, { page: 'current'} )
-                .data()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
-
-            let pageTotal_totalPrice = api
-                .column( 7, { page: 'current'} )
-                .data()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
-
-            let pageTotal_supplyPrice = api
-                .column( 8, { page: 'current'} )
-                .data()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
-
-            let pageTotal_vat = api
-                .column( 9, { page: 'current'} )
-                .data()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
-
-            // Update footer
-            $( api.column( 5 ).footer() ).html( numberFormat(pageTotal_count) + '(EA)' );
-            $( api.column( 6 ).footer() ).html( numberFormatWithDot(pageTotal_amount) + '(KG)' );
-            $( api.column( 7 ).footer() ).html( numberFormat(pageTotal_totalPrice) );
-            $( api.column( 8 ).footer() ).html( numberFormat(pageTotal_supplyPrice) );
-            $( api.column( 9 ).footer() ).html( numberFormat(pageTotal_vat) );
-        },
-        "language": {searchPlaceholder: "거래처, 제품명"},
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": "/api/order/",
-            "type": "GET",
-            "data": {
-                start_date:args['start_date'],
-                end_date:args['end_date'],
-                gubunFilter:args['gubunFilter']
-            }
-        },
-        "columns": [
-            {'data': 'id'},
-            {'data': 'ymd'},
-            {'data': 'releaseLocationName'},
-            {'data': 'code'},
-            {'data': 'codeName'},
-            {"data": "count", "render": $.fn.dataTable.render.number( ',')},
-            {"data": "amount", "render": $.fn.dataTable.render.number( ',', '.', 2)},
-            {"data": "price" , "render": $.fn.dataTable.render.number( ',')},
-            {'data': 'supplyPrice' , "render": $.fn.dataTable.render.number( ',')},
-            {'data': 'releaseVat' , "render": $.fn.dataTable.render.number( ',')}
-        ],
-        responsive : true,
-        "columnDefs": [
-            { targets: 5, className: "dt-body-right" },
-            { targets: 6, className: "dt-body-right" },
-            { targets: 7, className: "dt-body-right" },
-            { targets: 8, className: "dt-body-right" },
-            { targets: 9, className: "dt-body-right" },
-        ],
-        dom: 'Bfrtip',
-        buttons: [
-                    {
-                        extend: 'pageLength',
-                        className:'btn btn-light',
-                        text : '<i class="fas fa-list-ol fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    },
-                    {
-                        extend: 'colvis',
-                        className:'btn btn-light',
-                        text : '<i class="far fa-eye fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    },
-                    {
-                        extend: 'excel',
-                        footer: true,
-                        className:'btn btn-light',
-                        text : '<i class="far fa-file-excel fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    }],
-        lengthMenu : [[-1, 100], ["All", 100]],
-        rowCallback: function(row, data, index){
-             $('td:eq(1)', row).html( set_yyyy_mm_dd(data.ymd) );
-        }
-    });
-}
-
 function setRelease_ymd(data)
 {
     if(data != null)
@@ -572,15 +455,7 @@ $('form').on('submit', function (e)
 
 $('.nav-item a').click(function(){ // 탭별 style 주기
     let nav_item_id = $(this).attr('href');
-    if (nav_item_id == "#stepThree")
-    {
-        $('#locationFilter').hide('slow');
-        $('#managerFilter').hide('slow');
-        $("#moneyMarkFilter").hide('slow');
-        $("#characterFilter").hide('slow');
-        $('#locationManagerSearch').hide('slow');
-    }
-    else if(nav_item_id == "#stepTwo")
+    if(nav_item_id == "#stepTwo")
     {
         $('#locationFilter').show('slow');
         $('#managerFilter').show('slow');
