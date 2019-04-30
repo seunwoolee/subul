@@ -29,9 +29,7 @@ class EggForm(forms.Form):
         attrs={'type': 'date'}
     ))
     productCode = forms.CharField(widget=forms.HiddenInput(), required=False)
-    locationSale = forms.ChoiceField(widget=Select2Widget, required=False,
-                                     choices=list(Location.objects.filter(type='07').values_list('code', 'codeName')
-                                                  .order_by('code')))
+    locationSale = forms.ChoiceField(widget=Select2Widget, required=False, choices=Location.objects.none)
     in_location = forms.CharField(max_length=255, widget=forms.HiddenInput(), required=False)
 
     def __init__(self, *args, **kwargs):
@@ -40,6 +38,10 @@ class EggForm(forms.Form):
                                                     choices=[('', '')] + list(
                                                         Location.objects.values_list('code', 'codeName')
                                                         .filter(type='03').filter(delete_state='N').order_by('code')))
+        self.fields['locationSale'] = forms.ChoiceField(widget=Select2Widget,
+                                                    choices=[('', '')] + list(
+                                                        Location.objects.values_list('code', 'codeName')
+                                                        .filter(type='07').filter(delete_state='N').order_by('code')))
         self.fields['product'] = forms.ChoiceField(widget=Select2Widget,
                                                    choices=[('', '')] + list(
                                                        EggCode.objects.values_list('code', 'codeName')))

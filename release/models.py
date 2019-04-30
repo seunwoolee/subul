@@ -3,7 +3,7 @@ from django.db.models import Q, F, ExpressionWrapper, Sum, DecimalField, When, C
     QuerySet
 from django.db.models.functions import Cast
 from model_utils import Choices
-from core.models import Master, Detail, Location
+from core.models import Detail, Location
 from eggs.models import Egg, ABS
 from users.models import CustomUser
 

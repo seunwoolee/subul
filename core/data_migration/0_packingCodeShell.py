@@ -1,6 +1,9 @@
 import os
 
 import cx_Oracle
+import django
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "subul.settings")
+django.setup()
 
 from core.models import Location
 from eggs.models import EggCode
@@ -13,7 +16,7 @@ START_VALUE = u"Unicode \u3042 3".encode('utf-8')
 END_VALUE = u"Unicode \u3042 6".encode('utf-8')
 # cx_Oracle 한글처리 끝
 
-con = cx_Oracle.connect('system/kcerp@112.216.66.219/kcerp')
+con = cx_Oracle.connect('system/kcerp@155.1.19.2/kcerp')
 cursor = con.cursor()
 query = " select * FROM KCFEED.FRESHCD "
 cursor.execute(query)

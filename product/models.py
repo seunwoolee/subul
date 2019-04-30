@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models.functions import Cast
 from model_utils import Choices
 
-from core.models import Code, Detail, Location, Out, TimeStampedModel
+from core.models import Code, Detail, Location, TimeStampedModel
 from eggs.models import Egg
 from release.models import Release
 from django.db.models import Sum, Q, F, DecimalField, Value, IntegerField, ExpressionWrapper
@@ -203,6 +203,7 @@ class ProductEgg(models.Model):
         recallProductInsert_amount = ProductEgg.objects.values('type').filter(ymd__gte=start_date).filter(
             ymd__lte=end_date) \
             .filter(type='미출고품투입').annotate(tankAmount=Sum('rawTank_amount') + Sum('pastTank_amount'))
+
         if not total_EggAmount: total_EggAmount = 0
         processProduct_amount = processProduct_amount[0]['tankAmount'] if processProduct_amount else 0
         openEggUse_amount = openEggUse_amount[0]['tankAmount'] if openEggUse_amount else 0
@@ -210,6 +211,7 @@ class ProductEgg(models.Model):
         processProductCreate_amount = processProductCreate_amount[0]['tankAmount'] if processProductCreate_amount else 0
         processProductInsert_amount = processProductInsert_amount[0]['tankAmount'] if processProductInsert_amount else 0
         recallProductInsert_amount = recallProductInsert_amount[0]['tankAmount'] if recallProductInsert_amount else 0
+
         loss_clean_amount = Product.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
             .filter(purchaseYmd=None).aggregate(loss_clean=Sum('loss_clean'))
         loss_fill_amount = Product.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
@@ -218,10 +220,12 @@ class ProductEgg(models.Model):
             .aggregate(loss_insert=Sum('loss_insert'))
         loss_openEgg_amount = ProductEgg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
             .aggregate(loss_openEgg=Sum('loss_openEgg'))
+
         loss_clean_amount = loss_clean_amount['loss_clean'] if loss_clean_amount['loss_clean'] else 0
         loss_fill_amount = loss_fill_amount['loss_fill'] if loss_fill_amount['loss_fill'] else 0
         loss_insert_amount = loss_insert_amount['loss_insert'] if loss_insert_amount['loss_insert'] else 0
         loss_openEgg_amount = loss_openEgg_amount['loss_openEgg'] if loss_openEgg_amount['loss_openEgg'] else 0
+
         openEggPercent = round((processProduct_amount / total_EggAmount * 100), 2) if total_EggAmount > 0 else 0
         productPercent = round(
             ((product_amount + processProduct_amount + openEggUse_amount + processProductInsert_amount +
@@ -230,6 +234,7 @@ class ProductEgg(models.Model):
         lossTotal = loss_clean_amount + loss_fill_amount + loss_insert_amount + loss_openEgg_amount
         insertLoss = round((loss_insert_amount / total_EggAmount * 100), 2) if total_EggAmount > 0 else 0
         openEggLoss = round((loss_openEgg_amount / processProduct_amount * 100), 2) if processProduct_amount > 0 else 0
+
         result = {'openEggPercent': openEggPercent,
                   'productPercent': productPercent,
                   'lossTotal': lossTotal,
@@ -513,6 +518,11 @@ class ProductUnitPrice(TimeStampedModel):
     productCode = models.ForeignKey(ProductCode, on_delete=models.CASCADE, related_name='product')
     price = models.DecimalField(decimal_places=1, max_digits=19, default=0)
     specialPrice = models.DecimalField(decimal_places=1, max_digits=19, default=0)
+    delete_state = models.CharField(
+        max_length=2,
+        choices=DELETE_STATE_CHOICES,
+        default='N',
+    )
 
     def __str__(self):
         return f"{self.locationCode.codeName}_ {self.productCode.codeName}_{self.price}"
@@ -582,6 +592,11 @@ class SetProductMatch(TimeStampedModel):
     price = models.IntegerField()
     count = models.IntegerField(blank=True, null=True)
     saleLocation = models.ForeignKey(Location, on_delete=models.CASCADE)
+    delete_state = models.CharField(
+        max_length=2,
+        choices=DELETE_STATE_CHOICES,
+        default='N',
+    )
 
     def __str__(self):
         return f"{self.setProductCode.codeName}_{self.saleLocation.codeName}_{self.productCode.codeName}"

@@ -3,6 +3,7 @@ from django.db.models import F, Q, When, Case, CharField, Value
 from model_utils import Choices
 from users.models import CustomUser
 
+
 DELETE_STATE_CHOICES = (
     ('Y', 'deleted'),
     ('N', 'notDeleted'),
@@ -11,7 +12,7 @@ DELETE_STATE_CHOICES = (
 
 class TimeStampedModel(models.Model):
     """
-    created , modified filed를 제공해주는 abstract base class model임
+    created , modified filed를 제공해주는 abstract base class model
     """
 
     created = models.DateTimeField(auto_now_add=True)
@@ -27,23 +28,13 @@ class TimeStampedModel(models.Model):
 
 
 class Code(models.Model):
+    """
+    ProductCode, EggCode 등 모든 코드 Model의 부모 클래스
+    """
+
     code = models.CharField(max_length=255)
     codeName = models.CharField(max_length=255)
     type = models.CharField(max_length=255)
-    delete_state = models.CharField(
-        max_length=2,
-        choices=DELETE_STATE_CHOICES,
-        default='N',
-    )
-
-    class Meta:
-        abstract = True
-
-
-class Master(models.Model):
-    ymd = models.CharField(max_length=8)
-    totalCount = models.DecimalField(decimal_places=2, max_digits=19, default=0)
-    totalAmount = models.DecimalField(decimal_places=2, max_digits=19, default=0)
     delete_state = models.CharField(
         max_length=2,
         choices=DELETE_STATE_CHOICES,
@@ -55,6 +46,10 @@ class Master(models.Model):
 
 
 class Detail(models.Model):
+    """
+    Egg, Order, Packing, Product, Release의 부모 클래스
+    """
+
     ymd = models.CharField(max_length=8)
     code = models.CharField(max_length=255)
     codeName = models.CharField(max_length=255)
@@ -62,25 +57,6 @@ class Detail(models.Model):
     amount = models.DecimalField(decimal_places=2, max_digits=19, default=0)
     amount_kg = models.DecimalField(decimal_places=2, max_digits=19, default=0, blank=True, null=True)
     memo = models.TextField(blank=True, null=True)
-    delete_state = models.CharField(
-        max_length=2,
-        choices=DELETE_STATE_CHOICES,
-        default='N',
-    )
-
-    class Meta:
-        abstract = True
-
-
-class Out(models.Model):
-    ymd = models.CharField(max_length=8)
-    count = models.IntegerField()
-    type = models.CharField(max_length=255)
-    delete_state = models.CharField(
-        max_length=2,
-        choices=DELETE_STATE_CHOICES,
-        default='N',
-    )
 
     class Meta:
         abstract = True
@@ -139,7 +115,7 @@ class Location(Code):
         return self.codeName
 
     @staticmethod
-    def locationQuery(**kwargs):
+    def locationQuery(kwargs: object) -> object:
 
         ORDER_COLUMN_CHOICES = Choices(
             ('0', 'id'),
@@ -199,4 +175,3 @@ class Location(Code):
             'total': total,
             'draw': draw
         }
-#

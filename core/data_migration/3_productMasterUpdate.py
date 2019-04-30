@@ -1,6 +1,9 @@
 import os
 
 import cx_Oracle
+import django
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "subul.settings")
+django.setup()
 
 # cx_Oracle 한글처리 시작
 from django.db.models import Sum

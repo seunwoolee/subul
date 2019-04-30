@@ -1,5 +1,6 @@
 from decimal import Decimal
 from itertools import chain
+from django.forms.models import model_to_dict
 from django.db.models import Sum, F, Case, When, Value, CharField, Func, DecimalField
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -7,15 +8,12 @@ from django.views.generic.base import View
 from core.models import Location
 from eggs.models import Egg
 from eventlog.models import log
+from order.models import ABS
 from product.codeForms import ProductUnitPricesForm, SetProductMatchForm
 from product.models import ProductEgg, Product, ProductCode, ProductAdmin, ProductMaster
 from .forms import StepOneForm, StepTwoForm, StepThreeForm, StepFourForm, StepFourFormSet, MainForm, ProductOEMFormSet, \
     ProductOEMForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-
-
-class ABS(Func):
-    function = 'ABS'
 
 
 class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
@@ -30,6 +28,13 @@ class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
 
         if form0.is_valid():
             main = form0.save()
+            log_data = model_to_dict(main)
+            log(
+                user=request.user,
+                action="제품생산",
+                obj=main,
+                extra=log_data
+            )
 
         if form1.is_valid():
             stepOneProductEgg = [[key, value] for key, value in form1.cleaned_data.items()]
@@ -95,18 +100,6 @@ class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
                         productExistAdmin.save()
 
             Product.getLossProductPercent(main)
-            log(
-                user=request.user,
-                action="제품생산",
-                obj=main,
-                extra={
-                    "ymd": main.ymd,
-                    "total_loss_openEgg": float(main.total_loss_openEgg),
-                    "total_loss_insert": float(main.total_loss_insert),
-                    "total_loss_clean": float(main.total_loss_clean),
-                    "total_loss_fill": float(main.total_loss_fill)
-                }
-            )
         return redirect('productList')
 
     def get(self, request):
@@ -142,11 +135,13 @@ class ProductList(LoginRequiredMixin, PermissionRequiredMixin, View):
 class ProductRecall(View):
 
     def post(self, request, pk):
+
         CODE_TYPE_CHOICES = {
             '01201': 'RAW Tank 전란',
             '01202': 'RAW Tank 난황',
             '01203': 'RAW Tank 난백',
         }
+
         ymd = request.POST['ymd']
         amount = Decimal(request.POST['amount'])
         count = int(request.POST['count'])
@@ -154,8 +149,17 @@ class ProductRecall(View):
         KCFRESH_LOCATION_CODE = '00301'
         location = Location.objects.get(code=KCFRESH_LOCATION_CODE)  # kcfresh 본사
         product = Product.objects.get(pk=pk)
-        totalCount = ProductAdmin.objects.filter(product_id=product).values('product_id__code').annotate(
-            totalCount=Sum(F('count')))
+        totalCount = ProductAdmin.objects.filter(product_id=product).values('product_id__code')\
+            .annotate(totalCount=Sum(F('count')))
+
+        log_data = model_to_dict(product)
+        log(
+            user=request.user,
+            action="미출고품발생",
+            obj=product,
+            extra=log_data
+        )
+
         if count <= int(totalCount[0]['totalCount']):
             Product.objects.create(
                 ymd=product.ymd,

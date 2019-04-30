@@ -1,3 +1,5 @@
+import decimal
+
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -59,13 +61,23 @@ class Log(models.Model):
 def log(user, action, extra=None, obj=None, dateof=None):
     if user is not None and not user.is_authenticated:
         user = None
+
     if extra is None:
         extra = {}
+    else: # Decimal insert시 에러발생
+        for key, value in extra.items():
+            if isinstance(value, decimal.Decimal):
+                extra[key] = float(value)
+
+
+
     content_type = None
     object_id = None
+
     if obj is not None:
         content_type = ContentType.objects.get_for_model(obj)
         object_id = obj.pk
+
     if dateof is None:
         dateof = timezone.now()
 

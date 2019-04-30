@@ -1,6 +1,8 @@
-import os
-
 import cx_Oracle
+import os
+import django
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "subul.settings")
+django.setup()
 
 # cx_Oracle 한글처리 시작
 from core.models import Location
@@ -11,7 +13,7 @@ START_VALUE = u"Unicode \u3042 3".encode('utf-8')
 END_VALUE = u"Unicode \u3042 6".encode('utf-8')
 # cx_Oracle 한글처리 끝
 
-con = cx_Oracle.connect('system/kcerp@112.216.66.219/kcerp')
+con = cx_Oracle.connect('system/kcerp@155.1.19.2/kcerp')
 cursor = con.cursor()
 query = " select 거래처 as location , 제품 as product, 금액 as price , 사용유무 as delete_state from  KCFEED.FRESH단가"
 cursor.execute(query)

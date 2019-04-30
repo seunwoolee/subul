@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import ProductsAPIView, ProductUpdate, ProductEggUpdate, OrderProductUnitPrice, OrderSetProductMatch, \
     OrderSetProductCode, ProductCodes, OrdersAPIView, OrderUpdate, ProductAdminsAPIView, ReleasesAPIView, ReleaseUpdate, \
-    ProductMasterUpdate, EggsAPIView, EggsListAPIView, EggsUpdate, EggsReportAPIView, PackingListAPIView, PackingUpdate, \
+    EggsAPIView, EggsListAPIView, EggsUpdate, EggsReportAPIView, PackingListAPIView, PackingUpdate, \
     PackingAPIView, PackingReportAPIView, ProductSummaryAPIView, ProductOEMsAPIView, ProductOEMUpdate, \
     ProductUnitPricesAPIView, ProductUnitPricesUpdate, SetProductMatchsAPIView, SetProductMatchsUpdate, \
     LocationsAPIView, LocationUpdate
@@ -10,7 +10,6 @@ urlpatterns = [
     # 생산쪽 API
     path('product/', ProductsAPIView.as_view()),
     path('productSummary/', ProductSummaryAPIView.as_view()),
-    path('productMaster/<slug:ymd>', ProductMasterUpdate.as_view()),
     path('product/<int:pk>', ProductUpdate.as_view()),
     path('productEgg/<int:pk>', ProductEggUpdate.as_view()),
     path('productCodes/<slug:code>', ProductCodes.as_view()),

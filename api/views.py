@@ -1,11 +1,7 @@
-from decimal import Decimal
-
-from django.db.models import Sum
 from django.http import Http404
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import mixins
 
 from api.eggSerializers import EggSerializer
 from api.locationSerializers import LocationSerializer
@@ -24,9 +20,6 @@ from product.models import ProductMaster, Product, ProductEgg, ProductUnitPrice,
 from release.models import Release
 from .serializers import ProductSerializer, ProductEggSerializer, ProductUnitPriceSerializer, SetProductCodeSerializer, \
     ProductCodeSerializer, SetProductMatchSerializer, ProductMasterSerializer
-
-
-# Create your views here.
 
 
 class ProductsAPIView(APIView):
@@ -106,21 +99,22 @@ class OrdersAPIView(APIView):
         result = dict()
         gubun_filter = request.query_params.get("gubunFilter", None)
         try:
-            if gubun_filter != "stepThree":
-                request.GET = request.GET.copy()
-                request.GET['user_instance'] = request.user
-                orders = Order.orderQuery(**request.GET)
-                if gubun_filter == "stepTwo":
-                    result['data'] = orders['items']
-                else:
-                    orderSerializer = OrderSerializer(orders['items'], many=True)
-                    result['data'] = orderSerializer.data
-                result['draw'] = orders['draw']
-                result['recordsTotal'] = orders['total']
-                result['recordsFiltered'] = orders['count']
+            request.GET = request.GET.copy()
+            request.GET['user_instance'] = request.user
+            orders = Order.orderQuery(**request.GET)
+            print(orders)
+            if gubun_filter == "stepTwo":
+                result['data'] = orders['items']
             else:
-                result = Order.orderStepThreeQuery(**request.query_params)
+                # print(orders['itmes'])
+                orderSerializer = OrderSerializer(orders['items'], many=True)
+                result['data'] = orderSerializer.data
+            result['draw'] = orders['draw']
+            result['recordsTotal'] = orders['total']
+            result['recordsFiltered'] = orders['count']
+
             return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+
         except Exception as e:
             return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
 
@@ -135,14 +129,12 @@ class ProductUpdate(generics.RetrieveUpdateDestroyAPIView):
 
     def patch(self, request, *args, **kwargs):
         instance = Product.objects.get(pk=kwargs['pk'])
+        log_data = Product.objects.filter(pk=kwargs['pk']).values().first()
         log(
             user=request.user,
             action="제품수정",
             obj=instance,
-            extra={
-                "name": instance.codeName,
-                "count": instance.count
-            }
+            extra=log_data
         )
         self.partial_update(request, *args, **kwargs)
         Product.getLossProductPercent(instance.master_id)
@@ -154,6 +146,13 @@ class ProductUpdate(generics.RetrieveUpdateDestroyAPIView):
 
     def delete(self, request, *args, **kwargs) -> Response:
         instance: Product = Product.objects.get(pk=kwargs['pk'])
+        log_data = Product.objects.filter(pk=kwargs['pk']).values().first()
+        log(
+            user=request.user,
+            action="제품삭제",
+            obj=instance,
+            extra=log_data
+        )
         if instance.type == "미출고품사용":
             origin_instance = Product.objects.filter(ymd=instance.ymd).filter(code=instance.code).filter(
                 type="제품생산").first()
@@ -162,24 +161,6 @@ class ProductUpdate(generics.RetrieveUpdateDestroyAPIView):
         else:
             self.destroy(request, *args, **kwargs)
             Product.getLossProductPercent(instance.master_id)
-        return Response(status=status.HTTP_200_OK)
-
-
-class ProductMasterUpdate(mixins.CreateModelMixin,
-                          generics.UpdateAPIView):
-    '''
-    생산등록에서 마스터 Update를 칠때 Patch
-    '''
-
-    queryset = ProductMaster.objects.all()
-    serializer_class = ProductMasterSerializer
-    lookup_field = 'ymd'
-
-    def patch(self, request, *args, **kwargs):
-        self.partial_update(request, *args, **kwargs, pk=None)
-        instance = ProductMaster.objects.filter(ymd=kwargs['ymd']).first()
-        Product.getLossProductPercent(instance)
-        ProductEgg.getLossOpenEggPercent(instance)
         return Response(status=status.HTTP_200_OK)
 
 
@@ -206,12 +187,26 @@ class ProductEggUpdate(generics.RetrieveUpdateDestroyAPIView):
 
     def patch(self, request, *args, **kwargs):
         instance = ProductEgg.objects.get(pk=kwargs['pk'])
+        log_data = ProductEgg.objects.filter(pk=kwargs['pk']).values().first()
+        log(
+            user=request.user,
+            action="액란수정",
+            obj=instance,
+            extra=log_data
+        )
         self.partial_update(request, *args, **kwargs)
         ProductEgg.getLossOpenEggPercent(instance.master_id)
         return Response(status=status.HTTP_200_OK)
 
     def delete(self, request, *args, **kwargs):
         instance = ProductEgg.objects.get(pk=kwargs['pk'])
+        log_data = ProductEgg.objects.filter(pk=kwargs['pk']).values().first()
+        log(
+            user=request.user,
+            action="액란삭제",
+            obj=instance,
+            extra=log_data
+        )
         self.destroy(request, *args, **kwargs)
         ProductEgg.getLossOpenEggPercent(instance.master_id)
         return Response(status=status.HTTP_200_OK)
@@ -280,6 +275,27 @@ class OrderUpdate(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+
+    def patch(self, request, *args, **kwargs):
+        log_data = Order.objects.filter(pk=kwargs['pk']).values().first()
+        log(
+            user=request.user,
+            action="주문수정",
+            obj=Order.objects.first(),
+            extra=log_data
+        )
+        self.partial_update(request, *args, **kwargs)
+        return Response(status=status.HTTP_200_OK)
+
+    def delete(self, request, *args, **kwargs):
+        log_data = Order.objects.filter(pk=kwargs['pk']).values().first()
+        log(
+            user=request.user,
+            action="주문삭제",
+            obj=Order.objects.first(),
+            extra=log_data
+        )
+        return Response(status=status.HTTP_200_OK)
 
 
 class ReleaseUpdate(generics.RetrieveUpdateDestroyAPIView):

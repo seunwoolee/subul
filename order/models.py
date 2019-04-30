@@ -4,7 +4,7 @@ from django.db.models import Q, Sum, F, ExpressionWrapper, DecimalField, Value, 
 from model_utils import Choices
 
 from product.models import ProductCode
-from core.models import Master, Detail, Location
+from core.models import Detail, Location
 from release.models import Release
 from users.models import CustomUser
 
