@@ -176,7 +176,6 @@ class Release(Detail):
             )
             order_column = RELEASE_COLUMN_CHOICES[order_column]
             queryset = Release.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
-                .filter(delete_state='N') \
                 .values('code', 'codeName', 'type', 'specialTag') \
                 .annotate(contentType=F('product_id__productCode__type')) \
                 .annotate(amount=Sum('amount')) \
@@ -207,7 +206,7 @@ class Release(Detail):
                 ('13', "releaseStoreLocationCodeName")
             )
             order_column = RELEASE_COLUMN_CHOICES[order_column]
-            queryset = Release.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(delete_state='N') \
+            queryset = Release.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
                 .values('code', 'codeName', 'type', 'specialTag') \
                 .annotate(contentType=F('product_id__productCode__type')) \
                 .annotate(releaseLocationName=F('releaseLocationName')) \
@@ -232,7 +231,6 @@ class Release(Detail):
             )
             order_column = RELEASE_COLUMN_CHOICES[order_column]
             queryset = Release.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
-                .filter(delete_state='N') \
                 .values('releaseLocationName') \
                 .annotate(amount=Sum('amount')) \
                 .annotate(count=Sum('count')) \
@@ -404,7 +402,7 @@ class Release(Detail):
 
             # 전일 재고 액란 구하기
             tankValue_previous = ProductEgg.objects.values('code', 'codeName') \
-                .filter(delete_state='N').annotate(rawSum=Sum('rawTank_amount')) \
+                .annotate(rawSum=Sum('rawTank_amount')) \
                 .annotate(pastSum=Sum('pastTank_amount')).filter(ymd__lt=start_date).order_by('code')
 
             if search_value:
@@ -418,7 +416,7 @@ class Release(Detail):
 
             # 기간 내 액란 구하기
             tankValue_period = ProductEgg.objects.values('code', 'codeName') \
-                .filter(delete_state='N').annotate(rawSum=Sum('rawTank_amount')) \
+                .annotate(rawSum=Sum('rawTank_amount')) \
                 .annotate(pastSum=Sum('pastTank_amount')).filter(ymd__gte=start_date).filter(
                 ymd__lte=end_date).order_by('code')
 

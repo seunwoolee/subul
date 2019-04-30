@@ -593,7 +593,10 @@ class LocationsAPIView(APIView):
     def get(self, request):
         try:
             result = dict()
+            print('@#@#@###@#@@#@#@')
             location = Location.locationQuery(**request.query_params)
+            print('@#@#@###@#@@#@#@')
+
             locationSerializer = LocationSerializer(location['items'], many=True)
             result['data'] = locationSerializer.data
             result['draw'] = location['draw']

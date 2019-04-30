@@ -115,7 +115,7 @@ class Location(Code):
         return self.codeName
 
     @staticmethod
-    def locationQuery(kwargs: object) -> object:
+    def locationQuery(**kwargs) -> object:
 
         ORDER_COLUMN_CHOICES = Choices(
             ('0', 'id'),

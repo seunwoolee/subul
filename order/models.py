@@ -201,7 +201,7 @@ class Order(Detail):
             )
             order_column = ORDER_COLUMN_CHOICES[order_column]
             queryset = Order.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
-                .filter(delete_state='N').annotate(totalPrice=Sum(F('count') * F('price'), output_field=IntegerField())) \
+                .annotate(totalPrice=Sum(F('count') * F('price'), output_field=IntegerField())) \
                 .annotate(setProductCode=F('setProduct__code'))
 
             total = queryset.count()

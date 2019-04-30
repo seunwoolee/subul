@@ -23,7 +23,7 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ('id', 'code', 'codeName', 'ymd', 'price', 'count', 'amount', 'memo','orderLocationCode',
-                  'orderLocationName', 'amount_kg', 'type', 'setProduct', 'totalPrice', 'delete_state',
+                  'orderLocationName', 'amount_kg', 'type', 'setProduct', 'totalPrice',
                   'setProductCode', 'specialTag', 'release_id', 'weekday',
                   'release_ymd', 'release_type', 'release_locationName', 'release_codeName', 'release_amount',
                   'release_count', 'release_price')
