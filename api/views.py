@@ -102,7 +102,6 @@ class OrdersAPIView(APIView):
             request.GET = request.GET.copy()
             request.GET['user_instance'] = request.user
             orders = Order.orderQuery(**request.GET)
-            print(orders)
             if gubun_filter == "stepTwo":
                 result['data'] = orders['items']
             else:
@@ -281,7 +280,7 @@ class OrderUpdate(generics.RetrieveUpdateDestroyAPIView):
         log(
             user=request.user,
             action="주문수정",
-            obj=Order.objects.first(),
+            obj=Order.objects.get(pk=kwargs['pk']),
             extra=log_data
         )
         self.partial_update(request, *args, **kwargs)
@@ -292,35 +291,41 @@ class OrderUpdate(generics.RetrieveUpdateDestroyAPIView):
         log(
             user=request.user,
             action="주문삭제",
-            obj=Order.objects.first(),
+            obj=Order.objects.get(pk=kwargs['pk']),
             extra=log_data
         )
+        self.destroy(request, *args, **kwargs)
         return Response(status=status.HTTP_200_OK)
 
 
 class ReleaseUpdate(generics.RetrieveUpdateDestroyAPIView):
     """
-    출고조회에서 Update , Delete 할때 Delete 실행 시 재고
+    출고조회에서 Update , Delete 할때
     """
 
     queryset = Release.objects.all()
     serializer_class = ReleaseSerializer
 
     def patch(self, request, *args, **kwargs):
-        instance: object = Release.objects.get(pk=kwargs['pk'])
+        log_data = Release.objects.filter(pk=kwargs['pk']).values().first()
         log(
             user=request.user,
             action="출고수정",
-            obj=instance,
-            extra={
-                "날짜": "{}".format(instance.ymd),
-                "이름": "{}".format(instance.codeName),
-                "총금액": "{}->{}".format(instance.price, request.data['price']),
-                "부가세": "{}->{}".format(instance.releaseVat, request.data['releaseVat']),
-                "메모": "{}->{}".format(instance.memo, request.data['memo']),
-            }
+            obj=Release.objects.get(pk=kwargs['pk']),
+            extra=log_data
         )
         self.partial_update(request, *args, **kwargs)
+        return Response(status=status.HTTP_200_OK)
+
+    def delete(self, request, *args, **kwargs):
+        log_data = Release.objects.filter(pk=kwargs['pk']).values().first()
+        log(
+            user=request.user,
+            action="출고삭제",
+            obj=Release.objects.get(pk=kwargs['pk']),
+            extra=log_data
+        )
+        self.destroy(request, *args, **kwargs)
         return Response(status=status.HTTP_200_OK)
 
 
@@ -424,6 +429,28 @@ class EggsUpdate(generics.RetrieveUpdateDestroyAPIView):
     queryset = Egg.objects.all()
     serializer_class = EggSerializer
 
+    def patch(self, request, *args, **kwargs):
+        log_data = Egg.objects.filter(pk=kwargs['pk']).values().first()
+        log(
+            user=request.user,
+            action="원란수정",
+            obj=Egg.objects.get(pk=kwargs['pk']),
+            extra=log_data
+        )
+        self.partial_update(request, *args, **kwargs)
+        return Response(status=status.HTTP_200_OK)
+
+    def delete(self, request, *args, **kwargs):
+        log_data = Egg.objects.filter(pk=kwargs['pk']).values().first()
+        log(
+            user=request.user,
+            action="원란삭제",
+            obj=Egg.objects.get(pk=kwargs['pk']),
+            extra=log_data
+        )
+        self.destroy(request, *args, **kwargs)
+        return Response(status=status.HTTP_200_OK)
+
 
 class PackingListAPIView(APIView):
 
@@ -448,6 +475,28 @@ class PackingUpdate(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = Packing.objects.all()
     serializer_class = PackingSerializer
+
+    def patch(self, request, *args, **kwargs):
+        log_data = Packing.objects.filter(pk=kwargs['pk']).values().first()
+        log(
+            user=request.user,
+            action="포장재수정",
+            obj=Packing.objects.get(pk=kwargs['pk']),
+            extra=log_data
+        )
+        self.partial_update(request, *args, **kwargs)
+        return Response(status=status.HTTP_200_OK)
+
+    def delete(self, request, *args, **kwargs):
+        log_data = Packing.objects.filter(pk=kwargs['pk']).values().first()
+        log(
+            user=request.user,
+            action="포장재삭제",
+            obj=Packing.objects.get(pk=kwargs['pk']),
+            extra=log_data
+        )
+        self.destroy(request, *args, **kwargs)
+        return Response(status=status.HTTP_200_OK)
 
 
 class PackingAPIView(APIView):
@@ -593,10 +642,7 @@ class LocationsAPIView(APIView):
     def get(self, request):
         try:
             result = dict()
-            print('@#@#@###@#@@#@#@')
             location = Location.locationQuery(**request.query_params)
-            print('@#@#@###@#@@#@#@')
-
             locationSerializer = LocationSerializer(location['items'], many=True)
             result['data'] = locationSerializer.data
             result['draw'] = location['draw']

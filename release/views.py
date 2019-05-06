@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
 from core.models import Location
+from eventlog.models import log
 from order.models import Order
 from release.forms import ReleaseForm, ReleaseLocationForm
 from .models import Release
@@ -67,6 +68,13 @@ class ReleaseReg(LoginRequiredMixin, View):
 
     def post(self, request):
         data = request.POST.dict()
+        log_data = data
+        log(
+            user=request.user,
+            action="출고등록",
+            obj=Release.objects.first(),
+            extra=log_data
+        )
         productCode = ProductCode.objects.get(code=data['productCode'])
         releaseLocation = Location.objects.get(code=data['location'])
         releaseStoreLocation = Location.objects.get(code=data['storedLocationCode'])
@@ -142,7 +150,13 @@ class ReleaseReg(LoginRequiredMixin, View):
 class ReleaseAdjustment(View): # 재고조정, 미출고품, 반품
     def post(self, request):
         data = request.POST.dict()
-        print(data)
+        log_data = data
+        log(
+            user=request.user,
+            action="출고리콜",
+            obj=Release.objects.first(),
+            extra=log_data
+        )
         productCode = ProductCode.objects.get(code=data['productCode'])
 
         if data['type'] != '반품':

@@ -4,6 +4,8 @@ from django.shortcuts import render, redirect
 from django.views import View
 
 from core.models import Location
+from eventlog.models import log
+from order.models import ABS
 from .forms import EggForm
 from .models import Egg, EggCode
 from .forms import EggFormSet
@@ -13,10 +15,6 @@ from core.utils import render_to_pdf
 
 class Round(Func):
     function = 'ROUND'
-
-
-class ABS(Func):
-    function = 'ABS'
 
 
 class EggList(LoginRequiredMixin, View):
@@ -30,6 +28,13 @@ class EggReg(LoginRequiredMixin, View):
 
     def post(self, request):
         formset = EggFormSet(request.POST)
+        log_data = request.POST
+        log(
+            user=request.user,
+            action="원란등록",
+            obj=Egg.objects.first(),
+            extra=log_data
+        )
 
         if formset.is_valid():
             for form in formset:
@@ -67,8 +72,15 @@ class EggRelease(View):
     def post(self, request):
         amount = request.POST.get('amount', None)
         data = dict(request.POST.copy())
-        pks = []
+        log_data = data
+        log(
+            user=request.user,
+            action="원란출고",
+            obj=Egg.objects.first(),
+            extra=log_data
+        )
 
+        pks = []
         for i in range(len(data['in_ymd'])):
             in_ymd = data['in_ymd'][i]
             ymd = data['ymd'][i]
@@ -118,6 +130,13 @@ class EggRelease(View):
 class EggCalculateAmount(View):
     def post(self, request):
         data = request.POST.dict()
+        log_data = data
+        log(
+            user=request.user,
+            action="원란중량계산",
+            obj=Egg.objects.first(),
+            extra=log_data
+        )
         amount = int(data['amount'])
         pks = data['pks']
         Egg.calculateAmount(amount, pks)
@@ -127,6 +146,13 @@ class EggCalculateAmount(View):
 class EggPricePerEa(View):
     def post(self, request):
         data = request.POST.dict()
+        log_data = data
+        log(
+            user=request.user,
+            action="원란생산단가작업",
+            obj=Egg.objects.first(),
+            extra=log_data
+        )
         eggs = Egg.objects.filter(ymd__gte=data['start_date']).filter(ymd__lte=data['end_date']).filter(type='생산')
         for egg in eggs:
             in_price = Egg.objects.values('price', 'count').filter(in_ymd=egg.in_ymd).filter(type='입고')\

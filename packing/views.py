@@ -4,6 +4,7 @@ from django.views import View
 
 from core.models import Location
 from eggs.forms import EggForm
+from eventlog.models import log
 from .models import Packing, PackingCode
 from .forms import PackingFormSet, PackingForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -20,7 +21,13 @@ class PackingReg(LoginRequiredMixin, View):
 
     def post(self, request):
         formset = PackingFormSet(request.POST)
-
+        log_data = request.POST
+        log(
+            user=request.user,
+            action="포장재등록",
+            obj=Packing.objects.first(),
+            extra=log_data
+        )
         if formset.is_valid():
             for form in formset:
                 ymd = form.cleaned_data.get('ymd')

@@ -69,8 +69,6 @@ def log(user, action, extra=None, obj=None, dateof=None):
             if isinstance(value, decimal.Decimal):
                 extra[key] = float(value)
 
-
-
     content_type = None
     object_id = None
 

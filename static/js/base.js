@@ -1,14 +1,9 @@
-/**
- * --------------------------------------------------------------------------
- * CoreUI Pro Boostrap Admin Template (2.1.1): datatables.js
- * Licensed under MIT (https://coreui.io/license)
- * --------------------------------------------------------------------------
- */
-
  $(function () {
+
     $.ajaxSetup({
         headers: { "X-CSRFToken": getCookie("csrftoken") }
     });
+
 });
 
 function getCookie(c_name)
@@ -26,7 +21,6 @@ function getCookie(c_name)
     }
     return "";
  }
-
 
 hotkeys('BackSpace,f5', function(event, handler) {
   // Prevent the default refresh event under WINDOWS system
