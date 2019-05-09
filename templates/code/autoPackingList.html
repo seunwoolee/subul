@@ -1,0 +1,95 @@
+﻿{% extends 'baseHTML.html' %}
+
+{% load static %}
+
+{% block stylesheet %}
+
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-md-center">
+    <div class="col-lg-12 col-sm-12">
+
+        <div id="react_container"></div>
+
+    </div>
+</div>
+
+<!-- Create Modal -->
+<div class="modal fade everyModal" id="createModal" role="dialog">
+    <div class="modal-dialog modal-success">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title codeName"></h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" class="create">
+                    {{ productUnitPricesForm.locationCode }}
+                    {{ productUnitPricesForm.productCode }}
+                    {% include 'includes/modal/productUnitPricesModifyForm.html' %}
+                    <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="post"/>
+                    <button type="submit" class="btn btn-success">OK</button>
+                    <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT Modal -->
+<div class="modal fade everyModal" id="modifyModal" role="dialog">
+    <div class="modal-dialog modal-primary">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title codeName"></h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" class="deleteAndEdit">
+                    {% include 'includes/modal/productUnitPricesModifyForm.html' %}
+                    <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="patch"/>
+                    <button type="submit" class="btn btn-primary">OK</button>
+                    <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Delete Modal -->
+<div class="modal fade everyModal" role="dialog" id="confirm">
+    <div class="modal-dialog  modal-danger">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">데이터를 삭제 하시겠습니까?</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" class="deleteAndEdit">
+                    <!--{% csrf_token %}-->
+                    <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="delete"/>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<!--REACT  JS-->
+<!--<script src="https://unpkg.com/react@16/umd/react.development.js"></script>-->
+<!--<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>-->
+
+<script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
+<!--<script src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>-->
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+<script src="{% static 'js/baseList.js' %}"></script>
+<script src="{% static 'js/autoPackingList.js' %}" type="text/babel"></script>
+<!-- TODO {{ productUnitPricesForm.media.js }}-->
+{% endblock %}

@@ -11,4 +11,5 @@ urlpatterns = [
     path('productOEMList', views.ProductOEMList.as_view(), name='productOEMList'),
     path('ProductUnitPricesList', views.ProductUnitPricesList.as_view(), name='productUnitPricesList'),
     path('setProductMatchList', views.SetProductMatchList.as_view(), name='setProductMatchList'),
+    path('autoPackingList', views.AutoPackingList.as_view(), name='autoPackingList'),
 ]

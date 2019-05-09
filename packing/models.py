@@ -1,11 +1,9 @@
 from django.db import models
 from django.db.models import Q, F, Sum, Func
 from model_utils import Choices
-from core.models import Detail, Location, Code
-
-
-class ABS(Func):
-    function = 'ABS'
+from core.models import Detail, Location, Code, DELETE_STATE_CHOICES
+from order.models import ABS
+from product.models import ProductCode
 
 
 class PackingCode(Code):
@@ -28,6 +26,10 @@ class Packing(Detail):
         ('폐기', '폐기'),
         ('조정', '조정'),
     )
+    AUTO_TYPE_CHOICES = (
+        ('Y', '자동출고'),
+        ('N', '수동출고'),
+    )
     type = models.CharField(
         max_length=10,
         choices=PACKING_TYPE_CHOICES,
@@ -38,6 +40,12 @@ class Packing(Detail):
     locationCodeName = models.CharField(max_length=255, null=True, blank=True)
     packingCode = models.ForeignKey(PackingCode, on_delete=models.CASCADE, null=True, blank=True)
     amount = models.CharField(max_length=10, null=True, blank=True)
+    autoRelease = models.CharField(
+        max_length=10,
+        choices=AUTO_TYPE_CHOICES,
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return self.codeName + '(' + self.ymd + ') ' + self.type
@@ -289,3 +297,12 @@ class Packing(Detail):
             'total': 10,
             'draw': draw
         }
+
+
+class AutoPacking(models.Model):
+    productCode = models.ForeignKey(ProductCode, on_delete=models.CASCADE, related_name='+')
+    packingCode = models.ForeignKey(PackingCode, on_delete=models.CASCADE, related_name='+')
+    count = models.IntegerField()
+
+    def __str__(self):
+        return f"자동출고 {self.productCode.codeName}_ {self.packingCode.codeName}_{self.count}개"

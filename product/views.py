@@ -451,7 +451,7 @@ class ProductOEMReg(LoginRequiredMixin, View):
                     purchaseVat=purchaseVat
                 )
 
-                productAdmin = ProductAdmin.objects.create(  # TODO UPdate
+                productAdmin = ProductAdmin.objects.create(
                     product_id=product,
                     amount=count,
                     count=count,
@@ -488,5 +488,13 @@ class SetProductMatchList(LoginRequiredMixin, View):
     def get(self, request):
         productUnitPricesForm = SetProductMatchForm()
         return render(request, 'code/setProductMatchList.html', {'productUnitPricesForm': productUnitPricesForm })
+
+
+class AutoPackingList(LoginRequiredMixin, View):
+
+    def get(self, request):
+        # productUnitPricesForm = SetProductMatchForm()
+        # return render(request, 'code/autoPackingList.html', {'productUnitPricesForm': productUnitPricesForm })
+        return render(request, 'code/autoPackingList.html')
 
 

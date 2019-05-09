@@ -392,9 +392,11 @@ class Product(Detail):
         order_column = ORDER_COLUMN_CHOICES[order_column]
         start_date = kwargs.get('start_date', None)[0]
         end_date = kwargs.get('end_date', None)[0]
+
         queryset = Product.objects.all().annotate(locationCode_code=F('purchaseLocation__code')) \
             .annotate(totalPrice=F('purchaseSupplyPrice') + F('purchaseVat')) \
             .filter(ymd__gte=start_date).filter(ymd__lte=end_date).exclude(purchaseYmd=None)
+
         total = queryset.count()
 
         if search_value:

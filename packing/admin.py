@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import PackingCode, Packing
+from .models import PackingCode, Packing, AutoPacking
 
 
 class PackingAdmin(admin.ModelAdmin):
@@ -16,5 +16,11 @@ class PackingCodeAdmin(admin.ModelAdmin):
     search_fields = ["code", "codeName"]
 
 
+class AutoPackingAdmin(admin.ModelAdmin):
+
+    search_fields = ["productCode__codeName", "packingCode__codeName"]
+
+
 admin.site.register(Packing, PackingAdmin)
 admin.site.register(PackingCode, PackingCodeAdmin)
+admin.site.register(AutoPacking, AutoPackingAdmin)
