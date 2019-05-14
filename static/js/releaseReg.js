@@ -1,20 +1,19 @@
-function fetch_data()
-{
+function fetch_data() {
     table = $('.datatable').DataTable({
         "language": {
-        "lengthMenu": "_MENU_ 페이지당 개수",
-        "zeroRecords": "결과 없음",
-        "info": "",
-        "infoEmpty": "No records available",
-        "infoFiltered": "(검색된결과 from _MAX_ total records)"
+            "lengthMenu": "_MENU_ 페이지당 개수",
+            "zeroRecords": "결과 없음",
+            "info": "",
+            "infoEmpty": "No records available",
+            "infoFiltered": "(검색된결과 from _MAX_ total records)"
         },
-         "createdRow": function( row, data, dataIndex ) {
-            $( row ).find('td:eq(0)').attr('data-title','제품');
-            $( row ).find('td:eq(1)').attr('data-title','생산일');
-            $( row ).find('td:eq(2)').attr('data-title','위치');
-            $( row ).find('td:eq(3)').attr('data-title','재고량(KG)');
-            $( row ).find('td:eq(4)').attr('data-title','재고수량(EA)');
-         },
+        "createdRow": function (row, data, dataIndex) {
+            $(row).find('td:eq(0)').attr('data-title', '제품');
+            $(row).find('td:eq(1)').attr('data-title', '생산일');
+            $(row).find('td:eq(2)').attr('data-title', '위치');
+            $(row).find('td:eq(3)').attr('data-title', '재고량(KG)');
+            $(row).find('td:eq(4)').attr('data-title', '재고수량(EA)');
+        },
         "paging": false,
         "processing": true,
         "serverSide": true,
@@ -26,99 +25,111 @@ function fetch_data()
             {"data": "productCodeName"},
             {"data": "productYmd"},
             {"data": "storedLocationCodeName"},
-            {"data": "totalAmount" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
-            {"data": "totalCount" , "render": $.fn.dataTable.render.number( ',')},
+            {"data": "totalAmount", "render": $.fn.dataTable.render.number(',', '.', 2)},
+            {"data": "totalCount", "render": $.fn.dataTable.render.number(',')},
         ],
         dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'excel',
+                className: 'btn btn-light',
+                text: '<i class="far fa-file-excel fa-lg"></i>',
+                init: function (api, node, config) {
+                    $(node).removeClass('btn-secondary');
+                }
+            }],
     });
 }
 
- $('#start_date').val(start_day);
- $('#end_date').val(end_day);
+$('#start_date').val(start_day);
+$('#end_date').val(end_day);
 order_fetch_data(start_day, end_day);
-function order_fetch_data(start_date='', end_date='')
-{
+
+function order_fetch_data(start_date = '', end_date = '') {
     start_date = set_yyyymmdd(start_date);
     end_date = set_yyyymmdd(end_date);
     $('#orderDatatable').DataTable().destroy();
     orderTable = $('#orderDatatable').DataTable({
-        "responsive" : true,
+        "responsive": true,
         "paging": false,
         "processing": true,
         "serverSide": true,
         "ajax": {
             "url": "/api/order/",
             "type": "GET",
-            "data": { start_date:start_date, end_date:end_date, releaseOrder:true }
+            "data": {start_date: start_date, end_date: end_date, releaseOrder: true}
         },
-         "createdRow": function( row, data, dataIndex ) {
-            $( row ).find('td:eq(0)').attr('data-title','ID');
-            $( row ).find('td:eq(1)').attr('data-title','타입');
-            $( row ).find('td:eq(2)').attr('data-title','특인');
-            $( row ).find('td:eq(3)').attr('data-title','주문일');
-            $( row ).find('td:eq(4)').attr('data-title','거래처');
-            $( row ).find('td:eq(5)').attr('data-title','제품명');
-            $( row ).find('td:eq(6)').attr('data-title','주문량(KG)');
-            $( row ).find('td:eq(7)').attr('data-title','주문수량(EA)');
-            $( row ).find('td:eq(8)').attr('data-title','메모');
-         },
+        "createdRow": function (row, data, dataIndex) {
+            $(row).find('td:eq(0)').attr('data-title', 'ID');
+            $(row).find('td:eq(1)').attr('data-title', '타입');
+            $(row).find('td:eq(2)').attr('data-title', '특인');
+            $(row).find('td:eq(3)').attr('data-title', '주문일');
+            $(row).find('td:eq(4)').attr('data-title', '거래처');
+            $(row).find('td:eq(5)').attr('data-title', '제품명');
+            $(row).find('td:eq(6)').attr('data-title', '주문량(KG)');
+            $(row).find('td:eq(7)').attr('data-title', '주문수량(EA)');
+            $(row).find('td:eq(8)').attr('data-title', '메모');
+        },
         "columns": [
             {"data": "id"},
-            {"data": "type", "render" : function(data, type, row, meta){return setTypeButton(data);}},
-            {"data": "specialTag", "render" : function(data, type, row, meta){return setSpecialTagButton(data);}},
+            {
+                "data": "type", "render": function (data, type, row, meta) {
+                    return setTypeButton(data);
+                }
+            },
+            {
+                "data": "specialTag", "render": function (data, type, row, meta) {
+                    return setSpecialTagButton(data);
+                }
+            },
             {"data": "ymd"},
             {"data": "orderLocationName"},
             {"data": "codeName"},
-            {"data": "amount" , "render": $.fn.dataTable.render.number( ',', '.', 2)},
-            {"data": "count" , "render": $.fn.dataTable.render.number( ',')},
+            {"data": "amount", "render": $.fn.dataTable.render.number(',', '.', 2)},
+            {"data": "count", "render": $.fn.dataTable.render.number(',')},
             {"data": "memo"},
         ],
         dom: 'Bfrtip',
-        buttons: ['pageLength', 'colvis','copy', 'excel', 'pdf', 'print'],
-        lengthMenu : [[30, 50, -1], [30, 50, "All"]]
+        buttons: [],
+        lengthMenu: [[30, 50, -1], [30, 50, "All"]]
     });
 }
 
-function setTypeButton(data)
-{
-    switch(data)
-    {
+function setTypeButton(data) {
+    switch (data) {
         case '판매':
-            return '<button class="btn btn-dark btn-sm">'+ data +'</button>'
+            return '<button class="btn btn-dark btn-sm">' + data + '</button>'
             break;
         case '샘플':
-            return '<button class="btn btn-warning btn-sm">'+ data +'</button>'
+            return '<button class="btn btn-warning btn-sm">' + data + '</button>'
             break;
         case '증정':
-            return '<button class="btn btn-success btn-sm">'+ data +'</button>'
+            return '<button class="btn btn-success btn-sm">' + data + '</button>'
             break;
         case '자손':
-            return '<button class="btn btn-primary btn-sm ">'+ data +'</button>'
+            return '<button class="btn btn-primary btn-sm ">' + data + '</button>'
             break;
         case '생산요청':
-            return '<button class="btn btn-danger btn-sm">'+ data +'</button>'
+            return '<button class="btn btn-danger btn-sm">' + data + '</button>'
             break;
     }
 }
 
-$('#search').click(function(){
+$('#search').click(function () {
     var start_date = $('#start_date').val();
     var end_date = $('#end_date').val();
-    if(start_date != '' && end_date !='')
-    {
-       order_fetch_data(start_date, end_date);
-    }
-    else
-    {
-       alert("날짜를 모두 입력해주세요");
+    if (start_date != '' && end_date != '') {
+        order_fetch_data(start_date, end_date);
+    } else {
+        alert("날짜를 모두 입력해주세요");
     }
 });
 
-$('#stockFind').click(function(){
-    try{
+$('#stockFind').click(function () {
+    try {
         table.DataTable().destroy();
-    } catch ( e ){
-        if (e instanceof ReferenceError){
+    } catch (e) {
+        if (e instanceof ReferenceError) {
             fetch_data();
         }
     }
@@ -128,16 +139,14 @@ var AMOUNT_KG = {};
 var totalAmount = 0;
 var totalCount = 0;
 
-$(document).on('click', ".datatable tbody tr", function()
-{
+$(document).on('click', ".datatable tbody tr", function () {
     let data = table.row($(this)).data();
     setNormalLocationStyle();
     manualReleaseModal(data);
 });
 
-function manualReleaseModal(data)
-{
-    window.AMOUNT_KG = { "AMOUNT_KG" : data["amount_kg"]};
+function manualReleaseModal(data) {
+    window.AMOUNT_KG = {"AMOUNT_KG": data["amount_kg"]};
     $('#id_productId').val(data['productId']);
     $('#id_productYmd').val(data['productYmd']);
     $('#id_productCode').val(data['productCode']);
@@ -156,87 +165,79 @@ function manualReleaseModal(data)
 
 var ORDER_AMOUNT = 0.0;
 var ORDER_COUNT = 0;
-var STORE_TOTAL_AMOUNT=0.0;
-var STORE_TOTAL_COUNT=0;
+var STORE_TOTAL_AMOUNT = 0.0;
+var STORE_TOTAL_COUNT = 0;
 var BOOL = true;
-$(document).on('click', "#orderDatatable tbody tr", function() {
+$(document).on('click', "#orderDatatable tbody tr", function () {
     resetOrderData();
     var data = orderTable.row($(this)).data();
     data['storedLocation'] = $('#id_storedLocation').val();
-    window.AMOUNT_KG = { "AMOUNT_KG" : data["amount_kg"]};
+    window.AMOUNT_KG = {"AMOUNT_KG": data["amount_kg"]};
     var storedLocationName = $('#id_storedLocation option:selected').text();
     var releaseInfoOne = setReleaseInfoOne(storedLocationName, data);
     var releaseInfoTwo = setReleaseInfoTwo(data);
 
     $.ajax({
-    url: '/api/productAdmin/',
-    type: 'get',
-    data: data,
-    }).done(function(rows) {
+        url: '/api/productAdmin/',
+        type: 'get',
+        data: data,
+    }).done(function (rows) {
         changeReleaseInfo(releaseInfoOne, releaseInfoTwo);
         setOrderAmount(data);
         setStoredTotalAmount(rows);
-        if(rows.length > 0)
-        {
-            $(rows).each(function(i, row){
-                var TR = setOrderReleaseTrModal(data,row);
+        if (rows.length > 0) {
+            $(rows).each(function (i, row) {
+                var TR = setOrderReleaseTrModal(data, row);
                 $TR = $('#orderModal tbody').append(TR);
                 $TR = $TR.find('tr:last');
                 insertInputValue($TR, row, data);
-                if( window.ORDER_AMOUNT >= window.STORE_TOTAL_AMOUNT) // 총 주문량이 더 많기 때문에 총 재고량을 각각 val에 박아준다
+                if (window.ORDER_AMOUNT >= window.STORE_TOTAL_AMOUNT) // 총 주문량이 더 많기 때문에 총 재고량을 각각 val에 박아준다
                 {
                     $TR.find('.amount').val(row['totalAmount']);
                     $TR.find('.count').val(row['totalCount']);
                     $TR.find('.datepicker').val(data['ymd']);
-                }
-                else if(BOOL)// 재고량이 더많을때
+                } else if (BOOL)// 재고량이 더많을때
                 {
                     calculateData = {};
                     calculateData['totalAmount'] = row['totalAmount'];
                     calculateData['ymd'] = data['ymd'];
                     calculateData['totalCount'] = row['totalCount'];
-                    calculateReleaseAmount($TR,calculateData);
+                    calculateReleaseAmount($TR, calculateData);
                 }
             });
             setDatePicker();
             $("#orderModal").modal();
-        }
-        else
-        {
+        } else {
             alert('해당 장소에 재고가 없습니다.');
         }
-    }).fail(function() {
+    }).fail(function () {
         alert('수정 에러 전산실로 문의바랍니다.');
     });
 });
 
-function resetOrderData()
-{
+function resetOrderData() {
     window.ORDER_AMOUNT = 0.0;
     window.ORDER_COUNT = 0;
-    window.STORE_TOTAL_AMOUNT=0.0;
-    window.STORE_TOTAL_COUNT=0;
+    window.STORE_TOTAL_AMOUNT = 0.0;
+    window.STORE_TOTAL_COUNT = 0;
     window.BOOL = true;
 }
 
-function setReleaseInfoOne(storedLocationName, data)
-{
+function setReleaseInfoOne(storedLocationName, data) {
     var releaseInfoOne = `  <span>보관장소 : ${storedLocationName}(${data['storedLocation']}),
                             납품일 : ${data['ymd']},
                             거래처명 : ${data['orderLocationName']}</span>`;
     return releaseInfoOne;
 }
 
-function setReleaseInfoTwo(data)
-{
+function setReleaseInfoTwo(data) {
     var releaseInfoTwo = `  <span>제품명 : ${data['codeName']},
                             주문량 : ${data['amount']}KG,
                             주문수량 : ${data['count']}EA </span>`;
     return releaseInfoTwo;
 }
 
-function changeReleaseInfo(releaseInfoOne, releaseInfoTwo)
-{
+function changeReleaseInfo(releaseInfoOne, releaseInfoTwo) {
     $('.releaseInfoOne span').remove();
     $('.releaseInfoTwo span').remove();
     $('#orderModal tbody tr').remove();
@@ -244,37 +245,32 @@ function changeReleaseInfo(releaseInfoOne, releaseInfoTwo)
     $('.releaseInfoTwo').append(releaseInfoTwo);
 }
 
-function setOrderAmount(data)
-{
+function setOrderAmount(data) {
     window.ORDER_AMOUNT = data['amount']; // 총 주문량
     window.ORDER_COUNT = data['count'];
 }
 
-function setStoredTotalAmount(rows)
-{
-    $(rows).each(function(i, row){ // 총 재고수량을 파악한다
+function setStoredTotalAmount(rows) {
+    $(rows).each(function (i, row) { // 총 재고수량을 파악한다
         window.STORE_TOTAL_AMOUNT += row['totalAmount'];
         window.STORE_TOTAL_COUNT += row['totalCount'];
     });
 }
 
 
-function calculateReleaseAmount($TR, DATA)
-{
-    if( window.ORDER_AMOUNT >= DATA['totalAmount']) //주문량이 더크니 -하고 내꺼박고
+function calculateReleaseAmount($TR, DATA) {
+    if (window.ORDER_AMOUNT >= DATA['totalAmount']) //주문량이 더크니 -하고 내꺼박고
     {
         $TR.find('.amount').val(DATA['totalAmount']);
         $TR.find('.count').val(DATA['totalCount']);
         $TR.find('.datepicker').val(DATA['ymd']);
         window.ORDER_AMOUNT -= DATA['totalAmount'];
         window.ORDER_COUNT -= DATA['totalCount'];
-    }
-    else // 마침내 드디어 주문량이 더 작아졌다 주문량을 박자
+    } else // 마침내 드디어 주문량이 더 작아졌다 주문량을 박자
     {
         window.ORDER_AMOUNT = Math.round(window.ORDER_AMOUNT * 100) / 100;
         window.ORDER_COUNT = Math.round(window.ORDER_COUNT * 100) / 100;
-        if(window.ORDER_COUNT > 0)
-        {
+        if (window.ORDER_COUNT > 0) {
             $TR.find('.amount').val(window.ORDER_AMOUNT);
             $TR.find('.count').val(window.ORDER_COUNT);
             $TR.find('.datepicker').val(DATA['ymd']);
@@ -283,8 +279,7 @@ function calculateReleaseAmount($TR, DATA)
     }
 }
 
-function insertInputValue($TR, row, data)
-{
+function insertInputValue($TR, row, data) {
     $TR.find('input[name="productId"]').val(row['productId']);
     $TR.find('input[name="productYmd"]').val(row['productYmd']);
     $TR.find('input[name="productCode"]').val(row['productCode']);
@@ -299,11 +294,14 @@ function insertInputValue($TR, row, data)
     $TR.find('input[name="specialTag"]').val(data["specialTag"]);
 }
 
-$(document).on('focusout', ".amount", function() { setAutoCountValue($(this));});
-$(document).on('focusout', ".count", function() { setAutoAmountValue($(this));});
+$(document).on('focusout', ".amount", function () {
+    setAutoCountValue($(this));
+});
+$(document).on('focusout', ".count", function () {
+    setAutoAmountValue($(this));
+});
 
-$('#manualRelease').on('submit', function (e)
-{
+$('#manualRelease').on('submit', function (e) {
     e.preventDefault();
     $this = $(this);
     var count = parseInt($this.find('#id_count').val());
@@ -314,66 +312,56 @@ $('#manualRelease').on('submit', function (e)
     let data = $this.serialize();
     var url = ((type == "미출고품" || type == "재고조정") ? '/release/adjustment' : '/release/');
 
-    if(type == "이동")
-    {
-        if(totalCount >= count && storedLocationCode !== locationCode && count > 0)
-        {
-            manualReleaseAjax(url,data);
+    if (type == "이동") {
+        if (totalCount >= count && storedLocationCode !== locationCode && count > 0) {
+            manualReleaseAjax(url, data);
+        } else {
+            alert('장소 및 수량을 확인해주세요');
         }
-        else { alert('장소 및 수량을 확인해주세요'); }
-    }
-    else if(type == "미출고품" || type == "재고조정")
-    {
-        manualReleaseAjax(url,data);
-    }
-    else
-    {
-        if(totalCount >= count && count > 0)
-        {
-            manualReleaseAjax(url,data);
+    } else if (type == "미출고품" || type == "재고조정") {
+        manualReleaseAjax(url, data);
+    } else {
+        if (totalCount >= count && count > 0) {
+            manualReleaseAjax(url, data);
+        } else {
+            alert('수량을 확인해주세요');
         }
-        else { alert('수량을 확인해주세요'); }
     }
 });
 
-$('#orderRelease').on('submit', function (e)
-{
+$('#orderRelease').on('submit', function (e) {
     e.preventDefault();
     len = $("#orderRelease tbody tr").length;
     url = '/release/';
-    for(var i=0; i<len; i++)
-    {
+    for (var i = 0; i < len; i++) {
 
-        let count = $("#orderRelease tbody tr:eq("+i+")").find('.count').val();
-        let ymd = $("#orderRelease tbody tr:eq("+i+")").find('input[name="ymd"]').val();
-        if(ymd.length == 8 && count.length > 0)
-        {
-            var data = $("#orderRelease tbody tr:eq("+i+") :input").serialize();
+        let count = $("#orderRelease tbody tr:eq(" + i + ")").find('.count').val();
+        let ymd = $("#orderRelease tbody tr:eq(" + i + ")").find('input[name="ymd"]').val();
+        if (ymd.length == 8 && count.length > 0) {
+            var data = $("#orderRelease tbody tr:eq(" + i + ") :input").serialize();
             var request = $.ajax({
-            url: url,
-            type: 'post',
-            data: data,
-            }).done(function(data) {
-                    $(".everyModal").modal('hide');
-                    $('#orderDatatable').DataTable().search($("input[type='search']").val()).draw();
-            }).fail(function() {
+                url: url,
+                type: 'post',
+                data: data,
+            }).done(function (data) {
+                $(".everyModal").modal('hide');
+                $('#orderDatatable').DataTable().search($("input[type='search']").val()).draw();
+            }).fail(function () {
                 alert('수정 에러 전산실로 문의바랍니다.');
             });
         }
     }
 });
 
-function setDatePicker()
-{
+function setDatePicker() {
     $(".datepicker").datepicker({
         autoclose: true,
         todayHighlight: true,
-        format:'yyyymmdd'
+        format: 'yyyymmdd'
     });
 }
 
-function setOrderReleaseTrModal(data, row)
-{
+function setOrderReleaseTrModal(data, row) {
     var TR = `<tr>
                  <td data-title="제품명">
                     <input type="hidden" name="productId">
@@ -400,24 +388,18 @@ function setOrderReleaseTrModal(data, row)
     return TR;
 }
 
-$( "#id_type" ).change(function() {
+$("#id_type").change(function () {
     var type = $(this).val();
-    if(type == '이동')
-    {
+    if (type == '이동') {
         setMoveLocationStyle();
-    }
-    else if(type == "미출고품" || type == "재고조정")
-    {
+    } else if (type == "미출고품" || type == "재고조정") {
         setAdjustmentStyle();
-    }
-    else
-    {
+    } else {
         setNormalLocationStyle();
     }
 });
 
-function setMoveLocationStyle()
-{
+function setMoveLocationStyle() {
     $("#manualReleaseLocation").text("이동장소");
     $("#id_location").parent().show("slow");
     $("#manualReleaseLocation").show("slow");
@@ -429,10 +411,11 @@ function setMoveLocationStyle()
     $("#id_memo").parent().hide("slow");
 }
 
-function setNormalLocationStyle()
-{
+function setNormalLocationStyle() {
     var type = $("#id_type").val();
-    if(type=="이동"){$("#id_type option[value='판매']").prop('selected','true');}
+    if (type == "이동") {
+        $("#id_type option[value='판매']").prop('selected', 'true');
+    }
 
     $("#id_location").parent().show("slow");
     $("#manualReleaseLocation").text("판매처");
@@ -449,8 +432,7 @@ function setNormalLocationStyle()
     $("#id_memo").parent().show("slow");
 }
 
-function setAdjustmentStyle()
-{
+function setAdjustmentStyle() {
     $("#id_location").parent().hide("slow");
     $("#manualReleaseLocation").hide("slow");
 
@@ -462,21 +444,22 @@ function setAdjustmentStyle()
     $("#id_count").removeAttr("min");
 }
 
-function manualReleaseAjax(url, data)
-{
+function manualReleaseAjax(url, data) {
     $.ajax({
-    url: url,
-    type: 'post',
-    data: data,
-    }).done(function(data) {
+        url: url,
+        type: 'post',
+        data: data,
+    }).done(function (data) {
         alert('수정완료');
         $(".everyModal").modal('hide');
         $('.datatable').DataTable().search($("input[type='search']").val()).draw();
-    }).fail(function() { alert('수정 에러 전산실로 문의바랍니다.'); });
+    }).fail(function () {
+        alert('수정 에러 전산실로 문의바랍니다.');
+    });
 }
 
 $("#datepicker").datepicker({
     autoclose: true,
     todayHighlight: true,
-    format:'yyyymmdd'
+    format: 'yyyymmdd'
 });

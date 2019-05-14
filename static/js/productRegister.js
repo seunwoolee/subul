@@ -65,7 +65,9 @@ $( ".product" ).change(function() {
         type: 'get',
         data: data,
         }).done(function(data) {
+
             window.AMOUNT_KG = {"parentTR" : parentTR, "AMOUNT_KG" : data["amount_kg"]};
+
         }).fail(function() {
             alert('수정 에러 전산실로 문의바랍니다.');
         });
@@ -130,5 +132,5 @@ $(document).on('click', '#changeButton', function(e){
 });
 
 $(".amount").focusout(function(){ if(AMOUNT_KG['parentTR'][0] == parentTR[0]) { setAutoCountValue($(this)); }});
-$(".count").focusout(function(){ if(AMOUNT_KG['parentTR'][0] == parentTR[0]) { setAutoAmountValue($(this)); }});
+$(".count").focusout(function() { if(AMOUNT_KG['parentTR'][0] == parentTR[0]) { setAutoAmountValue($(this)); }});
 

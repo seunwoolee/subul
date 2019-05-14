@@ -9,6 +9,8 @@ from core.models import Location
 from eggs.models import Egg
 from eventlog.models import log
 from order.models import ABS
+from packing.forms import AutoPackingForm
+from packing.models import AutoPacking, Packing
 from product.codeForms import ProductUnitPricesForm, SetProductMatchForm
 from product.models import ProductEgg, Product, ProductCode, ProductAdmin, ProductMaster
 from .forms import StepOneForm, StepTwoForm, StepThreeForm, StepFourForm, StepFourFormSet, MainForm, ProductOEMFormSet, \
@@ -62,8 +64,9 @@ class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
                 amount_kg = form.cleaned_data.get('amount_kg', None)
                 count = form.cleaned_data.get('count', None)
                 memo = form.cleaned_data.get('memo', None)
-                KCFRESH_LOCATION_CODE = '00301'
+                KCFRESH_LOCATION_CODE: str = '00301'
                 location = Location.objects.get(code=KCFRESH_LOCATION_CODE)  # kcfresh 본사
+
                 if code and count > 0:
                     productCode = ProductCode.objects.get(code=code)
                     productExist = Product.objects.filter(code=code).filter(ymd=main.ymd).first()
@@ -98,6 +101,17 @@ class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
                         productExistAdmin.count += count
                         productExist.save()
                         productExistAdmin.save()
+
+                    for packing in AutoPacking.objects.filter(productCode=productCode):
+                        Packing.objects.create(
+                            ymd=main.ymd,
+                            type='생산',
+                            code=packing.packingCode.code,
+                            codeName=packing.packingCode.codeName,
+                            count=-int(packing.count) * count,
+                            packingCode=packing.packingCode,
+                            autoRelease='자동출고',
+                        )
 
             Product.getLossProductPercent(main)
         return redirect('productList')
@@ -149,7 +163,7 @@ class ProductRecall(View):
         KCFRESH_LOCATION_CODE = '00301'
         location = Location.objects.get(code=KCFRESH_LOCATION_CODE)  # kcfresh 본사
         product = Product.objects.get(pk=pk)
-        totalCount = ProductAdmin.objects.filter(product_id=product).values('product_id__code')\
+        totalCount = ProductAdmin.objects.filter(product_id=product).values('product_id__code') \
             .annotate(totalCount=Sum(F('count')))
 
         log_data = model_to_dict(product)
@@ -236,7 +250,8 @@ class ProductReport(View):
         end_date = request.GET.get('end_date')
         egg = Egg.objects.values('code', 'codeName').filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
             .filter(type='생산') \
-            .annotate(report_egg_amount=Case(When(amount=None, then=Value(0, DecimalField())), default=ABS('amount'), output_field=DecimalField())) \
+            .annotate(report_egg_amount=Case(When(amount=None, then=Value(0, DecimalField())), default=ABS('amount'),
+                                             output_field=DecimalField())) \
             .annotate(report_egg_count=ABS('count')) \
             .annotate(report_sort_type=Value('원란', CharField())) \
             .annotate(report_rawTank_amount=Value(' ', CharField())) \
@@ -487,14 +502,11 @@ class SetProductMatchList(LoginRequiredMixin, View):
 
     def get(self, request):
         productUnitPricesForm = SetProductMatchForm()
-        return render(request, 'code/setProductMatchList.html', {'productUnitPricesForm': productUnitPricesForm })
+        return render(request, 'code/setProductMatchList.html', {'productUnitPricesForm': productUnitPricesForm})
 
 
 class AutoPackingList(LoginRequiredMixin, View):
 
     def get(self, request):
-        # productUnitPricesForm = SetProductMatchForm()
-        # return render(request, 'code/autoPackingList.html', {'productUnitPricesForm': productUnitPricesForm })
-        return render(request, 'code/autoPackingList.html')
-
-
+        form = AutoPackingForm()
+        return render(request, 'code/autoPackingList.html', {'form': form})

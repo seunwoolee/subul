@@ -27,8 +27,8 @@ class Packing(Detail):
         ('조정', '조정'),
     )
     AUTO_TYPE_CHOICES = (
-        ('Y', '자동출고'),
-        ('N', '수동출고'),
+        ('자동출고', '자동출고'),
+        ('수동출고', '수동출고'),
     )
     type = models.CharField(
         max_length=10,
@@ -98,6 +98,7 @@ class Packing(Detail):
             ('7', 'counts'),
             ('8', 'price'),
             ('9', 'memo'),
+            ('10', 'autoRelease'),
         )
         draw = int(kwargs.get('draw', None)[0])
         start = int(kwargs.get('start', None)[0])
@@ -306,3 +307,52 @@ class AutoPacking(models.Model):
 
     def __str__(self):
         return f"자동출고 {self.productCode.codeName}_ {self.packingCode.codeName}_{self.count}개"
+
+    @staticmethod
+    def autoPackingQuery(**kwargs) -> object:
+
+        ORDER_COLUMN_CHOICES = Choices(
+            ('0', 'id'),
+            ('1', 'packingCode'),
+            ('2', 'packingCodeName'),
+            ('3', 'productCode'),
+            ('4', 'productCodeName'),
+            ('5', 'count'),
+        )
+        draw = int(kwargs.get('draw', None)[0])
+        start = int(kwargs.get('start', None)[0])
+        length = int(kwargs.get('length', None)[0])
+        search_value = kwargs.get('search[value]', None)[0]
+        order_column = kwargs.get('order[0][column]', None)[0]
+        order = kwargs.get('order[0][dir]', None)[0]
+        order_column = ORDER_COLUMN_CHOICES[order_column]
+        packingCode = kwargs.get('packing', None)[0]
+        productCode = kwargs.get('product', None)[0]
+
+        queryset = AutoPacking.objects.annotate(
+            packingCodeName=F('packingCode__codeName'),
+            productCodeName=F('productCode__codeName'))
+
+        if packingCode:
+            queryset = queryset.filter(packingCode=PackingCode.objects.get(id=packingCode))
+
+        if productCode:
+            queryset = queryset.filter(productCode=ProductCode.objects.get(id=productCode))
+
+        if order == 'desc':
+            order_column = '-' + order_column
+
+        total = queryset.count()
+
+        # if search_value:
+        #     queryset = queryset.filter(codeName__icontains=search_value)
+
+        count = queryset.count()
+
+        queryset = queryset.order_by(order_column)[start:start + length]
+        return {
+            'items': queryset,
+            'count': count,
+            'total': total,
+            'draw': draw
+        }

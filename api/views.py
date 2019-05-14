@@ -3,6 +3,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from api.autoPackingSerializers import AutoPackingSerializer
 from api.eggSerializers import EggSerializer
 from api.locationSerializers import LocationSerializer
 from api.orderSerializers import OrderSerializer
@@ -14,7 +15,7 @@ from core.models import Location
 from eggs.models import Egg
 from eventlog.models import log
 from order.models import Order
-from packing.models import Packing
+from packing.models import Packing, AutoPacking
 from product.models import ProductMaster, Product, ProductEgg, ProductUnitPrice, \
     SetProductMatch, SetProductCode, ProductCode, ProductAdmin
 from release.models import Release
@@ -630,9 +631,9 @@ class SetProductMatchsAPIView(APIView):
 
 
 class SetProductMatchsUpdate(generics.RetrieveUpdateDestroyAPIView):
-    '''
+    """
     생산내역 조회에서 Update, Delete를 칠때
-    '''
+    """
     queryset = SetProductMatch.objects.all()
     serializer_class = SetProductMatchListSerializer
 
@@ -654,8 +655,39 @@ class LocationsAPIView(APIView):
 
 
 class LocationUpdate(generics.RetrieveUpdateDestroyAPIView):
-    '''
+    """
     거래처 조회에서 Update
-    '''
+    """
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
+
+
+class AutoPackingAPIView(APIView):
+
+    def get(self, request):
+        try:
+            result = dict()
+            autoPacking = AutoPacking.autoPackingQuery(**request.query_params)
+            autoPackingSerializer = AutoPackingSerializer(autoPacking['items'], many=True)
+            result['data'] = autoPackingSerializer.data
+            result['draw'] = autoPacking['draw']
+            result['recordsTotal'] = autoPacking['total']
+            result['recordsFiltered'] = autoPacking['count']
+            return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+        except Exception as e:
+            return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+
+    def post(self, request):
+        serializer = AutoPackingSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AutoPackingUpdate(generics.RetrieveUpdateDestroyAPIView):
+    """
+    포장재자동출고에서 Update, Delete를 칠때
+    """
+    queryset = AutoPacking.objects.all()
+    serializer_class = AutoPackingSerializer

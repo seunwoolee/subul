@@ -26,28 +26,7 @@
                       <i class="icon-lock"></i>
                     </span>
                   </div>
-                    {% render_field form.password class="form-control" placeholder="Username" %}
+                    {% render_field form.password class="form-control" placeholder="Password" %}
                 </div>
                 <button class="btn btn-primary px-4" type="submit">Login</button>
             </form>
-
-
-    <!--{% for field in stepThreeForm.visible_fields %}-->
-
-        <!--{% if field.help_text|length > 0 %}-->
-         <!--{% if forloop.counter|mod:4 == 1 %}-->
-          <!--<tr class="table-success">-->
-         <!--{% else %}-->
-          <!--<tr>-->
-         <!--{% endif %}-->
-            <!--<td>{{ forloop.counter|intdiv:2|add:1 }}</td>-->
-            <!--<td>{{ field.help_text}}</td>-->
-            <!--<td class="text-center">{{ field.label_tag}}</td>-->
-            <!--<td>-->
-              <!--{% render_field field class="form-control" %}-->
-            <!--</td>-->
-        <!--{% else %}-->
-              <!--<td>{% render_field field class="form-control"  %}</td>-->
-        <!--{% endif %}-->
-
-    <!--{% endfor %}-->

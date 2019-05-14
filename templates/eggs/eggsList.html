@@ -4,11 +4,9 @@
 {% load widget_tweaks %}
 
 {% block stylesheet %}
-<link rel="stylesheet" type="text/css"
-      href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/datatables.min.css"/>
 <link href="{% static 'css/eggList.css' %}" rel="stylesheet">
-<link href="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css" rel="stylesheet">
-<link href="https://cdn.datatables.net/colreorder/1.5.1/css/colReorder.dataTables.min.css" rel="stylesheet">
+<!--<link href="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css" rel="stylesheet">-->
+<!--<link href="https://cdn.datatables.net/colreorder/1.5.1/css/colReorder.dataTables.min.css" rel="stylesheet">-->
 {% endblock %}
 
 {% block content %}
@@ -386,11 +384,6 @@
 {% endblock %}
 
 {% block js %}
-<!-- shortcut Library hotkeys-js -->
-<script type="text/javascript"
-        src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/datatables.min.js"></script>
-<script src="https://cdn.datatables.net/select/1.2.7/js/dataTables.select.min.js"></script>
-<script src="https://cdn.datatables.net/colreorder/1.5.1/js/dataTables.colReorder.min.js"></script>
 <script src="{% static 'js/baseList.js' %}"></script>
 <script src="{% static 'js/eggsList.js' %}"></script>
 {{ eggForm.media.js }}

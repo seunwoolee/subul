@@ -39,9 +39,8 @@ function fetch_data(start_date='', end_date='')
             'releaseTypeFilter':releaseTypeFilter,
             'productTypeFilter':productTypeFilter,
             'locatoinTypeFilter':locatoinTypeFilter,
-             'gubunFilter': gubunFilter };
+            'gubunFilter': gubunFilter };
     table.DataTable().destroy();
-    console.log(args);
     LOOKUP_TABLE[gubunFilter](args);
 }
 
@@ -79,6 +78,7 @@ function setStepOneDataTable(args)
             {"data": "counts" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "price" , "render": $.fn.dataTable.render.number( ',')},
             {"data": "memo"},
+            {"data": "autoRelease"},
             {"data": null, "render": function(data, type, row, meta){
 
                     if(SUPERUSER || getYearMonth(row.ymd) >= getYearMonth(today))
@@ -149,6 +149,7 @@ function setStepTwoDataTable(args)
         "paging": false,
         "processing": true,
         "serverSide": true,
+        "select": true,
         "ajax": {
             "url": "/api/packing/",
             "type": "GET"
