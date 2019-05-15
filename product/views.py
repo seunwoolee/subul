@@ -103,12 +103,13 @@ class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
                         productExistAdmin.save()
 
                     for packing in AutoPacking.objects.filter(productCode=productCode):
+                        packing_count = int(count) // int(packing.count)
                         Packing.objects.create(
                             ymd=main.ymd,
                             type='생산',
                             code=packing.packingCode.code,
                             codeName=packing.packingCode.codeName,
-                            count=-int(packing.count) * count,
+                            count=-packing_count,
                             packingCode=packing.packingCode,
                             autoRelease='자동출고',
                         )
