@@ -169,13 +169,15 @@ var STORE_TOTAL_AMOUNT = 0.0;
 var STORE_TOTAL_COUNT = 0;
 var BOOL = true;
 $(document).on('click', "#orderDatatable tbody tr", function () {
+    let tr = $(this);
+    tr.prop("disabled", true);
     resetOrderData();
-    var data = orderTable.row($(this)).data();
+    let data = orderTable.row($(this)).data();
     data['storedLocation'] = $('#id_storedLocation').val();
     window.AMOUNT_KG = {"AMOUNT_KG": data["amount_kg"]};
-    var storedLocationName = $('#id_storedLocation option:selected').text();
-    var releaseInfoOne = setReleaseInfoOne(storedLocationName, data);
-    var releaseInfoTwo = setReleaseInfoTwo(data);
+    let storedLocationName = $('#id_storedLocation option:selected').text();
+    let releaseInfoOne = setReleaseInfoOne(storedLocationName, data);
+    let releaseInfoTwo = setReleaseInfoTwo(data);
 
     $.ajax({
         url: '/api/productAdmin/',
@@ -212,6 +214,8 @@ $(document).on('click', "#orderDatatable tbody tr", function () {
         }
     }).fail(function () {
         alert('수정 에러 전산실로 문의바랍니다.');
+    }).always(function () {
+        tr.prop("disabled", false);
     });
 });
 
@@ -224,17 +228,15 @@ function resetOrderData() {
 }
 
 function setReleaseInfoOne(storedLocationName, data) {
-    var releaseInfoOne = `  <span>보관장소 : ${storedLocationName}(${data['storedLocation']}),
+    return `  <span>보관장소 : ${storedLocationName}(${data['storedLocation']}),
                             납품일 : ${data['ymd']},
                             거래처명 : ${data['orderLocationName']}</span>`;
-    return releaseInfoOne;
 }
 
 function setReleaseInfoTwo(data) {
-    var releaseInfoTwo = `  <span>제품명 : ${data['codeName']},
+    return `  <span>제품명 : ${data['codeName']},
                             주문량 : ${data['amount']}KG,
                             주문수량 : ${data['count']}EA </span>`;
-    return releaseInfoTwo;
 }
 
 function changeReleaseInfo(releaseInfoOne, releaseInfoTwo) {
@@ -329,17 +331,17 @@ $('#manualRelease').on('submit', function (e) {
     }
 });
 
-$('#orderRelease').on('submit', function (e) {
-    e.preventDefault();
-    len = $("#orderRelease tbody tr").length;
-    url = '/release/';
-    for (var i = 0; i < len; i++) {
-
+$('#orderReleaseButton').click(function () {
+    let button = $(this);
+    button.prop("disabled", true);
+    let len = $("#orderRelease tbody tr").length;
+    let url = '/release/';
+    for (let i = 0; i < len; i++) {
         let count = $("#orderRelease tbody tr:eq(" + i + ")").find('.count').val();
         let ymd = $("#orderRelease tbody tr:eq(" + i + ")").find('input[name="ymd"]').val();
-        if (ymd.length == 8 && count.length > 0) {
-            var data = $("#orderRelease tbody tr:eq(" + i + ") :input").serialize();
-            var request = $.ajax({
+        if (ymd.length === 8 && count.length > 0) {
+            let data = $("#orderRelease tbody tr:eq(" + i + ") :input").serialize();
+            let request = $.ajax({
                 url: url,
                 type: 'post',
                 data: data,
@@ -348,6 +350,8 @@ $('#orderRelease').on('submit', function (e) {
                 $('#orderDatatable').DataTable().search($("input[type='search']").val()).draw();
             }).fail(function () {
                 alert('수정 에러 전산실로 문의바랍니다.');
+            }).always(function () {
+                button.prop("disabled", false);
             });
         }
     }
@@ -362,7 +366,7 @@ function setDatePicker() {
 }
 
 function setOrderReleaseTrModal(data, row) {
-    var TR = `<tr>
+    return `<tr>
                  <td data-title="제품명">
                     <input type="hidden" name="productId">
                     <input type="hidden" name="productYmd">
@@ -385,7 +389,6 @@ function setOrderReleaseTrModal(data, row) {
                  <td data-title="출하수량(EA)"><input type="number" name="count" class="form-control count"></td>
                  <td data-title="출고일자"><input type="text" name="ymd" class="form-control datepicker"></td>
             </tr>`;
-    return TR;
 }
 
 $("#id_type").change(function () {
