@@ -6,3 +6,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 class MainList(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, 'index.html')
+
+
+class SiteList(View):
+    def get(self, request):
+        return render(request, 'site/index.html')

@@ -4,6 +4,7 @@ from django.db.models import Sum, DecimalField, F, Q, FloatField, Func, Value, I
 from django.db.models.functions import Cast
 from model_utils import Choices
 from core.models import Detail, Location, Code
+from users.models import CustomUser
 
 
 class ABS(Func):
@@ -336,3 +337,18 @@ class Egg(Detail):
         lastEgg = eggs.last()
         lastEgg.amount = amount_last
         lastEgg.save()
+
+
+class EggOrder(models.Model):
+    ymd = models.CharField(max_length=8)
+    code = models.CharField(max_length=255)
+    codeName = models.CharField(max_length=255)
+    orderCount = models.IntegerField()
+    realCount = models.IntegerField()
+    memo = models.TextField(blank=True, null=True)
+    priority = models.PositiveIntegerField()
+    commander = models.ForeignKey(CustomUser, on_delete=models.CASCADE,)
+    eggCode = models.ForeignKey(EggCode, on_delete=models.CASCADE, related_name='+')
+    in_ymd = models.CharField(max_length=8)
+    in_locationCode = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='+')
+    in_locationCodeName = models.CharField(max_length=255)

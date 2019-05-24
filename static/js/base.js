@@ -57,7 +57,7 @@ function getDayOfWeek(date)
 
 function set_yyyymmdd(yyyy_mm_dd)
 {
-    temp = yyyy_mm_dd.split('-');
+    let temp = yyyy_mm_dd.split('-');
     return yyyyymmdd = temp[0]+temp[1]+temp[2];
 }
 

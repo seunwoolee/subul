@@ -344,9 +344,6 @@ class AutoPacking(models.Model):
 
         total = queryset.count()
 
-        # if search_value:
-        #     queryset = queryset.filter(codeName__icontains=search_value)
-
         count = queryset.count()
 
         queryset = queryset.order_by(order_column)[start:start + length]
