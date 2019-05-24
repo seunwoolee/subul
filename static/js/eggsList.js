@@ -679,20 +679,24 @@ $('#delete_item').click( function () {
 
 $('#order').click( function (e) {
     e.preventDefault();
-    const data = items_DataTable.$('input, select').serializeArray();
-    console.log(data);
+    let data = items_DataTable.$('input, select').serializeArray();
     if(data.length > 0)
     {
-        $.ajax({
-        url: '/eggs/release',
-        type: 'post',
-        data: data,
-        }).done(function(data) {
-            alert('완료');
-            $(".everyModal").modal('hide');
-            $('#stepTwo .datatable').DataTable().search($("input[type='search']").val()).draw();
-            items_DataTable.clear().draw();
-        }).fail(function() { alert('수정 에러 전산실로 문의바랍니다.'); });
+        if (confirm("원란지시를 하시겠습니까?"))
+        {
+            data.push({"name" : "order", "value" : true});
+            $.ajax({
+            url: '/eggs/release',
+            type: 'post',
+            data: data,
+            }).done(function(data) {
+                alert('완료');
+                $(".everyModal").modal('hide');
+                $('#stepTwo .datatable').DataTable().search($("input[type='search']").val()).draw();
+                items_DataTable.clear().draw();
+            }).fail(function() { alert('수정 에러 전산실로 문의바랍니다.'); });
+        }
+
     }
 
 });

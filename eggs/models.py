@@ -360,7 +360,7 @@ class EggOrder(models.Model):
     code = models.CharField(max_length=255)
     codeName = models.CharField(max_length=255)
     orderCount = models.IntegerField()
-    realCount = models.IntegerField()
+    realCount = models.IntegerField(blank=True, null=True)
     memo = models.TextField(blank=True, null=True)
     priority = models.PositiveIntegerField()
     eggCode = models.ForeignKey(EggCode, on_delete=models.CASCADE, related_name='+')

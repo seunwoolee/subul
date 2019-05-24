@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Egg, EggCode, EggOrder
+from .models import Egg, EggCode, EggOrder, EggOrderMaster
 
 
 @admin.register(Egg)
@@ -19,3 +19,4 @@ class EggOrderAdmin(admin.ModelAdmin):
 
 
 admin.site.register(EggCode)
+admin.site.register(EggOrderMaster)

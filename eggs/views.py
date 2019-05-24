@@ -7,7 +7,7 @@ from core.models import Location
 from eventlog.models import LogginMixin
 from order.models import ABS
 from .forms import EggForm
-from .models import Egg, EggCode
+from .models import Egg, EggCode, EggOrderMaster, EggOrder
 from .forms import EggFormSet
 from django.contrib.auth.mixins import LoginRequiredMixin
 from core.utils import render_to_pdf
@@ -71,20 +71,30 @@ class EggRelease(LogginMixin, View):
         self.pks: list = []
 
     def post(self, request):
-        self.amount: int = request.POST.get('amount', None)
+        self.amount = request.POST.get('amount', None)
+        self.order = request.POST.get('order', None)
         self.data: dict = dict(request.POST.copy())
-        self.log(
-            user=request.user,
-            action="원란출고",
-            obj=Egg.objects.first(),
-            extra=self.data
-        )
+        self.user = request.user
 
-        self.save_egg()
-
-        if self.pks:
-            pks = ','.join(self.pks)
-            Egg.calculateAmount(int(self.amount), pks)
+        if self.order:
+            self.log(
+                user=request.user,
+                action="원란지시",
+                obj=Egg.objects.first(),
+                extra=self.data
+            )
+            self.order_egg()
+        else:
+            self.log(
+                user=request.user,
+                action="원란출고",
+                obj=Egg.objects.first(),
+                extra=self.data
+            )
+            self.save_egg()
+            if self.pks:
+                pks = ','.join(self.pks)
+                Egg.calculateAmount(int(self.amount), pks)
 
         return HttpResponse(status=200)
 
@@ -128,6 +138,34 @@ class EggRelease(LogginMixin, View):
                 if egg.type == '생산':
                     self.pks.append(str(egg.id))
 
+    def order_egg(self):
+        ymd = self.data['ymd'][0]
+        commander = self.user
+        egg_order_master = EggOrderMaster(ymd=ymd, commander=commander)
+        egg_order_master.save()
+
+        for i in range(len(self.data['in_ymd'])):
+            in_ymd: str = self.data['in_ymd'][i]
+            ymd: str = self.data['ymd'][i]
+            productCode: str = self.data['productCode'][i]
+            in_location: str = self.data['in_location'][i]
+            count: int = int(self.data['count'][i])
+            memo: str = self.data['memo'][i]
+
+            product = EggCode.objects.get(code=productCode)
+            in_location: Location = Location.objects.get(code=in_location)
+            EggOrder(orderMaster=egg_order_master,
+                     ymd=ymd,
+                     code=productCode,
+                     codeName=product.codeName,
+                     orderCount=count,
+                     memo=memo,
+                     priority=i,
+                     eggCode=product,
+                     in_ymd=in_ymd,
+                     in_locationCode=in_location,
+                     in_locationCodeName=in_location.codeName).save()
+
 
 class EggCalculateAmount(LogginMixin, View):
     def post(self, request):
@@ -155,9 +193,10 @@ class EggPricePerEa(LogginMixin, View):
         )
         eggs = Egg.objects.filter(ymd__gte=data['start_date']).filter(ymd__lte=data['end_date']).filter(type='생산')
         for egg in eggs:
-            in_price = Egg.objects.values('price', 'count').filter(in_ymd=egg.in_ymd).filter(type='입고')\
+            in_price = Egg.objects.values('price', 'count').filter(in_ymd=egg.in_ymd).filter(type='입고') \
                 .filter(code=egg.code).filter(in_locationCode=egg.in_locationCode).first()
-            egg.price = round(in_price['price'] / in_price['count']) * abs(egg.count)  # 구매단가=in_price['price']/abs(egg.count)
+            egg.price = round(in_price['price'] / in_price['count']) * abs(
+                egg.count)  # 구매단가=in_price['price']/abs(egg.count)
             egg.save()
         return HttpResponse(status=200)
 
@@ -382,5 +421,3 @@ class EggReport(View):
         else:
             result['currentStock'] = ''
         self.arr.append(result)
-
-
