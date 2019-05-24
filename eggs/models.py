@@ -339,7 +339,23 @@ class Egg(Detail):
         lastEgg.save()
 
 
+class EggOrderMaster(models.Model):
+    FINISH_CHOICES = (
+        ('Y', 'finished'),
+        ('N', 'notfinished'),
+    )
+
+    ymd = models.CharField(max_length=8)
+    commander = models.ForeignKey(CustomUser, on_delete=models.CASCADE,)
+    finish = models.CharField(
+        max_length=2,
+        choices=FINISH_CHOICES,
+        default='N',
+    )
+
+
 class EggOrder(models.Model):
+    orderMaster = models.ForeignKey(EggOrderMaster, on_delete=models.CASCADE)
     ymd = models.CharField(max_length=8)
     code = models.CharField(max_length=255)
     codeName = models.CharField(max_length=255)
@@ -347,7 +363,6 @@ class EggOrder(models.Model):
     realCount = models.IntegerField()
     memo = models.TextField(blank=True, null=True)
     priority = models.PositiveIntegerField()
-    commander = models.ForeignKey(CustomUser, on_delete=models.CASCADE,)
     eggCode = models.ForeignKey(EggCode, on_delete=models.CASCADE, related_name='+')
     in_ymd = models.CharField(max_length=8)
     in_locationCode = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='+')

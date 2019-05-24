@@ -492,13 +492,8 @@ $('#manualRelease').on('submit', function (e)
 {
     e.preventDefault();
     $this = $(this);
-    let type = $this.find('#id_type').val();
     let fakeYmd = set_yyyymmdd($this.find('#id_fakeYmd').val());
     $this.find('#id_ymd').val(fakeYmd);
-    let location = $this.find('#id_locationSale').val();
-    let count = parseInt($this.find('#id_count').val());
-    let price = parseInt($this.find('#id_price').val());
-    let memo = parseInt($this.find('#id_memo').val());
     let data = $this.serialize();
 
     $.ajax({
@@ -681,6 +676,27 @@ $('#save').click( function (e) {
 $('#delete_item').click( function () {
     items_DataTable.row('.selected').remove().draw( false );
 } );
+
+$('#order').click( function (e) {
+    e.preventDefault();
+    const data = items_DataTable.$('input, select').serializeArray();
+    console.log(data);
+    if(data.length > 0)
+    {
+        $.ajax({
+        url: '/eggs/release',
+        type: 'post',
+        data: data,
+        }).done(function(data) {
+            alert('완료');
+            $(".everyModal").modal('hide');
+            $('#stepTwo .datatable').DataTable().search($("input[type='search']").val()).draw();
+            items_DataTable.clear().draw();
+        }).fail(function() { alert('수정 에러 전산실로 문의바랍니다.'); });
+    }
+
+});
+
 
 var items_DataTable = $('#items').DataTable( {
     "paging": false,

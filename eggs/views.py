@@ -1,10 +1,10 @@
-from django.db.models import Sum, Func, F, Value, IntegerField, CharField
-from django.http import HttpResponse, QueryDict
+from django.db.models import Sum, Func, Value, CharField
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
 
 from core.models import Location
-from eventlog.models import log
+from eventlog.models import LogginMixin
 from order.models import ABS
 from .forms import EggForm
 from .models import Egg, EggCode
@@ -18,24 +18,21 @@ class Round(Func):
 
 
 class EggList(LoginRequiredMixin, View):
-
     def get(self, request):
         eggForm = EggForm()
         return render(request, 'eggs/eggsList.html', {'eggForm': eggForm})
 
 
-class EggReg(LoginRequiredMixin, View):
+class EggReg(LogginMixin, LoginRequiredMixin, View):
 
     def post(self, request):
         formset = EggFormSet(request.POST)
-        log_data = request.POST
-        log(
+        self.log(
             user=request.user,
             action="원란등록",
             obj=Egg.objects.first(),
-            extra=log_data
+            extra=request.POST
         )
-
         if formset.is_valid():
             for form in formset:
                 in_ymd = form.cleaned_data.get('in_ymd')
@@ -68,33 +65,44 @@ class EggReg(LoginRequiredMixin, View):
         return render(request, 'eggs/eggsReg.html', {'eggForm': eggForm})
 
 
-class EggRelease(View):
+class EggRelease(LogginMixin, View):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.pks: list = []
+
     def post(self, request):
-        amount = request.POST.get('amount', None)
-        data = dict(request.POST.copy())
-        log_data = data
-        log(
+        self.amount: int = request.POST.get('amount', None)
+        self.data: dict = dict(request.POST.copy())
+        self.log(
             user=request.user,
             action="원란출고",
             obj=Egg.objects.first(),
-            extra=log_data
+            extra=self.data
         )
 
-        pks = []
-        for i in range(len(data['in_ymd'])):
-            in_ymd = data['in_ymd'][i]
-            ymd = data['ymd'][i]
-            productCode = data['productCode'][i]
-            in_location = data['in_location'][i]
-            type = data['type'][i]
-            count = data['count'][i]
-            location = data['locationSale'][i]
-            price = data['price'][i]
-            memo = data['memo'][i]
+        self.save_egg()
+
+        if self.pks:
+            pks = ','.join(self.pks)
+            Egg.calculateAmount(int(self.amount), pks)
+
+        return HttpResponse(status=200)
+
+    def save_egg(self):
+        for i in range(len(self.data['in_ymd'])):
+            in_ymd: str = self.data['in_ymd'][i]
+            ymd: str = self.data['ymd'][i]
+            productCode: str = self.data['productCode'][i]
+            in_location: str = self.data['in_location'][i]
+            type: str = self.data['type'][i]
+            count: int = int(self.data['count'][i])
+            location: str = self.data['locationSale'][i]
+            price: int = self.data['price'][i]
+            memo: str = self.data['memo'][i]
 
             product = EggCode.objects.get(code=productCode)
-            in_location = Location.objects.get(code=in_location)
-            egg = Egg.objects.create(
+            in_location: Location = Location.objects.get(code=in_location)
+            egg: Egg = Egg.objects.create(
                 in_ymd=in_ymd,
                 code=productCode,
                 codeName=product.codeName,
@@ -102,13 +110,13 @@ class EggRelease(View):
                 in_locationCodeName=in_location.codeName,
                 type=type,
                 ymd=ymd,
-                count=-int(count),
+                count=-count,
                 eggCode=product,
                 memo=memo,
             )
 
             if location:
-                location = Location.objects.get(code=location)
+                location: Location = Location.objects.get(code=location)
                 egg.locationCode = location
                 egg.locationCodeName = location.codeName
 
@@ -116,26 +124,19 @@ class EggRelease(View):
                 egg.price = price
 
             egg.save()
-            if amount:
+            if self.amount:
                 if egg.type == '생산':
-                    pks.append(str(egg.id))
-
-        if pks:
-            pks = ','.join(pks)
-            Egg.calculateAmount(int(amount), pks)
-
-        return HttpResponse(status=200)
+                    self.pks.append(str(egg.id))
 
 
-class EggCalculateAmount(View):
+class EggCalculateAmount(LogginMixin, View):
     def post(self, request):
         data = request.POST.dict()
-        log_data = data
-        log(
+        self.log(
             user=request.user,
             action="원란중량계산",
             obj=Egg.objects.first(),
-            extra=log_data
+            extra=data
         )
         amount = int(data['amount'])
         pks = data['pks']
@@ -143,15 +144,14 @@ class EggCalculateAmount(View):
         return HttpResponse(status=200)
 
 
-class EggPricePerEa(View):
+class EggPricePerEa(LogginMixin, View):
     def post(self, request):
         data = request.POST.dict()
-        log_data = data
-        log(
+        self.log(
             user=request.user,
             action="원란생산단가작업",
             obj=Egg.objects.first(),
-            extra=log_data
+            extra=data
         )
         eggs = Egg.objects.filter(ymd__gte=data['start_date']).filter(ymd__lte=data['end_date']).filter(type='생산')
         for egg in eggs:
@@ -382,3 +382,5 @@ class EggReport(View):
         else:
             result['currentStock'] = ''
         self.arr.append(result)
+
+

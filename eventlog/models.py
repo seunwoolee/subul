@@ -58,34 +58,35 @@ class Log(models.Model):
         ordering = ["-timestamp"]
 
 
-def log(user, action, extra=None, obj=None, dateof=None):
-    if user is not None and not user.is_authenticated:
-        user = None
+class LogginMixin(object):
+    def log(self, user, action, extra=None, obj=None, dateof=None):
+        if user is not None and not user.is_authenticated:
+            user = None
 
-    if extra is None:
-        extra = {}
-    else: # Decimal insert시 에러발생
-        for key, value in extra.items():
-            if isinstance(value, decimal.Decimal):
-                extra[key] = float(value)
+        if extra is None:
+            extra = {}
+        else:  # Decimal insert시 에러발생
+            for key, value in extra.items():
+                if isinstance(value, decimal.Decimal):
+                    extra[key] = float(value)
 
-    content_type = None
-    object_id = None
+        content_type = None
+        object_id = None
 
-    if obj is not None:
-        content_type = ContentType.objects.get_for_model(obj)
-        object_id = obj.pk
+        if obj is not None:
+            content_type = ContentType.objects.get_for_model(obj)
+            object_id = obj.pk
 
-    if dateof is None:
-        dateof = timezone.now()
+        if dateof is None:
+            dateof = timezone.now()
 
-    event = Log.objects.create(
-        user=user,
-        action=action,
-        extra=extra,
-        content_type=content_type,
-        object_id=object_id,
-        timestamp=dateof
-    )
-    event_logged.send(sender=Log, event=event)
-    return event
+        event = Log.objects.create(
+            user=user,
+            action=action,
+            extra=extra,
+            content_type=content_type,
+            object_id=object_id,
+            timestamp=dateof
+        )
+        event_logged.send(sender=Log, event=event)
+        return event

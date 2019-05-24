@@ -6,14 +6,13 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
 from core.models import Location
-from eventlog.models import log
+from eventlog.models import LogginMixin
 from order.models import Order
 from release.forms import ReleaseForm, ReleaseLocationForm
 from .models import Release
 from product.models import ProductCode, SetProductCode, Product, ProductAdmin
 
 from .utils import render_to_pdf
-import datetime
 
 
 class GeneratePDF(View):
@@ -64,16 +63,15 @@ class ReleaseList(LoginRequiredMixin, View):
         return render(request, 'release/releaseList.html', {'form': form})
 
 
-class ReleaseReg(LoginRequiredMixin, View):
+class ReleaseReg(LogginMixin, LoginRequiredMixin, View):
 
     def post(self, request):
         data = request.POST.dict()
-        log_data = data
-        log(
+        self.log(
             user=request.user,
             action="출고등록",
             obj=Release.objects.first(),
-            extra=log_data
+            extra=data
         )
         productCode = ProductCode.objects.get(code=data['productCode'])
         releaseLocation = Location.objects.get(code=data['location'])
@@ -147,15 +145,14 @@ class ReleaseReg(LoginRequiredMixin, View):
                                                            'releaseLocationForm': releaseLocationForm})
 
 
-class ReleaseAdjustment(View): # 재고조정, 미출고품, 반품
+class ReleaseAdjustment(LogginMixin, View): # 재고조정, 미출고품, 반품
     def post(self, request):
         data = request.POST.dict()
-        log_data = data
-        log(
+        self.log(
             user=request.user,
             action="출고리콜",
             obj=Release.objects.first(),
-            extra=log_data
+            extra=data
         )
         productCode = ProductCode.objects.get(code=data['productCode'])
 

@@ -7,6 +7,7 @@ from .models import Egg, EggCode
 
 
 class EggForm(forms.Form):
+
     EGG_TYPE_CHOICES = (
         ('생산', '생산'),
         ('폐기', '폐기'),

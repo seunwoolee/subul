@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.views.generic.base import View
 from core.models import Location
 from eggs.models import Egg
-from eventlog.models import log
+from eventlog.models import LogginMixin
 from order.models import ABS
 from packing.forms import AutoPackingForm
 from packing.models import AutoPacking, Packing
@@ -18,7 +18,7 @@ from .forms import StepOneForm, StepTwoForm, StepThreeForm, StepFourForm, StepFo
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
-class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
+class ProductRegister(LogginMixin, LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = 'product.add_product'
 
     def post(self, request):
@@ -30,12 +30,11 @@ class ProductRegister(LoginRequiredMixin, PermissionRequiredMixin, View):
 
         if form0.is_valid():
             main = form0.save()
-            log_data = model_to_dict(main)
-            log(
+            self.log(
                 user=request.user,
                 action="제품생산",
                 obj=main,
-                extra=log_data
+                extra=model_to_dict(main)
             )
 
         if form1.is_valid():
@@ -147,7 +146,7 @@ class ProductList(LoginRequiredMixin, PermissionRequiredMixin, View):
         return render(request, 'product/productList.html')
 
 
-class ProductRecall(View):
+class ProductRecall(LogginMixin, View):
 
     def post(self, request, pk):
 
@@ -167,12 +166,11 @@ class ProductRecall(View):
         totalCount = ProductAdmin.objects.filter(product_id=product).values('product_id__code') \
             .annotate(totalCount=Sum(F('count')))
 
-        log_data = model_to_dict(product)
-        log(
+        self.log(
             user=request.user,
             action="미출고품발생",
             obj=product,
-            extra=log_data
+            extra=model_to_dict(product)
         )
 
         if count <= int(totalCount[0]['totalCount']):

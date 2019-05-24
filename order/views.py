@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from core.models import Location
 from eggs.models import Egg
-from eventlog.models import log
+from eventlog.models import LogginMixin
 from order.forms import OrderFormSet, OrderForm
 from order.models import Order, ABS
 from product.models import ProductCode, SetProductCode
@@ -82,16 +82,15 @@ class OrderList(LoginRequiredMixin, View):
         return render(request, 'order/orderList.html', {'form': form})
 
 
-class OrderReg(LoginRequiredMixin, View):
+class OrderReg(LogginMixin, LoginRequiredMixin, View):
 
     def post(self, request):
         formset = OrderFormSet(request.POST)
-        log_data = request.POST
-        log(
+        self.log(
             user=request.user,
             action="주문등록",
             obj=Order.objects.first(),
-            extra=log_data
+            extra=request.POST
         )
 
         if formset.is_valid():
