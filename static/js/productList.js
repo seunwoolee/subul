@@ -210,26 +210,21 @@ function setTypeButton(data)
     switch(data)
     {
         case '할란':
-            return '<button class="btn btn-danger btn-sm">'+ data +'</button>'
-            break;
+            return '<button class="btn btn-danger btn-sm">'+ data +'</button>';
         case '할란사용':
-            return '<button class="btn btn-warning btn-sm">'+ data +'</button>'
-            break;
+            return '<button class="btn btn-warning btn-sm">'+ data +'</button>';
         case '공정품투입':
-            return '<button class="btn btn-success btn-sm">'+ data +'</button>'
-            break;
+            return '<button class="btn btn-success btn-sm">'+ data +'</button>';
         case '공정품발생':
-            return '<button class="btn btn-primary btn-sm ">'+ data +'</button>'
-            break;
+            return '<button class="btn btn-primary btn-sm ">'+ data +'</button>';
+        case '공정품폐기':
+            return '<button class="btn btn-secondary btn-sm">'+ data +'</button>';
         case '제품생산':
-            return '<button class="btn btn-dark btn-sm">'+ data +'</button>'
-            break;
+            return '<button class="btn btn-dark btn-sm">'+ data +'</button>';
         case '미출고품사용':
-            return '<button class="btn btn-secondary btn-sm">'+ data +'</button>'
-            break;
+            return '<button class="btn btn-secondary btn-sm">'+ data +'</button>';
         case '미출고품투입':
-            return '<button class="btn btn-info btn-sm">'+ data +'</button>'
-            break;
+            return '<button class="btn btn-info btn-sm">'+ data +'</button>';
     }
 }
 
