@@ -228,8 +228,6 @@ $(document).on('click', '#deleteLastButton', function (e) {
         deleteForm('form', lastButton);
 
         if ($('.add-form-row').length === 0) {
-            debugger;
-
             let lastTR = $('.forms-row:last');
             lastTR.find('.count, .amount, .price, .product').each(function () {
                 $(this).attr('disabled', false);
@@ -283,7 +281,6 @@ $(".location").change(function () {
             type: 'get',
             data: data,
         }).done(function (data) {
-            console.log(data);
             window.PRODUCTINFO = [];
             product.empty();
             data.forEach(function (element, i) {
