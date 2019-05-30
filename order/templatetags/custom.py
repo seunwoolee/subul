@@ -110,3 +110,8 @@ def lookup_amount(d, key):
 def update_type(key , value):
     key = value
     return key
+
+
+@register.filter
+def to_yyyy_mm_dd(yyyymmdd):
+    return f'{yyyymmdd[0:4]}-{yyyymmdd[4:6]}-{yyyymmdd[6:8]}'

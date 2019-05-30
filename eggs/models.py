@@ -353,6 +353,9 @@ class EggOrderMaster(models.Model):
         default='N',
     )
 
+    def __str__(self):
+        return f'날짜: {self.ymd}, 지시자: {self.commander}, 완료: {self.finish} '
+
 
 class EggOrder(models.Model):
     orderMaster = models.ForeignKey(EggOrderMaster, on_delete=models.CASCADE)
@@ -360,10 +363,13 @@ class EggOrder(models.Model):
     code = models.CharField(max_length=255)
     codeName = models.CharField(max_length=255)
     orderCount = models.IntegerField()
-    realCount = models.IntegerField(blank=True, null=True)
+    realCount = models.IntegerField(blank=True, null=True, verbose_name='실제출하량')
     memo = models.TextField(blank=True, null=True)
     priority = models.PositiveIntegerField()
     eggCode = models.ForeignKey(EggCode, on_delete=models.CASCADE, related_name='+')
     in_ymd = models.CharField(max_length=8)
     in_locationCode = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='+')
     in_locationCodeName = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f'날짜: {self.orderMaster.__str__()} 제품: {self.codeName}, 주문량: {self.orderCount}, 실제량: {self.realCount} '

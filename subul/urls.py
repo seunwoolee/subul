@@ -13,6 +13,6 @@ urlpatterns = [
     path('eggs/', include('eggs.urls')),
     path('packing/', include('packing.urls')),
     path('core/', include('core.urls')),
-    path('site/', views.SiteList.as_view(), name='siteList'),
+    path('labor/', include('labor.urls')),
     path('', views.MainList.as_view(), name='index'),
 ]

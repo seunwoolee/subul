@@ -1,0 +1,17 @@
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
+{#<form method="post" action="{% url 'book_update' form.instance.pk %}" class="js-book-update-form">#}
+<form method="post" action="{% url 'labor_egg_post' form.instance.pk %}" class="js-update-form">
+    {% csrf_token %}
+    <div class="modal-header">
+        <h4 class="modal-title">{{ form.instance.in_locationCodeName }}[{{ form.instance.codeName }}]
+            지시량: {{ form.instance.orderCount }}</h4>
+    </div>
+    <div class="modal-body">
+        {{ form.realCount|as_crispy_field }}
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>

@@ -1,0 +1,53 @@
+{% load custom %}
+
+<div class="row header">
+    <div class="cell">
+        거래처명
+    </div>
+    <div class="cell">
+        원란
+    </div>
+    <div class="cell">
+        입고일
+    </div>
+    <div class="cell">
+        출하량
+    </div>
+    <div class="cell">
+        메모
+    </div>
+</div>
+
+
+{% for egg in eggs %}
+    <div class="row" data-id={{ egg.id }}>
+        <div class="cell" data-title="입고처" >
+            {{ egg.in_locationCodeName }}
+        </div>
+        <div class="cell" data-title="원란명">
+            {{ egg.codeName }}
+        </div>
+        <div class="cell" data-title="입고일">
+            {{ egg.in_ymd|to_yyyy_mm_dd }}
+        </div>
+        <div class="cell" data-title="출하량">
+            {{ egg.orderCount }}
+        </div>
+        <div class="cell" data-title="메모">
+            {{ egg.memo }}
+        </div>
+    </div>
+{% empty %}
+    <div class="row" data-id={{ egg.id }}>
+        <div class="cell" data-title="입고처" >
+        </div>
+        <div class="cell" data-title="원란명">
+        </div>
+        <div class="cell" data-title="입고일">
+        </div>
+        <div class="cell" data-title="출하량">
+        </div>
+        <div class="cell" data-title="메모">
+        </div>
+    </div>
+{% endfor %}

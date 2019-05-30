@@ -74,6 +74,7 @@ class EggRelease(LogginMixin, View):
         self.amount = request.POST.get('amount', None)
         self.order = request.POST.get('order', None)
         self.data: dict = dict(request.POST.copy())
+        print(self.data)
         self.user = request.user
 
         if self.order:
