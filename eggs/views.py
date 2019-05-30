@@ -60,7 +60,12 @@ class EggReg(LoginRequiredMixin, View):
                     eggCode=eggCode,
                 )
         else:
-            print(formset.errors)
+            log(
+                user=request.user,
+                action="원란등록에러",
+                obj=Egg.objects.first(),
+                extra=formset.errors[0]
+            )
         return redirect('eggsList')
 
     def get(self, request):

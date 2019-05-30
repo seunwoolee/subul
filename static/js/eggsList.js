@@ -626,7 +626,7 @@ $('#addItem').click( function (e) {
             `<input type="hidden" name="count" value=${count.val()}>`+
             `<input type="hidden" name="locationSale" value=${locationSaleCode}>`+
             `<input type="hidden" name="price" value=${price.val()}>`+
-            `<input type="hidden" name="memo" value=${memo.val()}>`+
+            `<input type="hidden" name="memo" value="${memo.val()}">`+
             IN_YMD,
             type.val(),
             IN_LOCATIONCODENAME,
@@ -649,6 +649,10 @@ $('#addItem').click( function (e) {
 $('#save').click( function (e) {
     e.preventDefault();
     let data = items_DataTable.$('input, select').serializeArray();
+
+    console.log(data);
+    debugger;
+
     if(data.length > 0)
     {
         if (confirm("생산 중량(KG)을 입력하시겠습니까?"))

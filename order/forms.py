@@ -50,7 +50,7 @@ class OrderForm(forms.Form):
         super(OrderForm, self).__init__(*args, **kwargs)
         self.fields['location'] = forms.ChoiceField(widget=Select2Widget,
                                                     choices=Location.objects.values_list('code', 'codeName')
-                                                    .filter(type='05').filter(delete_state='N').order_by('code'),
+                                                    .filter(type='05').filter(delete_state='N').order_by('codeName'),
                                                     required=False)
         self.fields['location_manager'] = forms.ChoiceField(widget=Select2Widget,
                                                     choices=CustomUser.objects.values_list('username', 'first_name')

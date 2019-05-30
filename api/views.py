@@ -231,6 +231,23 @@ class OrderProductUnitPrice(APIView):
         return Response(serializer.data)
 
 
+class OrderLocation(APIView):
+    """
+    주문등록 Delete 버튼 클릭 시 삭제된 location들 다시 append하기 위해
+    장소명, 장소코드를 보내줌
+    """
+
+    def get(self, request, format=None):
+        code = request.GET.get('code')
+        if code:
+            location = Location.objects.values('code', 'codeName').filter(type='05')\
+                .filter(delete_state='N').exclude(code=code).order_by('code')
+        else:
+            location = Location.objects.values('code', 'codeName').filter(type='05')\
+                .filter(delete_state='N').order_by('code')
+        return Response(location)
+
+
 class OrderSetProductCode(APIView):
     """
     패키지 상품일때 거래처 선택에 따라 제품명에 패키지 상품 추가(option)

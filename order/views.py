@@ -134,7 +134,12 @@ class OrderReg(LoginRequiredMixin, View):
                     order.save()
 
         else:
-            print(formset.errors)
+            log(
+                user=request.user,
+                action="주문등록에러",
+                obj=Order.objects.first(),
+                extra=formset.errors[0]
+            )
         return redirect('orderReg')
 
     def get(self, request):
