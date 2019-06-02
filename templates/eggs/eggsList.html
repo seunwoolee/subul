@@ -108,12 +108,13 @@
                         <a class="nav-link active" data-toggle="tab" href="#stepOne" role="tab" aria-controls="stepOne">원란조회</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#stepTwo" role="tab"
-                           aria-controls="stepTwo">원란출고</a>
+                        <a class="nav-link" data-toggle="tab" href="#stepTwo" role="tab" aria-controls="stepTwo">원란작업</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#stepThree" role="tab"
-                           aria-controls="stepThree">원란수불일보</a>
+                        <a class="nav-link" data-toggle="tab" href="#stepThree" role="tab" aria-controls="stepThree">원란수불일보</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#stepFour" role="tab" aria-controls="stepFour">원란지시조회</a>
                     </li>
                 </ul>
 
@@ -269,6 +270,45 @@
                         </div><!-- / .col-->
                     </div><!-- / .row-->
 
+                    <div class="row tab-pane animated fadeIn" id="stepFour" role="tabpanel">
+                        <div class="col-md-12">
+                            <table class="table table-striped table-bordered datatable" id="eggOrderDatatable">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>구분</th>
+                                    <th>입고일</th>
+                                    <th>원란종류</th>
+                                    <th style="white-space: nowrap;">구매거래처</th>
+                                    <th>지시일</th>
+                                    <th>지시량</th>
+                                    <th>실출하량</th>
+                                    <th>메모</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+
+                                <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th style="white-space: nowrap;"></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                                </tfoot>
+
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div><!-- / .tab-content-->
             </div><!-- / .row-->
         </div>
@@ -332,6 +372,47 @@
         </div>
     </div>
 </div>
+
+<!-- EggOrder EDIT Modal -->
+<div class="modal fade everyModal" id="eggOrderModifyModal" role="dialog">
+    <div class="modal-dialog modal-primary">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title codeName"></h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" class="eggOrderForm">
+                    {% include 'includes/modal/eggsOrderModifyForm.html' %}
+                    <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="patch"/>
+                    <button type="submit" class="btn btn-primary">OK</button>
+                    <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Egg Delete Modal -->
+<div class="modal fade everyModal" role="dialog" id="eggOrderRemoveModal">
+    <div class="modal-dialog  modal-danger">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">데이터를 삭제 하시겠습니까?</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" class="eggOrderForm">
+                    <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="delete"/>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!--Egg Delete Modal -->
 <div class="modal fade everyModal" role="dialog" id="confirm">

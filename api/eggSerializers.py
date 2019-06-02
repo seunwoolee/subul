@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from eggs.models import Egg
+from eggs.models import Egg, EggOrder
 
 
 class EggSerializer(serializers.ModelSerializer):
@@ -15,4 +15,12 @@ class EggSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Egg
+        fields = '__all__'
+
+
+class EggOrderSerializer(serializers.ModelSerializer):
+    type = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = EggOrder
         fields = '__all__'

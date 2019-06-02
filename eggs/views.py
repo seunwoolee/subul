@@ -5,9 +5,10 @@ from django.views import View
 
 from core.models import Location
 from eventlog.models import LogginMixin
+from labor.forms import EggOrderModifyForm
 from order.models import ABS
 from .forms import EggForm
-from .models import Egg, EggCode, EggOrderMaster, EggOrder
+from .models import Egg, EggCode, EggOrder
 from .forms import EggFormSet
 from django.contrib.auth.mixins import LoginRequiredMixin
 from core.utils import render_to_pdf
@@ -20,7 +21,8 @@ class Round(Func):
 class EggList(LoginRequiredMixin, View):
     def get(self, request):
         eggForm = EggForm()
-        return render(request, 'eggs/eggsList.html', {'eggForm': eggForm})
+        eggModifyForm = EggOrderModifyForm()
+        return render(request, 'eggs/eggsList.html', {'eggForm': eggForm, 'eggModifyForm': eggModifyForm})
 
 
 class EggReg(LogginMixin, LoginRequiredMixin, View):
@@ -140,11 +142,6 @@ class EggRelease(LogginMixin, View):
                     self.pks.append(str(egg.id))
 
     def order_egg(self):
-        ymd = self.data['ymd'][0]
-        commander = self.user
-        egg_order_master = EggOrderMaster(ymd=ymd, commander=commander)
-        egg_order_master.save()
-
         for i in range(len(self.data['in_ymd'])):
             in_ymd: str = self.data['in_ymd'][i]
             ymd: str = self.data['ymd'][i]
@@ -155,13 +152,11 @@ class EggRelease(LogginMixin, View):
 
             product = EggCode.objects.get(code=productCode)
             in_location: Location = Location.objects.get(code=in_location)
-            EggOrder(orderMaster=egg_order_master,
-                     ymd=ymd,
+            EggOrder(ymd=ymd,
                      code=productCode,
                      codeName=product.codeName,
                      orderCount=count,
                      memo=memo,
-                     priority=i,
                      eggCode=product,
                      in_ymd=in_ymd,
                      in_locationCode=in_location,
@@ -228,7 +223,6 @@ class GeneratePDF(View):
             "sumData": sumData,
             "location": location,
         }
-        # html = template.render(context_dict)
         pdf = render_to_pdf('invoice/원란거래명세표.html', context_dict)
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')

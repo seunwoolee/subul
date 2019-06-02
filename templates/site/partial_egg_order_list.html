@@ -1,3 +1,4 @@
+{% load humanize %}
 {% load custom %}
 
 <div class="row header">
@@ -31,7 +32,7 @@
             {{ egg.in_ymd|to_yyyy_mm_dd }}
         </div>
         <div class="cell" data-title="출하량">
-            {{ egg.orderCount }}
+            {{ egg.orderCount|intcomma }}
         </div>
         <div class="cell" data-title="메모">
             {{ egg.memo }}

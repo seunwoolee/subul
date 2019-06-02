@@ -15,7 +15,7 @@ class SiteList(View):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.data = {}
-        self.eggs = EggOrder.objects.filter(orderMaster__finish='N').filter(realCount=None)
+        self.eggs = EggOrder.objects.filter(realCount=None)
         self.form: EggOrderForm
         self.request_type = 'get'
 
@@ -33,7 +33,8 @@ class SiteList(View):
 
     def post(self, request, pk):
         eggOrder = get_object_or_404(EggOrder, pk=pk)
-        EggOrderForm(request.POST, instance=eggOrder).save()
+        egg_order: EggOrder = EggOrderForm(request.POST, instance=eggOrder).save()
+        print(egg_order)
         self.get_egg_list()
         return JsonResponse(self.data)
 
@@ -41,6 +42,6 @@ class SiteList(View):
         self.data['list'] = render_to_string('site/partial_egg_order_list.html', {'eggs': self.eggs})
 
     def get_form(self, pk):
-            eggOrder = get_object_or_404(EggOrder, pk=pk)
-            self.form = EggOrderForm(instance=eggOrder)
-            self.data['form'] = render_to_string('site/partial_egg_order_update.html', {'form': self.form})
+        eggOrder = get_object_or_404(EggOrder, pk=pk)
+        self.form = EggOrderForm(instance=eggOrder)
+        self.data['form'] = render_to_string('site/partial_egg_order_update.html', {'form': self.form})

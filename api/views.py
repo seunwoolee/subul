@@ -4,23 +4,23 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.autoPackingSerializers import AutoPackingSerializer
-from api.eggSerializers import EggSerializer
+from api.eggSerializers import EggSerializer, EggOrderSerializer
 from api.locationSerializers import LocationSerializer
 from api.orderSerializers import OrderSerializer
 from api.packingSerializers import PackingSerializer
 from api.productOEMSerializers import ProductOEMSerializer
 from api.productUnitPriceSerializers import ProductUnitPriceListSerializer, SetProductMatchListSerializer
-from api.releaseSerializers import ProductAdminSerializer, ReleaseSerializer
+from api.releaseSerializers import ReleaseSerializer
 from core.models import Location
-from eggs.models import Egg
+from eggs.models import Egg, EggOrder
 from eventlog.models import LogginMixin
 from order.models import Order
 from packing.models import Packing, AutoPacking
-from product.models import ProductMaster, Product, ProductEgg, ProductUnitPrice, \
+from product.models import Product, ProductEgg, ProductUnitPrice, \
     SetProductMatch, SetProductCode, ProductCode, ProductAdmin
 from release.models import Release
 from .serializers import ProductSerializer, ProductEggSerializer, ProductUnitPriceSerializer, SetProductCodeSerializer, \
-    ProductCodeSerializer, SetProductMatchSerializer, ProductMasterSerializer
+    ProductCodeSerializer, SetProductMatchSerializer
 
 
 class ProductsAPIView(APIView):
@@ -681,3 +681,27 @@ class AutoPackingUpdate(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = AutoPacking.objects.all()
     serializer_class = AutoPackingSerializer
+
+
+class EggOrderListAPIView(APIView):
+
+    def get(self, request):
+        try:
+            result = dict()
+            eggOrder = EggOrder.eggOrderListQuery(request.query_params)
+            serializer = EggOrderSerializer(eggOrder['items'], many=True)
+            result['data'] = serializer.data
+            result['draw'] = eggOrder['draw']
+            result['recordsTotal'] = eggOrder['total']
+            result['recordsFiltered'] = eggOrder['count']
+            return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+        except Exception as e:
+            return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+
+
+class EggOrderUpdate(generics.RetrieveUpdateDestroyAPIView):
+    """
+    원란지시조회에서 Update, Delete를 칠때
+    """
+    queryset = EggOrder.objects.all()
+    serializer_class = EggOrderSerializer
