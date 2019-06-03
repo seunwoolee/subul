@@ -37,6 +37,7 @@ class ReleaseForm(forms.Form):
     price = forms.IntegerField(min_value=0)
     releaseVat = forms.IntegerField(min_value=0)
     orderMemo = forms.CharField( label='', widget=forms.Textarea(attrs={'rows': 2}), required=False)
+    memo = forms.CharField( label='', widget=forms.Textarea(attrs={'rows': 2}), required=False)
     fakeYmd = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}))
     location_filter = forms.ChoiceField(widget=Select2Widget, choices=Location.objects.none)
     location_manager = forms.ChoiceField(widget=Select2Widget, choices=CustomUser.objects.none)
