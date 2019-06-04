@@ -244,8 +244,9 @@ class ProductReport(View):
                       '공정품투입',
                       '합계공정품투입',
                       '공정품발생',
-                      '공정품폐기',
                       '합계공정품발생',
+                      '공정품폐기',
+                      '합계공정품폐기',
                       '제품생산',
                       '합계제품생산']
         start_date = request.GET.get('start_date')
@@ -360,6 +361,24 @@ class ProductReport(View):
         if total_create[0]['report_rawTank_amount'] == ' ' and total_create[0]['report_pastTank_amount'] == ' ':
             total_create[0]['code'] = 'pass'
 
+        total_rawTank = productEgg.filter(report_sort_type='공정품폐기') \
+            .aggregate(Sum('report_rawTank_amount'))['report_rawTank_amount__sum']
+        total_pastTank = productEgg.filter(report_sort_type='공정품폐기') \
+            .aggregate(Sum('report_pastTank_amount'))['report_pastTank_amount__sum']
+        if not total_rawTank: total_rawTank = ' '
+        if not total_pastTank: total_pastTank = ' '
+
+        total_remove = [dict(code=' ',
+                             codeName='합계',
+                             report_sort_type='합계공정품폐기',
+                             report_egg_amount=' ',
+                             report_egg_count=' ',
+                             report_rawTank_amount=total_rawTank,
+                             report_pastTank_amount=total_pastTank,
+                             report_product_amount=' ')]
+        if total_remove[0]['report_rawTank_amount'] == ' ' and total_remove[0]['report_pastTank_amount'] == ' ':
+            total_remove[0]['code'] = 'pass'
+
         product = Product.objects.values('code', 'codeName').filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
             .filter(purchaseYmd=None) \
             .annotate(report_egg_amount=Value(' ', CharField())) \
@@ -411,6 +430,7 @@ class ProductReport(View):
                   total_openEggUse,
                   total_insert,
                   total_create,
+                  total_remove,
                   product,
                   total_product),
             key=lambda x: SORT_ARRAY.index(x['report_sort_type']))
