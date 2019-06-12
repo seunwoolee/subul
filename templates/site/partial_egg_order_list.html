@@ -12,43 +12,77 @@
         입고일
     </div>
     <div class="cell">
+        지시량
+    </div>
+    <div class="cell">
         출하량
     </div>
     <div class="cell">
-        메모
+        지시메모
+    </div>
+    <div class="cell">
+        작업메모
     </div>
 </div>
 
 
 {% for egg in eggs %}
     <div class="row" data-id={{ egg.id }}>
-        <div class="cell" data-title="입고처" >
-            {{ egg.in_locationCodeName }}
-        </div>
+
+        {% if egg.realCount %}
+            <div class="cell" data-title="입고처">
+                <strike style="color: red;">{{ egg.in_locationCodeName }}</strike>
+            </div>
+        {% else %}
+            <div class="cell" data-title="입고처">
+                {{ egg.in_locationCodeName }}
+            </div>
+        {% endif %}
+
         <div class="cell" data-title="원란명">
             {{ egg.codeName }}
         </div>
         <div class="cell" data-title="입고일">
             {{ egg.in_ymd|to_yyyy_mm_dd }}
         </div>
-        <div class="cell" data-title="출하량">
+        <div class="cell" data-title="지시량">
             {{ egg.orderCount|intcomma }}
         </div>
-        <div class="cell" data-title="메모">
+        {% if egg.realCount %}
+            <div class="cell" data-title="출하량">
+                {{ egg.realCount|intcomma }}
+            </div>
+        {% else %}
+            <div class="cell" data-title="출하량">
+            </div>
+        {% endif %}
+        <div class="cell" data-title="지시메모">
             {{ egg.memo }}
         </div>
+        {% if egg.site_memo %}
+            <div class="cell" data-title="작업메모">
+                {{ egg.site_memo }}
+            </div>
+        {% else %}
+            <div class="cell" data-title="작업메모">
+            </div>
+        {% endif %}
     </div>
 {% empty %}
     <div class="row" data-id={{ egg.id }}>
-        <div class="cell" data-title="입고처" >
+        <div class="cell" data-title="입고처">
         </div>
         <div class="cell" data-title="원란명">
         </div>
         <div class="cell" data-title="입고일">
         </div>
+        <div class="cell" data-title="지시량">
+        </div>
         <div class="cell" data-title="출하량">
         </div>
-        <div class="cell" data-title="메모">
+        <div class="cell" data-title="지시메모">
+        </div>
+        <div class="cell" data-title="작업메모">
         </div>
     </div>
 {% endfor %}

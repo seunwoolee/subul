@@ -379,21 +379,21 @@ function setStepFourDataTable(args)
             var api = this.api();
 
             let pageTotal_count = api
-                .column( 6, { page: 'current'} )
-                .data()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
-
-            let pageTotal_amount = api
                 .column( 7, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
-            $( api.column( 6 ).footer() ).html( numberFormat(pageTotal_count));
-            $( api.column( 7 ).footer() ).html( numberFormat(pageTotal_amount));
+            let pageTotal_amount = api
+                .column( 8, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            $( api.column( 7 ).footer() ).html( numberFormat(pageTotal_count));
+            $( api.column( 8 ).footer() ).html( numberFormat(pageTotal_amount));
         },
         "language": {searchPlaceholder: "원란명, 입고처, 메모"},
         "select": true,
@@ -414,7 +414,8 @@ function setStepFourDataTable(args)
         ],
         "columns": [
             {"data": "id"},
-            {"data": "type", "render" : function(data, type, row, meta){return eggOrdersetTypeButton(data);}},
+            {"data": "type", "render" : function(data, type, row, meta){return eggOrderTypeButton(data);}},
+            {"data": "display_state", "render" : function(data, type, row, meta){return eggOrderDisplayButton(data);}},
             {"data": "in_ymd"},
             {"data": "codeName"},
             {"data": "in_locationCodeName"},
@@ -422,6 +423,7 @@ function setStepFourDataTable(args)
             {"data": "orderCount", "render": $.fn.dataTable.render.number( ',')},
             {"data": "realCount", "render": $.fn.dataTable.render.number( ',')},
             {"data": "memo"},
+            {"data": "site_memo"},
             {"data": "type", "render": function(data, type, row, meta){
 
                     if(SUPERUSER || getYearMonth(row.ymd) >= getYearMonth(today))
@@ -461,9 +463,9 @@ function setStepFourDataTable(args)
                     }],
         lengthMenu : [[-1, 100], ["All", 100]],
         rowCallback: function(row, data, index){
-             $('td:eq(2)', row).html( set_yyyy_mm_dd(data.in_ymd) );
-             $('td:eq(5)', row).html( set_yyyy_mm_dd(data.ymd) );
-             $('td:eq(7)', row).css('color', 'red').css('font-weight','bold');
+             $('td:eq(3)', row).html( set_yyyy_mm_dd(data.in_ymd) );
+             $('td:eq(6)', row).html( set_yyyy_mm_dd(data.ymd) );
+             $('td:eq(8)', row).css('color', 'red').css('font-weight','bold');
         }
 
     });
@@ -484,7 +486,7 @@ function setTypeButton(data)
     }
 }
 
-function eggOrdersetTypeButton(data)
+function eggOrderTypeButton(data)
 {
     switch(data)
     {
@@ -494,6 +496,18 @@ function eggOrdersetTypeButton(data)
             return '<button class="btn btn-primary btn-sm">'+ data +'</button>';
     }
 }
+
+function eggOrderDisplayButton(data)
+{
+    switch(data)
+    {
+        case 'Y':
+            return '<button class="btn btn-dark btn-sm"> 진행중</button>';
+        case 'N':
+            return '<button class="btn btn-danger btn-sm"> 마감 </button>';
+    }
+}
+
 
 $(document).on('click', "#releaseEgg tbody tr", function()
 {
@@ -531,12 +545,19 @@ function eggOrderEditButtonClick(data)
 {
     $('#id_orderCount').val(data['orderCount']);
     $('#id_realCount').val(data['realCount']);
-    $('#id_memo').val(data['memo']);
+    $('#eggOrderModifyModal #id_memo').val(data['memo']);
+    $('#eggOrderModifyModal #id_site_memo').val(data['site_memo']);
     $('.codeName').text(data['codeName']);
     $("#eggOrderModifyModal").modal();
 }
 
 function deleteButtonClick(data)
+{
+    $('#modal_title').text('DELETE');
+    $("#confirm").modal();
+}
+
+function eggOrderDeleteButtonClick(data)
 {
     $('#modal_title').text('DELETE');
     $("#eggOrderRemoveModal").modal();
@@ -606,7 +627,6 @@ $('.deleteAndEdit').on('submit', function (e)
 
 $('.eggOrderForm').on('submit', function (e)
 {
-    debugger;
     e.preventDefault();
     $this = $(this);
     let type = $this.find('.ajaxUrlType').val();
@@ -784,9 +804,6 @@ $('#save').click( function (e) {
     e.preventDefault();
     let data = items_DataTable.$('input, select').serializeArray();
 
-    console.log(data);
-    debugger;
-
     if(data.length > 0)
     {
         if (confirm("생산 중량(KG)을 입력하시겠습니까?"))
@@ -823,6 +840,7 @@ $('#delete_item').click( function () {
 $('#order').click( function (e) {
     e.preventDefault();
     let data = items_DataTable.$('input, select').serializeArray();
+    debugger;
     if(data.length > 0)
     {
         if (confirm("원란지시를 하시겠습니까?"))
@@ -843,7 +861,6 @@ $('#order').click( function (e) {
     }
 
 });
-
 
 var items_DataTable = $('#items').DataTable( {
     "paging": false,
@@ -885,3 +902,25 @@ $( "#eggsReport" ).click(function() {
     let end_date = set_yyyymmdd($('#end_date').val());
     window.open('/eggs/eggsReport?start_date=' + start_date + '&end_date=' + end_date);
 });
+
+$('#changeReal').click( function () {
+    let end_date = $('#end_date').val();
+    let answer = confirm(`${end_date} 생산완료된 원란지시를 실제 생산으로 변환 하시겠습니까?`);
+    if (answer) {
+        end_date = set_yyyymmdd(end_date);
+        let data = `end_date=${end_date}`;
+        $.ajax({
+        url: 'eggs/changeReal',
+        type: 'post',
+        data: data,
+        }).done(function(data) {
+            alert('완료');
+            $('.datatable').DataTable().search($("input[type='search']").val()).draw();
+            $(".everyModal").modal('hide');
+        }).fail(function() {
+            alert('오류발생! 전산실로 연락 바랍니다.');
+        });
+    }
+});
+
+

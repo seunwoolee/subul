@@ -75,8 +75,7 @@ class EggRelease(LogginMixin, View):
     def post(self, request):
         self.amount = request.POST.get('amount', None)
         self.order = request.POST.get('order', None)
-        self.data: dict = dict(request.POST.copy())
-        print(self.data)
+        self.data: dict = dict(request.POST)
         self.user = request.user
 
         if self.order:
@@ -194,6 +193,39 @@ class EggPricePerEa(LogginMixin, View):
             egg.price = round(in_price['price'] / in_price['count']) * abs(
                 egg.count)  # 구매단가=in_price['price']/abs(egg.count)
             egg.save()
+        return HttpResponse(status=200)
+
+
+class ChangeReal(LogginMixin, View):
+    def post(self, request):
+        data = request.POST.dict()
+        self.log(
+            user=request.user,
+            action="원란지시->원란생산",
+            obj=Egg.objects.first(),
+            extra=data
+        )
+
+        egg_orders = EggOrder.objects.filter(ymd=data['end_date']).exclude(realCount=None).filter(display_state='Y')
+        for egg_order in egg_orders:
+            Egg.objects.create(
+                ymd=egg_order.ymd,
+                code=egg_order.code,
+                codeName=egg_order.codeName,
+                eggCode=egg_order.eggCode,
+                count=egg_order.realCount,
+                type='생산',
+                in_ymd=egg_order.in_ymd,
+                in_locationCode=egg_order.in_locationCode,
+                in_locationCodeName=egg_order.in_locationCodeName,
+                memo=egg_order.memo
+            )
+
+        egg_orders = EggOrder.objects.filter(ymd=data['end_date'])
+        for egg_order in egg_orders:
+            egg_order.display_state = 'N'
+            egg_order.save()
+
         return HttpResponse(status=200)
 
 

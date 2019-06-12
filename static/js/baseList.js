@@ -19,11 +19,12 @@ $('.datatable tbody, #eggDatatable tbody').on('click', 'button', function () {
 
     if ($(this).parents('table').attr('id') === 'eggOrderDatatable') {
         let data = eggOrderTable.row($(this).parents('tr')).data();
+        console.log(data);
         let class_name = $(this).attr('class');
         if (class_name === 'btn btn-info btn-sm MODIFY') {
             eggOrderEditButtonClick(data);
         } else if (class_name === 'btn btn-danger btn-sm REMOVE') {
-            deleteButtonClick(data);
+            eggOrderDeleteButtonClick(data);
         }
         id = data['id'];
         return;

@@ -15,7 +15,7 @@ class SiteList(View):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.data = {}
-        self.eggs = EggOrder.objects.filter(realCount=None)
+        self.eggs = EggOrder.objects.filter(display_state='Y')
         self.form: EggOrderForm
         self.request_type = 'get'
 
@@ -34,7 +34,6 @@ class SiteList(View):
     def post(self, request, pk):
         eggOrder = get_object_or_404(EggOrder, pk=pk)
         egg_order: EggOrder = EggOrderForm(request.POST, instance=eggOrder).save()
-        print(egg_order)
         self.get_egg_list()
         return JsonResponse(self.data)
 

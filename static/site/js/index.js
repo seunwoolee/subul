@@ -1,7 +1,6 @@
 let loadForm = function () {
     let row = $(this);
     let pk = row.attr("data-id");
-
     if (pk) {
         $.ajax({
             url: '/labor/egg',

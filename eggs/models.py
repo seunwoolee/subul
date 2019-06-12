@@ -342,16 +342,27 @@ class Egg(Detail):
 
 
 class EggOrder(models.Model):
+    DISPLAY_CHOICES = (
+        ('Y', '진행중'),
+        ('N', '마감')
+    )
+
     ymd = models.CharField(max_length=8, verbose_name='날짜')
     code = models.CharField(max_length=255, verbose_name='코드')
     codeName = models.CharField(max_length=255, verbose_name='코드명')
     orderCount = models.IntegerField(verbose_name='지시량')
     realCount = models.IntegerField(blank=True, null=True, verbose_name='실제출하량')
-    memo = models.TextField(blank=True, null=True, verbose_name='메모')
+    memo = models.TextField(blank=True, null=True, verbose_name='지시자메모')
+    site_memo = models.TextField(blank=True, null=True, verbose_name='현장메모')
     eggCode = models.ForeignKey(EggCode, on_delete=models.CASCADE, related_name='+')
     in_ymd = models.CharField(max_length=8, verbose_name='입고일')
     in_locationCode = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='+')
     in_locationCodeName = models.CharField(max_length=255, verbose_name='입고처명')
+    display_state = models.CharField(
+        max_length=10,
+        choices=DISPLAY_CHOICES,
+        default='Y',
+    )
 
     def __str__(self):
         return f'날짜: {self.ymd} 제품: {self.codeName}, 주문량: {self.orderCount}, 실제량: {self.realCount} '
@@ -380,8 +391,9 @@ class EggOrder(models.Model):
         start_date = kwargs.get('start_date', None)
         end_date = kwargs.get('end_date', None)
 
-        queryset = EggOrder.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date)\
-            .annotate(type=Case(When(realCount=None, then=Value('생산중')), default=Value('생산완료'), output_field=CharField()))
+        queryset = EggOrder.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
+            .annotate(type=Case(When(realCount=None, then=Value('생산중')), default=Value('생산완료'),
+                                output_field=CharField()))
 
         total = queryset.count()
 
