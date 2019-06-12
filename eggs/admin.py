@@ -1,7 +1,8 @@
 from django.contrib import admin
-from .models import Egg, EggCode
+from .models import Egg, EggCode, EggOrder
 
 
+@admin.register(Egg)
 class EggAdmin(admin.ModelAdmin):
 
     list_filter = ["id"]
@@ -9,5 +10,12 @@ class EggAdmin(admin.ModelAdmin):
     search_fields = ["id", "ymd", "codeName"]
 
 
-admin.site.register(Egg, EggAdmin)
+@admin.register(EggOrder)
+class EggOrderAdmin(admin.ModelAdmin):
+
+    list_filter = ["id"]
+    list_display = ["id", "ymd", "in_locationCodeName", "codeName"]
+    search_fields = ["id", "ymd", "codeName"]
+
+
 admin.site.register(EggCode)

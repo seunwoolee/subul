@@ -336,15 +336,15 @@ function setAjaxUrl($this)
     return url;
 }
 
-$(".amount").focusout(function(){ setAutoCountValue($(this)); });
-$(".count").focusout(function(){ setAutoAmountValue($(this)); });
-$(".fakeYmd").focusout(function(){
-    ymd = set_yyyymmdd($(this).val());
-    $('input[name=ymd]').val(ymd);
-});
+ $(".amount").focusout(function(){ setAutoCountValue($(this)); });
+ $(".count").focusout(function(){ setAutoAmountValue($(this)); });
+ $(".fakeYmd").focusout(function(){
+     ymd = set_yyyymmdd($(this).val());
+     $('input[name=ymd]').val(ymd);
+ });
 
-$( "#productReport" ).click(function() {
-    let start_date = set_yyyymmdd($('#start_date').val());
-    let end_date = set_yyyymmdd($('#end_date').val());
-    window.open('/product/productReport?start_date=' + start_date + '&end_date=' + end_date);
-});
+ $( "#productReport" ).click(function() {
+     let start_date = set_yyyymmdd($('#start_date').val());
+     let end_date = set_yyyymmdd($('#end_date').val());
+     window.open('/product/productReport?start_date=' + start_date + '&end_date=' + end_date);
+ });

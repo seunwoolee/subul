@@ -1,7 +1,6 @@
 from django.db import models
-from django.db.models import Sum, DecimalField, F, Q, FloatField, Func, Value, IntegerField, Case, When, \
-    ExpressionWrapper
-from django.db.models.functions import Cast
+from django.db.models import Sum, F, Q, Func, Value, IntegerField, Case, When, CharField
+from django.http import QueryDict
 from model_utils import Choices
 from core.models import Detail, Location, Code
 
@@ -85,8 +84,7 @@ class Egg(Detail):
         }
 
     @staticmethod
-    def eggListQuery(**kwargs):
-
+    def eggListQuery(**kwargs: object) -> object:
         ORDER_COLUMN_CHOICES = Choices(
             ('0', 'id'),
             ('1', 'type'),
@@ -118,12 +116,14 @@ class Egg(Detail):
         queryset = Egg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
             .annotate(counts=ABS(F('count'))) \
             .annotate(in_locationCodes=F('in_locationCode__code')) \
-            .annotate(in_price=Case(When(type='입고', then=F('price')),  default=0))\
-            .annotate(out_price=Case(When(type='판매', then=F('price')),  default=0))\
-            .annotate(pricePerEa=Case(When(price=0, then=0), When(count=0, then=0), default=F('price') / ABS(F('count'))))
+            .annotate(in_price=Case(When(type='입고', then=F('price')), default=0)) \
+            .annotate(out_price=Case(When(type='판매', then=F('price')), default=0)) \
+            .annotate(
+            pricePerEa=Case(When(price=0, then=0), When(count=0, then=0), default=F('price') / ABS(F('count'))))
 
-        queryset = queryset.annotate(in_price=Case(When(in_price=None, then=0),  default=F('in_price'), output_field=IntegerField())) \
-                           .annotate(out_price=Case(When(out_price=None, then=0), default=F('out_price'), output_field=IntegerField()))
+        queryset = queryset.annotate(
+            in_price=Case(When(in_price=None, then=0), default=F('in_price'), output_field=IntegerField())) \
+            .annotate(out_price=Case(When(out_price=None, then=0), default=F('out_price'), output_field=IntegerField()))
 
         total = queryset.count()
 
@@ -245,7 +245,7 @@ class Egg(Detail):
 
         if search_value:
             egg_period = egg_period.filter(Q(codeName__icontains=search_value) |
-                                               Q(in_locationCodeName__icontains=search_value))
+                                           Q(in_locationCodeName__icontains=search_value))
 
         for period in egg_period:
             result = {}
@@ -303,9 +303,12 @@ class Egg(Detail):
             arr.append(result)
 
         if order == 'desc':
-            arr = sorted(arr, key=lambda k: (k['sorts'], k['in_ymd'], k[order_column]) if k[order_column] is not None else 0, reverse=True)
+            arr = sorted(arr,
+                         key=lambda k: (k['sorts'], k['in_ymd'], k[order_column]) if k[order_column] is not None else 0,
+                         reverse=True)
         else:
-            arr = sorted(arr, key=lambda k: (k['sorts'], k['in_ymd'], k[order_column]) if k[order_column] is not None else 0)
+            arr = sorted(arr,
+                         key=lambda k: (k['sorts'], k['in_ymd'], k[order_column]) if k[order_column] is not None else 0)
 
         return {
             'items': arr,
@@ -336,3 +339,81 @@ class Egg(Detail):
         lastEgg = eggs.last()
         lastEgg.amount = amount_last
         lastEgg.save()
+
+
+class EggOrder(models.Model):
+    DISPLAY_CHOICES = (
+        ('Y', '진행중'),
+        ('N', '마감')
+    )
+
+    ymd = models.CharField(max_length=8, verbose_name='날짜')
+    code = models.CharField(max_length=255, verbose_name='코드')
+    codeName = models.CharField(max_length=255, verbose_name='코드명')
+    orderCount = models.IntegerField(verbose_name='지시량')
+    realCount = models.IntegerField(blank=True, null=True, verbose_name='실제출하량')
+    memo = models.TextField(blank=True, null=True, verbose_name='지시자메모')
+    site_memo = models.TextField(blank=True, null=True, verbose_name='현장메모')
+    eggCode = models.ForeignKey(EggCode, on_delete=models.CASCADE, related_name='+')
+    in_ymd = models.CharField(max_length=8, verbose_name='입고일')
+    in_locationCode = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='+')
+    in_locationCodeName = models.CharField(max_length=255, verbose_name='입고처명')
+    display_state = models.CharField(
+        max_length=10,
+        choices=DISPLAY_CHOICES,
+        default='Y',
+    )
+
+    def __str__(self):
+        return f'날짜: {self.ymd} 제품: {self.codeName}, 주문량: {self.orderCount}, 실제량: {self.realCount} '
+
+    @staticmethod
+    def eggOrderListQuery(kwargs: QueryDict) -> dict:
+        ORDER_COLUMN_CHOICES = Choices(
+            ('0', 'id'),
+            ('1', 'type'),
+            ('2', 'in_ymd'),
+            ('3', 'codeName'),
+            ('4', 'in_locationCodeName'),
+            ('5', 'ymd'),
+            ('6', 'orderCount'),
+            ('7', 'realCount'),
+            ('8', 'memo'),
+        )
+
+        draw = int(kwargs.get('draw', None))
+        start = int(kwargs.get('start', None))
+        length = int(kwargs.get('length', None))
+        search_value = kwargs.get('search[value]', None)
+        order_column = kwargs.get('order[0][column]', None)
+        order_column = ORDER_COLUMN_CHOICES[order_column]
+        order = kwargs.get('order[0][dir]', None)
+        start_date = kwargs.get('start_date', None)
+        end_date = kwargs.get('end_date', None)
+
+        queryset = EggOrder.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date) \
+            .annotate(type=Case(When(realCount=None, then=Value('생산중')), default=Value('생산완료'),
+                                output_field=CharField()))
+
+        total = queryset.count()
+
+        if order == 'desc':
+            order_column = '-' + order_column
+
+        if search_value:
+            queryset = queryset.filter(Q(memo__icontains=search_value) |
+                                       Q(codeName__icontains=search_value) |
+                                       Q(in_locationCodeName__icontains=search_value))
+
+        count = queryset.count()
+
+        if length != -1:
+            queryset = queryset.order_by(order_column)[start:start + length]
+        else:
+            queryset = queryset.order_by(order_column)
+        return {
+            'items': queryset,
+            'count': count,
+            'total': total,
+            'draw': draw
+        }

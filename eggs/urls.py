@@ -8,6 +8,7 @@ urlpatterns = [
     path('release', views.EggRelease.as_view(), name='eggsRelease'),
     path('calculateAmount', views.EggCalculateAmount.as_view(), name='eggsRelease'),
     path('pricePerEa', views.EggPricePerEa.as_view(), name='pricePerEa'),
+    path('changeReal', views.ChangeReal.as_view(), name='changeReal'),
     path('pdf', views.GeneratePDF.as_view()),
     path('eggsReport', views.EggReport.as_view(), name='eggsReport'),
 ]
