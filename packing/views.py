@@ -50,7 +50,12 @@ class PackingReg(LoginRequiredMixin, View):
                     packingCode=packingCode,
                 )
         else:
-            print(formset.errors)
+            log(
+                user=request.user,
+                action="포장재등록에러",
+                obj=Packing.objects.first(),
+                extra=formset.errors[0]
+            )
         return redirect('packingList')
 
     def get(self, request):

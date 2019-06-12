@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 
+from eventlog.models import log
 from .models import Location
 from .forms import LocationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -24,7 +25,12 @@ class LocationReg(LoginRequiredMixin, View):
             form.code = code
             form.save()
         else:
-            print(formset.errors)
+            log(
+                user=request.user,
+                action="장소등록에러",
+                obj=Location.objects.first(),
+                extra=formset.errors[0]
+            )
         return redirect('locationReg')
 
     def get(self, request):

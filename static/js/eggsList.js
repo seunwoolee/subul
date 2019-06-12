@@ -18,9 +18,6 @@ function fetch_data(start_date='', end_date='')
           },
           "stepThree":  function() {
             return setStepThreeDataTable(args);
-          },
-          "stepFour":  function() {
-            return setStepFourDataTable(args);
           }
      };
 
@@ -372,142 +369,24 @@ function setStepThreeDataTable(args)
     });
 }
 
-function setStepFourDataTable(args)
-{
-    eggOrderTable = args['table'].DataTable({
-    	"footerCallback": function ( row, data, start, end, display ) {
-            var api = this.api();
-
-            let pageTotal_count = api
-                .column( 7, { page: 'current'} )
-                .data()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
-
-            let pageTotal_amount = api
-                .column( 8, { page: 'current'} )
-                .data()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
-
-            $( api.column( 7 ).footer() ).html( numberFormat(pageTotal_count));
-            $( api.column( 8 ).footer() ).html( numberFormat(pageTotal_amount));
-        },
-        "language": {searchPlaceholder: "원란명, 입고처, 메모"},
-        "select": true,
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": "/api/eggsOrderList/",
-            "type": "GET",
-            "data": { start_date:args['start_date'], end_date:args['end_date'] }
-        },
-        "responsive" : true,
-        "columnDefs": [
-            { responsivePriority: 1, targets: 0 },
-            { responsivePriority: 2, targets: 3 },
-            { responsivePriority: 3, targets: -1, orderable: false },
-            { targets: 6, className: "dt-body-right"  },
-            { targets: 7, className: "dt-body-right"  },
-        ],
-        "columns": [
-            {"data": "id"},
-            {"data": "type", "render" : function(data, type, row, meta){return eggOrderTypeButton(data);}},
-            {"data": "display_state", "render" : function(data, type, row, meta){return eggOrderDisplayButton(data);}},
-            {"data": "in_ymd"},
-            {"data": "codeName"},
-            {"data": "in_locationCodeName"},
-            {"data": "ymd"},
-            {"data": "orderCount", "render": $.fn.dataTable.render.number( ',')},
-            {"data": "realCount", "render": $.fn.dataTable.render.number( ',')},
-            {"data": "memo"},
-            {"data": "site_memo"},
-            {"data": "type", "render": function(data, type, row, meta){
-
-                    if(SUPERUSER || getYearMonth(row.ymd) >= getYearMonth(today))
-                    {
-                        return setDataTableActionButton();
-                    }
-
-                    if(getYear(row.ymd) === getYear(today) && getMonth(row.ymd) === getMonth(today) - 1)
-                    {
-                        if(today <= getMiddleDay(today))
-                        {
-                            return setDataTableActionButton();
-                        }
-                    }
-
-                    return "";
-            }}
-        ],
-        dom: 'Bfrtip',
-        buttons: [
-                    {
-                        extend: 'pageLength',
-                        className:'btn btn-light',
-                        text : '<i class="fas fa-list-ol fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    },
-                    {
-                        extend: 'excel',
-                        footer: true,
-                        className:'btn btn-light',
-                        text : '<i class="far fa-file-excel fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    }],
-        lengthMenu : [[-1, 100], ["All", 100]],
-        rowCallback: function(row, data, index){
-             $('td:eq(3)', row).html( set_yyyy_mm_dd(data.in_ymd) );
-             $('td:eq(6)', row).html( set_yyyy_mm_dd(data.ymd) );
-             $('td:eq(8)', row).css('color', 'red').css('font-weight','bold');
-        }
-
-    });
-}
-
 function setTypeButton(data)
 {
     switch(data)
     {
         case '입고':
-            return '<button class="btn btn-dark btn-sm">'+ data +'</button>';
+            return '<button class="btn btn-dark btn-sm">'+ data +'</button>'
+            break;
         case '생산':
-            return '<button class="btn btn-warning btn-sm">'+ data +'</button>';
+            return '<button class="btn btn-warning btn-sm">'+ data +'</button>'
+            break;
         case '폐기':
-            return '<button class="btn btn-danger btn-sm">'+ data +'</button>';
+            return '<button class="btn btn-danger btn-sm">'+ data +'</button>'
+            break;
         case '판매':
-            return '<button class="btn btn-primary btn-sm ">'+ data +'</button>';
+            return '<button class="btn btn-primary btn-sm ">'+ data +'</button>'
+            break;
     }
 }
-
-function eggOrderTypeButton(data)
-{
-    switch(data)
-    {
-        case '생산중':
-            return '<button class="btn btn-warning btn-sm">'+ data +'</button>';
-        case '생산완료':
-            return '<button class="btn btn-primary btn-sm">'+ data +'</button>';
-    }
-}
-
-function eggOrderDisplayButton(data)
-{
-    switch(data)
-    {
-        case 'Y':
-            return '<button class="btn btn-dark btn-sm"> 진행중</button>';
-        case 'N':
-            return '<button class="btn btn-danger btn-sm"> 마감 </button>';
-    }
-}
-
 
 $(document).on('click', "#releaseEgg tbody tr", function()
 {
@@ -531,7 +410,6 @@ function manualReleaseModal(data)
     $('#id_memo').val("");
     $("#Modal").modal();
 }
-
 function editButtonClick(data)
 {
     $('#modify_id_count').val(data['count']).removeAttr( "min" );
@@ -541,26 +419,10 @@ function editButtonClick(data)
     $("#eggModifyModal").modal();
 }
 
-function eggOrderEditButtonClick(data)
-{
-    $('#id_orderCount').val(data['orderCount']);
-    $('#id_realCount').val(data['realCount']);
-    $('#eggOrderModifyModal #id_memo').val(data['memo']);
-    $('#eggOrderModifyModal #id_site_memo').val(data['site_memo']);
-    $('.codeName').text(data['codeName']);
-    $("#eggOrderModifyModal").modal();
-}
-
 function deleteButtonClick(data)
 {
     $('#modal_title').text('DELETE');
     $("#confirm").modal();
-}
-
-function eggOrderDeleteButtonClick(data)
-{
-    $('#modal_title').text('DELETE');
-    $("#eggOrderRemoveModal").modal();
 }
 
 function pdfButtonClick(data)
@@ -625,34 +487,18 @@ $('.deleteAndEdit').on('submit', function (e)
     });
 });
 
-$('.eggOrderForm').on('submit', function (e)
-{
-    e.preventDefault();
-    $this = $(this);
-    let type = $this.find('.ajaxUrlType').val();
-    let data = $this.serialize();
-    let url = '/api/eggsOrder/'+id;
-
-    $.ajax({
-    url: url,
-    type: type,
-    data: data,
-    }).done(function(data) {
-        alert('수정완료');
-        $('#stepFour .datatable').DataTable().search($("input[type='search']").val()).draw();
-        $(".everyModal").modal('hide');
-    }).fail(function() {
-        alert('수정 에러 전산실로 문의바랍니다.');
-    });
-});
-
 
 $('#manualRelease').on('submit', function (e)
 {
     e.preventDefault();
     $this = $(this);
+    let type = $this.find('#id_type').val();
     let fakeYmd = set_yyyymmdd($this.find('#id_fakeYmd').val());
     $this.find('#id_ymd').val(fakeYmd);
+    let location = $this.find('#id_locationSale').val();
+    let count = parseInt($this.find('#id_count').val());
+    let price = parseInt($this.find('#id_price').val());
+    let memo = parseInt($this.find('#id_memo').val());
     let data = $this.serialize();
 
     $.ajax({
@@ -780,7 +626,7 @@ $('#addItem').click( function (e) {
             `<input type="hidden" name="count" value=${count.val()}>`+
             `<input type="hidden" name="locationSale" value=${locationSaleCode}>`+
             `<input type="hidden" name="price" value=${price.val()}>`+
-            `<input type="hidden" name="memo" value="${memo.val()}">`+
+            `<input type="hidden" name="memo" value=${memo.val()}>`+
             IN_YMD,
             type.val(),
             IN_LOCATIONCODENAME,
@@ -803,7 +649,6 @@ $('#addItem').click( function (e) {
 $('#save').click( function (e) {
     e.preventDefault();
     let data = items_DataTable.$('input, select').serializeArray();
-
     if(data.length > 0)
     {
         if (confirm("생산 중량(KG)을 입력하시겠습니까?"))
@@ -836,31 +681,6 @@ $('#save').click( function (e) {
 $('#delete_item').click( function () {
     items_DataTable.row('.selected').remove().draw( false );
 } );
-
-$('#order').click( function (e) {
-    e.preventDefault();
-    let data = items_DataTable.$('input, select').serializeArray();
-    debugger;
-    if(data.length > 0)
-    {
-        if (confirm("원란지시를 하시겠습니까?"))
-        {
-            data.push({"name" : "order", "value" : true});
-            $.ajax({
-            url: '/eggs/release',
-            type: 'post',
-            data: data,
-            }).done(function(data) {
-                alert('완료');
-                $(".everyModal").modal('hide');
-                $('#stepTwo .datatable').DataTable().search($("input[type='search']").val()).draw();
-                items_DataTable.clear().draw();
-            }).fail(function() { alert('수정 에러 전산실로 문의바랍니다.'); });
-        }
-
-    }
-
-});
 
 var items_DataTable = $('#items').DataTable( {
     "paging": false,
@@ -902,25 +722,3 @@ $( "#eggsReport" ).click(function() {
     let end_date = set_yyyymmdd($('#end_date').val());
     window.open('/eggs/eggsReport?start_date=' + start_date + '&end_date=' + end_date);
 });
-
-$('#changeReal').click( function () {
-    let end_date = $('#end_date').val();
-    let answer = confirm(`${end_date} 생산완료된 원란지시를 실제 생산으로 변환 하시겠습니까?`);
-    if (answer) {
-        end_date = set_yyyymmdd(end_date);
-        let data = `end_date=${end_date}`;
-        $.ajax({
-        url: 'eggs/changeReal',
-        type: 'post',
-        data: data,
-        }).done(function(data) {
-            alert('완료');
-            $('.datatable').DataTable().search($("input[type='search']").val()).draw();
-            $(".everyModal").modal('hide');
-        }).fail(function() {
-            alert('오류발생! 전산실로 연락 바랍니다.');
-        });
-    }
-});
-
-

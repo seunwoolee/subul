@@ -813,7 +813,7 @@ function editButtonClick(data)
     $('#id_releaseVat').val(data['releaseVat']);
     $('#id_amount').val(data['amount']);
     $('#id_count').val(data['count']);
-    $('#id_memo').val(data['memo']);
+    $('#id_orderMemo').val(data['orderMemo']);
     $('#releaseModal .codeName').text(data['codeName']);
     $("#releaseModal").modal();
 }
