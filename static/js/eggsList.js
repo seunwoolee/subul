@@ -409,8 +409,8 @@ function setStepFourDataTable(args)
             { responsivePriority: 1, targets: 0 },
             { responsivePriority: 2, targets: 3 },
             { responsivePriority: 3, targets: -1, orderable: false },
-            { targets: 6, className: "dt-body-right"  },
             { targets: 7, className: "dt-body-right"  },
+            { targets: 8, className: "dt-body-right"  },
         ],
         "columns": [
             {"data": "id"},

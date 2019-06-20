@@ -2,22 +2,21 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
 
 from eggs.models import EggOrder
 from labor.forms import EggOrderForm
 
 
-@method_decorator(csrf_exempt, name='dispatch')
-class SiteList(View):
+# @method_decorator(csrf_exempt, name='dispatch')
+class SiteList(LoginRequiredMixin, View):
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.data = {}
         self.eggs = EggOrder.objects.filter(display_state='Y')
         self.form: EggOrderForm
-        self.request_type = 'get'
+        # self.request_type = 'get'
 
     def get(self, request):
 
@@ -29,7 +28,7 @@ class SiteList(View):
             self.get_egg_list()
             return JsonResponse(self.data)
         else:
-            return render(request, 'site/index.html', {'eggs': self.eggs})
+            return render(request, 'site/egg_index.html', {'eggs': self.eggs})
 
     def post(self, request, pk):
         eggOrder = get_object_or_404(EggOrder, pk=pk)
@@ -38,9 +37,9 @@ class SiteList(View):
         return JsonResponse(self.data)
 
     def get_egg_list(self):
-        self.data['list'] = render_to_string('site/partial_egg_order_list.html', {'eggs': self.eggs})
+        self.data['list'] = render_to_string('site/partial_egg_order_list.html', {'eggs': self.eggs}, request=self.request)
 
     def get_form(self, pk):
         eggOrder = get_object_or_404(EggOrder, pk=pk)
         self.form = EggOrderForm(instance=eggOrder)
-        self.data['form'] = render_to_string('site/partial_egg_order_update.html', {'form': self.form})
+        self.data['form'] = render_to_string('site/partial_egg_order_update.html', {'form': self.form}, request=self.request)

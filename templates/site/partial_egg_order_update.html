@@ -1,6 +1,6 @@
 {% load widget_tweaks %}
 {% load crispy_forms_tags %}
-{#<form method="post" action="{% url 'book_update' form.instance.pk %}" class="js-book-update-form">#}
+
 <form method="post" action="{% url 'labor_egg_post' form.instance.pk %}" class="js-update-form">
     {% csrf_token %}
     <div class="modal-header">

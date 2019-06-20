@@ -227,6 +227,14 @@ iframe {
     padding-left: 10px;
 }
 
+.row .cell:nth-child(6) {
+    padding-left: 10px;
+}
+
+.row .cell:nth-child(7) {
+    padding-left: 10px;
+}
+
 
 .table, .row {
     width: 100% !important;
