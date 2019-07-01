@@ -4,7 +4,7 @@ from django.db import models
 from core.admin import DumbPaginator
 from django_select2.forms import Select2Widget
 from .models import Product, ProductAdmin, ProductCode, ProductMaster, ProductEgg, ProductUnitPrice, SetProductCode \
-    , SetProductMatch
+    , SetProductMatch, ProductOrder, ProductOrderPacking
 
 
 class ProductsAdmin(admin.ModelAdmin):
@@ -97,4 +97,6 @@ admin.site.register(ProductEgg, ProductEggAdmin)
 admin.site.register(ProductUnitPrice, ProductUnitPriceAdmin)
 admin.site.register(SetProductCode, SetProductCodeAdmin)
 admin.site.register(SetProductMatch, SetProductMatchAdmin)
+admin.site.register(ProductOrder)
+admin.site.register(ProductOrderPacking)
 

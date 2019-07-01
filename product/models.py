@@ -39,6 +39,12 @@ class ProductCode(Code):
         ('', '없음'),
     )
 
+    CALCULATE_TYPE_CHOICES = (
+        ('order', '주문'),
+        ('store', '주문재고'),
+        ('other', '수기'),
+    )
+
     type = models.CharField(
         max_length=10,
         choices=CONTENT_TYPE_CHOICES,
@@ -57,6 +63,11 @@ class ProductCode(Code):
         max_length=10,
         choices=OEM_TYPE_CHOICES,
         default='N'
+    )
+    calculation = models.CharField(
+        max_length=10,
+        choices=CALCULATE_TYPE_CHOICES,
+        default='order'
     )
 
     def __str__(self):
@@ -656,3 +667,39 @@ class SetProductMatch(TimeStampedModel):
             'total': total,
             'draw': draw
         }
+
+
+class ProductOrder(Detail):
+    PRODUCT_TYPE_CHOICES = (
+        ('전란', '전란'),
+        ('난백난황', '난백난황'),
+    )
+    DISPLAY_CHOICES = (
+        ('Y', '진행중'),
+        ('N', '마감')
+    )
+    type = models.CharField(
+        max_length=30,
+        choices=PRODUCT_TYPE_CHOICES,
+        default='전란',
+    )
+    productCode = models.ForeignKey(ProductCode, on_delete=models.CASCADE)
+    display_state = models.CharField(
+        max_length=10,
+        choices=DISPLAY_CHOICES,
+        default='Y',
+    )
+
+    def __str__(self):
+        return self.codeName + '(' + self.ymd + ')'
+
+
+class ProductOrderPacking(models.Model):
+    productOrderCode = models.ForeignKey(ProductOrder, on_delete=models.CASCADE, related_name='detail')
+    orderLocationCode = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
+    orderLocationCodeName = models.CharField(max_length=255, blank=True, null=True)
+    boxCount = models.IntegerField()
+    eaCount = models.IntegerField()
+
+    def __str__(self):
+        return f'{self.orderLocationCodeName} {self.boxCount} 상자 {self.eaCount} 개'

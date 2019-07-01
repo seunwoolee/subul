@@ -11,8 +11,6 @@ $('#search').click(function () {
     } else {
         alert("날짜를 모두 입력해주세요");
     }
-
-
 });
 
 $('.datatable tbody, #eggDatatable tbody').on('click', 'button', function () {

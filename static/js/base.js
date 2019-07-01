@@ -82,10 +82,12 @@ var date = new Date();
 var days = 7;
 var minusSevenDate = new Date(date.getTime() - (days * 24 * 60 * 60 * 1000));
 var plusThreeDate = new Date(date.getTime() + (3 * 24 * 60 * 60 * 1000));
+var plusSevenDate = new Date(date.getTime() + (7 * 24 * 60 * 60 * 1000));
 var minusFifteenDate = new Date(date.getTime() - (15 * 24 * 60 * 60 * 1000));
 var start_day = minusSevenDate.yyyymmdd();
 var end_day = date.yyyymmdd();
 var plusThree_day = plusThreeDate.yyyymmdd();
+var plusSeven_day = plusSevenDate.yyyymmdd();
 var minusFifteen_day = set_yyyymmdd(minusFifteenDate.yyyymmdd());
 var today = set_yyyymmdd(date.yyyymmdd());
 

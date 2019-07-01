@@ -1,18 +1,19 @@
 from decimal import Decimal
 from itertools import chain
 from django.forms.models import model_to_dict
-from django.db.models import Sum, F, Case, When, Value, CharField, Func, DecimalField
+from django.db.models import Sum, F, Case, When, Value, CharField, Func, DecimalField, Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic.base import View
 from core.models import Location
 from eggs.models import Egg
 from eventlog.models import LogginMixin
-from order.models import ABS
+from order.models import ABS, Order
 from packing.forms import AutoPackingForm
-from packing.models import AutoPacking, Packing
+from packing.models import AutoPacking, Packing, PackingCode
 from product.codeForms import ProductUnitPricesForm, SetProductMatchForm
-from product.models import ProductEgg, Product, ProductCode, ProductAdmin, ProductMaster
+from product.models import ProductEgg, Product, ProductCode, ProductAdmin, ProductMaster, ProductOrder, \
+    ProductOrderPacking
 from .forms import StepOneForm, StepTwoForm, StepThreeForm, StepFourForm, StepFourFormSet, MainForm, ProductOEMFormSet, \
     ProductOEMForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -144,6 +145,102 @@ class ProductList(LoginRequiredMixin, PermissionRequiredMixin, View):
 
     def get(self, request):
         return render(request, 'product/productList.html')
+
+
+class ProductOrderList(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = 'product.change_product'
+
+    def get(self, request):
+        return render(request, 'product/productOrder.html')
+
+    def post(self, request):
+        self.start_date = request.POST.get('start_date', None)
+        self.end_date = request.POST.get('end_date', None)
+        self.content_type = request.POST.get('content_type', None)
+
+        self.get_order()
+        self.set_productOrder()
+
+        return HttpResponse(status=200)
+
+    def get_order(self):
+        self.queryset = Order.objects.filter(ymd__gte=self.start_date).filter(ymd__lte=self.end_date)\
+            .values('code', 'codeName', 'amount_kg') \
+            .annotate(content_type=F('productCode__type')) \
+            .annotate(calculation=F('productCode__calculation')) \
+            .annotate(amount=Sum('amount')) \
+            .annotate(count=Sum('count'))
+
+        if self.content_type == '전란':
+            self.queryset = self.queryset.filter(productCode__type=self.content_type)
+        else:
+            self.queryset = self.queryset.filter(Q(productCode__type='난황') | Q(productCode__type='난백'))
+
+    def set_productOrder(self):
+        for query in self.queryset:
+            productCode = ProductCode.objects.get(code=query['code'])
+            self.productOrder = ProductOrder.objects.create(
+                ymd=self.start_date,
+                code=query['code'],
+                codeName=query['codeName'],
+                amount=query['amount'],
+                count=query['count'],
+                productCode=productCode
+            )
+
+            if query['amount_kg'] < Decimal(5):
+                self.calculate_box_without_location(query)
+
+            orders = Order.objects.values('code', 'codeName', 'orderLocationCode')\
+                .filter(ymd__gte='20190528').filter(ymd__lte='20190604').filter(code=query['code'])\
+                .filter(amount_kg__gte=Decimal(5))\
+                .annotate(amount=Sum('amount')).annotate(count=Sum('count'))
+
+            for order in orders:
+                self.calculate_box_with_location(order)
+
+    def calculate_box_with_location(self, order):
+        """
+         5kg 이상일때만 거래처+상자+EA
+        :param order:
+        :return:
+        """
+        productCode = ProductCode.objects.get(code=order['code'])
+        autoPacking = AutoPacking.objects.filter(productCode=productCode).filter(packingCode__type='외포장재').first()
+        orderLocationCode = Location.objects.get(id=order['orderLocationCode'])
+
+        if autoPacking:
+            count = autoPacking.count
+            mod, remainder = divmod(order['count'], count)
+            ProductOrderPacking.objects.create(
+                productOrderCode=self.productOrder,
+                orderLocationCode=orderLocationCode,
+                orderLocationCodeName=orderLocationCode.codeName,
+                boxCount=mod,
+                eaCount=remainder,
+            )
+        # else: # 외포장재 없음
+        #     count = 1
+        #     mod, remainder = divmod(int(order['amount']), count)
+        #     print(mod, remainder)
+
+    def calculate_box_without_location(self, order):
+        """
+         5kg미만 제품 그냥 상자 +kg
+        :param order:
+        :return:
+        """
+        productCode = ProductCode.objects.get(code=order['code'])
+        autoPacking = AutoPacking.objects.filter(productCode=productCode).filter(packingCode__type='외포장재').first()
+
+        if autoPacking:
+            count = autoPacking.count
+            mod, remainder = divmod(order['count'], count)
+            ProductOrderPacking.objects.create(
+                productOrderCode=self.productOrder,
+                boxCount=mod,
+                eaCount=remainder
+            )
 
 
 class ProductRecall(LogginMixin, View):

@@ -47,7 +47,7 @@ class Code(models.Model):
 
 class Detail(models.Model):
     """
-    Egg, Order, Packing, Product, Release의 부모 클래스
+    Egg, Order, Packing, Product, Release 부모 클래스
     """
 
     ymd = models.CharField(max_length=8)

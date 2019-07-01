@@ -306,13 +306,14 @@ $(document).on('focusout', ".count", function () {
 $('#manualRelease').on('submit', function (e) {
     e.preventDefault();
     $this = $(this);
-    var count = parseInt($this.find('#id_count').val());
-    var type = $this.find('#id_type').val();
-    var totalCount = parseInt($this.find('#id_totalCount').val());
-    var storedLocationCode = $this.find('#id_storedLocationCode').val();
-    var locationCode = $this.find('#id_location').val();
+    $this.find("button[type='submit']").prop("disabled", true);
+    let count = parseInt($this.find('#id_count').val());
+    let type = $this.find('#id_type').val();
+    let totalCount = parseInt($this.find('#id_totalCount').val());
+    let storedLocationCode = $this.find('#id_storedLocationCode').val();
+    let locationCode = $this.find('#id_location').val();
     let data = $this.serialize();
-    var url = ((type == "미출고품" || type == "재고조정") ? '/release/adjustment' : '/release/');
+    let url = ((type == "미출고품" || type == "재고조정") ? '/release/adjustment' : '/release/');
 
     if (type == "이동") {
         if (totalCount >= count && storedLocationCode !== locationCode && count > 0) {
@@ -458,7 +459,11 @@ function manualReleaseAjax(url, data) {
         $('.datatable').DataTable().search($("input[type='search']").val()).draw();
     }).fail(function () {
         alert('수정 에러 전산실로 문의바랍니다.');
+    }).always(function () {
+        $('#manualRelease').find("button[type='submit']").prop("disabled", false);
     });
+
+
 }
 
 $("#datepicker").datepicker({
