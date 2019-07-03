@@ -1,0 +1,43 @@
+﻿{% load staticfiles %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="./../">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="kcfeed 수불부">
+    <meta name="author" content="이승우">
+    <meta name="keyword" content="케이씨피드,수불부,케이씨프레쉬">
+    <title>KCFEED 수불부</title>
+    <script src="{% static 'js/buttonLoader.min.js' %}"></script>
+    <link href="{% static 'css/buttonLoader.css' %}" rel="stylesheet">
+    <link href="{% static 'css/simple-line-icons/css/simple-line-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+<body class="app flex-row align-items-center">
+<div class="container">
+    <div class="row justify-content-center">
+        <h2>{{ productOrderPackings.0.productOrderCode.codeName }}</h2>
+
+        {% for productOrderPacking in productOrderPackings %}
+            <div class="col-md-6">
+                <div class="card-group">
+                    <div class="card p-4">
+                        <div class="card-body">
+                            <p class="text-muted">{{ productOrderPacking.orderLocationCodeName }}</p>
+                            <p class="text-muted">{{ productOrderPacking.boxCount}}</p>
+                            <p class="text-muted">{{ productOrderPacking.eaCount }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+
+    </div>
+</div>
+</body>
+</html>

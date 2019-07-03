@@ -15,7 +15,7 @@ from product.codeForms import ProductUnitPricesForm, SetProductMatchForm
 from product.models import ProductEgg, Product, ProductCode, ProductAdmin, ProductMaster, ProductOrder, \
     ProductOrderPacking
 from .forms import StepOneForm, StepTwoForm, StepThreeForm, StepFourForm, StepFourFormSet, MainForm, ProductOEMFormSet, \
-    ProductOEMForm
+    ProductOEMForm, ProductOrderForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
@@ -151,20 +151,29 @@ class ProductOrderList(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = 'product.change_product'
 
     def get(self, request):
-        return render(request, 'product/productOrder.html')
+        productOrderForm = ProductOrderForm()
+        return render(request, 'product/productOrder.html', {'productOrderForm': productOrderForm})
 
     def post(self, request):
         self.start_date = request.POST.get('start_date', None)
         self.end_date = request.POST.get('end_date', None)
         self.content_type = request.POST.get('content_type', None)
 
-        self.get_order()
-        self.set_productOrder()
+        if self.content_type:  # 주문기반 자동 생성
+            self.get_order()
+            self.set_productOrder()
+        else:
+            form = ProductOrderForm(request.POST)
+            if form.is_valid():
+                productOrder = form.save(commit=False)
+                productOrder.code = productOrder.productCode.code
+                productOrder.codeName = productOrder.productCode.codeName
+                productOrder.save()
 
         return HttpResponse(status=200)
 
     def get_order(self):
-        self.queryset = Order.objects.filter(ymd__gte=self.start_date).filter(ymd__lte=self.end_date)\
+        self.queryset = Order.objects.filter(ymd__gte=self.start_date).filter(ymd__lte=self.end_date) \
             .values('code', 'codeName', 'amount_kg') \
             .annotate(content_type=F('productCode__type')) \
             .annotate(calculation=F('productCode__calculation')) \
@@ -185,15 +194,16 @@ class ProductOrderList(LoginRequiredMixin, PermissionRequiredMixin, View):
                 codeName=query['codeName'],
                 amount=query['amount'],
                 count=query['count'],
-                productCode=productCode
+                productCode=productCode,
+                type=self.content_type
             )
 
             if query['amount_kg'] < Decimal(5):
                 self.calculate_box_without_location(query)
 
-            orders = Order.objects.values('code', 'codeName', 'orderLocationCode')\
-                .filter(ymd__gte='20190528').filter(ymd__lte='20190604').filter(code=query['code'])\
-                .filter(amount_kg__gte=Decimal(5))\
+            orders = Order.objects.values('code', 'codeName', 'orderLocationCode') \
+                .filter(ymd__gte='20190528').filter(ymd__lte='20190604').filter(code=query['code']) \
+                .filter(amount_kg__gte=Decimal(5)) \
                 .annotate(amount=Sum('amount')).annotate(count=Sum('count'))
 
             for order in orders:
@@ -241,6 +251,31 @@ class ProductOrderList(LoginRequiredMixin, PermissionRequiredMixin, View):
                 boxCount=mod,
                 eaCount=remainder
             )
+
+
+class ProductOrderPopup(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        productOrder = ProductOrder.objects.get(pk=pk)
+        productOrderPackings = ProductOrderPacking.objects.filter(productOrderCode=productOrder)
+        return render(request, 'product/popup_productOrder.html', {'productOrderPackings': productOrderPackings})
+
+    # def post(self, request):
+    #     self.start_date = request.POST.get('start_date', None)
+    #     self.end_date = request.POST.get('end_date', None)
+    #     self.content_type = request.POST.get('content_type', None)
+    #
+    #     if self.content_type: # 주문기반 자동 생성
+    #         self.get_order()
+    #         self.set_productOrder()
+    #     else:
+    #         form = ProductOrderForm(request.POST)
+    #         if form.is_valid():
+    #             productOrder = form.save(commit=False)
+    #             productOrder.code = productOrder.productCode.code
+    #             productOrder.codeName = productOrder.productCode.codeName
+    #             productOrder.save()
+    #
+    #     return HttpResponse(status=200)
 
 
 class ProductRecall(LogginMixin, View):

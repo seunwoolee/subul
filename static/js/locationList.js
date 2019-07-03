@@ -1,51 +1,55 @@
  fetch_data();
- function fetch_data(start_date='', end_date='')
- {
-    let type = $('.type_filter #id_type').val();
 
-    $('.datatable').DataTable().destroy();
+ function fetch_data(start_date = '', end_date = '') {
+     let type = $('.type_filter #id_type').val();
 
-    table = $('.datatable').DataTable({
-        "responsive": true,
-        "columnDefs": [
-            { responsivePriority: 1, targets: 0 },
-            { responsivePriority: 2, targets: -1, orderable: false },
-        ],
-        "language": {searchPlaceholder: "거래처명"},
-        "processing": true,
-        "serverSide": true,
-        "order" : [[0, "asc"]],
-        "ajax": {
-            "url": "/api/location/",
-            "type": "GET",
-            "data": {
-                start_date:start_date, end_date:end_date, type:type
-            }
-        },
-        "columns": [
-            {"data": "id"},
-            {"data": "codeName"},
-            {"data": "location_owner"},
-            {"data": "location_phone"},
-            {"data": "location_companyNumber"},
-            {"data": "location_address"},
-            {"data": "type_string"},
-            {"data": "character_string"},
-            {"data": "location_manager_string"},
-            {"data": null, "render": function(data, type, row, meta){return setDataTableActionButtonOnlyModify();}}
-        ],
-        dom: 'Bfrtip',
-        buttons: [
-                    {
-                        extend: 'excel',
-                        className:'btn btn-light',
-                        text : '<i class="far fa-file-excel fa-lg"></i>',
-                        init : function(api, node, config){
-                            $(node).removeClass('btn-secondary');
-                        }
-                    }],
-        lengthMenu : [[30, 50, -1], [30, 50, "All"]],
-    });
+     $('.datatable').DataTable().destroy();
+
+     table = $('.datatable').DataTable({
+         "responsive": true,
+         "columnDefs": [
+             {responsivePriority: 1, targets: 0},
+             {responsivePriority: 2, targets: -1, orderable: false},
+         ],
+         "language": {searchPlaceholder: "거래처명"},
+         "processing": true,
+         "serverSide": true,
+         "order": [[0, "asc"]],
+         "ajax": {
+             "url": "/api/location/",
+             "type": "GET",
+             "data": {
+                 start_date: start_date, end_date: end_date, type: type
+             }
+         },
+         "columns": [
+             {"data": "id"},
+             {"data": "codeName"},
+             {"data": "location_owner"},
+             {"data": "location_phone"},
+             {"data": "location_companyNumber"},
+             {"data": "location_address"},
+             {"data": "type_string"},
+             {"data": "character_string"},
+             {"data": "location_manager_string"},
+             {
+                 "data": null, "render": function (data, type, row, meta) {
+                     return setDataTableActionButtonOnlyModify();
+                 }
+             }
+         ],
+         dom: 'Bfrtip',
+         buttons: [
+             {
+                 extend: 'excel',
+                 className: 'btn btn-light',
+                 text: '<i class="far fa-file-excel fa-lg"></i>',
+                 init: function (api, node, config) {
+                     $(node).removeClass('btn-secondary');
+                 }
+             }],
+         lengthMenu: [[30, 50, -1], [30, 50, "All"]],
+     });
  }
 
 function editButtonClick(data)

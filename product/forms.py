@@ -1,9 +1,9 @@
 from django import forms
-from django.forms import formset_factory, DecimalField
+from django.forms import formset_factory
 
 from core.models import Location
 from django_select2.forms import Select2Widget
-from .models import ProductCode, ProductEgg, ProductMaster
+from .models import ProductCode, ProductMaster, ProductOrder
 
 
 class MainForm(forms.ModelForm):
@@ -322,7 +322,8 @@ class StepFourForm(forms.Form):
         super(StepFourForm, self).__init__(*args, **kwargs)
         self.fields['product'] = forms.ChoiceField(widget=Select2Widget,
                                                    choices=list(ProductCode.objects.values_list('code', 'codeName')
-                                                                .filter(delete_state='N').filter(oem='N').order_by('code')),
+                                                                .filter(delete_state='N').filter(oem='N').order_by(
+                                                       'code')),
                                                    required=False)
 
 
@@ -362,3 +363,52 @@ class ProductOEMForm(forms.Form):
 
 
 ProductOEMFormSet = formset_factory(ProductOEMForm)
+
+
+class ProductOrderForm(forms.ModelForm):
+    class Meta:
+        model = ProductOrder
+        fields = ('ymd', 'count', 'amount', 'type', 'productCode')
+        labels = {
+            'ymd': '일자',
+            'count': '수량',
+            'amount': '중량',
+            'type': '타입',
+            'productCode': '제품코드',
+        }
+        widgets = {
+            'productCode': Select2Widget(),
+        }
+
+    # def is_valid(self):
+    #     valid = super(ProductOrderForm, self).is_valid
+    #     print(valid)
+    #     return valid
+
+# product = forms.ChoiceField(widget=Select2Widget, choices=ProductCode.objects.none)
+# # packing = forms.ChoiceField(widget=Select2Widget, choices=PackingCode.objects.none)
+# count = forms.IntegerField(min_value=0, label='개수')
+# ymd = forms.DateField(label='날짜')
+# amount = forms.DecimalField(min_value=0, label='중량')
+# memo = forms.CharField(label='메모')
+# memo = forms.CharField(label='메모')
+# productCode = forms.CharField(widget=forms.HiddenInput())  # 생성 form
+# packingCode = forms.CharField(widget=forms.HiddenInput())  # 생성 form
+#
+# def __init__(self, *args, **kwargs):
+#     super(ProductOrderForm, self).__init__(*args, **kwargs)
+#     self.fields['product'] = forms.ChoiceField(widget=Select2Widget,
+#                                                choices=[('', '')] + list(
+#                                                    ProductCode.objects.values_list('id', 'codeName')
+#                                                        .filter(delete_state='N')))
+#     self.fields['packing'] = forms.ChoiceField(widget=Select2Widget,
+#                                                choices=[('', '')] + list(
+#                                                    PackingCode.objects.values_list('id', 'codeName')
+#                                                        .filter(delete_state='N')))
+
+
+# class EggOrderForm(forms.ModelForm):
+#
+#     class Meta:
+#         model = EggOrder
+#         fields = ('realCount', 'site_memo')

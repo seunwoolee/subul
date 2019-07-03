@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models.functions import Cast
+from django.http import QueryDict
 from model_utils import Choices
 
 from core.models import Code, Detail, Location, TimeStampedModel
@@ -692,6 +693,54 @@ class ProductOrder(Detail):
 
     def __str__(self):
         return self.codeName + '(' + self.ymd + ')'
+
+    @staticmethod
+    def productOrderListQuery(kwargs: QueryDict) -> dict:
+        ORDER_COLUMN_CHOICES = Choices(
+            ('0', 'id'),
+            ('1', 'ymd'),
+            ('2', 'type'),
+            ('3', 'display_state'),
+            ('4', 'code'),
+            ('5', 'codeName'),
+            ('6', 'count'),
+            ('7', 'amount'),
+            ('8', 'memo'),
+        )
+
+        draw = int(kwargs.get('draw', None))
+        start = int(kwargs.get('start', None))
+        length = int(kwargs.get('length', None))
+        search_value = kwargs.get('search[value]', None)
+        order_column = kwargs.get('order[0][column]', None)
+        order_column = ORDER_COLUMN_CHOICES[order_column]
+        order = kwargs.get('order[0][dir]', None)
+        start_date = kwargs.get('start_date', None)
+
+        queryset = ProductOrder.objects.filter(ymd=start_date).filter(display_state='Y')
+
+        total = queryset.count()
+
+        if order == 'desc':
+            order_column = '-' + order_column
+
+        if search_value:
+            queryset = queryset.filter(Q(memo__icontains=search_value) |
+                                       Q(codeName__icontains=search_value) |
+                                       Q(in_locationCodeName__icontains=search_value))
+
+        count = queryset.count()
+
+        if length != -1:
+            queryset = queryset.order_by(order_column)[start:start + length]
+        else:
+            queryset = queryset.order_by(order_column)
+        return {
+            'items': queryset,
+            'count': count,
+            'total': total,
+            'draw': draw
+        }
 
 
 class ProductOrderPacking(models.Model):

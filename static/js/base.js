@@ -143,6 +143,17 @@ function setDataTableActionButtonWithPdfRecall()
             '<button class="btn btn-success btn-sm RECALL" href="#"><i class="fas fa-undo-alt"></i></button>';
 }
 
+function orderDisplayButton(data)
+{
+    switch(data)
+    {
+        case 'Y':
+            return '<button class="btn btn-dark btn-sm"> 진행중</button>';
+        case 'N':
+            return '<button class="btn btn-danger btn-sm"> 마감 </button>';
+    }
+}
+
  $('.input-daterange input:text').datepicker({
   todayBtn:'linked',
   format: "yyyymmdd",

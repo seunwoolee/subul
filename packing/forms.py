@@ -33,10 +33,14 @@ class PackingForm(forms.Form):
         self.fields['location'] = forms.ChoiceField(widget=Select2Widget,
                                                     choices=[('', '')] + list(
                                                         Location.objects.values_list('code', 'codeName')
-                                                        .filter(type='01').filter(delete_state='N').order_by('code')))
+                                                            .filter(type='01').filter(delete_state='N').order_by(
+                                                            'code')))
         self.fields['product'] = forms.ChoiceField(widget=Select2Widget,
                                                    choices=[('', '')] + list(
                                                        PackingCode.objects.values_list('code', 'codeName')))
+
+
+PackingFormSet = formset_factory(PackingForm)
 
 
 class AutoPackingForm(forms.Form):
@@ -51,11 +55,8 @@ class AutoPackingForm(forms.Form):
         self.fields['product'] = forms.ChoiceField(widget=Select2Widget,
                                                    choices=[('', '')] + list(
                                                        ProductCode.objects.values_list('id', 'codeName')
-                                                       .filter(delete_state='N')))
+                                                           .filter(delete_state='N')))
         self.fields['packing'] = forms.ChoiceField(widget=Select2Widget,
                                                    choices=[('', '')] + list(
                                                        PackingCode.objects.values_list('id', 'codeName')
-                                                       .filter(delete_state='N')))
-
-
-PackingFormSet = formset_factory(PackingForm)
+                                                           .filter(delete_state='N')))

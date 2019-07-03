@@ -9,6 +9,7 @@ from api.locationSerializers import LocationSerializer
 from api.orderSerializers import OrderSerializer
 from api.packingSerializers import PackingSerializer
 from api.productOEMSerializers import ProductOEMSerializer
+from api.productOrderSerializers import ProductOrderSerializer
 from api.productUnitPriceSerializers import ProductUnitPriceListSerializer, SetProductMatchListSerializer
 from api.releaseSerializers import ReleaseSerializer
 from core.models import Location
@@ -17,7 +18,7 @@ from eventlog.models import LogginMixin
 from order.models import Order
 from packing.models import Packing, AutoPacking
 from product.models import Product, ProductEgg, ProductUnitPrice, \
-    SetProductMatch, SetProductCode, ProductCode, ProductAdmin
+    SetProductMatch, SetProductCode, ProductCode, ProductAdmin, ProductOrder
 from release.models import Release
 from .serializers import ProductSerializer, ProductEggSerializer, ProductUnitPriceSerializer, SetProductCodeSerializer, \
     ProductCodeSerializer, SetProductMatchSerializer
@@ -722,3 +723,27 @@ class EggOrderUpdate(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = EggOrder.objects.all()
     serializer_class = EggOrderSerializer
+
+
+class ProductOrderListAPIView(APIView):
+
+    def get(self, request):
+        try:
+            result = dict()
+            productOrder = ProductOrder.productOrderListQuery(request.query_params)
+            serializer = ProductOrderSerializer(productOrder['items'], many=True)
+            result['data'] = serializer.data
+            result['draw'] = productOrder['draw']
+            result['recordsTotal'] = productOrder['total']
+            result['recordsFiltered'] = productOrder['count']
+            return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+        except Exception as e:
+            return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+
+
+class ProductOrderUpdate(generics.RetrieveUpdateDestroyAPIView):
+    """
+    원란지시조회에서 Update, Delete를 칠때
+    """
+    queryset = ProductOrder.objects.all()
+    serializer_class = ProductOrderSerializer

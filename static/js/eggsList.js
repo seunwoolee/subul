@@ -415,7 +415,7 @@ function setStepFourDataTable(args)
         "columns": [
             {"data": "id"},
             {"data": "type", "render" : function(data, type, row, meta){return eggOrderTypeButton(data);}},
-            {"data": "display_state", "render" : function(data, type, row, meta){return eggOrderDisplayButton(data);}},
+            {"data": "display_state", "render" : function(data, type, row, meta){return orderDisplayButton(data);}},
             {"data": "in_ymd"},
             {"data": "codeName"},
             {"data": "in_locationCodeName"},
@@ -467,7 +467,6 @@ function setStepFourDataTable(args)
              $('td:eq(6)', row).html( set_yyyy_mm_dd(data.ymd) );
              $('td:eq(8)', row).css('color', 'red').css('font-weight','bold');
         }
-
     });
 }
 
@@ -496,18 +495,6 @@ function eggOrderTypeButton(data)
             return '<button class="btn btn-primary btn-sm">'+ data +'</button>';
     }
 }
-
-function eggOrderDisplayButton(data)
-{
-    switch(data)
-    {
-        case 'Y':
-            return '<button class="btn btn-dark btn-sm"> 진행중</button>';
-        case 'N':
-            return '<button class="btn btn-danger btn-sm"> 마감 </button>';
-    }
-}
-
 
 $(document).on('click', "#releaseEgg tbody tr", function()
 {
@@ -840,7 +827,6 @@ $('#delete_item').click( function () {
 $('#order').click( function (e) {
     e.preventDefault();
     let data = items_DataTable.$('input, select').serializeArray();
-    debugger;
     if(data.length > 0)
     {
         if (confirm("원란지시를 하시겠습니까?"))
