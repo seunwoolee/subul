@@ -74,7 +74,9 @@ function productOrderTypeButton(data) {
 
 $('#create').click(function () {
     let start_date = set_yyyymmdd($('#start_date').val());
-    let end_date = set_yyyymmdd(plusSeven_day);
+    let now = new Date($('#start_date').val());
+    let end_date = set_yyyymmdd(new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000)).yyyymmdd());
+
     let content_type = '난백난황';
     if (confirm(`${start_date} 생산지시를 하시겠습니까?`)) {
 
