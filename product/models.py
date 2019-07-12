@@ -42,8 +42,7 @@ class ProductCode(Code):
 
     CALCULATE_TYPE_CHOICES = (
         ('order', '주문'),
-        ('store', '주문재고'),
-        ('other', '수기'),
+        ('manual', '수기'),
     )
 
     type = models.CharField(
@@ -716,8 +715,9 @@ class ProductOrder(Detail):
         order_column = ORDER_COLUMN_CHOICES[order_column]
         order = kwargs.get('order[0][dir]', None)
         start_date = kwargs.get('start_date', None)
+        end_date = kwargs.get('end_date', None)
 
-        queryset = ProductOrder.objects.filter(ymd=start_date).filter(display_state='Y')
+        queryset = ProductOrder.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date)
 
         total = queryset.count()
 
@@ -726,8 +726,7 @@ class ProductOrder(Detail):
 
         if search_value:
             queryset = queryset.filter(Q(memo__icontains=search_value) |
-                                       Q(codeName__icontains=search_value) |
-                                       Q(in_locationCodeName__icontains=search_value))
+                                       Q(codeName__icontains=search_value))
 
         count = queryset.count()
 

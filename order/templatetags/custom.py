@@ -74,7 +74,6 @@ def lookup_vatPrice(d, key):
 
 @register.filter
 def lookup_releaseVat(d, key):
-
     try:
         result = d[key]["releaseVat"]
     except:
@@ -107,7 +106,7 @@ def lookup_amount(d, key):
 
 
 @register.filter
-def update_type(key , value):
+def update_type(key, value):
     key = value
     return key
 
@@ -115,3 +114,8 @@ def update_type(key , value):
 @register.filter
 def to_yyyy_mm_dd(yyyymmdd):
     return f'{yyyymmdd[0:4]}-{yyyymmdd[4:6]}-{yyyymmdd[6:8]}'
+
+
+@register.filter
+def for_loop(number):
+    return range(number)

@@ -15,7 +15,7 @@ from product.codeForms import ProductUnitPricesForm, SetProductMatchForm
 from product.models import ProductEgg, Product, ProductCode, ProductAdmin, ProductMaster, ProductOrder, \
     ProductOrderPacking
 from .forms import StepOneForm, StepTwoForm, StepThreeForm, StepFourForm, StepFourFormSet, MainForm, ProductOEMFormSet, \
-    ProductOEMForm, ProductOrderForm
+    ProductOEMForm, ProductOrderForm, ProductOrderPackingForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
@@ -159,8 +159,6 @@ class ProductOrderList(LoginRequiredMixin, PermissionRequiredMixin, View):
         self.end_date = request.POST.get('end_date', None)
         self.content_type = request.POST.get('content_type', None)
 
-        print(self.start_date, self.end_date)
-
         if self.content_type:  # 주문기반 자동 생성
             self.get_order()
             self.set_productOrder()
@@ -172,11 +170,13 @@ class ProductOrderList(LoginRequiredMixin, PermissionRequiredMixin, View):
                 productOrder.codeName = productOrder.productCode.codeName
                 productOrder.save()
 
+                self.calculate_box_without_location(productOrder)
+
         return HttpResponse(status=200)
 
     def get_order(self):
         self.queryset = Order.objects.filter(ymd__gte=self.start_date).filter(ymd__lte=self.end_date) \
-            .values('code', 'codeName', 'amount_kg') \
+            .filter(productCode__calculation='order').values('code', 'codeName', 'amount_kg') \
             .annotate(content_type=F('productCode__type')) \
             .annotate(calculation=F('productCode__calculation')) \
             .annotate(amount=Sum('amount')) \
@@ -201,7 +201,7 @@ class ProductOrderList(LoginRequiredMixin, PermissionRequiredMixin, View):
             )
 
             if query['amount_kg'] < Decimal(5):
-                self.calculate_box_without_location(query)
+                self.calculate_box_without_location(self.productOrder)
 
             orders = Order.objects.values('code', 'codeName', 'orderLocationCode') \
                 .filter(ymd__gte=self.start_date).filter(ymd__lte=self.end_date).filter(code=query['code']) \
@@ -236,20 +236,20 @@ class ProductOrderList(LoginRequiredMixin, PermissionRequiredMixin, View):
         #     mod, remainder = divmod(int(order['amount']), count)
         #     print(mod, remainder)
 
-    def calculate_box_without_location(self, order):
+    def calculate_box_without_location(self, productOrder):
         """
          5kg미만 제품 그냥 상자 +kg
-        :param order:
+        :param productOrder:
         :return:
         """
-        productCode = ProductCode.objects.get(code=order['code'])
+        productCode = ProductCode.objects.get(code=productOrder.code)
         autoPacking = AutoPacking.objects.filter(productCode=productCode).filter(packingCode__type='외포장재').first()
 
         if autoPacking:
             count = autoPacking.count
-            mod, remainder = divmod(order['count'], count)
+            mod, remainder = divmod(productOrder.count, count)
             ProductOrderPacking.objects.create(
-                productOrderCode=self.productOrder,
+                productOrderCode=productOrder,
                 boxCount=mod,
                 eaCount=remainder
             )
@@ -259,7 +259,26 @@ class ProductOrderPopup(LoginRequiredMixin, View):
     def get(self, request, pk):
         productOrder = ProductOrder.objects.get(pk=pk)
         productOrderPackings = ProductOrderPacking.objects.filter(productOrderCode=productOrder)
-        return render(request, 'product/popup_productOrder.html', {'productOrderPackings': productOrderPackings})
+        data = {'productOrderPackings': productOrderPackings, 'form': ProductOrderPackingForm}
+        return render(request, 'product/popup_productOrder.html', data)
+
+
+class ProductOrderFinish(LogginMixin, LoginRequiredMixin, View):
+    def post(self, request):
+        data = request.POST.dict()
+        self.log(
+            user=request.user,
+            action="생산지시서 마감",
+            obj=ProductOrder.objects.first(),
+            extra=data
+        )
+
+        productOrders = ProductOrder.objects.filter(ymd__gte=data['start_date']).filter(ymd__lte=data['end_date'])
+        for productOrder in productOrders:
+            productOrder.display_state = 'N'
+            productOrder.save()
+
+        return HttpResponse(status=200)
 
 
 class ProductRecall(LogginMixin, View):

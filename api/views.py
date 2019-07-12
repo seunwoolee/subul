@@ -9,7 +9,7 @@ from api.locationSerializers import LocationSerializer
 from api.orderSerializers import OrderSerializer
 from api.packingSerializers import PackingSerializer
 from api.productOEMSerializers import ProductOEMSerializer
-from api.productOrderSerializers import ProductOrderSerializer
+from api.productOrderSerializers import ProductOrderSerializer, ProductOrderPackingSerializer
 from api.productUnitPriceSerializers import ProductUnitPriceListSerializer, SetProductMatchListSerializer
 from api.releaseSerializers import ReleaseSerializer
 from core.models import Location
@@ -18,7 +18,7 @@ from eventlog.models import LogginMixin
 from order.models import Order
 from packing.models import Packing, AutoPacking
 from product.models import Product, ProductEgg, ProductUnitPrice, \
-    SetProductMatch, SetProductCode, ProductCode, ProductAdmin, ProductOrder
+    SetProductMatch, SetProductCode, ProductCode, ProductAdmin, ProductOrder, ProductOrderPacking
 from release.models import Release
 from .serializers import ProductSerializer, ProductEggSerializer, ProductUnitPriceSerializer, SetProductCodeSerializer, \
     ProductCodeSerializer, SetProductMatchSerializer
@@ -747,3 +747,11 @@ class ProductOrderUpdate(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = ProductOrder.objects.all()
     serializer_class = ProductOrderSerializer
+
+
+class ProductOrderPackingUpdate(generics.RetrieveUpdateDestroyAPIView):
+    """
+    생산지시서-팝업창에서 Update, Delete를 칠때
+    """
+    queryset = ProductOrderPacking.objects.all()
+    serializer_class = ProductOrderPackingSerializer

@@ -307,6 +307,7 @@ $('#manualRelease').on('submit', function (e) {
     e.preventDefault();
     $this = $(this);
     $this.find("button[type='submit']").prop("disabled", true);
+    setTimeout(function () { $this.find("button[type='submit']").prop("disabled", false);}, 1000);
     let count = parseInt($this.find('#id_count').val());
     let type = $this.find('#id_type').val();
     let totalCount = parseInt($this.find('#id_totalCount').val());
@@ -334,28 +335,33 @@ $('#manualRelease').on('submit', function (e) {
 
 $('#orderReleaseButton').click(function () {
     let button = $(this);
-    button.prop("disabled", true);
-    let len = $("#orderRelease tbody tr").length;
-    let url = '/release/';
-    for (let i = 0; i < len; i++) {
-        let count = $("#orderRelease tbody tr:eq(" + i + ")").find('.count').val();
-        let ymd = $("#orderRelease tbody tr:eq(" + i + ")").find('input[name="ymd"]').val();
-        if (ymd.length === 8 && count.length > 0) {
-            let data = $("#orderRelease tbody tr:eq(" + i + ") :input").serialize();
-            let request = $.ajax({
-                url: url,
-                type: 'post',
-                data: data,
-            }).done(function (data) {
-                $(".everyModal").modal('hide');
-                $('#orderDatatable').DataTable().search($("input[type='search']").val()).draw();
-            }).fail(function () {
-                alert('수정 에러 전산실로 문의바랍니다.');
-            }).always(function () {
-                button.prop("disabled", false);
-            });
+    let form = button.closest('form');
+    if (form[0].checkValidity()) {
+        button.prop("disabled", true);
+        setTimeout(function () { button.attr('disabled', false);}, 1000);
+        let len = $("#orderRelease tbody tr").length;
+        let url = '/release/';
+        for (let i = 0; i < len; i++) {
+            let count = $("#orderRelease tbody tr:eq(" + i + ")").find('.count').val();
+            let ymd = $("#orderRelease tbody tr:eq(" + i + ")").find('input[name="ymd"]').val();
+            if (ymd.length === 8 && count.length > 0) {
+                let data = $("#orderRelease tbody tr:eq(" + i + ") :input").serialize();
+                let request = $.ajax({
+                    url: url,
+                    type: 'post',
+                    data: data,
+                }).done(function (data) {
+                    $(".everyModal").modal('hide');
+                    $('#orderDatatable').DataTable().search($("input[type='search']").val()).draw();
+                }).fail(function () {
+                    alert('수정 에러 전산실로 문의바랍니다.');
+                })
+            }
         }
+    } else {
+        alert('출하량, 출하수량을 확인해주세요');
     }
+
 });
 
 function setDatePicker() {
@@ -386,8 +392,8 @@ function setOrderReleaseTrModal(data, row) {
                  <td data-title="생산일">${row['productYmd']}</td>
                  <td data-title="재고량(KG)">${row['totalAmount']}</td>
                  <td data-title="재고수량(EA)">${row['totalCount']}</td>
-                 <td data-title="출하량(KG)"><input type="float" name="amount" class="form-control amount"></td>
-                 <td data-title="출하수량(EA)"><input type="number" name="count" class="form-control count"></td>
+                 <td data-title="출하량(KG)"><input type="float" name="amount" class="form-control amount" step="0.01" max=${row['totalAmount']}></td>
+                 <td data-title="출하수량(EA)"><input type="number" name="count" class="form-control count" max=${row['totalCount']}></td>
                  <td data-title="출고일자"><input type="text" name="ymd" class="form-control datepicker"></td>
             </tr>`;
 }
@@ -459,11 +465,7 @@ function manualReleaseAjax(url, data) {
         $('.datatable').DataTable().search($("input[type='search']").val()).draw();
     }).fail(function () {
         alert('수정 에러 전산실로 문의바랍니다.');
-    }).always(function () {
-        $('#manualRelease').find("button[type='submit']").prop("disabled", false);
     });
-
-
 }
 
 $("#datepicker").datepicker({

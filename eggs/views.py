@@ -59,7 +59,7 @@ class EggReg(LogginMixin, LoginRequiredMixin, View):
                     eggCode=eggCode,
                 )
         else:
-            log(
+            self.log(
                 user=request.user,
                 action="원란등록에러",
                 obj=Egg.objects.first(),

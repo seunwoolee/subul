@@ -14,7 +14,7 @@ td:nth-child(-n+5)
 }
 
 .django-select2 {
-    width: 14em;
+    width: 20em;
 }
 
 /* 하단 생산등록 시작 */

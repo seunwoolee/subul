@@ -1,7 +1,7 @@
  var LOCATION_MANAGER = false;
  $('#start_date').val(end_day);
  $('#end_date').val(plusThree_day);
-fetch_data(end_day, plusThree_day);
+ fetch_data(end_day, plusThree_day);
  function fetch_data(start_date='', end_date='')
  {
     start_date = set_yyyymmdd(start_date);

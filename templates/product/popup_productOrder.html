@@ -1,5 +1,7 @@
 ﻿{% load staticfiles %}
 {% load static %}
+{% load crispy_forms_tags %}
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,32 +14,125 @@
     <meta name="author" content="이승우">
     <meta name="keyword" content="케이씨피드,수불부,케이씨프레쉬">
     <title>KCFEED 수불부</title>
+    <script src="{% static 'js/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'popper.js/dist/umd/popper.min.js' %}"></script>
+    <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static '@coreui/coreui-pro/dist/js/coreui.min.js' %}"></script>
+
+
     <script src="{% static 'js/buttonLoader.min.js' %}"></script>
+    <script src="{% static 'js/popup_productOrder.js' %}"></script>
     <link href="{% static 'css/buttonLoader.css' %}" rel="stylesheet">
     <link href="{% static 'css/simple-line-icons/css/simple-line-icons.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/fontawesome/css/all.css' %}" rel="stylesheet">
+
 </head>
 <body class="app flex-row align-items-center">
 <div class="container">
     <div class="row justify-content-center">
-        <h2>{{ productOrderPackings.0.productOrderCode.codeName }}</h2>
+        <div class="col-md-6">
+            <div class="card-group">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="/api/productOrder/{{ productOrderPackings.0.productOrderCode.id }}">
+                            <h2>{{ productOrderPackings.0.productOrderCode.codeName }}</h2>
+                            <label for="id_memo" class="col-form-label">메모</label>
+                            {% if productOrderPackings.0.productOrderCode.memo %}
+                                <textarea id="id_memo" name="memo" class="form-control" rows="2">{{ productOrderPackings.0.productOrderCode.memo }}</textarea>
+                            {% else %}
+                                <textarea name="memo" class="form-control" rows="2"></textarea>
+                            {% endif %}
+                            <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="patch"/>
+                            <button type="submit" class="btn btn-sm btn-primary mt-2 MODIFY-PARENT">OK</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
 
         {% for productOrderPacking in productOrderPackings %}
             <div class="col-md-6">
                 <div class="card-group">
-                    <div class="card p-4">
+                    <div class="card">
                         <div class="card-body">
-                            <p class="text-muted">{{ productOrderPacking.orderLocationCodeName }}</p>
-                            <p class="text-muted">{{ productOrderPacking.boxCount}}</p>
-                            <p class="text-muted">{{ productOrderPacking.eaCount }}</p>
+                            {% if productOrderPacking.orderLocationCodeName %}
+                                <div data-id={{ productOrderPacking.id }}
+                                             data-boxCount={{ productOrderPacking.boxCount }}
+                                     data-eaCount={{ productOrderPacking.eaCount }}>
+                                    <b>{{ productOrderPacking.orderLocationCodeName }}</b>
+                                    <span class="boxCount">{{ productOrderPacking.boxCount }}<span> Box
+                                        <span class="eaCount">{{ productOrderPacking.eaCount }}<span> EA
+                                    <button class="btn btn-danger btn-sm REMOVE">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                    <button class="btn btn-info btn-sm MODIFY">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                </div>
+                            {% else %}
+                                <div data-id={{ productOrderPacking.id }}
+                                             data-boxCount={{ productOrderPacking.boxCount }}
+                                     data-eaCount={{ productOrderPacking.eaCount }}>
+                                        <span class="boxCount">{{ productOrderPacking.boxCount }}<span> Box
+                                        <span class="eaCount">{{ productOrderPacking.eaCount }}<span> EA
+                                    <button class="btn btn-info btn-sm MODIFY">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
         {% endfor %}
 
-
     </div>
 </div>
+
+<!-- EDIT Modal -->
+<div class="modal fade everyModal" id="modifyModal" role="dialog">
+    <div class="modal-dialog modal-primary">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title codeName">수정</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    {{ form.boxCount|as_crispy_field }}
+                    {{ form.eaCount|as_crispy_field }}
+                    <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="patch"/>
+                    <button type="submit" class="btn btn-primary">OK</button>
+                    <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--Delete Modal -->
+<div class="modal fade everyModal" role="dialog" id="confirm">
+    <div class="modal-dialog  modal-danger">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">데이터를 삭제 하시겠습니까?</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="delete"/>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

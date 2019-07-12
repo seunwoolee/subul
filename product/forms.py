@@ -3,7 +3,7 @@ from django.forms import formset_factory
 
 from core.models import Location
 from django_select2.forms import Select2Widget
-from .models import ProductCode, ProductMaster, ProductOrder
+from .models import ProductCode, ProductMaster, ProductOrder, ProductOrderPacking
 
 
 class MainForm(forms.ModelForm):
@@ -368,47 +368,26 @@ ProductOEMFormSet = formset_factory(ProductOEMForm)
 class ProductOrderForm(forms.ModelForm):
     class Meta:
         model = ProductOrder
-        fields = ('ymd', 'count', 'amount', 'type', 'productCode')
+        fields = ('ymd', 'count', 'amount', 'type', 'memo', 'productCode')
         labels = {
             'ymd': '일자',
             'count': '수량',
             'amount': '중량',
             'type': '타입',
+            'memo': '메모',
             'productCode': '제품코드',
         }
         widgets = {
             'productCode': Select2Widget(),
+            'memo': forms.Textarea(attrs={'rows':2}),
         }
 
-    # def is_valid(self):
-    #     valid = super(ProductOrderForm, self).is_valid
-    #     print(valid)
-    #     return valid
 
-# product = forms.ChoiceField(widget=Select2Widget, choices=ProductCode.objects.none)
-# # packing = forms.ChoiceField(widget=Select2Widget, choices=PackingCode.objects.none)
-# count = forms.IntegerField(min_value=0, label='개수')
-# ymd = forms.DateField(label='날짜')
-# amount = forms.DecimalField(min_value=0, label='중량')
-# memo = forms.CharField(label='메모')
-# memo = forms.CharField(label='메모')
-# productCode = forms.CharField(widget=forms.HiddenInput())  # 생성 form
-# packingCode = forms.CharField(widget=forms.HiddenInput())  # 생성 form
-#
-# def __init__(self, *args, **kwargs):
-#     super(ProductOrderForm, self).__init__(*args, **kwargs)
-#     self.fields['product'] = forms.ChoiceField(widget=Select2Widget,
-#                                                choices=[('', '')] + list(
-#                                                    ProductCode.objects.values_list('id', 'codeName')
-#                                                        .filter(delete_state='N')))
-#     self.fields['packing'] = forms.ChoiceField(widget=Select2Widget,
-#                                                choices=[('', '')] + list(
-#                                                    PackingCode.objects.values_list('id', 'codeName')
-#                                                        .filter(delete_state='N')))
-
-
-# class EggOrderForm(forms.ModelForm):
-#
-#     class Meta:
-#         model = EggOrder
-#         fields = ('realCount', 'site_memo')
+class ProductOrderPackingForm(forms.ModelForm):
+    class Meta:
+        model = ProductOrderPacking
+        fields = ('boxCount', 'eaCount')
+        labels = {
+            'boxCount': 'Box량',
+            'eaCount': 'ea수량',
+        }

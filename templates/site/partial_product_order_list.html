@@ -1,40 +1,66 @@
 {% load humanize %}
 {% load custom %}
+{% load mathfilters %}
 
 {% for productOrder in productOrders %}
     <div class="row" data-id={{ productOrder.id }}>
-        <div class="cell cellRight textCenter" data-title="제품명" >
-            <div style="width : 250px;">{{ productOrder.codeName }}</div>
-            <div>{{ productOrder.amount| stringformat:'d' }}KG / {{ productOrder.count }}개</div>
-        </div>
+            <div class="cell cellRight textCenter" data-title="제품명">
+                <div style="width : 250px;">{{ productOrder.codeName }}</div>
+                <div>{{ productOrder.amount| stringformat:'d' }}KG / {{ productOrder.count }}개</div>
+            </div>
 
-        {% for detail in productOrder.detail.all %}
-            {% if detail.orderLocationCode %}
-                {% if detail.eaCount %}
-                    <div class="cell cellRight" data-title="개수">
-                        <div class="textCenter" style=" width: 10rem;">{{ detail.boxCount }}Box + {{  detail.eaCount}}Ea</div> <hr />
-                        <div class="textCenter" style="width: 10rem;">{{ detail.orderLocationCodeName }}</div>
-                    </div>
+
+            {% for detail in productOrder.detail.all %}
+
+                {% if detail.orderLocationCode %}
+                    {% if detail.eaCount %}
+                        <div class="cell cellRight" data-title="개수">
+                            <div class="textCenter" style=" width: 10rem;">{{ detail.boxCount }}Box + {{  detail.eaCount}}Ea</div> <hr />
+                            <div class="textCenter" style="width: 10rem;">{{ detail.orderLocationCodeName }}</div>
+                        </div>
+                    {% else %}
+                        <div class="cell cellRight" data-title="개수">
+                            <div class="textCenter" style="width: 10rem;">{{ detail.boxCount }} Box</div> <hr />
+                            <div class="textCenter" style="width: 10rem;">{{ detail.orderLocationCodeName }}</div>
+                        </div>
+                    {% endif %}
                 {% else %}
-                    <div class="cell cellRight" data-title="개수">
-                        <div class="textCenter" style="width: 10rem;">{{ detail.boxCount }} Box</div> <hr />
-                        <div class="textCenter" style="width: 10rem;">{{ detail.orderLocationCodeName }}</div>
-                    </div>
+                    {% if detail.eaCount %}
+                        <div class="cell cellRight" data-title="개수">
+                            <div class="textCenter" style=" width: 10rem;">{{ detail.boxCount }}Box + {{  detail.eaCount}}Ea</div> <hr />
+                            <div class="textCenter" style="width: 10rem;">{{ productOrder.amount| stringformat:'d' }}KG</div>
+                        </div>
+                    {% else %}
+                        <div class="cell cellRight" data-title="개수">
+                            <div class="textCenter" style="width: 10rem;">{{ detail.boxCount }} Box</div> <hr />
+                            <div class="textCenter" style="width: 10rem;">{{ productOrder.amount| stringformat:'d' }}KG</div>
+                        </div>
+                    {% endif %}
                 {% endif %}
-            {% else %}
-                {% if detail.eaCount %}
-                    <div class="cell cellRight" data-title="개수">
-                        <div class="textCenter" style=" width: 10rem;">{{ detail.boxCount }}Box + {{  detail.eaCount}}Ea</div> <hr />
-                        <div class="textCenter" style="width: 10rem;">{{ productOrder.amount| stringformat:'d' }}KG</div>
-                    </div>
+
+
+                {% if forloop.counter == productOrder.detail.all.count %}
+                    {% if productOrder.detail.all.count < max_count %}
+                        {% for i in max_count|sub:productOrder.detail.all.count|for_loop %}
+                            <div class="cell cellRight" data-title="개수">
+                                <div class="textCenter" style="width: 10rem;">&nbsp</div> <hr />
+                                <div class="textCenter" style="width: 10rem;">&nbsp</div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endif %}
+
+            {% endfor%}
+
+            <div class="cell cellMemo" data-title="개수">
+                <div class="textCenter" style=" width: 20rem;">{{ productOrder.expire_memo }}</div> <hr />
+                {% if productOrder.memo %}
+                    <div class="textCenter" style="width: 20rem;">{{ productOrder.memo }}</div>
                 {% else %}
-                    <div class="cell cellRight" data-title="개수">
-                        <div class="textCenter" style="width: 10rem;">{{ detail.boxClunt }} Box</div> <hr />
-                        <div class="textCenter" style="width: 10rem;">{{ productOrder.amount| stringformat:'d' }}KG</div>
-                    </div>
+                    <div class="textCenter" style="width: 20rem;">&nbsp;</div>
                 {% endif %}
-            {% endif %}
-        {% endfor%}
+            </div>
+
     </div>
 {% empty %}
     <div class="row" data-id={{ egg.id }}>

@@ -204,7 +204,19 @@ iframe {
     font-weight: unset !important;
     padding-top: 10px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #f2f2f2;
+    border-bottom: 4px solid #44b1f2;
+    border-right: 1px solid #f2f2f2;
+}
+
+.row .cellMemo {
+    font-family: Poppins-Regular;
+    font-size: 17px;
+    color: #003966;
+    line-height: 1.2;
+    font-weight: 800 !important;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 4px solid #44b1f2;
     border-right: 1px solid #f2f2f2;
 }
 

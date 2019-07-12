@@ -1,8 +1,10 @@
 $('#start_date').val(end_day);
+$('#end_date').val(plusSeven_day);
 
 function fetch_data(start_date = '', end_date = '') {
 
-    start_date = set_yyyymmdd($('#start_date').val());
+    start_date = set_yyyymmdd(start_date);
+    end_date = set_yyyymmdd(end_date);
 
     $('.datatable').DataTable().destroy();
 
@@ -19,7 +21,7 @@ function fetch_data(start_date = '', end_date = '') {
         "ajax": {
             "url": "/api/productOrder/",
             "type": "GET",
-            "data": {start_date: start_date}
+            "data": {'start_date': start_date, 'end_date': end_date}
         },
         "select": true,
         "columns": [
@@ -42,7 +44,7 @@ function fetch_data(start_date = '', end_date = '') {
             {"data": "memo"},
             {
                 "data": null, "render": function (data, type, row, meta) {
-                    return setDataTableActionButtonOnlyDelete();
+                    return setDataTableActionButton();
                 }
             }
         ],
@@ -74,10 +76,9 @@ function productOrderTypeButton(data) {
 
 $('#create').click(function () {
     let start_date = set_yyyymmdd($('#start_date').val());
-    let now = new Date($('#start_date').val());
-    let end_date = set_yyyymmdd(new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000)).yyyymmdd());
-
+    let end_date = set_yyyymmdd($('#end_date').val());
     let content_type = '난백난황';
+
     if (confirm(`${start_date} 생산지시를 하시겠습니까?`)) {
 
         if (confirm(`전란 생산을 지시하시겠습니까`)) {
@@ -128,6 +129,27 @@ $('.close-button').click(function () {
     $('#createForm').css('display', 'none');
 });
 
+$('#finish').click(function () {
+    let start_date = $('#start_date').val();
+    let end_date = $('#end_date').val();
+    let answer = confirm(`${start_date} ~ ${end_date}의 데이터를 마감 하시겠습니까?`);
+    if (answer) {
+        start_date = set_yyyymmdd(start_date);
+        end_date = set_yyyymmdd(end_date);
+        let data = `start_date=${start_date}&end_date=${end_date}`;
+        $.ajax({
+        url: 'product/order/finish',
+        type: 'post',
+        data: data,
+        }).done(function(data) {
+            alert('완료');
+            $('.datatable').DataTable().search($("input[type='search']").val()).draw();
+        }).fail(function() {
+            alert('오류발생! 전산실로 연락 바랍니다.');
+        });
+    }
+});
+
 $("#id_ymd").datepicker({
     autoclose: true,
     todayHighlight: true,
@@ -172,8 +194,7 @@ $('.has-spinner').click(function () {
     }
 });
 
-$('.datatable tbody').on('click', 'tr', function () {
-    let data = table.row(this).data();
-    // alert('You clicked on ' + data['id'] + '\'s row');
+function editButtonClick(data)
+{
     window.open(`/product/order/popup/${data['id']}`, "PopupWin", "width=530,height=700");
-});
+}
