@@ -3,12 +3,12 @@
     padding : 0.1rem 0.3rem;
 }
 
-td
+.datatable td
 {
     padding : 0.45rem !important;
 }
 
-td:nth-child(-n+5)
+.datatable td:nth-child(-n+5)
 {
     text-align: center;
 }

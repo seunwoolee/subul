@@ -1,5 +1,6 @@
 {% load staticfiles %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,8 +11,12 @@
 
     <link href="{% static 'css/coreui-icons.min.css' %}" rel="stylesheet">
     <link href="{% static 'bootstrap/dist/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css/select2/css/select2.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/fontawesome/css/all.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/buttonLoader.css' %}" rel="stylesheet">
+    <link href="{% static 'css/datepicker/bootstrap-datepicker.css' %}" rel="stylesheet">
+
 
     <link rel="stylesheet" type="text/css" href="{% static 'site/css/util.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'site/css/product_main.css' %}">
@@ -38,15 +43,38 @@
         </div>
     </div>
 </div>
+
+<button class="open-button">생산등록</button>
+
+<div class="form-popup" id="createForm">
+    <form class="form-container">
+        <h1>생산등록</h1>
+        {{ productOrderForm.ymd|as_crispy_field }}
+        <table>
+            <tr>
+                <td colspan="2">{{ productOrderForm.productCode|as_crispy_field }}</td>
+            </tr>
+            <tr>
+                <td>{{ productOrderForm.count|as_crispy_field }}</td>
+                <td>{{ productOrderForm.amount|as_crispy_field }}</td>
+            </tr>
+        </table>
+        {{ productOrderForm.type|as_crispy_field }}
+        {{ productOrderForm.memo|as_crispy_field }}
+        <button type="submit" class="btn btn-default has-spinner">OK</button>
+        <button type="button" class="btn cancel close-button">Close</button>
+    </form>
 </div>
 
 
 </body>
 
 <script src="{% static 'js/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'js/custom/datepicker.js' %}"></script>
+<script src="{% static 'js/buttonLoader.min.js' %}"></script>
 <script src="{% static 'popper.js/dist/umd/popper.min.js' %}"></script>
 <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'site/js/product_index.js' %}"></script>
-
+    {{ productOrderForm.media.js }}
 </html>
 

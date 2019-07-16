@@ -380,6 +380,8 @@ class ProductOrderForm(forms.ModelForm):
         widgets = {
             'productCode': Select2Widget(),
             'memo': forms.Textarea(attrs={'rows':2}),
+            'count': forms.NumberInput(attrs={'class':'count'}),
+            'amount': forms.NumberInput(attrs={'class':'amount'}),
         }
 
 

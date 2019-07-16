@@ -138,13 +138,13 @@ $('#finish').click(function () {
         end_date = set_yyyymmdd(end_date);
         let data = `start_date=${start_date}&end_date=${end_date}`;
         $.ajax({
-        url: 'product/order/finish',
-        type: 'post',
-        data: data,
-        }).done(function(data) {
+            url: 'product/order/finish',
+            type: 'post',
+            data: data,
+        }).done(function (data) {
             alert('완료');
             $('.datatable').DataTable().search($("input[type='search']").val()).draw();
-        }).fail(function() {
+        }).fail(function () {
             alert('오류발생! 전산실로 연락 바랍니다.');
         });
     }
@@ -172,6 +172,7 @@ $("#createForm form").submit(function (e) {
         $('#id_ymd').val('');
         $('#id_count').val('');
         $('#id_amount').val('');
+        $('#id_memo').val('');
         $('.django-select2').val('');
         $('.django-select2').trigger('change');
         $('.datatable').DataTable().search($("input[type='search']").val()).draw();
@@ -194,7 +195,31 @@ $('.has-spinner').click(function () {
     }
 });
 
-function editButtonClick(data)
-{
+function editButtonClick(data) {
     window.open(`/product/order/popup/${data['id']}`, "PopupWin", "width=530,height=700");
 }
+
+AMOUNT_KG = {};
+$("#id_productCode").change(function () {
+
+    if ($(this).val()) {
+        let pk = $(this).val();
+
+        $.ajax({
+            url: '/api/productCodeByPk/' + pk,
+            type: 'get',
+        }).done(function (data) {
+            window.AMOUNT_KG = {"AMOUNT_KG": data["amount_kg"]};
+            console.log(window.AMOUNT_KG);
+        }).fail(function () {
+            alert('수정 에러 전산실로 문의바랍니다.');
+        });
+    }
+});
+
+$(".amount").focusout(function () {
+    setAutoCountValue($(this));
+});
+$(".count").focusout(function () {
+    setAutoAmountValue($(this));
+});

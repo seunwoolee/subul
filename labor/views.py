@@ -13,6 +13,7 @@ from labor.forms import EggOrderForm
 
 
 # @method_decorator(csrf_exempt, name='dispatch')
+from product.forms import ProductOrderForm
 from product.models import ProductOrder
 
 
@@ -70,7 +71,8 @@ class SiteProductOrder(LoginRequiredMixin, View):
         if request.is_ajax():
             return JsonResponse(self.data)
         else:
-            data = {'productOrders': self.productOrders, 'max_count': self.max_count}
+            productOrderForm = ProductOrderForm()
+            data = {'productOrders': self.productOrders, 'max_count': self.max_count, 'productOrderForm': productOrderForm}
             return render(request, 'site/product_index.html', data)
 
     def get_query(self):
@@ -85,3 +87,9 @@ class SiteProductOrder(LoginRequiredMixin, View):
     def get_product_list(self):
         data = {'productOrders': self.productOrders, 'max_count': self.max_count}
         self.data['list'] = render_to_string('site/partial_product_order_list.html', data, request=self.request)
+
+
+class PWA(View):
+
+    def get(self, request):
+        return render(request, 'site/product_index.html')

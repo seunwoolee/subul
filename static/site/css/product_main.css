@@ -236,36 +236,6 @@ iframe {
     padding-left: 10px;
 }
 
-
-/*
-.row .cell:nth-child(2) {
-    width: 130px;
-    padding-left: 10px;
-}
-
-.row .cell:nth-child(3) {
-    width: 110px;
-    padding-left: 10px;
-}
-
-.row .cell:nth-child(4) {
-    width: 90px;
-    padding-left: 10px;
-}
-
-.row .cell:nth-child(5) {
-    padding-left: 10px;
-}
-
-.row .cell:nth-child(6) {
-    padding-left: 10px;
-}
-
-.row .cell:nth-child(7) {
-    padding-left: 10px;
-}
-*/
-
 .table, .row {
     width: 100% !important;
 }

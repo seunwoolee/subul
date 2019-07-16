@@ -177,6 +177,20 @@ class ProductCodes(APIView):
         return Response(serializer.data)
 
 
+class ProductCodeByPk(APIView):
+
+    def get_object(self, pk):
+        try:
+            return ProductCode.objects.get(pk=pk)
+        except ProductCode.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        productCode = self.get_object(pk)
+        serializer = ProductCodeSerializer(productCode)
+        return Response(serializer.data)
+
+
 class ProductEggUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
     '''
     생산내역 조회에서 Update, Delete를 칠때
