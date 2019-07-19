@@ -135,7 +135,7 @@ PWA_APP_DESCRIPTION = "수불부"
 # PWA_APP_DISPLAY = 'standalone'
 # PWA_APP_SCOPE = '/',
 # PWA_APP_ORIENTATION = 'any'
-PWA_APP_START_URL = '/labor/product'
+PWA_APP_START_URL = '/labor/nav'
 PWA_APP_ICONS = [
     {
         'src': '/static/favicon/android-icon-192x192.png',

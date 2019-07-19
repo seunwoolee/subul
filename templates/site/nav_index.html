@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>PWA</title>
+    <title>생산현장</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -14,21 +14,36 @@
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
     <link rel="stylesheet" type="text/css" href="{% static 'site/css/util.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'site/css/product_main.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'site/css/nav_index.css' %}">
 </head>
 <body>
 
-<div class="limiter">
-    <div class="container-table100">
-        <div class="wrap-table100">
-            <div class="table">
+<section class="strips">
 
-            dddd
-
+    <article class="strips__strip">
+        <a href="/labor/egg">
+            <div class="strip__content">
+                <h1 class="strip__title" data-name="Lorem">원란지시서</h1>
             </div>
+        </a>
+    </article>
+
+    <article class="strips__strip">
+        <a href="/labor/product">
+        <div class="strip__content">
+            <h1 class="strip__title" data-name="Ipsum">생산지시서</h1>
         </div>
-    </div>
-</div>
+        </a>
+    </article>
+
+    <article class="strips__strip">
+        <div class="strip__content">
+            <h1 class="strip__title" data-name="Dolor">출하지시서</h1>
+        </div>
+    </article>
+
+    <i class="fa fa-close strip__close"></i>
+</section>
 
 
 </body>
@@ -36,7 +51,7 @@
 <script src="{% static 'js/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static 'popper.js/dist/umd/popper.min.js' %}"></script>
 <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
-<script src="{% static 'site/js/pwa_index.js' %}"></script>
+<script src="{% static 'site/js/nav_index.js' %}"></script>
 
 </html>
 
