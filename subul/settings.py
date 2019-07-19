@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'product',
     'packing',
     'eventlog',
+    'pwa',
 ]
 
 REST_FRAMEWORK = {
@@ -99,8 +100,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
-
 USE_I18N = True
 
 USE_L10N = True
@@ -127,3 +126,22 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 SESSION_COOKIE_AGE = 3000
 SESSION_SAVE_EVERY_REQUEST = True
+
+#PWA 세팅
+PWA_APP_NAME = '수불부'
+PWA_APP_DESCRIPTION = "수불부"
+# PWA_APP_THEME_COLOR = '#0A0302'
+# PWA_APP_BACKGROUND_COLOR = '#ffffff'
+# PWA_APP_DISPLAY = 'standalone'
+# PWA_APP_SCOPE = '/',
+# PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/labor/product'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/favicon/android-icon-192x192.png',
+        'sizes': '192x192'
+    }
+]
+
+# PWA_APP_DIR = 'ltr'
+# PWA_APP_LANG = 'en-US'

@@ -89,7 +89,7 @@ class SiteProductOrder(LoginRequiredMixin, View):
         self.data['list'] = render_to_string('site/partial_product_order_list.html', data, request=self.request)
 
 
-class PWA(View):
+class Nav(View):
 
     def get(self, request):
-        return render(request, 'site/product_index.html')
+        return render(request, 'site/nav_index.html')

@@ -15,4 +15,5 @@ urlpatterns = [
     path('core/', include('core.urls')),
     path('labor/', include('labor.urls')),
     path('', views.MainList.as_view(), name='index'),
+    path('', include('pwa.urls')),
 ]
