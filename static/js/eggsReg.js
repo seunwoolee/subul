@@ -80,7 +80,7 @@ $(document).on('click', '.remove-form-row', function(e){ // 삭제 - 버튼
 });
 
 
-$("form").submit(function(){
+$("#submitButton").click(function(){
     ymd = set_yyyymmdd($('input[type=date]').val());
     if(ymd)
     {
@@ -89,4 +89,4 @@ $("form").submit(function(){
         });
         $("form").submit();
     }
-})
+});

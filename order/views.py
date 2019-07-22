@@ -133,7 +133,7 @@ class OrderReg(LogginMixin, LoginRequiredMixin, View):
                     order.save()
 
         else:
-            log(
+            self.log(
                 user=request.user,
                 action="주문등록에러",
                 obj=Order.objects.first(),

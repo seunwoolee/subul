@@ -33,14 +33,32 @@ self.addEventListener('activate', event => {
 });
 
 // Serve from Cache
-self.addEventListener("fetch", event => {
-    event.respondWith(
-        caches.match(event.request)
-            .then(response => {
-                return response || fetch(event.request);
-            })
-            .catch(() => {
-                return caches.match('/offline/');
-            })
-    )
-});
+// self.addEventListener("fetch", event => {
+//     event.respondWith(
+//         caches.match(event.request)
+//             .then(response => {
+//                 return response || fetch(event.request);
+//             })
+//             .catch(() => {
+//                 return caches.match('/offline/');
+//             })
+//     )
+// });
+// self.addEventListener('fetch', (evt) => {
+//   console.log('[ServiceWorker] Fetch', evt.request.url);
+//   // CODELAB: Add fetch event handler here.
+//   if (evt.request.mode !== 'navigate') {
+//     // Not a page navigation, bail.
+//     return;
+//   }
+//   evt.respondWith(
+//       fetch(evt.request)
+//           .catch(() => {
+//             return caches.open(CACHE_NAME)
+//                 .then((cache) => {
+//                   return cache.match('offline.html');
+//                 });
+//           })
+//   );
+//
+// });

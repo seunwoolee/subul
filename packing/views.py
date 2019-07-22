@@ -4,19 +4,20 @@ from django.views import View
 
 from core.models import Location
 from eggs.forms import EggForm
+from eventlog.models import LogginMixin
 from .models import Packing, PackingCode
 from .forms import PackingFormSet, PackingForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
-class PackingList(LoginRequiredMixin, View):
+class PackingList(LogginMixin, LoginRequiredMixin, View):
 
     def get(self, request):
         packingForm = PackingForm()
         return render(request, 'packing/packingList.html', {'packingForm': packingForm})
 
 
-class PackingReg(LoginRequiredMixin, View):
+class PackingReg(LogginMixin, LoginRequiredMixin, View):
 
     def post(self, request):
         formset = PackingFormSet(request.POST)
@@ -50,7 +51,7 @@ class PackingReg(LoginRequiredMixin, View):
                     packingCode=packingCode,
                 )
         else:
-            log(
+            self.log(
                 user=request.user,
                 action="포장재등록에러",
                 obj=Packing.objects.first(),
