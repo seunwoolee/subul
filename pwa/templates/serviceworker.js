@@ -8,29 +8,29 @@ var filesToCache = [
 ];
 
 // Cache on install
-self.addEventListener("install", event => {
-    this.skipWaiting();
-    event.waitUntil(
-        caches.open(staticCacheName)
-            .then(cache => {
-                return cache.addAll(filesToCache);
-            })
-    )
-});
+// self.addEventListener("install", event => {
+//     this.skipWaiting();
+//     event.waitUntil(
+//         caches.open(staticCacheName)
+//             .then(cache => {
+//                 return cache.addAll(filesToCache);
+//             })
+//     )
+// });
 
 // Clear cache on activate
-self.addEventListener('activate', event => {
-    event.waitUntil(
-        caches.keys().then(cacheNames => {
-            return Promise.all(
-                cacheNames
-                    .filter(cacheName => (cacheName.startsWith("django-pwa-")))
-                    .filter(cacheName => (cacheName !== staticCacheName))
-                    .map(cacheName => caches.delete(cacheName))
-            );
-        })
-    );
-});
+// self.addEventListener('activate', event => {
+//     event.waitUntil(
+//         caches.keys().then(cacheNames => {
+//             return Promise.all(
+//                 cacheNames
+//                     .filter(cacheName => (cacheName.startsWith("django-pwa-")))
+//                     .filter(cacheName => (cacheName !== staticCacheName))
+//                     .map(cacheName => caches.delete(cacheName))
+//             );
+//         })
+//     );
+// });
 
 // Serve from Cache
 // self.addEventListener("fetch", event => {
@@ -44,21 +44,4 @@ self.addEventListener('activate', event => {
 //             })
 //     )
 // });
-// self.addEventListener('fetch', (evt) => {
-//   console.log('[ServiceWorker] Fetch', evt.request.url);
-//   // CODELAB: Add fetch event handler here.
-//   if (evt.request.mode !== 'navigate') {
-//     // Not a page navigation, bail.
-//     return;
-//   }
-//   evt.respondWith(
-//       fetch(evt.request)
-//           .catch(() => {
-//             return caches.open(CACHE_NAME)
-//                 .then((cache) => {
-//                   return cache.match('offline.html');
-//                 });
-//           })
-//   );
-//
-// });
+
