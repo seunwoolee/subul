@@ -82,11 +82,13 @@ $(document).on('click', '.remove-form-row', function(e){ // 삭제 - 버튼
 
 $("#submitButton").click(function(){
     ymd = set_yyyymmdd($('input[type=date]').val());
-    if(ymd)
-    {
+    if($('form')[0].checkValidity()){
         $("input[type=hidden][id*='in_ymd']").each(function (i, element){
             $(element).val(ymd);
         });
         $("form").submit();
+    }
+    else {
+        alert('필요한 정보를 모두 입력하세요');
     }
 });

@@ -381,6 +381,7 @@ $(".count").focusout(function () {
 });
 
 $("#submitButton").click(function (e) {
+    e.preventDefault();
 
     if($('.add-form-set').length !== 0){
         alert('세트상품을 확인해주세요 검정색 버튼 클릭 필요!');
@@ -400,6 +401,7 @@ $("#submitButton").click(function (e) {
             return false;
         }
     }
+
 });
 
 function makeSetStyle(parentTR) {
