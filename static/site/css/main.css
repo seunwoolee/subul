@@ -182,7 +182,7 @@ iframe {
 
 .row .cell {
     font-family: Poppins-Regular;
-    font-size: 17px;
+    font-size: 20px;
     color: #666666;
     line-height: 1.2;
     font-weight: unset !important;
@@ -194,7 +194,7 @@ iframe {
 
 .row.header .cell {
     font-family: Poppins-Regular;
-    font-size: 20px;
+    font-size: 23px;
     color: #fff;
     line-height: 1.2;
     font-weight: unset !important;
@@ -209,12 +209,12 @@ iframe {
 }
 
 .row .cell:nth-child(2) {
-    width: 90px;
-    padding-left: 10px;
+    width: 90px ;
+    padding-left: 10px ;
 }
 
 .row .cell:nth-child(3) {
-    width: 110px;
+    width: 120px;
     padding-left: 10px;
 }
 
@@ -224,14 +224,17 @@ iframe {
 }
 
 .row .cell:nth-child(5) {
+    width: 90px;
     padding-left: 10px;
 }
 
 .row .cell:nth-child(6) {
+    width: 160px;
     padding-left: 10px;
 }
 
 .row .cell:nth-child(7) {
+    width: 160px;
     padding-left: 10px;
 }
 
@@ -264,7 +267,7 @@ iframe {
 
     .row .cell {
         font-family: Poppins-Regular;
-        font-size: 20px;
+        font-size: 23px;
         color: #555555;
         line-height: 1.2;
         font-weight: unset !important;

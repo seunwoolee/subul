@@ -41,8 +41,8 @@ class ProductCode(Code):
     )
 
     CALCULATE_TYPE_CHOICES = (
-        ('order', '주문'),
-        ('manual', '수기'),
+        ('자동', '자동'),
+        ('수동', '수동'),
     )
 
     type = models.CharField(

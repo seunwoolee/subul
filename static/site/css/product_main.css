@@ -186,19 +186,19 @@ iframe {
 
 .row .cell {
     font-family: Poppins-Regular;
-    font-size: 17px;
+    font-size: 19px;
     color: #666666;
     line-height: 1.2;
     font-weight: unset !important;
 
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 19px;
+    padding-bottom: 19px;
     border-bottom: 1px solid #f2f2f2;
 }
 
 .row .cellRight {
     font-family: Poppins-Regular;
-    font-size: 17px;
+    font-size: 19px;
     color: #666666;
     line-height: 1.2;
     font-weight: unset !important;
@@ -210,7 +210,7 @@ iframe {
 
 .row .cellMemo {
     font-family: Poppins-Regular;
-    font-size: 17px;
+    font-size: 19px;
     color: #003966;
     line-height: 1.2;
     font-weight: 800 !important;
@@ -222,7 +222,7 @@ iframe {
 
 .row.header .cell {
     font-family: Poppins-Regular;
-    font-size: 20px;
+    font-size: 19px;
     color: #fff;
     line-height: 1.2;
     font-weight: unset !important;
@@ -264,7 +264,7 @@ iframe {
 
     .row .cell {
         font-family: Poppins-Regular;
-        font-size: 20px;
+        font-size: 19px;
         color: #555555;
         line-height: 1.2;
         font-weight: unset !important;

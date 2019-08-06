@@ -11,7 +11,7 @@ from eventlog.models import LogginMixin
 from order.models import ABS, Order
 from packing.forms import AutoPackingForm
 from packing.models import AutoPacking, Packing, PackingCode
-from product.codeForms import ProductUnitPricesForm, SetProductMatchForm
+from product.codeForms import ProductUnitPricesForm, SetProductMatchForm, ProductCodeForm
 from product.models import ProductEgg, Product, ProductCode, ProductAdmin, ProductMaster, ProductOrder, \
     ProductOrderPacking
 from .forms import StepOneForm, StepTwoForm, StepThreeForm, StepFourForm, StepFourFormSet, MainForm, ProductOEMFormSet, \
@@ -665,3 +665,10 @@ class AutoPackingList(LoginRequiredMixin, View):
     def get(self, request):
         form = AutoPackingForm()
         return render(request, 'code/autoPackingList.html', {'form': form})
+
+
+class ProductCodeList(LoginRequiredMixin, View):
+
+    def get(self, request):
+        form = ProductCodeForm()
+        return render(request, 'code/productCodeList.html', {'form': form})

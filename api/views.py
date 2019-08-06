@@ -8,6 +8,7 @@ from api.eggSerializers import EggSerializer, EggOrderSerializer
 from api.locationSerializers import LocationSerializer
 from api.orderSerializers import OrderSerializer
 from api.packingSerializers import PackingSerializer
+from api.productCodeSerializers import ProductCodeDatatableSerializer
 from api.productOEMSerializers import ProductOEMSerializer
 from api.productOrderSerializers import ProductOrderSerializer, ProductOrderPackingSerializer
 from api.productUnitPriceSerializers import ProductUnitPriceListSerializer, SetProductMatchListSerializer
@@ -769,3 +770,20 @@ class ProductOrderPackingUpdate(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = ProductOrderPacking.objects.all()
     serializer_class = ProductOrderPackingSerializer
+
+
+class ProductCodeDatatableList(generics.ListAPIView):
+    """
+    제품조회 DataTable List
+    """
+    queryset = ProductCode.objects.all()
+    serializer_class = ProductCodeDatatableSerializer
+
+
+class ProductCodeUpdate(generics.RetrieveUpdateAPIView):
+    """
+    제품조회 Update 칠때
+    """
+    queryset = ProductCode.objects.all()
+    serializer_class = ProductCodeDatatableSerializer
+

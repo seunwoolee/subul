@@ -42,3 +42,14 @@ class SetProductMatchForm(forms.Form):
         self.fields['product'] = forms.ChoiceField(widget=Select2Widget,
                                                     choices=[('', '')] + list(ProductCode.objects.values_list('code', 'codeName')
                                                     .filter(delete_state='N').order_by('code')))
+
+
+class ProductCodeForm(forms.ModelForm):
+
+    class Meta:
+        model = ProductCode
+        fields = ('expiration', 'calculation')
+        labels = {
+            'expiration': '유통기한',
+            'calculation': '계산'
+        }
