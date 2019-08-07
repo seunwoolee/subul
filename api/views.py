@@ -462,7 +462,7 @@ class EggsUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
         egg = Egg.objects.filter(pk=kwargs['pk']).first()
         count = request.data.get('count', None)
         totalCount = Egg.objects.filter(in_locationCode=egg.in_locationCode).filter(code=egg.code).filter(
-            in_ymd=egg.in_ymd).aggregate(Sum('count'))['count__sum']
+            in_ymd=egg.in_ymd).exclude(pk=kwargs['pk']).aggregate(Sum('count'))['count__sum']
 
         if int(totalCount) + int(count) >= 0:
             self.log(
