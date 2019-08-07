@@ -188,7 +188,7 @@ $(document).on('click', '.add-form-row', function (e) { //일반상품 + 버튼
     let price = parentTR.find('.price');
 
     if ($('form')[0].checkValidity()) {
-        if (OLAP_SHOPPINGMALL == location && $("#employeePrice input:checkbox").is(":checked")) {
+        if (OLAP_SHOPPINGMALL === location && $("#employeePrice input:checkbox").is(":checked")) {
             price.val(Math.round(price.val() * 0.7));
         }
 
@@ -229,7 +229,7 @@ $(document).on('click', '#deleteLastButton', function (e) {
                 $(this).attr('disabled', false);
             });
             lastTR.find('.product').attr('readonly', false);
-
+            lastTR.find('.django-select2').prop("disabled", false);
             let selectedLocationCode = lastTR.find('.location').val();
             plusConditionRow(lastTR.find('.remove-form-row'));
 
@@ -396,6 +396,7 @@ $("#submitButton").click(function (e) {
                 $(element).val(ymd);
             });
             $("input:disabled").prop('disabled', false);
+            $('.django-select2').prop("disabled", false);
             $("form").submit();
         } else {
             return false;
@@ -436,6 +437,9 @@ function setReadOnly($parentTR) {
     });
     $parentTR.find('.location').each(function () {
         $(this).find('option').not(':selected').remove()
+    });
+    $parentTR.find('.django-select2').each(function () {
+        $(this).prop("disabled", true);
     });
 }
 
