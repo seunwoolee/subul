@@ -607,8 +607,12 @@ $('.deleteAndEdit').on('submit', function (e)
         alert('수정완료');
         $('#stepOne .datatable').DataTable().search($("input[type='search']").val()).draw();
         $(".everyModal").modal('hide');
-    }).fail(function() {
-        alert('수정 에러 전산실로 문의바랍니다.');
+    }).fail(function(xhr, status, error) {
+        if(xhr.status === 400){
+            alert('재고수량을 넘습니다, 수량을 확인하세요');
+        }else{
+            alert('수정 에러 전산실로 문의바랍니다.');
+        }
     });
 });
 

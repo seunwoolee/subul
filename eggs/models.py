@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 from django.db import models
 from django.db.models import Sum, F, Q, Func, Value, IntegerField, Case, When, CharField
 from django.http import QueryDict
@@ -303,12 +305,9 @@ class Egg(Detail):
             arr.append(result)
 
         if order == 'desc':
-            arr = sorted(arr,
-                         key=lambda k: (k['sorts'], k['in_ymd'], k[order_column]) if k[order_column] is not None else 0,
-                         reverse=True)
+            arr = sorted(arr, key=itemgetter('sorts', 'in_ymd', order_column), reverse=True)
         else:
-            arr = sorted(arr,
-                         key=lambda k: (k['sorts'], k['in_ymd'], k[order_column]) if k[order_column] is not None else 0)
+            arr = sorted(arr, key=itemgetter('sorts', 'in_ymd', order_column))
 
         return {
             'items': arr,

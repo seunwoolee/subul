@@ -1,3 +1,4 @@
+from django.db.models import F, Sum
 from django.http import Http404
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -252,10 +253,10 @@ class OrderLocation(APIView):
     def get(self, request, format=None):
         code = request.GET.get('code')
         if code:
-            location = Location.objects.values('code', 'codeName').filter(type='05')\
+            location = Location.objects.values('code', 'codeName').filter(type='05') \
                 .filter(delete_state='N').exclude(code=code).order_by('code')
         else:
-            location = Location.objects.values('code', 'codeName').filter(type='05')\
+            location = Location.objects.values('code', 'codeName').filter(type='05') \
                 .filter(delete_state='N').order_by('code')
         return Response(location)
 
@@ -458,14 +459,28 @@ class EggsUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
 
     def patch(self, request, *args, **kwargs):
         log_data = Egg.objects.filter(pk=kwargs['pk']).values().first()
-        self.log(
-            user=request.user,
-            action="원란수정",
-            obj=Egg.objects.get(pk=kwargs['pk']),
-            extra=log_data
-        )
-        self.partial_update(request, *args, **kwargs)
-        return Response(status=status.HTTP_200_OK)
+        egg = Egg.objects.filter(pk=kwargs['pk']).first()
+        count = request.data.get('count', None)
+        totalCount = Egg.objects.filter(in_locationCode=egg.in_locationCode).filter(code=egg.code).filter(
+            in_ymd=egg.in_ymd).aggregate(Sum('count'))['count__sum']
+
+        if int(totalCount) + int(count) >= 0:
+            self.log(
+                user=request.user,
+                action="원란수정",
+                obj=Egg.objects.get(pk=kwargs['pk']),
+                extra=log_data
+            )
+            self.partial_update(request, *args, **kwargs)
+            return Response(status=status.HTTP_200_OK)
+        else:
+            self.log(
+                user=request.user,
+                action="원란수정실패",
+                obj=Egg.objects.get(pk=kwargs['pk']),
+                extra=log_data
+            )
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, *args, **kwargs):
         self.log(
@@ -786,4 +801,3 @@ class ProductCodeUpdate(generics.RetrieveUpdateAPIView):
     """
     queryset = ProductCode.objects.all()
     serializer_class = ProductCodeDatatableSerializer
-
