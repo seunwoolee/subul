@@ -10,14 +10,11 @@ from datetime import timedelta
 from eggs.models import EggOrder
 from labor.forms import EggOrderForm
 
-
-
-# @method_decorator(csrf_exempt, name='dispatch')
 from product.forms import ProductOrderForm
 from product.models import ProductOrder
 
 
-class SiteEggOrder(LoginRequiredMixin, View):
+class SiteEggOrder(View):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -52,7 +49,7 @@ class SiteEggOrder(LoginRequiredMixin, View):
         self.data['form'] = render_to_string('site/partial_egg_order_update.html', {'form': self.form}, request=self.request)
 
 
-class SiteProductOrder(LoginRequiredMixin, View):
+class SiteProductOrder(View):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
