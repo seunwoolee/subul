@@ -3,6 +3,7 @@ from django.http import Http404
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 
 from api.autoPackingSerializers import AutoPackingSerializer
 from api.eggSerializers import EggSerializer, EggOrderSerializer
@@ -180,6 +181,7 @@ class ProductCodes(APIView):
 
 
 class ProductCodeByPk(APIView):
+    permission_classes = [AllowAny]
 
     def get_object(self, pk):
         try:
