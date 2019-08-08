@@ -176,7 +176,7 @@ class ProductOrderList(LoginRequiredMixin, PermissionRequiredMixin, View):
 
     def get_order(self):
         self.queryset = Order.objects.filter(ymd__gte=self.start_date).filter(ymd__lte=self.end_date) \
-            .filter(productCode__calculation='order').values('code', 'codeName', 'amount_kg') \
+            .filter(productCode__calculation='자동').values('code', 'codeName', 'amount_kg') \
             .annotate(content_type=F('productCode__type')) \
             .annotate(calculation=F('productCode__calculation')) \
             .annotate(amount=Sum('amount')) \
