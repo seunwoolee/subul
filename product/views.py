@@ -148,7 +148,6 @@ class ProductList(LoginRequiredMixin, PermissionRequiredMixin, View):
 
 
 class ProductOrderList(LoginRequiredMixin, PermissionRequiredMixin, View):
-    permission_required = 'product.change_product'
 
     def get(self, request):
         productOrderForm = ProductOrderForm()
