@@ -147,7 +147,7 @@ class ProductList(LoginRequiredMixin, PermissionRequiredMixin, View):
         return render(request, 'product/productList.html')
 
 
-class ProductOrderList(LoginRequiredMixin, PermissionRequiredMixin, View):
+class ProductOrderList(View):
 
     def get(self, request):
         productOrderForm = ProductOrderForm()
