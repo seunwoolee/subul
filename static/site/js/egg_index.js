@@ -42,8 +42,6 @@ setInterval(function () {
         data: '',
     }).done(function (data) {
         $("div.table").html(data.list);
-    }).fail(function () {
-        alert('에러발생: 브라우저 및 PC를 리부팅하세요');
     });
 }, 10000);
 
