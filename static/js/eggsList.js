@@ -907,8 +907,12 @@ $('#changeReal').click( function () {
             alert('완료');
             $('.datatable').DataTable().search($("input[type='search']").val()).draw();
             $(".everyModal").modal('hide');
-        }).fail(function() {
-            alert('오류발생! 전산실로 연락 바랍니다.');
+        }).fail(function(xhr, status, error) {
+            if(xhr.status === 400){
+                alert(`id: ${xhr.responseText}의 실출하량이 재고량보다 많습니다, 실출하량을 변경해주세요.`)
+            } else {
+                alert('오류발생! 전산실로 연락 바랍니다.');
+            }
         });
     }
 });

@@ -1,4 +1,4 @@
-from django.db.models import Sum, Func, Value, CharField
+from django.db.models import Sum, Func, Value, CharField, Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
@@ -212,13 +212,21 @@ class ChangeReal(LogginMixin, View):
         )
 
         egg_orders = EggOrder.objects.filter(ymd=data['end_date']).exclude(realCount=None).filter(display_state='Y')
+
+        for egg_order in egg_orders:
+            totalCount = Egg.objects.filter(Q(code=egg_order.code) & Q(in_ymd=egg_order.in_ymd) & Q(
+                in_locationCode=egg_order.in_locationCode)).aggregate(Sum('count'))['count__sum']
+
+            if totalCount < egg_order.realCount:
+                return HttpResponse(status=400, content=egg_order.id)
+
         for egg_order in egg_orders:
             Egg.objects.create(
                 ymd=egg_order.ymd,
                 code=egg_order.code,
                 codeName=egg_order.codeName,
                 eggCode=egg_order.eggCode,
-                count=egg_order.realCount,
+                count=-egg_order.realCount,
                 type='생산',
                 in_ymd=egg_order.in_ymd,
                 in_locationCode=egg_order.in_locationCode,
@@ -227,6 +235,7 @@ class ChangeReal(LogginMixin, View):
             )
 
         egg_orders = EggOrder.objects.filter(ymd=data['end_date'])
+
         for egg_order in egg_orders:
             egg_order.display_state = 'N'
             egg_order.save()
