@@ -19,7 +19,7 @@ class SiteEggOrder(View):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.data = {}
-        self.eggs = EggOrder.objects.filter(display_state='Y')
+        self.eggs = EggOrder.objects.filter(display_state='Y').order_by('id')
         self.form: EggOrderForm
 
     def get(self, request):
@@ -73,7 +73,7 @@ class SiteProductOrder(View):
             return render(request, 'site/product_index.html', data)
 
     def get_query(self):
-        productOrders = ProductOrder.objects.filter(display_state='Y').annotate(expire_memo=F('productCode__expiration'))
+        productOrders = ProductOrder.objects.filter(display_state='Y').annotate(expire_memo=F('productCode__expiration')).order_by('id')
         for productOrder in productOrders:
             yyyy,mm, dd = int(productOrder.ymd[0:4]), int(productOrder.ymd[4:6]), int(productOrder.ymd[6:])
             ymd = datetime(yyyy, mm, dd)
