@@ -24,7 +24,7 @@ class GeneratePDF(View):
         moneyMark = request.GET['moneyMark']
         location = Location.objects.get(code=releaseLocationCode)
         releases = Release.objects.filter(ymd=ymd).filter(releaseLocationCode=location) \
-            .filter(type__in=['판매', '샘플', '증정'])\
+            .filter(type__in=['판매', '샘플', '증정']) \
             .values('code', 'codeName', 'price', 'specialTag', 'releaseVat') \
             .annotate(totalCount=Sum('count')) \
             .annotate(totalPrice=F('price')) \
@@ -67,12 +67,6 @@ class ReleaseReg(LogginMixin, LoginRequiredMixin, View):
 
     def post(self, request):
         data = request.POST.dict()
-        self.log(
-            user=request.user,
-            action="출고등록",
-            obj=Release.objects.first(),
-            extra=data
-        )
         productCode = ProductCode.objects.get(code=data['productCode'])
         releaseLocation = Location.objects.get(code=data['location'])
         releaseStoreLocation = Location.objects.get(code=data['storedLocationCode'])
@@ -136,6 +130,12 @@ class ReleaseReg(LogginMixin, LoginRequiredMixin, View):
             )
 
         release.save()
+        self.log(
+            user=request.user,
+            action="출고등록",
+            obj=release,
+            extra=data
+        )
         return HttpResponse(status=200)
 
     def get(self, request):
@@ -145,15 +145,9 @@ class ReleaseReg(LogginMixin, LoginRequiredMixin, View):
                                                            'releaseLocationForm': releaseLocationForm})
 
 
-class ReleaseAdjustment(LogginMixin, View): # 재고조정, 미출고품, 반품
+class ReleaseAdjustment(LogginMixin, View):  # 재고조정, 미출고품, 반품
     def post(self, request):
         data = request.POST.dict()
-        self.log(
-            user=request.user,
-            action="출고리콜",
-            obj=Release.objects.first(),
-            extra=data
-        )
         productCode = ProductCode.objects.get(code=data['productCode'])
 
         if data['type'] != '반품':
@@ -219,4 +213,10 @@ class ReleaseAdjustment(LogginMixin, View): # 재고조정, 미출고품, 반품
             )
 
         release.save()
+        self.log(
+            user=request.user,
+            action="출고리콜",
+            obj=release,
+            extra=data
+        )
         return HttpResponse(status=200)

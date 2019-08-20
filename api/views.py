@@ -4,6 +4,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
+from django.forms.models import model_to_dict
 
 from api.autoPackingSerializers import AutoPackingSerializer
 from api.eggSerializers import EggSerializer, EggOrderSerializer
@@ -110,7 +111,6 @@ class OrdersAPIView(APIView):
             if gubun_filter == "stepTwo":
                 result['data'] = orders['items']
             else:
-                # print(orders['itmes'])
                 orderSerializer = OrderSerializer(orders['items'], many=True)
                 result['data'] = orderSerializer.data
             result['draw'] = orders['draw']
@@ -124,9 +124,9 @@ class OrdersAPIView(APIView):
 
 
 class ProductUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
-    '''
-    생산내역 조회에서 Update를 칠때 Patch
-    '''
+    """
+    생산내역 조회에서 Update
+    """
 
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -137,7 +137,7 @@ class ProductUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
             user=request.user,
             action="제품수정",
             obj=instance,
-            extra=Product.objects.filter(pk=kwargs['pk']).values().first()
+            extra=model_to_dict(instance)
         )
         self.partial_update(request, *args, **kwargs)
         Product.getLossProductPercent(instance.master_id)
@@ -153,7 +153,7 @@ class ProductUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
             user=request.user,
             action="제품삭제",
             obj=instance,
-            extra=Product.objects.filter(pk=kwargs['pk']).values().first()
+            extra=model_to_dict(instance)
         )
         if instance.type == "미출고품사용":
             origin_instance = Product.objects.filter(ymd=instance.ymd).filter(code=instance.code).filter(
@@ -196,9 +196,9 @@ class ProductCodeByPk(APIView):
 
 
 class ProductEggUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
-    '''
-    생산내역 조회에서 Update, Delete를 칠때
-    '''
+    """
+    생산내역 조회에서 Update, Delete
+    """
     queryset = ProductEgg.objects.all()
     serializer_class = ProductEggSerializer
 
@@ -208,7 +208,7 @@ class ProductEggUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
             user=request.user,
             action="액란수정",
             obj=instance,
-            extra=ProductEgg.objects.filter(pk=kwargs['pk']).values().first()
+            extra=model_to_dict(instance)
         )
         self.partial_update(request, *args, **kwargs)
         ProductEgg.getLossOpenEggPercent(instance.master_id)
@@ -220,7 +220,7 @@ class ProductEggUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
             user=request.user,
             action="액란삭제",
             obj=instance,
-            extra=ProductEgg.objects.filter(pk=kwargs['pk']).values().first()
+            extra=model_to_dict(instance)
         )
         self.destroy(request, *args, **kwargs)
         ProductEgg.getLossOpenEggPercent(instance.master_id)
@@ -236,7 +236,6 @@ class OrderProductUnitPrice(APIView):
         try:
             location = Location.objects.get(code=code)
             return ProductUnitPrice.objects.filter(locationCode=location)
-            # return ProductUnitPrice.objects.all
         except ProductUnitPrice.DoesNotExist:
             raise Http404
 
@@ -272,7 +271,6 @@ class OrderSetProductCode(APIView):
         try:
             location = Location.objects.get(code=code)
             return SetProductCode.objects.filter(location=location).filter(delete_state='N')
-            # return ProductUnitPrice.objects.all
         except SetProductCode.DoesNotExist:
             raise Http404
 
@@ -309,21 +307,23 @@ class OrderUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
     serializer_class = OrderSerializer
 
     def patch(self, request, *args, **kwargs):
+        instance = Order.objects.get(pk=kwargs['pk'])
         self.log(
             user=request.user,
             action="주문수정",
-            obj=Order.objects.get(pk=kwargs['pk']),
-            extra=Order.objects.filter(pk=kwargs['pk']).values().first()
+            obj=instance,
+            extra=model_to_dict(instance)
         )
         self.partial_update(request, *args, **kwargs)
         return Response(status=status.HTTP_200_OK)
 
     def delete(self, request, *args, **kwargs):
+        instance = Order.objects.get(pk=kwargs['pk'])
         self.log(
             user=request.user,
             action="주문삭제",
-            obj=Order.objects.get(pk=kwargs['pk']),
-            extra=Order.objects.filter(pk=kwargs['pk']).values().first()
+            obj=instance,
+            extra=model_to_dict(instance)
         )
         self.destroy(request, *args, **kwargs)
         return Response(status=status.HTTP_200_OK)
@@ -331,29 +331,30 @@ class OrderUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
 
 class ReleaseUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
     """
-    출고조회에서 Update , Delete 할때
+    출고조회에서 Update , Delete
     """
 
     queryset = Release.objects.all()
     serializer_class = ReleaseSerializer
 
     def patch(self, request, *args, **kwargs):
-        log_data = Release.objects.filter(pk=kwargs['pk']).values().first()
+        instance = Release.objects.get(pk=kwargs['pk'])
         self.log(
             user=request.user,
             action="출고수정",
-            obj=Release.objects.get(pk=kwargs['pk']),
-            extra=log_data
+            obj=instance,
+            extra=model_to_dict(instance)
         )
         self.partial_update(request, *args, **kwargs)
         return Response(status=status.HTTP_200_OK)
 
     def delete(self, request, *args, **kwargs):
+        instance = Release.objects.get(pk=kwargs['pk'])
         self.log(
             user=request.user,
             action="출고삭제",
-            obj=Release.objects.get(pk=kwargs['pk']),
-            extra=Release.objects.filter(pk=kwargs['pk']).values().first()
+            obj=instance,
+            extra=model_to_dict(instance)
         )
         self.destroy(request, *args, **kwargs)
         return Response(status=status.HTTP_200_OK)
@@ -460,18 +461,18 @@ class EggsUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EggSerializer
 
     def patch(self, request, *args, **kwargs):
-        log_data = Egg.objects.filter(pk=kwargs['pk']).values().first()
+        instance = Egg.objects.get(pk=kwargs['pk'])
         egg = Egg.objects.filter(pk=kwargs['pk']).first()
         count = request.data.get('count', None)
         totalCount = Egg.objects.filter(in_locationCode=egg.in_locationCode).filter(code=egg.code).filter(
-            in_ymd=egg.in_ymd).exclude(pk=kwargs['pk']).aggregate(Sum('count'))['count__sum']
+            in_ymd=egg.in_ymd).exclude(pk=kwargs['pk']).aggregate(Sum('count'))['count__sum'] or 0
 
         if int(totalCount) + int(count) >= 0:
             self.log(
                 user=request.user,
                 action="원란수정",
-                obj=Egg.objects.get(pk=kwargs['pk']),
-                extra=log_data
+                obj=instance,
+                extra=model_to_dict(instance)
             )
             self.partial_update(request, *args, **kwargs)
             return Response(status=status.HTTP_200_OK)
@@ -479,17 +480,18 @@ class EggsUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
             self.log(
                 user=request.user,
                 action="원란수정실패",
-                obj=Egg.objects.get(pk=kwargs['pk']),
-                extra=log_data
+                obj=instance,
+                extra=model_to_dict(instance)
             )
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, *args, **kwargs):
+        instance = Egg.objects.get(pk=kwargs['pk'])
         self.log(
             user=request.user,
             action="원란삭제",
-            obj=Egg.objects.get(pk=kwargs['pk']),
-            extra=Egg.objects.filter(pk=kwargs['pk']).values().first()
+            obj=instance,
+            extra=model_to_dict(instance)
         )
         self.destroy(request, *args, **kwargs)
         return Response(status=status.HTTP_200_OK)
@@ -520,21 +522,23 @@ class PackingUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PackingSerializer
 
     def patch(self, request, *args, **kwargs):
+        instance = Packing.objects.get(pk=kwargs['pk'])
         self.log(
             user=request.user,
             action="포장재수정",
-            obj=Packing.objects.get(pk=kwargs['pk']),
-            extra=Packing.objects.filter(pk=kwargs['pk']).values().first()
+            obj=instance,
+            extra=model_to_dict(instance)
         )
         self.partial_update(request, *args, **kwargs)
         return Response(status=status.HTTP_200_OK)
 
     def delete(self, request, *args, **kwargs):
+        instance = Packing.objects.get(pk=kwargs['pk'])
         self.log(
             user=request.user,
             action="포장재삭제",
-            obj=Packing.objects.get(pk=kwargs['pk']),
-            extra=Packing.objects.filter(pk=kwargs['pk']).values().first()
+            obj=instance,
+            extra=model_to_dict(instance)
         )
         self.destroy(request, *args, **kwargs)
         return Response(status=status.HTTP_200_OK)
@@ -588,7 +592,7 @@ class ProductOEMsAPIView(APIView):
 
 class ProductOEMUpdate(generics.RetrieveUpdateDestroyAPIView):
     """
-    OEM조회에서 Update , Delete
+    OED 조회에서 Update , Delete
     """
 
     queryset = Product.objects.all().exclude(purchaseYmd=None)
@@ -628,9 +632,9 @@ class ProductUnitPricesAPIView(APIView):
 
 
 class ProductUnitPricesUpdate(generics.RetrieveUpdateDestroyAPIView):
-    '''
+    """
     생산내역 조회에서 Update, Delete를 칠때
-    '''
+    """
     queryset = ProductUnitPrice.objects.all()
     serializer_class = ProductUnitPriceSerializer
 
