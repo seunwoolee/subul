@@ -176,9 +176,9 @@
                                    style="width:100% !important;">
                                 <thead>
                                 <tr>
-                                    <th>거래처명</th>
                                     <th>제품명</th>
                                     <th>입고일</th>
+                                    <th>농장명</th>
                                     <th>재고수량</th>
                                 </tr>
                                 </thead>
@@ -472,6 +472,6 @@
 
 {% block js %}
 <script src="{% static 'js/baseList.js' %}"></script>
-<script src="{% static 'js/eggsList.js' %}"></script>
+<script src="{% static 'js/eggsList.js' %}?version=2"></script>
 {{ eggForm.media.js }}
 {% endblock %}

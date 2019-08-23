@@ -195,9 +195,9 @@ function setStepTwoDataTable(args)
             { targets: 3, className: "dt-body-right"  },
         ],
         "columns": [
-            {"data": "egg_in_locationCodeName"},
             {"data": "egg_codeName"},
             {"data": "egg_in_ymd"},
+            {"data": "egg_in_locationCodeName"},
             {"data": "totalCount" , "render": $.fn.dataTable.render.number( ',')},
         ],
         dom: 'Bfrtip',
@@ -229,7 +229,7 @@ function setStepTwoDataTable(args)
                     }],
         lengthMenu : [[-1, 100], ["All", 100]],
         rowCallback: function(row, data, index){
-             $('td:eq(2)', row).html( set_yyyy_mm_dd(data.egg_in_ymd) );
+             $('td:eq(1)', row).html( set_yyyy_mm_dd(data.egg_in_ymd) );
         }
     });
 }

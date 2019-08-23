@@ -65,6 +65,7 @@ class Egg(Detail):
                                       egg_in_locationCodeName=F('in_locationCode__codeName'),
                                       egg_code=F('code'),
                                       egg_codeName=F('codeName'),
+                                      egg_sorts=F('eggCode__sorts'),
                                       egg_in_ymd=F('in_ymd')).annotate(totalCount=Sum('count')).filter(totalCount__gt=0)
 
         if order == 'desc':
@@ -77,7 +78,8 @@ class Egg(Detail):
                                        Q(egg_in_locationCodeName__icontains=search_value))
 
         count = queryset.count()
-        queryset = queryset.order_by(order_column)
+
+        queryset = queryset.order_by('egg_sorts', 'in_ymd', order_column)
         return {
             'items': queryset,
             'count': count,

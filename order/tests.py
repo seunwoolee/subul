@@ -71,4 +71,3 @@ class OrderTest(TestCase):
         log = Log.objects.first()
         self.assertEqual(log.object_id, self.order.id)
         self.assertEqual(log.action, '주문삭제')
-
