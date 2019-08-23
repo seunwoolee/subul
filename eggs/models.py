@@ -244,7 +244,8 @@ class Egg(Detail):
         egg_period = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName', 'eggCode__sorts') \
             .annotate(totalCount=Sum('count')) \
             .filter(ymd__gte=start_date) \
-            .filter(ymd__lte=end_date)
+            .filter(ymd__lte=end_date) \
+            .filter(type='입고')
 
         if search_value:
             egg_period = egg_period.filter(Q(codeName__icontains=search_value) |
