@@ -122,17 +122,17 @@ class Release(Detail):
                 .annotate(releaseLocationCodes=F('releaseLocationCode__code')) \
                 .annotate(releaseSetProductCodeName=F('releaseSetProductCode__codeName')) \
                 .annotate(locationType=Case(
-                                            When(locationType_temp='01', then=Value('B2B')),
-                                            When(locationType_temp='02', then=Value('급식')),
-                                            When(locationType_temp='03', then=Value('미군납')),
-                                            When(locationType_temp='04', then=Value('백화점')),
-                                            When(locationType_temp='05', then=Value('온라인')),
-                                            When(locationType_temp='06', then=Value('자사몰')),
-                                            When(locationType_temp='07', then=Value('직거래')),
-                                            When(locationType_temp='08', then=Value('특판')),
-                                            When(locationType_temp='09', then=Value('하이퍼')),
-                                            default=Value('기타'),
-                                            output_field=CharField()))
+                When(locationType_temp='01', then=Value('B2B')),
+                When(locationType_temp='02', then=Value('급식')),
+                When(locationType_temp='03', then=Value('미군납')),
+                When(locationType_temp='04', then=Value('백화점')),
+                When(locationType_temp='05', then=Value('온라인')),
+                When(locationType_temp='06', then=Value('자사몰')),
+                When(locationType_temp='07', then=Value('직거래')),
+                When(locationType_temp='08', then=Value('특판')),
+                When(locationType_temp='09', then=Value('하이퍼')),
+                default=Value('기타'),
+                output_field=CharField()))
             egg_queryset = Egg.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date).filter(type='판매') \
                 .values('id', 'ymd', 'code', 'codeName', 'count', 'amount', 'amount_kg', 'memo', 'type', 'price') \
                 .annotate(releaseLocationCode=F('locationCode')) \
@@ -145,11 +145,13 @@ class Release(Detail):
                 .annotate(amounts=F('counts')) \
                 .annotate(releaseStoreLocationCodeName=Value(KCFRESH_LOCATION.codeName, output_field=CharField())) \
                 .annotate(kgPrice=Case(When(price=0, then=0), When(counts=0, then=0),
-                                       default=ExpressionWrapper(F('price') / F('counts'), output_field=DecimalField()))) \
+                                       default=ExpressionWrapper(F('price') / F('counts'),
+                                                                 output_field=DecimalField()))) \
                 .annotate(totalPrice=F('price')) \
                 .annotate(supplyPrice=ExpressionWrapper(F('price') - F('releaseVat'), output_field=DecimalField())) \
                 .annotate(eaPrice=Case(When(price=0, then=0), When(count=0, then=0),
-                                       default=ExpressionWrapper(F('price') / F('counts'), output_field=DecimalField()))) \
+                                       default=ExpressionWrapper(F('price') / F('counts'),
+                                                                 output_field=DecimalField()))) \
                 .annotate(contentType=Value('원란', output_field=CharField())) \
                 .annotate(orderMemo=Value('', output_field=CharField())) \
                 .annotate(locationType_temp=F('locationCode__location_character')) \
@@ -259,13 +261,13 @@ class Release(Detail):
             order_column = RELEASE_COLUMN_CHOICES[order_column]
             arr = []
 
-            productAdmin_previous = ProductAdmin.objects.values(  # 전일재고
+            productAdmin_previous = ProductAdmin.objects.values(
                 productId=F('product_id__id'),
                 productCode=F('product_id__code'),
                 productCodeName=F('product_id__codeName'),
                 productYmd=F('product_id__ymd')) \
                 .annotate(totalCount=Sum('count')).annotate(totalAmount=Sum('amount')) \
-                .filter(ymd__lt=start_date).filter(totalCount__gt=0).filter(totalAmount__gt=0)  # 재고가 0초과인 이전 재고
+                .filter(ymd__lt=start_date).exclude(totalCount=0)
 
             if search_value:
                 productAdmin_previous = productAdmin_previous.filter(productCodeName__icontains=search_value)
@@ -481,7 +483,7 @@ class Release(Detail):
                     egg_queryset = egg_queryset.none()
 
             if managerFilter:
-                user: CustomUser= CustomUser.objects.get(username=managerFilter)
+                user: CustomUser = CustomUser.objects.get(username=managerFilter)
                 queryset = queryset.filter(releaseLocationCode__location_manager=user)
                 egg_queryset = egg_queryset.filter(locationManagerName=user.first_name)
 

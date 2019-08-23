@@ -187,7 +187,7 @@ class Egg(Detail):
         egg_previous = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName', 'eggCode__sorts') \
             .annotate(totalCount=Sum('count')) \
             .filter(ymd__lt=start_date) \
-            .filter(totalCount__gt=0)  # 재고가 0초과인 이전 재고
+            .exclude(totalCount=0)
 
         if search_value:
             egg_previous = egg_previous.filter(Q(codeName__icontains=search_value) |
@@ -244,8 +244,7 @@ class Egg(Detail):
         egg_period = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName', 'eggCode__sorts') \
             .annotate(totalCount=Sum('count')) \
             .filter(ymd__gte=start_date) \
-            .filter(ymd__lte=end_date) \
-            .filter(type='입고')
+            .filter(ymd__lte=end_date)
 
         if search_value:
             egg_period = egg_period.filter(Q(codeName__icontains=search_value) |
