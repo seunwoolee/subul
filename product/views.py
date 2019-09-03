@@ -15,7 +15,7 @@ from product.codeForms import ProductUnitPricesForm, SetProductMatchForm, Produc
 from product.models import ProductEgg, Product, ProductCode, ProductAdmin, ProductMaster, ProductOrder, \
     ProductOrderPacking
 from .forms import StepOneForm, StepTwoForm, StepThreeForm, StepFourForm, StepFourFormSet, MainForm, ProductOEMFormSet, \
-    ProductOEMForm, ProductOrderForm, ProductOrderPackingForm
+    ProductOEMForm, ProductOrderForm, ProductOrderPackingForm, ProductOrderStockForm, ProductOrderPackingStockForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
@@ -165,11 +165,26 @@ class ProductOrderList(View):
             form = ProductOrderForm(request.POST)
             if form.is_valid():
                 productOrder = form.save(commit=False)
-                productOrder.code = productOrder.productCode.code
-                productOrder.codeName = productOrder.productCode.codeName
-                productOrder.save()
+                origin_productOrder:ProductOrder = ProductOrder.objects.\
+                    filter(Q(ymd=productOrder.ymd), Q(productCode=productOrder.productCode)).first()
+                if not origin_productOrder:
+                    productOrder.code = productOrder.productCode.code
+                    productOrder.codeName = productOrder.productCode.codeName
+                    productOrder.amount_kg = productOrder.productCode.amount_kg
+                    productOrder.save()
+                else:
+                    origin_productOrder.count += productOrder.count
+                    origin_productOrder.amount += productOrder.amount
+                    origin_productOrder.save()
+                    productOrder = origin_productOrder
 
-                self.calculate_box_without_location(productOrder)
+                if form.cleaned_data['orderLocationCode']:
+                    if origin_productOrder:
+                        self.calculate_box_with_location(form.cleaned_data, origin_productOrder)
+                    else:
+                        self.calculate_box_with_location(form.cleaned_data, productOrder)
+                else:
+                    self.calculate_box_without_location(productOrder)
 
         return HttpResponse(status=200)
 
@@ -189,42 +204,41 @@ class ProductOrderList(View):
     def set_productOrder(self):
         for query in self.queryset:
             productCode = ProductCode.objects.get(code=query['code'])
-            self.productOrder = ProductOrder.objects.create(
+            productOrder = ProductOrder.objects.create(
                 ymd=self.start_date,
                 code=query['code'],
                 codeName=query['codeName'],
                 amount=query['amount'],
+                amount_kg=productCode.amount_kg,
                 count=query['count'],
                 productCode=productCode,
                 type=self.content_type
             )
 
             if query['amount_kg'] < Decimal(5):
-                self.calculate_box_without_location(self.productOrder)
+                self.calculate_box_without_location(productOrder)
 
-            orders = Order.objects.values('code', 'codeName', 'orderLocationCode') \
+            orders = Order.objects.values('code', 'codeName', 'orderLocationCode', 'productCode') \
                 .filter(ymd__gte=self.start_date).filter(ymd__lte=self.end_date).filter(code=query['code']) \
                 .filter(amount_kg__gte=Decimal(5)) \
                 .annotate(amount=Sum('amount')).annotate(count=Sum('count'))
 
             for order in orders:
-                self.calculate_box_with_location(order)
+                self.calculate_box_with_location(order, productOrder)
 
-    def calculate_box_with_location(self, order):
+    def calculate_box_with_location(self, form, productOrder):
         """
          5kg 이상일때만 거래처+상자+EA
-        :param order:
-        :return:
         """
-        productCode = ProductCode.objects.get(code=order['code'])
-        autoPacking = AutoPacking.objects.filter(productCode=productCode).filter(packingCode__type='외포장재').first()
-        orderLocationCode = Location.objects.get(id=order['orderLocationCode'])
+        # productCode = ProductCode.objects.get(code=order['code'])
+        autoPacking = AutoPacking.objects.filter(productCode=form['productCode']).filter(packingCode__type='외포장재').first()
+        orderLocationCode = Location.objects.get(id=form['orderLocationCode'])
 
         if autoPacking:
             count = autoPacking.count
-            mod, remainder = divmod(order['count'], count)
+            mod, remainder = divmod(form['count'], count)
             ProductOrderPacking.objects.create(
-                productOrderCode=self.productOrder,
+                productOrderCode=productOrder,
                 orderLocationCode=orderLocationCode,
                 orderLocationCodeName=orderLocationCode.codeName,
                 boxCount=mod,
@@ -237,9 +251,7 @@ class ProductOrderList(View):
 
     def calculate_box_without_location(self, productOrder):
         """
-         5kg미만 제품 그냥 상자 +kg
-        :param productOrder:
-        :return:
+         5kg미만 제품 상자 +kg
         """
         productCode = ProductCode.objects.get(code=productOrder.code)
         autoPacking = AutoPacking.objects.filter(productCode=productCode).filter(packingCode__type='외포장재').first()
@@ -254,11 +266,17 @@ class ProductOrderList(View):
             )
 
 
-class ProductOrderPopup(LoginRequiredMixin, View):
+class ProductOrderPopup(LogginMixin, LoginRequiredMixin, View):
     def get(self, request, pk):
         productOrder = ProductOrder.objects.get(pk=pk)
-        productOrderPackings = ProductOrderPacking.objects.filter(productOrderCode=productOrder)
-        data = {'productOrderPackings': productOrderPackings, 'form': ProductOrderPackingForm}
+        productOrderPackings = ProductOrderPacking.objects.filter(Q(productOrderCode=productOrder), Q(type='일반'))
+        productOrderStockForm = ProductOrderStockForm()
+        productOrderPackingStockForm = ProductOrderPackingStockForm()
+        data = {'productOrder': productOrder,
+                'productOrderStockForm': productOrderStockForm,
+                'productOrderPackings': productOrderPackings,
+                'productOrderPackingStockForm': productOrderPackingStockForm,
+                'form': ProductOrderPackingForm}
         return render(request, 'product/popup_productOrder.html', data)
 
 

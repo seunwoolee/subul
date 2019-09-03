@@ -1,4 +1,5 @@
-﻿{% load staticfiles %}
+﻿{% load widget_tweaks %}
+{% load staticfiles %}
 {% load static %}
 {% load crispy_forms_tags %}
 
@@ -19,8 +20,33 @@
     <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
     <script src="{% static '@coreui/coreui-pro/dist/js/coreui.min.js' %}"></script>
 
+    <script>
+        var AMOUNT_KG = {"AMOUNT_KG": {{productOrder.amount_kg}} };
+        var ymd = {{ productOrder.ymd }};
+        var codes = {{ productOrder.code }};
+        var codeNames = "{{ productOrder.codeName }}";
+        var productCode = {{ productOrder.productCode.id }};
+        var amount_kg = {{ productOrder.amount_kg }};
+        var pk = {{ productOrder.id }};
+        var future_stock_count = 0;
+        var future_stock_amount = 0;
+        var past_stock_count = 0;
+        var past_stock_amount = 0;
+
+        {% if productOrder.future_stock %}
+            future_stock_count = {{ productOrder.future_stock.count }};
+            future_stock_amount = {{ productOrder.future_stock.amount }};
+        {% endif %}
+
+        {% if productOrder.past_stock %}
+            past_stock_count = {{ productOrder.past_stock.count }};
+            past_stock_amount = {{ productOrder.past_stock.amount }};
+        {% endif %}
+
+    </script>
 
     <script src="{% static 'js/buttonLoader.min.js' %}"></script>
+    <script src="{% static 'js/base.js' %}"></script>
     <script src="{% static 'js/popup_productOrder.js' %}"></script>
     <link href="{% static 'css/buttonLoader.css' %}" rel="stylesheet">
     <link href="{% static 'css/simple-line-icons/css/simple-line-icons.css' %}" rel="stylesheet">
@@ -31,25 +57,76 @@
 <body class="app flex-row align-items-center">
 <div class="container">
     <div class="row justify-content-center">
+
         <div class="col-md-6">
             <div class="card-group">
+
                 <div class="card">
                     <div class="card-body">
-                        <form action="/api/productOrder/{{ productOrderPackings.0.productOrderCode.id }}">
-                            <h2>{{ productOrderPackings.0.productOrderCode.codeName }}</h2>
+
+                        {# 메인 productOrder 내용 #}
+                        <form action="/api/productOrder/{{ productOrder.id }}">
+                            <h2>{{ productOrder.codeName }}</h2>
                             <label for="id_memo" class="col-form-label">메모</label>
-                            {% if productOrderPackings.0.productOrderCode.memo %}
-                                <textarea id="id_memo" name="memo" class="form-control" rows="2">{{ productOrderPackings.0.productOrderCode.memo }}</textarea>
+                            {% if productOrder.memo %}
+                                <textarea id="id_memo" name="memo" class="form-control" rows="2">{{ productOrder.memo }}</textarea>
                             {% else %}
                                 <textarea name="memo" class="form-control" rows="2"></textarea>
                             {% endif %}
                             <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="patch"/>
-                            <button type="submit" class="btn btn-sm btn-primary mt-2 MODIFY-PARENT">OK</button>
+                            <button type="submit" class="btn btn-sm btn-dark mt-2 mb-1 MODIFY-PARENT">OK</button>
+                        </form>
+
+                    <button type="submit" class="col-md-3 btn btn-warning stock-button">재고생성</button>
+                    </div>
+                </div>
+
+
+                {# 전주 재고 내용 #}
+                {% if productOrder.past_stock %}
+                <div class="card">
+                    <div class="card-body" data-url="/api/productOrder/{{ productOrder.past_stock.id }}">
+                        <form id="pastStockForm" action="/api/productOrder/{{ productOrder.past_stock.id }}">
+                            <h3>전주재고</h3>
+                            <table style="width: 100%">
+                                <tr>
+                                    <td>{{ productOrderStockForm.count|as_crispy_field }}</td>
+                                    <td>{{ productOrderStockForm.amount|as_crispy_field }}</td>
+                                </tr>
+                            </table>
+                            <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="patch"/>
+                            <button type="submit" class="btn btn-sm btn-dark mt-1 mb-1 MODIFY-PARENT">OK</button>
+                            <button type="button" class="btn btn-danger btn-sm REMOVE">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
                         </form>
                     </div>
                 </div>
-            </div>
+                {% endif %}
 
+                {# 차주 재고 내용 #}
+                {% if productOrder.future_stock %}
+                    <div class="card">
+                        <div class="card-body" data-url="/api/productOrder/{{ productOrder.future_stock.id }}">
+                        <form id="futureStockForm" action="/api/productOrder/{{ productOrder.future_stock.id }}">
+                            <h3>차주재고</h3>
+                            <table style="width: 100%">
+                                <tr>
+                                    <td>{{ productOrderStockForm.count|as_crispy_field }}</td>
+                                    <td>{{ productOrderStockForm.amount|as_crispy_field }}</td>
+                                </tr>
+                            </table>
+                            <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="patch"/>
+                            <button type="submit" class="btn btn-sm btn-dark mt-1 mb-1 MODIFY-PARENT">OK</button>
+                            <button type="button" class="btn btn-danger btn-sm REMOVE">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
+                        </form>
+                        </div>
+                    </div>
+                {% endif %}
+
+            </div>
         </div>
 
 
@@ -58,9 +135,12 @@
                 <div class="card-group">
                     <div class="card">
                         <div class="card-body">
+                            {# 거래처 표시 #}
                             {% if productOrderPacking.orderLocationCodeName %}
                                 <div data-id={{ productOrderPacking.id }}
-                                             data-boxCount={{ productOrderPacking.boxCount }}
+                                     data-url="/api/productOrderPacking/{{ productOrderPacking.id }}"
+                                     data-boxCount={{ productOrderPacking.boxCount }}
+                                     data-productOrderCode={{ productOrderPacking.productOrderCode.id }}
                                      data-eaCount={{ productOrderPacking.eaCount }}>
                                     <b>{{ productOrderPacking.orderLocationCodeName }}</b>
                                     <span class="boxCount">{{ productOrderPacking.boxCount }}<span> Box
@@ -71,18 +151,67 @@
                                     <button class="btn btn-info btn-sm MODIFY">
                                         <i class="fa fa-edit"></i>
                                     </button>
+                                    <button class="btn btn-success btn-sm ADDSTOCK">
+                                        <i class="fas fa-check-circle"></i>
+                                    </button>
                                 </div>
                             {% else %}
+                            {# 거래처 미표시 #}
                                 <div data-id={{ productOrderPacking.id }}
-                                             data-boxCount={{ productOrderPacking.boxCount }}
+                                     data-url="/api/productOrderPacking/{{ productOrderPacking.id }}"
+                                     data-boxCount={{ productOrderPacking.boxCount }}
+                                     data-productOrderCode={{ productOrderPacking.productOrderCode.id }}
                                      data-eaCount={{ productOrderPacking.eaCount }}>
                                         <span class="boxCount">{{ productOrderPacking.boxCount }}<span> Box
                                         <span class="eaCount">{{ productOrderPacking.eaCount }}<span> EA
                                     <button class="btn btn-info btn-sm MODIFY">
                                         <i class="fa fa-edit"></i>
                                     </button>
+                                    <button class="btn btn-success btn-sm ADDSTOCK">
+                                        <i class="fas fa-check-circle"></i>
+                                    </button>
                                 </div>
                             {% endif %}
+
+                            {% if productOrderPacking.past_stock %}
+                                <div class="ml-3"
+                                     data-id={{ productOrderPacking.past_stock.id }}
+                                     data-url="/api/productOrderPacking/{{ productOrderPacking.past_stock.id }}"
+                                     data-boxCount={{ productOrderPacking.past_stock.boxCount }}
+                                     data-productOrderCode={{ productOrderPacking.past_stock.productOrderCode.id }}
+                                     data-eaCount={{ productOrderPacking.past_stock.eaCount }}>
+                                        <b> - 전주재고 :</b>
+                                        <span class="boxCount">{{ productOrderPacking.past_stock.boxCount }}<span> Box
+                                        <span class="eaCount">{{ productOrderPacking.past_stock.eaCount }}<span> EA
+                                    <button class="btn btn-info btn-sm MODIFY">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm REMOVE">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            {% endif %}
+
+                            {% if productOrderPacking.future_stock %}
+                                <div class="ml-3"
+                                     data-id={{ productOrderPacking.future_stock.id }}
+                                     data-url="/api/productOrderPacking/{{ productOrderPacking.future_stock.id }}"
+                                     data-boxCount={{ productOrderPacking.future_stock.boxCount }}
+                                     data-productOrderCode={{ productOrderPacking.future_stock.productOrderCode.id }}
+                                     data-eaCount={{ productOrderPacking.future_stock.eaCount }}>
+                                        <b> - 차주재고 :</b>
+                                        <span class="boxCount">{{ productOrderPacking.future_stock.boxCount }}<span> Box
+                                        <span class="eaCount">{{ productOrderPacking.future_stock.eaCount }}<span> EA
+                                    <button class="btn btn-info btn-sm MODIFY">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm REMOVE">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            {% endif %}
+
+
                         </div>
                     </div>
                 </div>
@@ -113,6 +242,58 @@
     </div>
 </div>
 
+<!-- PACKING STOCK CREATE Modal -->
+{% if productOrder.past_stock or productOrder.future_stock%}
+<div class="modal fade everyModal" id="createPackingStockModal" role="dialog">
+    <div class="modal-dialog modal-success">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title codeName">재고반영</h4>
+
+                {% if productOrder.past_stock %}
+                    <h5 class="modal-title">전주재고: {{ productOrder.past_stock.amount }}</h5>
+                {% endif %}
+
+                {% if productOrder.future_stock %}
+                    <h5 class="modal-title">차주재고: {{ productOrder.future_stock.amount }}</h5>
+                {% endif %}
+
+            </div>
+            <div class="modal-body">
+                <form action="/api/productOrderPackingStock/">
+                <table style="width: 100%">
+                    <tr>
+                        <td colspan="2">{{ productOrderPackingStockForm.stock_type|as_crispy_field }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 50%;">{{ productOrderPackingStockForm.count|as_crispy_field }}</td>
+                        <td>{{ productOrderPackingStockForm.amount|as_crispy_field }}</td>
+                    </tr>
+                </table>
+                {{ productOrderPackingStockForm.origin_pk|as_crispy_field }}
+                {{ productOrderPackingStockForm.type|as_crispy_field }}
+                {{ productOrderPackingStockForm.productOrderCode|as_crispy_field }}
+                    <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="post"/>
+                    <button type="submit" class="btn btn-success">OK</button>
+                    <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="modal fade everyModal" id="createPackingStockModal" role="dialog">
+    <div class="modal-dialog modal-success">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title codeName">재고없음</h4>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 
 <!--Delete Modal -->
 <div class="modal fade everyModal" role="dialog" id="confirm">
@@ -133,6 +314,43 @@
         </div>
     </div>
 </div>
+
+<!-- stock Modal -->
+<div class="modal fade everyModal" id="stockModal" role="dialog">
+    <div class="modal-dialog modal-warning">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title codeName">재고생성</h4>
+            </div>
+            <div class="modal-body">
+                <form action="/api/productOrder/">
+                {{ productOrderStockForm.ymd|as_crispy_field }}
+                {{ productOrderStockForm.code|as_crispy_field }}
+                {{ productOrderStockForm.codeName|as_crispy_field }}
+                <table style="width: 100%">
+                    <tr>
+                        <td colspan="2">{{ productOrderStockForm.type|as_crispy_field }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ productOrderStockForm.count|as_crispy_field }}</td>
+                        <td>{{ productOrderStockForm.amount|as_crispy_field }}</td>
+                    </tr>
+                </table>
+                {{ productOrderStockForm.productCode|as_crispy_field }}
+                {{ productOrderStockForm.amount_kg|as_crispy_field }}
+                {{ productOrderStockForm.memo|as_crispy_field }}
+
+                <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="post" disabled/>
+                <input type="hidden" id="id_pk" class="pk" name="pk" />
+                <button type="submit" class="btn btn-warning">OK</button>
+                <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 </body>
 </html>

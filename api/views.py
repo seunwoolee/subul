@@ -1,5 +1,5 @@
-from django.db.models import F, Sum
-from django.http import Http404
+from django.db.models import F, Sum, Q
+from django.http import Http404, HttpResponse
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -23,6 +23,7 @@ from order.models import Order
 from packing.models import Packing, AutoPacking
 from product.models import Product, ProductEgg, ProductUnitPrice, \
     SetProductMatch, SetProductCode, ProductCode, ProductAdmin, ProductOrder, ProductOrderPacking
+from product.views import ProductOrderList
 from release.models import Release
 from .serializers import ProductSerializer, ProductEggSerializer, ProductUnitPriceSerializer, SetProductCodeSerializer, \
     ProductCodeSerializer, SetProductMatchSerializer
@@ -487,6 +488,16 @@ class EggsUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         instance = Egg.objects.get(pk=kwargs['pk'])
+
+        if instance.type == '입고':
+            egg_releases = Egg.objects \
+                .filter(Q(code=instance.code), Q(in_ymd=instance.in_ymd), Q(in_locationCode=instance.in_locationCode)) \
+                .exclude(id=instance.id)
+
+            if egg_releases:
+                ids = [str(egg_release.id) for egg_release in egg_releases]
+                return HttpResponse(status=417, content=','.join(ids))
+
         self.log(
             user=request.user,
             action="원란삭제",
@@ -776,21 +787,145 @@ class ProductOrderListAPIView(APIView):
         except Exception as e:
             return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
 
+    def post(self, request):
+        """
+        생산지시서 popup 창에서 차주, 전주 재고 생성
+        기존의 productOrder 에 재고가 있으면 412error 반환
+        """
+        origin_pk = request.data['pk']
+        origin_instance: ProductOrder = ProductOrder.objects.get(pk=origin_pk)
 
-class ProductOrderUpdate(generics.RetrieveUpdateDestroyAPIView):
+        if request.data['type'] == '전주재고' and origin_instance.past_stock:
+            return Response(status=status.HTTP_412_PRECONDITION_FAILED)
+
+        if request.data['type'] == '차주재고' and origin_instance.future_stock:
+            return Response(status=status.HTTP_412_PRECONDITION_FAILED)
+
+        serializer = ProductOrderSerializer(data=request.data)
+        if serializer.is_valid():
+            instance: ProductOrder = serializer.save()
+
+            if instance.type == '전주재고':
+                origin_instance.past_stock = instance
+            else:
+                origin_instance.future_stock = instance
+
+            origin_instance.save()
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProductOrderUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
     """
     원란지시조회에서 Update, Delete를 칠때
     """
     queryset = ProductOrder.objects.all()
     serializer_class = ProductOrderSerializer
 
+    def delete(self, request, *args, **kwargs):
+        instance = ProductOrder.objects.get(pk=kwargs['pk'])
+        self.log(
+            user=request.user,
+            action="생산지시 삭제",
+            obj=instance,
+            extra=model_to_dict(instance)
+        )
 
-class ProductOrderPackingUpdate(generics.RetrieveUpdateDestroyAPIView):
+        if instance.type in ['전란', '난백난황']:
+            if instance.future_stock:
+                instance.future_stock.delete()
+
+            if instance.past_stock:
+                instance.past_stock.delete()
+
+        self.destroy(request, *args, **kwargs)
+        return Response(status=status.HTTP_200_OK)
+
+
+class ProductOrderPackingStockCreate(generics.ListCreateAPIView):
+    queryset = ProductOrderPacking.objects.all()
+    serializer_class = ProductOrderPackingSerializer
+
+    def create(self, request, *args, **kwargs):
+        if not request.data._mutable:
+            request.data._mutable = True
+
+        origin_productOrderPacking = ProductOrderPacking.objects.get(pk=request.data['origin_pk'])
+        autoPacking = AutoPacking.objects.filter(Q(productCode=origin_productOrderPacking.productOrderCode.productCode),
+                                                 Q(packingCode__type='외포장재')).first()
+
+        if autoPacking:
+            count = autoPacking.count
+            mod, remainder = divmod(int(request.data['count']), count)
+            request.data['boxCount'] = mod
+            request.data['eaCount'] = remainder
+            request.data['productOrderCode'] = origin_productOrderPacking.productOrderCode.id
+            serializer = self.get_serializer(data=request.data)
+            if serializer.is_valid():
+                instance: ProductOrderPacking = serializer.save()
+                if request.data['stock_type'] == '전주재고':
+                    origin_productOrderPacking.past_stock = instance
+                else:
+                    origin_productOrderPacking.future_stock = instance
+                origin_productOrderPacking.save()
+                headers = self.get_success_headers(serializer.data)
+                return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            raise Http404
+
+
+class ProductOrderPackingUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
     """
     생산지시서-팝업창에서 Update, Delete를 칠때
     """
     queryset = ProductOrderPacking.objects.all()
     serializer_class = ProductOrderPackingSerializer
+
+    def delete(self, request, *args, **kwargs):
+        instance = ProductOrderPacking.objects.get(pk=kwargs['pk'])
+        self.log(
+            user=request.user,
+            action="생산지시 상세내용 삭제",
+            obj=instance,
+            extra=model_to_dict(instance)
+        )
+        # autoPacking = AutoPacking.objects.filter(Q(productCode=instance.productOrderCode.productCode),
+        #                                          Q(packingCode__type='외포장재')).first()
+        #
+        # if autoPacking:
+        #     count = instance.boxCount * autoPacking.count + instance.eaCount
+        #     instance.productOrderCode.count -= count
+        #     instance.productOrderCode.amount = instance.productOrderCode.amount_kg * instance.productOrderCode.count
+        #     instance.productOrderCode.save()
+
+        self.destroy(request, *args, **kwargs)
+        return Response(status=status.HTTP_200_OK)
+
+    def patch(self, request, *args, **kwargs):
+        instance = ProductOrderPacking.objects.get(pk=kwargs['pk'])
+        self.log(
+            user=request.user,
+            action="생산지시 상세내용 수정",
+            obj=instance,
+            extra=model_to_dict(instance)
+        )
+        # autoPacking = AutoPacking.objects.filter(Q(productCode=instance.productOrderCode.productCode),
+        #                                          Q(packingCode__type='외포장재')).first()
+        #
+        # if autoPacking:
+        #     origin_count = instance.boxCount * autoPacking.count + instance.eaCount
+        #     count = int(request.data['boxCount']) * int(autoPacking.count) + int(request.data['eaCount'])
+        #     count -= origin_count
+        #
+        #     instance.productOrderCode.count += count
+        #     instance.productOrderCode.amount = instance.productOrderCode.amount_kg * instance.productOrderCode.count
+        #     instance.productOrderCode.save()
+
+        self.partial_update(request, *args, **kwargs)
+        return Response(status=status.HTTP_200_OK)
 
 
 class ProductCodeDatatableList(generics.ListAPIView):

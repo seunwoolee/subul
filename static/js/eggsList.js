@@ -610,7 +610,9 @@ $('.deleteAndEdit').on('submit', function (e)
     }).fail(function(xhr, status, error) {
         if(xhr.status === 400){
             alert('재고수량을 넘습니다, 수량을 확인하세요');
-        }else{
+        } else if(xhr.status === 417){
+            alert(`해당 원란으로 출고된 데이터가 있습니다 출고데이터 삭제 후 진행하세요 id: ${xhr.responseText}`)
+        } else {
             alert('수정 에러 전산실로 문의바랍니다.');
         }
     });

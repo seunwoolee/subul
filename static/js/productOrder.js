@@ -39,8 +39,8 @@ function fetch_data(start_date = '', end_date = '') {
             },
             {"data": "code"},
             {"data": "codeName"},
-            {"data": "count"},
-            {"data": "amount"},
+            {"data": "real_count"},
+            {"data": "real_amount"},
             {"data": "memo"},
             {
                 "data": null, "render": function (data, type, row, meta) {

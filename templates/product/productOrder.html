@@ -104,8 +104,6 @@
                 </div>
                 <div class="modal-body">
                     <form role="form" class="delete">
-                        <!--{% csrf_token %}-->
-                        <!--<input type="hidden" class="delete_state" name="delete_state" value="Y">-->
                         <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="delete"/>
                         <input type="hidden" class="productType" name="productType" value="">
                         <button type="submit" class="btn btn-danger">Delete</button>
@@ -123,6 +121,7 @@
         <form class="form-container">
             <h1>생산등록</h1>
             {{ productOrderForm.ymd|as_crispy_field }}
+            {{ productOrderForm.orderLocationCode|as_crispy_field }}
             <table>
                 <tr>
                     <td colspan="2">{{ productOrderForm.productCode|as_crispy_field }}</td>

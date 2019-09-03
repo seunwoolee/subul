@@ -41,12 +41,14 @@ class SiteEggOrder(View):
         return JsonResponse(self.data)
 
     def get_egg_list(self):
-        self.data['list'] = render_to_string('site/partial_egg_order_list.html', {'eggs': self.eggs}, request=self.request)
+        self.data['list'] = render_to_string('site/partial_egg_order_list.html', {'eggs': self.eggs},
+                                             request=self.request)
 
     def get_form(self, pk):
         eggOrder = get_object_or_404(EggOrder, pk=pk)
         self.form = EggOrderForm(instance=eggOrder)
-        self.data['form'] = render_to_string('site/partial_egg_order_update.html', {'form': self.form}, request=self.request)
+        self.data['form'] = render_to_string('site/partial_egg_order_update.html', {'form': self.form},
+                                             request=self.request)
 
 
 class SiteProductOrder(View):
@@ -60,8 +62,9 @@ class SiteProductOrder(View):
     def get(self, request):
 
         for productOrder in self.productOrders:
-            if productOrder.detail.all().count() > self.max_count:
-                self.max_count = productOrder.detail.all().count()
+            current_count = productOrder.detail.filter(type='일반').count()
+            if current_count > self.max_count:
+                self.max_count = current_count
 
         self.get_product_list()
 
@@ -69,16 +72,52 @@ class SiteProductOrder(View):
             return JsonResponse(self.data)
         else:
             productOrderForm = ProductOrderForm()
-            data = {'productOrders': self.productOrders, 'max_count': self.max_count, 'productOrderForm': productOrderForm}
+            data = {'productOrders': self.productOrders, 'max_count': self.max_count,
+                    'productOrderForm': productOrderForm}
             return render(request, 'site/product_index.html', data)
 
     def get_query(self):
-        productOrders = ProductOrder.objects.filter(display_state='Y').annotate(expire_memo=F('productCode__expiration')).order_by('id')
+        productOrders = ProductOrder.objects.filter(Q(display_state='Y'), Q(type__in=['전란', '난백난황'])) \
+            .annotate(expire_memo=F('productCode__expiration')) \
+            .annotate(real_count=Case(
+            When(Q(past_stock__isnull=False) & Q(future_stock__isnull=False),
+                 then=F('count') - F('past_stock__count') + F('future_stock__count')),
+            When(Q(past_stock__isnull=True) & Q(future_stock__isnull=False),
+                 then=F('count') + F('future_stock__count')),
+            When(Q(past_stock__isnull=False) & Q(future_stock__isnull=True),
+                 then=F('count') - F('past_stock__count')),
+            default=F('count'), output_field=IntegerField())) \
+            .annotate(real_amount=Case(
+            When(Q(past_stock__isnull=False) & Q(future_stock__isnull=False),
+                 then=F('amount') - F('past_stock__amount') + F('future_stock__amount')),
+            When(Q(past_stock__isnull=True) & Q(future_stock__isnull=False),
+                 then=F('amount') + F('future_stock__amount')),
+            When(Q(past_stock__isnull=False) & Q(future_stock__isnull=True),
+                 then=F('amount') - F('past_stock__amount')),
+            default=F('amount'), output_field=DecimalField())).order_by('id')
+
         for productOrder in productOrders:
-            yyyy,mm, dd = int(productOrder.ymd[0:4]), int(productOrder.ymd[4:6]), int(productOrder.ymd[6:])
+            total_boxCount = 0
+            total_eaCount = 0
+
+            for detail in productOrder.detail.filter(type='일반'):
+                total_boxCount += detail.boxCount
+                total_eaCount += detail.eaCount
+
+                if detail.future_stock:
+                    total_boxCount += detail.future_stock.boxCount
+                    total_eaCount += detail.future_stock.eaCount
+
+                if detail.past_stock:
+                    total_boxCount -= detail.past_stock.boxCount
+                    total_eaCount -= detail.past_stock.eaCount
+
+            yyyy, mm, dd = int(productOrder.ymd[0:4]), int(productOrder.ymd[4:6]), int(productOrder.ymd[6:])
             ymd = datetime(yyyy, mm, dd)
             expire_date = ymd + timedelta(days=productOrder.expire_memo)
             productOrder.expire_memo = f'유통기한({productOrder.expire_memo})일 / {expire_date.strftime("%Y-%m-%d")}'
+            productOrder.total_boxCount = total_boxCount
+            productOrder.total_eaCount = total_eaCount
         return productOrders
 
     def get_product_list(self):

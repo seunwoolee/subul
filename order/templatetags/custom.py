@@ -119,3 +119,34 @@ def to_yyyy_mm_dd(yyyymmdd):
 @register.filter
 def for_loop(number):
     return range(number)
+
+
+@register.filter
+def productOrderPacking_filter(productOrderPacking):
+    return productOrderPacking.filter(type='일반')
+
+
+@register.filter
+def calculate_boxCount(productOrderPacking):
+    real_boxCount = productOrderPacking.boxCount
+
+    if productOrderPacking.future_stock:
+        real_boxCount += productOrderPacking.future_stock.boxCount
+
+    if productOrderPacking.past_stock:
+        real_boxCount -= productOrderPacking.past_stock.boxCount
+
+    return real_boxCount
+
+
+@register.filter
+def calculate_eaCount(productOrderPacking):
+    real_eaCount = productOrderPacking.eaCount
+
+    if productOrderPacking.future_stock:
+        real_eaCount += productOrderPacking.future_stock.eaCount
+
+    if productOrderPacking.past_stock:
+        real_eaCount -= productOrderPacking.past_stock.eaCount
+
+    return real_eaCount

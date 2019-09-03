@@ -6,7 +6,7 @@ from model_utils import Choices
 from core.models import Code, Detail, Location, TimeStampedModel
 from eggs.models import Egg
 from release.models import Release
-from django.db.models import Sum, Q, F, DecimalField, Value, IntegerField, ExpressionWrapper
+from django.db.models import Sum, Q, F, DecimalField, Value, IntegerField, ExpressionWrapper, Case, When
 import datetime
 
 DELETE_STATE_CHOICES = (
@@ -673,6 +673,8 @@ class ProductOrder(Detail):
     PRODUCT_TYPE_CHOICES = (
         ('전란', '전란'),
         ('난백난황', '난백난황'),
+        ('차주재고', '차주재고'),
+        ('전주재고', '전주재고'),
     )
     DISPLAY_CHOICES = (
         ('Y', '진행중'),
@@ -683,6 +685,11 @@ class ProductOrder(Detail):
         choices=PRODUCT_TYPE_CHOICES,
         default='전란',
     )
+    future_stock = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True,
+                                     related_name='future', verbose_name='차주재고')
+    past_stock = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True,
+                                   related_name='past', verbose_name='전주재고')
+
     productCode = models.ForeignKey(ProductCode, on_delete=models.CASCADE)
     display_state = models.CharField(
         max_length=10,
@@ -717,7 +724,24 @@ class ProductOrder(Detail):
         start_date = kwargs.get('start_date', None)
         end_date = kwargs.get('end_date', None)
 
-        queryset = ProductOrder.objects.filter(ymd__gte=start_date).filter(ymd__lte=end_date)
+        queryset = ProductOrder.objects.filter(Q(ymd__gte=start_date),
+                                               Q(ymd__lte=end_date), Q(type__in=['전란', '난백난황'])) \
+            .annotate(real_count=Case(
+            When(Q(past_stock__isnull=False) & Q(future_stock__isnull=False),
+                 then=F('count') - F('past_stock__count') + F('future_stock__count')),
+            When(Q(past_stock__isnull=True) & Q(future_stock__isnull=False),
+                 then=F('count') + F('future_stock__count')),
+            When(Q(past_stock__isnull=False) & Q(future_stock__isnull=True),
+                 then=F('count') - F('past_stock__count')),
+            default=F('count'), output_field=IntegerField())) \
+            .annotate(real_amount=Case(
+            When(Q(past_stock__isnull=False) & Q(future_stock__isnull=False),
+                 then=F('amount') - F('past_stock__amount') + F('future_stock__amount')),
+            When(Q(past_stock__isnull=True) & Q(future_stock__isnull=False),
+                 then=F('amount') + F('future_stock__amount')),
+            When(Q(past_stock__isnull=False) & Q(future_stock__isnull=True),
+                 then=F('amount') - F('past_stock__amount')),
+            default=F('amount'), output_field=DecimalField()))
 
         total = queryset.count()
 
@@ -743,11 +767,26 @@ class ProductOrder(Detail):
 
 
 class ProductOrderPacking(models.Model):
-    productOrderCode = models.ForeignKey(ProductOrder, on_delete=models.CASCADE, related_name='detail')
-    orderLocationCode = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
-    orderLocationCodeName = models.CharField(max_length=255, blank=True, null=True)
-    boxCount = models.IntegerField()
-    eaCount = models.IntegerField()
+    PRODUCT_TYPE_CHOICES = (
+        ('일반', '일반'),
+        ('재고', '재고'),
+    )
+    type = models.CharField(
+        max_length=10,
+        choices=PRODUCT_TYPE_CHOICES,
+        default='일반',
+    )
+    productOrderCode = models.ForeignKey(ProductOrder, on_delete=models.CASCADE,
+                                         related_name='detail', verbose_name='제품코드')
+    orderLocationCode = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True,
+                                          null=True, verbose_name='주문장소')
+    orderLocationCodeName = models.CharField(max_length=255, blank=True, null=True, verbose_name='주문장소명')
+    future_stock = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True,
+                                     related_name='future', verbose_name='차주재고')
+    past_stock = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True,
+                                   related_name='past', verbose_name='전주재고')
+    boxCount = models.IntegerField(verbose_name='박스수')
+    eaCount = models.IntegerField(verbose_name='낱개수')
 
     def __str__(self):
         return f'{self.orderLocationCodeName} {self.boxCount} 상자 {self.eaCount} 개'

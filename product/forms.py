@@ -322,7 +322,7 @@ class StepFourForm(forms.Form):
         super(StepFourForm, self).__init__(*args, **kwargs)
         self.fields['product'] = forms.ChoiceField(widget=Select2Widget,
                                                    choices=list(ProductCode.objects.values_list('code', 'codeName')
-                                                                .filter(delete_state='N').filter(oem='N').order_by(
+                                                       .filter(delete_state='N').filter(oem='N').order_by(
                                                        'code')),
                                                    required=False)
 
@@ -366,9 +366,13 @@ ProductOEMFormSet = formset_factory(ProductOEMForm)
 
 
 class ProductOrderForm(forms.ModelForm):
+    orderLocationCode = forms.ChoiceField(label='판매처', widget=Select2Widget,
+                                          choices=Location.objects.values_list('id', 'codeName').filter(type="05"),
+                                          required=False)
+
     class Meta:
         model = ProductOrder
-        fields = ('ymd', 'count', 'amount', 'type', 'memo', 'productCode')
+        fields = ('ymd', 'count', 'amount', 'type', 'memo', 'productCode', 'orderLocationCode')
         labels = {
             'ymd': '일자',
             'count': '수량',
@@ -379,9 +383,30 @@ class ProductOrderForm(forms.ModelForm):
         }
         widgets = {
             'productCode': Select2Widget(),
-            'memo': forms.Textarea(attrs={'rows':2}),
-            'count': forms.NumberInput(attrs={'class':'count'}),
-            'amount': forms.NumberInput(attrs={'class':'amount'}),
+            'memo': forms.Textarea(attrs={'rows': 2}),
+            'count': forms.NumberInput(attrs={'class': 'count'}),
+            'amount': forms.NumberInput(attrs={'class': 'amount'}),
+        }
+
+
+class ProductOrderStockForm(forms.ModelForm):
+    class Meta:
+        model = ProductOrder
+        fields = ('ymd', 'code', 'codeName', 'amount', 'count', 'type', 'memo', 'productCode', 'amount_kg')
+        labels = {
+            'amount': '중량',
+            'count': '수량',
+            'type': '타입',
+        }
+        widgets = {
+            'ymd': forms.HiddenInput(),
+            'code': forms.HiddenInput(),
+            'codeName': forms.HiddenInput(),
+            'amount': forms.NumberInput(attrs={'class': 'amount'}),
+            'count': forms.NumberInput(attrs={'class': 'count'}),
+            'productCode': forms.HiddenInput(),
+            'amount_kg': forms.HiddenInput(),
+            'memo': forms.HiddenInput(),
         }
 
 
@@ -392,4 +417,20 @@ class ProductOrderPackingForm(forms.ModelForm):
         labels = {
             'boxCount': 'Box량',
             'eaCount': 'ea수량',
+        }
+
+
+class ProductOrderPackingStockForm(forms.ModelForm):
+    amount = forms.DecimalField(decimal_places=2, max_digits=19, min_value=0, label='재고량(KG)',
+                                widget=forms.NumberInput(attrs={'class': 'amount'}))
+    count = forms.IntegerField(min_value=0, label='수량', widget=forms.NumberInput(attrs={'class': 'count'}))
+    stock_type = forms.ChoiceField(label='타입', choices=(('차주재고','차주재고'), ('전주재고','전주재고')))
+    origin_pk = forms.IntegerField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = ProductOrderPacking
+        fields = ('type', 'productOrderCode')
+        widgets = {
+            'type': forms.HiddenInput(),
+            'productOrderCode': forms.HiddenInput(),
         }
