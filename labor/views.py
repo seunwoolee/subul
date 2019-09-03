@@ -19,7 +19,8 @@ class SiteEggOrder(View):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.data = {}
-        self.eggs = EggOrder.objects.filter(display_state='Y').order_by('id')
+        self.today = datetime.today().strftime('%Y%m%d')
+        self.eggs = EggOrder.objects.filter(Q(display_state='Y'),Q(ymd=self.today)).order_by('id')
         self.form: EggOrderForm
 
     def get(self, request):
