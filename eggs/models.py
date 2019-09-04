@@ -187,7 +187,7 @@ class Egg(Detail):
         egg_previous = Egg.objects.values('code', 'codeName', 'in_ymd', 'in_locationCodeName', 'eggCode__sorts') \
             .annotate(totalCount=Sum('count')) \
             .filter(ymd__lt=start_date) \
-            .exclude(totalCount=0)
+            .filter(totalCount__gt=0)
 
         if search_value:
             egg_previous = egg_previous.filter(Q(codeName__icontains=search_value) |
