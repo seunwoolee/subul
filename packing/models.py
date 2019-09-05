@@ -3,7 +3,7 @@ from django.db.models import Q, F, Sum, Func
 from model_utils import Choices
 from core.models import Detail, Location, Code, DELETE_STATE_CHOICES
 from order.models import ABS
-from product.models import ProductCode
+from product.models import ProductCode, Product
 
 
 class PackingCode(Code):
@@ -40,6 +40,7 @@ class Packing(Detail):
     locationCodeName = models.CharField(max_length=255, null=True, blank=True)
     packingCode = models.ForeignKey(PackingCode, on_delete=models.CASCADE, null=True, blank=True)
     amount = models.CharField(max_length=10, null=True, blank=True)
+    productCode = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True, related_name='+')
     autoRelease = models.CharField(
         max_length=10,
         choices=AUTO_TYPE_CHOICES,

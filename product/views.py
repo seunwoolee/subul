@@ -23,6 +23,7 @@ class ProductRegister(LogginMixin, LoginRequiredMixin, PermissionRequiredMixin, 
     permission_required = 'product.add_product'
 
     def post(self, request):
+        global product, main
         form0 = MainForm(request.POST)
         form1 = StepOneForm(request.POST)
         form2 = StepTwoForm(request.POST)
@@ -103,6 +104,7 @@ class ProductRegister(LogginMixin, LoginRequiredMixin, PermissionRequiredMixin, 
                         productExistAdmin.save()
 
                     for packing in AutoPacking.objects.filter(productCode=productCode):
+                        packing_product = productExist if productExist else product
                         packing_count = int(count) // int(packing.count)
                         Packing.objects.create(
                             ymd=main.ymd,
@@ -111,6 +113,7 @@ class ProductRegister(LogginMixin, LoginRequiredMixin, PermissionRequiredMixin, 
                             codeName=packing.packingCode.codeName,
                             count=-packing_count,
                             packingCode=packing.packingCode,
+                            productCode=packing_product,
                             autoRelease='자동출고',
                         )
 
