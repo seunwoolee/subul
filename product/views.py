@@ -254,7 +254,7 @@ class ProductOrderList(View):
 
     def calculate_box_without_location(self, productOrder):
         """
-         5kg미만 제품 상자 +kg
+         5kg 미만 제품 상자 +kg
         """
         productCode = ProductCode.objects.get(code=productOrder.code)
         autoPacking = AutoPacking.objects.filter(productCode=productCode).filter(packingCode__type='외포장재').first()

@@ -278,8 +278,6 @@
             </div>
             <div class="modal-body">
                 <form role="form">
-                    <!--{% csrf_token %}-->
-                    <!--<input type="hidden" class="delete_state" name="delete_state" value="Y">-->
                     <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="delete"/>
                     <input type="hidden" class="productType" name="productType" value="">
                     <button type="submit" class="btn btn-danger">Delete</button>
@@ -295,5 +293,5 @@
 
 {% block js %}
 <script src="{% static 'js/baseList.js' %}"></script>
-<script src="{% static 'js/productList.js' %}"></script>
+<script src="{% static 'js/productList.js' %}?version=1"></script>
 {% endblock %}

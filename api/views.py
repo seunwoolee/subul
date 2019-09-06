@@ -167,6 +167,26 @@ class ProductUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
         return Response(status=status.HTTP_200_OK)
 
 
+class DeleteSelectedRows(LogginMixin, generics.DestroyAPIView):
+    """
+    생산내역조회 - 선택한 Rows 모두 삭제
+    """
+
+    def delete(self, request, *args, **kwargs):
+        self.log(
+            user=request.user,
+            action="생산내역 일괄삭제",
+            obj=ProductEgg.objects.first(),
+        )
+        product_data = request.data.getlist('product_data[]')
+        productEgg_data = request.data.getlist('productEgg_data[]')
+
+        Product.objects.filter(id__in=product_data).delete()
+        ProductEgg.objects.filter(id__in=productEgg_data).delete()
+
+        return Response(status=status.HTTP_200_OK)
+
+
 class ProductCodes(APIView):
 
     def get_object(self, code):
