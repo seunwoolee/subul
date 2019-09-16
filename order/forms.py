@@ -52,6 +52,7 @@ class OrderForm(forms.Form):
                                                     choices=Location.objects.values_list('code', 'codeName')
                                                     .filter(type='05').filter(delete_state='N').order_by('codeName'),
                                                     required=False)
+        self.fields['product'] = forms.ChoiceField(choices=ProductCode.objects.values_list('code', 'codeName').filter(delete_state='N'))
         self.fields['location_manager'] = forms.ChoiceField(widget=Select2Widget,
                                                     choices=CustomUser.objects.values_list('username', 'first_name')
                                                     .order_by('first_name'), required=False)
