@@ -131,6 +131,17 @@ $(document).on('click', '#changeButton', function(e){
     }
 });
 
-$(".amount").focusout(function(){ if(AMOUNT_KG['parentTR'][0] == parentTR[0]) { setAutoCountValue($(this)); }});
-$(".count").focusout(function() { if(AMOUNT_KG['parentTR'][0] == parentTR[0]) { setAutoAmountValue($(this)); }});
+$(".amount").focusout(function() {
+    if(AMOUNT_KG['parentTR'][0] == parentTR[0]) {
+        autoCalculateAnimation($(this));
+        setAutoCountValue($(this));
+    }
+});
+
+$(".count").focusout(function() {
+    if(AMOUNT_KG['parentTR'][0] == parentTR[0]) {
+        autoCalculateAnimation($(this));
+        setAutoAmountValue($(this));
+    }
+});
 

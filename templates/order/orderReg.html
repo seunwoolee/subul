@@ -5,6 +5,7 @@
 
 {% block stylesheet %}
 {{ OrderFormSet.media.css }}
+<link href="{% static 'css/animate.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -81,5 +82,5 @@
 <!-- shortcut Library hotkeys-js -->
 
 <script src="{% static 'js/baseReg.js' %}"></script>
-<script src="{% static 'js/orderReg.js' %}"></script>
+<script src="{% static 'js/orderReg.js' %}?version=2"></script>
 {% endblock %}

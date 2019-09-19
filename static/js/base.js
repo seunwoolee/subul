@@ -161,6 +161,13 @@ function setAutoAmountValue($this) {
     }
 }
 
+function autoCalculateAnimation($this) {
+    $this.addClass('animated bounce');
+    setTimeout(function () {
+        $this.removeClass('animated bounce');
+    }, 1000);
+}
+
 function setSpecialTagButton(data) {
     if (data == "특인가") {
         return '<button class="btn btn-danger btn-sm">' + data + '</button>';

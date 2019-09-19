@@ -315,17 +315,23 @@ $(".product").change(function () {
     data = parentTR.find('.product').val();
     type = parentTR.find('.type').val();
     price = parentTR.find('.price');
+    amount = parentTR.find('.amount');
     specialTag = parentTR.find('.specialTag').val();
 
     PRODUCTINFO.forEach(function (element) {
+
         if (data == element["code"]) {
             window.AMOUNT_KG = {"parentTR": parentTR, "AMOUNT_KG": element["amount_kg"]};
             window.AMOUNT_KG['AMOUNT_KG'] = element["amount_kg"];
+
             if (type == '판매') {
                 (specialTag == "") ? price.val(element["price"]) : price.val(element["specialPrice"]);
             } else {
                 price.val(0);
             }
+
+            amount.focusout();
+
         }
     })
 });
@@ -369,6 +375,7 @@ $(".set").change(function () {
 $(".amount").focusout(function () {
     set = parentTR.find('.set').val();
     if (set == '일반' && AMOUNT_KG['parentTR'][0] == parentTR[0]) {
+        autoCalculateAnimation($(this));
         setAutoCountValue($(this));
     }
 });
@@ -376,6 +383,7 @@ $(".amount").focusout(function () {
 $(".count").focusout(function () {
     set = parentTR.find('.set').val();
     if (set == '일반' && AMOUNT_KG['parentTR'][0] == parentTR[0]) {
+        autoCalculateAnimation($(this));
         setAutoAmountValue($(this));
     }
 });

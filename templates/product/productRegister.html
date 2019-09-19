@@ -5,6 +5,7 @@
 
 {% block stylesheet %}
 <link href="{% static 'css/productReg.css' %}" rel="stylesheet">
+<link href="{% static 'css/animate.css' %}" rel="stylesheet">
 {{ stepFourForm.media.css }}
 {% endblock %}
 
@@ -140,5 +141,5 @@
 
 {% block js %}
 <script src="{% static 'js/baseReg.js' %}"></script>
-<script src="{% static 'js/productRegister.js' %}"></script>
+<script src="{% static 'js/productRegister.js' %}?version=2"></script>
 {% endblock %}
