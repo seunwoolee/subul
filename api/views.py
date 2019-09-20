@@ -962,3 +962,16 @@ class ProductCodeUpdate(generics.RetrieveUpdateAPIView):
     """
     queryset = ProductCode.objects.all()
     serializer_class = ProductCodeDatatableSerializer
+
+
+class OrderPriceMatch(generics.ListAPIView):
+    """
+    주문조회 - 수정 - 특인 select Box 선택 시 정보 제공
+    """
+
+    serializer_class = ProductUnitPriceListSerializer
+
+    def get_queryset(self):
+        productCode = self.request.query_params ['productCode']
+        locationCode = self.request.query_params ['locationCode']
+        return ProductUnitPrice.objects.filter(Q(productCode__code=productCode),Q(locationCode__code=locationCode))

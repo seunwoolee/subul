@@ -145,7 +145,11 @@ function setPackageElementInputInfo(parentTR, $this, data, total) {
         } else if (name.indexOf("count") >= 0) {
             $this.attr({'name': name, 'id': id}).val(data[i]["count"] * COUNT);
         } else if (name.indexOf("price") >= 0) {
-            $this.attr({'name': name, 'id': id}).val(data[i]["price"]).removeAttr('readonly');
+            let price = data[i]["price"];
+            if(OLAP_SHOPPINGMALL === LOCATION && $("#employeePrice input:checkbox").is(":checked")) {
+                price = data[i]["price"] * 0.7;
+            }
+            $this.attr({'name': name, 'id': id}).val(price).removeAttr('readonly');
         } else if (name.indexOf("package") >= 0) {
             $this.attr({'name': name, 'id': id}).val(PRODUCT);
         } else if (name.indexOf("specialTag") >= 0) {
@@ -186,12 +190,12 @@ $(document).on('click', '.add-form-row', function (e) { //일반상품 + 버튼
     let parentTR = $(this).parents('tr');
     let location = parentTR.find('.location').val();
     let price = parentTR.find('.price');
+    let packages = parentTR.find('input[name*="package"]').val();
 
     if ($('form')[0].checkValidity()) {
-        if (OLAP_SHOPPINGMALL === location && $("#employeePrice input:checkbox").is(":checked")) {
+        if (!packages && OLAP_SHOPPINGMALL === location && $("#employeePrice input:checkbox").is(":checked")) {
             price.val(Math.round(price.val() * 0.7));
         }
-
         cloneMore('.forms-row:last', 'form');
         setReadOnly($(this).parents('tr'));
         calculatePriceCount();
