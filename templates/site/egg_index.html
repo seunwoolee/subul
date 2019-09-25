@@ -14,7 +14,7 @@
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
     <link rel="stylesheet" type="text/css" href="{% static 'site/css/util.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'site/css/egg_main.css' %}?version=3">
+    <link rel="stylesheet" type="text/css" href="{% static 'site/css/egg_main.css' %}?version=2">
 </head>
 <body>
 
@@ -28,6 +28,15 @@
             </div>
         </div>
     </div>
+
+    <div id="display-date" class="input-group">
+        <div class="input-group-prepend ">
+            <div class="input-group-text"><i class="far fa-calendar-alt"></i>
+            </div>
+        </div>
+        <input type="date" name="display_date" id="display_date" class="form-control" />
+    </div>
+
 </div>
 
 
@@ -46,7 +55,7 @@
 <script src="{% static 'js/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static 'popper.js/dist/umd/popper.min.js' %}"></script>
 <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
-<script src="{% static 'site/js/egg_index.js' %}?version=3"></script>
+<script src="{% static 'site/js/egg_index.js' %}?version=4"></script>
 
 </html>
 

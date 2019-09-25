@@ -19,11 +19,13 @@ class SiteEggOrder(View):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.data = {}
-        self.today = datetime.today().strftime('%Y%m%d')
-        self.eggs = EggOrder.objects.filter(Q(display_state='Y'),Q(ymd=self.today)).order_by('id')
+        self.today = datetime.today().strftime('%Y-%m-%d')
+        self.eggs = EggOrder.objects.none()
         self.form: EggOrderForm
 
     def get(self, request):
+        display_date = request.GET.get('display_date',self.today)
+        self.get_eggs(display_date)
 
         if request.is_ajax() and request.GET.get('pk'):
             self.get_form(request.GET.get('pk'))
@@ -37,9 +39,14 @@ class SiteEggOrder(View):
 
     def post(self, request, pk):
         eggOrder = get_object_or_404(EggOrder, pk=pk)
-        egg_order: EggOrder = EggOrderForm(request.POST, instance=eggOrder).save()
+        EggOrderForm(request.POST, instance=eggOrder).save()
+        self.get_eggs(request.POST['display_date'])
         self.get_egg_list()
         return JsonResponse(self.data)
+
+    def get_eggs(self, yyyymmdd: str):
+        display_date = yyyymmdd[0:4]+yyyymmdd[5:7]+yyyymmdd[8:10]
+        self.eggs = EggOrder.objects.filter(Q(display_state='Y'),Q(ymd=display_date)).order_by('id')
 
     def get_egg_list(self):
         self.data['list'] = render_to_string('site/partial_egg_order_list.html', {'eggs': self.eggs},

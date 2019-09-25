@@ -1,3 +1,6 @@
+var today = new Date();
+$('input[name="display_date"]').val(today.toISOString().substring(0, 10));
+
 let loadForm = function () {
     let row = $(this);
     let pk = row.attr("data-id");
@@ -22,9 +25,10 @@ let loadForm = function () {
 let updateform = function (e) {
     e.preventDefault();
     let form = $(this);
+
     $.ajax({
         url: form.attr("action"),
-        data: form.serialize(),
+        data: form.serialize() + "&display_date="+$('input[name="display_date"]').val(),
         type: form.attr("method"),
         dataType: 'json',
     }).done(function (data) {
@@ -35,15 +39,20 @@ let updateform = function (e) {
     });
 };
 
-setInterval(function () {
+function getEggsList(){
     $.ajax({
         url: '/labor/egg',
         type: 'get',
-        data: '',
+        data: {display_date: $('input[name="display_date"]').val()},
     }).done(function (data) {
         $("div.table").html(data.list);
     });
-}, 10000);
+}
 
+$('input[name="display_date"]').change(function () {
+   getEggsList();
+});
+
+setInterval(getEggsList, 10000);
 $("div.table").on("click", "div.row", loadForm);
 $("#js-complete-modal").on("submit", ".js-update-form", updateform);
