@@ -220,9 +220,9 @@ class Order(Detail):
         count = queryset.count()
 
         if length != -1:
-            queryset = queryset.order_by(order_column)[start:start + length]
+            queryset = queryset.order_by('ymd', 'orderLocationName', order_column)[start:start + length]
         else:
-            queryset = queryset.order_by(order_column)
+            queryset = queryset.order_by('ymd', 'orderLocationName', order_column)
 
         return {
             'items': queryset,
