@@ -379,7 +379,6 @@ $(".set").change(function () {
 $(".amount").focusout(function () {
     set = parentTR.find('.set').val();
     if (set == '일반' && AMOUNT_KG['parentTR'][0] == parentTR[0]) {
-        autoCalculateAnimation($(this));
         setAutoCountValue($(this));
     }
 });
@@ -387,7 +386,6 @@ $(".amount").focusout(function () {
 $(".count").focusout(function () {
     set = parentTR.find('.set').val();
     if (set == '일반' && AMOUNT_KG['parentTR'][0] == parentTR[0]) {
-        autoCalculateAnimation($(this));
         setAutoAmountValue($(this));
     }
 });
