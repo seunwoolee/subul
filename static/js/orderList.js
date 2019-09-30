@@ -447,7 +447,7 @@ function pdfButtonClick(data) {
     let ymd = data['ymd'];
     let orderLocationCode = data['orderLocationCode'];
     let moneyMark = $("#moneyMark").is(":checked");
-    window.open('/order/pdf?ymd=' + ymd + '&orderLocationCode=' + orderLocationCode + "&moneyMark=" + moneyMark, '_blank');
+    window.open('http://kcfeed.com/order/pdf?ymd=' + ymd + '&orderLocationCode=' + orderLocationCode + "&moneyMark=" + moneyMark, '_blank');
 }
 
 $('form').on('submit', function (e) {

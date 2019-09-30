@@ -219,10 +219,10 @@ class Order(Detail):
 
         count = queryset.count()
 
-        if length != -1:
-            queryset = queryset.order_by('ymd', 'orderLocationName', order_column)[start:start + length]
-        else:
+        if releaseOrder:
             queryset = queryset.order_by('ymd', 'orderLocationName', order_column)
+        else:
+            queryset = queryset.order_by(order_column)
 
         return {
             'items': queryset,
