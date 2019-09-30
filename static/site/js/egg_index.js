@@ -1,5 +1,5 @@
 var today = new Date();
-$('input[name="display_date"]').val(today.toISOString().substring(0, 10));
+$('input[name="display_date"]').val(today.yyyymmdd());
 
 let loadForm = function () {
     let row = $(this);
