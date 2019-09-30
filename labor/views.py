@@ -122,7 +122,7 @@ class SiteProductOrder(View):
 
             yyyy, mm, dd = int(productOrder.ymd[0:4]), int(productOrder.ymd[4:6]), int(productOrder.ymd[6:])
             ymd = datetime(yyyy, mm, dd)
-            expire_date = ymd + timedelta(days=productOrder.expire_memo)
+            expire_date = ymd + timedelta(days=productOrder.expire_memo) - timedelta(days=1)
             productOrder.expire_memo = f'유통기한({productOrder.expire_memo})일 / {expire_date.strftime("%Y-%m-%d")}'
             productOrder.total_boxCount = total_boxCount
             productOrder.total_eaCount = total_eaCount
