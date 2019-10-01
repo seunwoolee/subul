@@ -267,7 +267,7 @@ class Release(Detail):
                 productCodeName=F('product_id__codeName'),
                 productYmd=F('product_id__ymd')) \
                 .annotate(totalCount=Sum('count')).annotate(totalAmount=Sum('amount')) \
-                .filter(ymd__lt=start_date).exclude(totalAmount=0)
+                .filter(ymd__lt=start_date).exclude(totalCount=0)
 
             if search_value:
                 productAdmin_previous = productAdmin_previous.filter(productCodeName__icontains=search_value)
