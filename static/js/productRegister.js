@@ -7,7 +7,7 @@ function cloneMore(selector, prefix) {
 
     var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
     newElement.find(':input').each(function() {
-        var name = $(this).attr('name')
+        var name = $(this).attr('name');
         if(name) {
             name = name.replace('-' + (total-1) + '-', '-' + total + '-');
             var id = 'id_' + name;
@@ -72,13 +72,19 @@ $( ".product" ).change(function() {
             alert('수정 에러 전산실로 문의바랍니다.');
         });
     }
-
-
 });
 
 $(document).on('click', '.add-form-row', function(e){
     e.preventDefault();
-    cloneMore('.forms-row:last', 'form');
+    let parentTR = $(this).parents('tr');
+    let count = intVal(parentTR.find('.count').val());
+
+    if(Number.isInteger(count) && count){
+        cloneMore('.forms-row:last', 'form');
+        setReadOnly($(this).parents('tr'));
+    } else {
+        alert('양(KG) 및 수량(EA)를 확인해주세요');
+    }
     return false;
 });
 
@@ -101,8 +107,16 @@ function myHandlerFunction(e) {
 }
 
 $(document).on('click', '#submitButton', function(e){
-    ymd = set_yyyymmdd($('input[name=fakeYmd]').val());
-    $('input[name=ymd]').val(ymd);
+    e.preventDefault();
+    if ($('form')[0].checkValidity()) {
+        ymd = set_yyyymmdd($('input[name=fakeYmd]').val());
+        $('input[name=ymd]').val(ymd);
+        $("input:disabled").prop('disabled', false);
+        $('.django-select2').prop("disabled", false);
+        $("form").submit();
+    } else {
+        alert('필요한 부분을 모두 입력해주세요.');
+    }
 });
 
 $(document).on('click', '#changeButton', function(e){
@@ -133,15 +147,25 @@ $(document).on('click', '#changeButton', function(e){
 
 $(".amount").focusout(function() {
     if(AMOUNT_KG['parentTR'][0] == parentTR[0]) {
-        autoCalculateAnimation($(this));
         setAutoCountValue($(this));
     }
 });
 
 $(".count").focusout(function() {
     if(AMOUNT_KG['parentTR'][0] == parentTR[0]) {
-        autoCalculateAnimation($(this));
         setAutoAmountValue($(this));
     }
 });
 
+function setReadOnly($parentTR) {
+    $parentTR.find('.count, .amount').each(function () {
+        $(this).attr('disabled', 'true');
+    });
+    $parentTR.find('.product').each(function () {
+        $(this).attr('readonly', 'true');
+        $(this).find('option').not(':selected').remove()
+    });
+    $parentTR.find('.django-select2').each(function () {
+        $(this).prop("disabled", true);
+    });
+}
