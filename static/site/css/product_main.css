@@ -274,3 +274,10 @@ iframe {
         width: 100% !important;
     }
 }
+
+#display-date {
+  width: 200px;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+}

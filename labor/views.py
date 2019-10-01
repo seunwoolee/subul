@@ -64,10 +64,13 @@ class SiteProductOrder(View):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.data = {}
-        self.productOrders = self.get_query()
+        self.today = datetime.today().strftime('%Y-%m-%d')
+        self.productOrders = ProductOrder.objects.none()
         self.max_count = 1
 
     def get(self, request):
+        display_date = request.GET.get('display_date',self.today)
+        self.productOrders = self.get_query(display_date)
 
         for productOrder in self.productOrders:
             current_count = productOrder.detail.filter(type='일반').count()
@@ -84,8 +87,10 @@ class SiteProductOrder(View):
                     'productOrderForm': productOrderForm}
             return render(request, 'site/product_index.html', data)
 
-    def get_query(self):
-        productOrders = ProductOrder.objects.filter(Q(display_state='Y'), Q(type__in=['전란', '난백난황'])) \
+    def get_query(self, yyyymmdd: str):
+        display_date = yyyymmdd[0:4]+yyyymmdd[5:7]+yyyymmdd[8:10]
+        productOrders = ProductOrder.objects.filter(Q(ymd=display_date), Q(display_state='Y'),
+                                                    Q(type__in=['전란', '난백난황'])) \
             .annotate(expire_memo=F('productCode__expiration')) \
             .annotate(real_count=Case(
             When(Q(past_stock__isnull=False) & Q(future_stock__isnull=False),
