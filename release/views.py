@@ -220,3 +220,9 @@ class ReleaseAdjustment(LogginMixin, View):  # 재고조정, 미출고품, 반�
             extra=data
         )
         return HttpResponse(status=200)
+
+
+class ReleaseOrderList(LoginRequiredMixin, View):
+
+    def get(self, request):
+        return render(request, 'release/releaseOrder.html')

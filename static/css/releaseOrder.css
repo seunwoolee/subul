@@ -1,0 +1,13 @@
+.product-item {
+    font-size: 85%;
+    font-weight: 800;
+}
+
+.car-item {
+    background-color: #f0f3f5;
+}
+
+.location-item {
+    display: none;
+    background-color: #f0f3f5;
+}

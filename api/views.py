@@ -15,7 +15,7 @@ from api.productCodeSerializers import ProductCodeDatatableSerializer
 from api.productOEMSerializers import ProductOEMSerializer
 from api.productOrderSerializers import ProductOrderSerializer, ProductOrderPackingSerializer
 from api.productUnitPriceSerializers import ProductUnitPriceListSerializer, SetProductMatchListSerializer
-from api.releaseSerializers import ReleaseSerializer
+from api.releaseSerializers import ReleaseSerializer, CarDatatableSerializer
 from core.models import Location
 from eggs.models import Egg, EggOrder
 from eventlog.models import LogginMixin
@@ -24,7 +24,7 @@ from packing.models import Packing, AutoPacking
 from product.models import Product, ProductEgg, ProductUnitPrice, \
     SetProductMatch, SetProductCode, ProductCode, ProductAdmin, ProductOrder, ProductOrderPacking
 from product.views import ProductOrderList
-from release.models import Release
+from release.models import Release, Car
 from .serializers import ProductSerializer, ProductEggSerializer, ProductUnitPriceSerializer, SetProductCodeSerializer, \
     ProductCodeSerializer, SetProductMatchSerializer
 
@@ -975,3 +975,11 @@ class OrderPriceMatch(generics.ListAPIView):
         productCode = self.request.query_params ['productCode']
         locationCode = self.request.query_params ['locationCode']
         return ProductUnitPrice.objects.filter(Q(productCode__code=productCode),Q(locationCode__code=locationCode))
+
+
+class CarDatatableList(generics.ListAPIView):
+    """
+    출고지시서 - 차량 DataTable List
+    """
+    queryset = Car.objects.all()
+    serializer_class = CarDatatableSerializer

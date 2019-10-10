@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from release.models import Release
+from release.models import Release, Car
 
 
 class ReleaseSerializer(serializers.ModelSerializer):
@@ -32,3 +32,10 @@ class ProductAdminSerializer(serializers.Serializer):
     totalAmount = serializers.FloatField()
     totalCount = serializers.IntegerField()
     amount_kg = serializers.FloatField()
+
+
+class CarDatatableSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Car
+        fields = '__all__'

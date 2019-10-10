@@ -567,3 +567,12 @@ class Release(Detail):
             'total': total,
             'draw': draw
         }
+
+
+class Car(models.Model):
+    car_number = models.CharField(max_length=50)
+    palette_count = models.PositiveIntegerField()
+    type = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.car_number
