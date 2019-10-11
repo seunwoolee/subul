@@ -220,7 +220,13 @@ class Order(Detail):
         count = queryset.count()
 
         if releaseOrder:
-            queryset = queryset.order_by('ymd', 'orderLocationName', order_column)
+            order_column1 = kwargs.get('order[1][column]', None)
+
+            if order_column1:
+                order_column1 = ORDER_COLUMN_CHOICES[order_column1[0]]
+                queryset = queryset.order_by(order_column, order_column1)
+            else:
+                queryset = queryset.order_by(order_column)
         else:
             queryset = queryset.order_by(order_column)
 

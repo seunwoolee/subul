@@ -59,6 +59,7 @@ function order_fetch_data(start_date = '', end_date = '') {
             "type": "GET",
             "data": {start_date: start_date, end_date: end_date, releaseOrder: true}
         },
+        "order": [[3, 'asc'], [4,'asc']],
         "createdRow": function (row, data, dataIndex) {
             $(row).find('td:eq(0)').attr('data-title', 'ID');
             $(row).find('td:eq(1)').attr('data-title', '타입');
