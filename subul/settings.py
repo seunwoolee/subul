@@ -141,11 +141,7 @@ SESSION_SAVE_EVERY_REQUEST = True
 #PWA 세팅
 PWA_APP_NAME = '수불부'
 PWA_APP_DESCRIPTION = "수불부"
-# PWA_APP_THEME_COLOR = '#0A0302'
-# PWA_APP_BACKGROUND_COLOR = '#ffffff'
-# PWA_APP_DISPLAY = 'standalone'
-# PWA_APP_SCOPE = '/labor/',
-# PWA_APP_ORIENTATION = 'any'
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'subul', '../static/serviceworker.js')
 PWA_APP_START_URL = '/labor/nav'
 PWA_APP_ICONS = [
     {
@@ -153,6 +149,3 @@ PWA_APP_ICONS = [
         'sizes': '192x192'
     }
 ]
-
-# PWA_APP_DIR = 'ltr'
-# PWA_APP_LANG = 'en-US'
