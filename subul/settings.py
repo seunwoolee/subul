@@ -141,7 +141,7 @@ SESSION_SAVE_EVERY_REQUEST = True
 #PWA 세팅
 PWA_APP_NAME = '수불부'
 PWA_APP_DESCRIPTION = "수불부"
-PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'subul', '../static/serviceworker.js')
+# PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'subul', '../static/serviceworker.js')
 PWA_APP_START_URL = '/labor/nav'
 PWA_APP_ICONS = [
     {
