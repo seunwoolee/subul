@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from order.models import Order
 from release.models import Release, Car
 
 
@@ -39,3 +40,10 @@ class CarDatatableSerializer(serializers.ModelSerializer):
     class Meta:
         model = Car
         fields = '__all__'
+
+
+class LocationDatatableSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Order
+        fields = ('orderLocationCode', 'orderLocationName')

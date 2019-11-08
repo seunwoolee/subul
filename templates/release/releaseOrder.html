@@ -11,13 +11,12 @@
 {% block content %}
 
     <div class="form-row ">
-
         <div class="col-md-3 input-group mb-2 mr-sm-2">
             <div class="input-group-prepend">
                 <div class="input-group-text"><i class="far fa-calendar-alt"></i>
                 </div>
             </div>
-            <input name="ymd" type="date" class="form-control" id="end_date" />
+            <input name="ymd" type="date" class="form-control" id="order_date" />
             <input type="button" name="search" value="생성" class="btn btn-info"/>
             <input type="button" name="search" value="지시" class="btn btn-success"/>
         </div>
@@ -62,8 +61,8 @@
             </div>
         </div>
 
-        <div class="col-md-3">
-            <div class="row dragdrop">
+        <div class="col-md-3 dragdrop">
+            <div class="row">
 
                 <div class="col-md-12">
                     <div class="card card-accent-secondary">
@@ -105,60 +104,59 @@
                             <span>BOX:</span>
                             <span>EA:</span>
                         </div>
-
                     </div>
                 </div>
+
+
             </div>
         </div>
 
-        <div class="col-md-3">
-            <div class="row dragdrop">
+        <div class="col-md-3 dragdrop">
+            <div class="row">
 
-                <div class="col-md-12">
-                    <div class="card card-accent-success">
-                        <div class="card-header drag">
-                            <span class="badge badge-success product-item" >전란</span>
-                            <span>수량:</span>
-                            <span>BOX:</span>
-                            <span>EA:</span>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="card card-accent-warning">
-                        <div class="card-header drag">
-                            <span class="badge badge-warning product-item" >난백</span>
-                            <span>수량:</span>
-                            <span>BOX:</span>
-                            <span>EA:</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-12">
-                    <div class="card card-accent-info">
-                        <div class="card-header drag">
-                            <span class="badge badge-info product-item" >치즈맛오믈렛</span>
-                            <span>수량:</span>
-                            <span>BOX:</span>
-                            <span>EA:</span>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="col-md-12">
-                    <div class="card card-accent-danger">
-                        <div class="card-header drag">
-                            <span class="badge badge-danger product-item" >치즈맛오믈렛</span>
-                            <span>수량:</span>
-                            <span>BOX:</span>
-                            <span>EA:</span>
-                        </div>
-
-                    </div>
-                </div>
+{#                <div class="col-md-12">#}
+{#                    <div class="card card-accent-success">#}
+{#                        <div class="card-header drag">#}
+{#                            <span class="badge badge-success product-item" >전란</span>#}
+{#                            <span>수량:</span>#}
+{#                            <span>BOX:</span>#}
+{#                            <span>EA:</span>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{##}
+{#                <div class="col-md-12">#}
+{#                    <div class="card card-accent-warning">#}
+{#                        <div class="card-header drag">#}
+{#                            <span class="badge badge-warning product-item" >난백</span>#}
+{#                            <span>수량:</span>#}
+{#                            <span>BOX:</span>#}
+{#                            <span>EA:</span>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{##}
+{#                <div class="col-md-12">#}
+{#                    <div class="card card-accent-info">#}
+{#                        <div class="card-header drag">#}
+{#                            <span class="badge badge-info product-item" >치즈맛오믈렛</span>#}
+{#                            <span>수량:</span>#}
+{#                            <span>BOX:</span>#}
+{#                            <span>EA:</span>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{##}
+{#                <div class="col-md-12">#}
+{#                    <div class="card card-accent-danger">#}
+{#                        <div class="card-header drag">#}
+{#                            <span class="badge badge-danger product-item" >치즈맛오믈렛</span>#}
+{#                            <span>수량:</span>#}
+{#                            <span>BOX:</span>#}
+{#                            <span>EA:</span>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
 
             </div>
         </div>
