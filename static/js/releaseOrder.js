@@ -2,6 +2,10 @@ class Main {
     constructor() {
         this.setDateClickEventHandler();
         this.location = new Location();
+        this.location.setClickEventHandler();
+        this.car = new Car();
+        this.car.setClickEventHandler();
+        this.dragDrop = new DragDrop('[class*=col]','.card-header','.dragdrop');
     }
 
     setDateClickEventHandler() {
@@ -41,7 +45,6 @@ class DragDrop {
 class Car {
     constructor() {
         this.getCarDataTable();
-        this.setClickEventHandler();
     }
 
     getCarDataTable() {
@@ -105,6 +108,7 @@ class Location {
             "responsive": true,
             "select": true,
             "columns": [
+                {"data": "orderLocationCode"},
                 {"data": "orderLocationName"},
             ],
             dom: 'Bfrtip',
@@ -112,12 +116,26 @@ class Location {
         });
     }
 
-    // getLocationDataTable(ymd) {
-    //     $('#stepOne .datatable').DataTable().search($("input[type='search']").val()).draw();
-    // }
+    setClickEventHandler(){
+        $(document).on('click', ".location-item tbody tr", (event) => {
+            let id = this.locationTable.row(event.currentTarget).data()['orderLocationCode'];
+            let ymd = set_yyyymmdd($('#order_date').val());
+
+            if(confirm('주문 내역을 불러 오시겠습니까?')) {
+                $.ajax({
+                    url: '/release/releaseOrder',
+                    type: 'get',
+                    data: {'id': id, 'ymd': ymd},
+                }).done(function (data) {
+                    $("#order-list-row").html(data['list']);
+                    main.dragDrop.setDragDrop('[class*=col]','.card-header','.dragdrop');
+                }).fail(function () {
+                    alert('수정 에러 전산실로 문의바랍니다.');
+                });
+            }
+        });
+    }
+
 }
 
 main = new Main();
-car = new Car();
-dragDrop = new DragDrop('[class*=col]','.card-header','.dragdrop');
-// location = new Location();

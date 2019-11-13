@@ -8,4 +8,5 @@ urlpatterns = [
     path('list', views.ReleaseList.as_view(), name='releaseList'),
     path('order', views.ReleaseOrderList.as_view(), name='releaseOrder'),
     path('pdf', views.GeneratePDF.as_view()),
+    path('releaseOrder', views.ReleaseOrder.as_view()),
 ]
