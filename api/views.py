@@ -1,4 +1,4 @@
-from django.db.models import F, Sum, Q
+from django.db.models import F, Sum, Q, Max
 from django.http import Http404, HttpResponse
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -15,7 +15,7 @@ from api.productCodeSerializers import ProductCodeDatatableSerializer
 from api.productOEMSerializers import ProductOEMSerializer
 from api.productOrderSerializers import ProductOrderSerializer, ProductOrderPackingSerializer
 from api.productUnitPriceSerializers import ProductUnitPriceListSerializer, SetProductMatchListSerializer
-from api.releaseSerializers import ReleaseSerializer
+from api.releaseSerializers import ReleaseSerializer, CarDatatableSerializer, LocationDatatableSerializer
 from core.models import Location
 from eggs.models import Egg, EggOrder
 from eventlog.models import LogginMixin
@@ -24,7 +24,7 @@ from packing.models import Packing, AutoPacking
 from product.models import Product, ProductEgg, ProductUnitPrice, \
     SetProductMatch, SetProductCode, ProductCode, ProductAdmin, ProductOrder, ProductOrderPacking
 from product.views import ProductOrderList
-from release.models import Release
+from release.models import Release, Car
 from .serializers import ProductSerializer, ProductEggSerializer, ProductUnitPriceSerializer, SetProductCodeSerializer, \
     ProductCodeSerializer, SetProductMatchSerializer
 
@@ -975,3 +975,26 @@ class OrderPriceMatch(generics.ListAPIView):
         productCode = self.request.query_params ['productCode']
         locationCode = self.request.query_params ['locationCode']
         return ProductUnitPrice.objects.filter(Q(productCode__code=productCode),Q(locationCode__code=locationCode))
+
+
+class CarDatatableList(generics.ListAPIView):
+    """
+    출고지시서 - 차량 DataTable List
+    """
+    queryset = Car.objects.all()
+    serializer_class = CarDatatableSerializer
+
+
+class LocationDatatableList(generics.ListAPIView):
+    """
+    출고지시서 - 차량 DataTable Click 시 해당일자에 주문이 1개 이상인 거래처 리스트 Display (DataTable)
+    """
+    serializer_class = LocationDatatableSerializer
+
+    def get_queryset(self):
+        ymd = self.request.query_params['ymd']
+        return Order.objects.values('orderLocationCode', 'orderLocationName').filter(ymd=ymd).order_by('orderLocationName').distinct()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        return Response(queryset.values('orderLocationCode', 'orderLocationName'))

@@ -1,0 +1,114 @@
+{#{% load humanize %}#}
+{#{% load custom %}#}
+{% for order in orders %}
+
+    {% if order.types == '전란' %}
+        <div class="col-md-12">
+            <div class="card card-accent-success">
+                <div class="card-header drag">
+                    <span class="badge badge-success product-item" >
+                    {{ order.codeName }}
+                    / 수량: {{ order.totalCount }}
+                    / BOX: 11
+                    / EA: 11
+                    </span>
+                </div>
+                <div class="input-data">
+                    <input type="hidden" name="count" value="{{order.totalCount}}"/>
+                </div>
+            </div>
+        </div>
+    {% elif order.types == '난백' %}
+        <div class="col-md-12">
+            <div class="card card-accent-primary">
+                <div class="card-header drag">
+                    <span class="badge badge-primary product-item" >{{ order.codeName }}</span>
+                    <span>수량: {{ order.totalCount }}</span>
+                    <span>BOX:</span>
+                    <span>EA:</span>
+                </div>
+            </div>
+        </div>
+    {% elif order.types == '난황' %}
+        <div class="col-md-12">
+            <div class="card card-accent-warning">
+                <div class="card-header drag">
+                    <span class="badge badge-danger product-item" >{{ order.codeName }}</span>
+                    <span>수량: {{ order.totalCount }}</span>
+                    <span>BOX:</span>
+                    <span>EA:</span>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="col-md-12">
+            <div class="card card-accent-secondary">
+                <div class="card-header drag">
+                    <span class="badge badge-secondary product-item" >{{ order.codeName }}</span>
+                    <span>수량: {{ order.totalCount }}</span>
+                    <span>BOX:</span>
+                    <span>EA:</span>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{#    <div class="col-md-12">#}
+{#        <div class="card card-accent-secondary">#}
+{#            <div class="card-header drag">#}
+{#                <span class="badge badge-secondary product-item" ></span>#}
+{#                <span>수량: {{ order.totalCount }}</span>#}
+{#                <span>BOX: {{ order.totalCount }}</span>#}
+{#                <span>EA: {{ order.totalCount }}</span>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{% endfor %}
+
+
+{# type == 난백 #}
+{#<div class="col-md-12">#}
+{#    <div class="card card-accent-primary">#}
+{#        <div class="card-header drag">#}
+{#            <span class="badge badge-primary product-item" >베이컨오믈렛</span>#}
+{#            <span>수량:</span>#}
+{#            <span>BOX:</span>#}
+{#            <span>EA:</span>#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}
+
+{# type == 난황 #}
+{#<div class="col-md-12">#}
+{#    <div class="card card-accent-warning">#}
+{#        <div class="card-header drag">#}
+{#            <span class="badge badge-danger product-item" >치즈맛오믈렛</span>#}
+{#            <span>수량:</span>#}
+{#            <span>BOX:</span>#}
+{#            <span>EA:</span>#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}
+
+{# type == 전란#}
+{#<div class="col-md-12">#}
+{#    <div class="card card-accent-success">#}
+{#        <div class="card-header drag">#}
+{#            <span class="badge badge-success product-item" >요리란전란</span>#}
+{#            <span>수량:</span>#}
+{#            <span>BOX:</span>#}
+{#            <span>EA:</span>#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}
+
+{# type == 없음 #}
+{#<div class="col-md-12">#}
+{#    <div class="card card-accent-secondary">#}
+{#        <div class="card-header drag">#}
+{#            <span class="badge badge-secondary product-item" >치즈맛오믈렛</span>#}
+{#            <span>수량:</span>#}
+{#            <span>BOX:</span>#}
+{#            <span>EA:</span>#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}

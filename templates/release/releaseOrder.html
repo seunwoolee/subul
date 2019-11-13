@@ -1,0 +1,95 @@
+{% extends 'baseHTML.html' %}
+
+{% load static %}
+
+
+{% block stylesheet %}
+    <link href="{% static 'css/datepicker/bootstrap-datepicker.css' %}" rel="stylesheet">
+    <link href="{% static 'css/releaseOrder.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+    <div class="form-row ">
+        <div class="col-md-3 input-group mb-2 mr-sm-2">
+            <div class="input-group-prepend">
+                <div class="input-group-text"><i class="far fa-calendar-alt"></i>
+                </div>
+            </div>
+            <input name="ymd" type="date" class="form-control" id="order_date" />
+            <input type="button" name="search" value="생성" class="btn btn-info"/>
+            <input type="button" name="search" value="적재" class="btn btn-success"/>
+        </div>
+    </div>
+
+    <div class="row pb-2">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-primary mb-2">
+                남은 팔레트 수 <span class="badge badge-light">4</span>
+            </button>
+{#            <div class="progress">#}
+{#                <div class="progress-bar" role="progressbar"  aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>#}
+{#            </div>#}
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table car-item datatable">
+                        <thead>
+                        <tr>
+                            <th>차량번호</th>
+                            <th>타입</th>
+                            <th>적재수량</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table location-item datatable">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>거래처명</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 dragdrop">
+            <div class="row" id="order-list-row">
+
+            </div>
+        </div>
+
+        <div class="col-md-3 dragdrop" id="pallet-bin">
+            <div class="row" >
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'jquery-ui-dist/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'js/releaseOrder.js' %}"></script>
+{% endblock %}

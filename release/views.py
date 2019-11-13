@@ -1,9 +1,10 @@
 from decimal import Decimal
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum, F, ExpressionWrapper, FloatField, IntegerField
-from django.http import HttpResponse
+from django.db.models import Sum, F, ExpressionWrapper, FloatField, IntegerField, Q
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.views import View
 from core.models import Location
 from eventlog.models import LogginMixin
@@ -220,3 +221,34 @@ class ReleaseAdjustment(LogginMixin, View):  # 재고조정, 미출고품, 반�
             extra=data
         )
         return HttpResponse(status=200)
+
+
+class ReleaseOrderList(LoginRequiredMixin, View):
+
+    def get(self, request):
+        return render(request, 'release/releaseOrder.html')
+
+
+class ReleaseOrder(View):
+
+    def get(self, request):
+        self.result = {}
+        location_id = request.GET.get('id', None)
+        ymd = request.GET.get('ymd', None)
+        orders = self.get_query(location_id, ymd)
+        self.get_list(orders)
+        return JsonResponse(self.result)
+
+    def get_query(self, location_id, ymd):
+        location = Location.objects.get(id=location_id)
+        orders = Order.objects.filter(Q(ymd=ymd), Q(orderLocationCode=location)) \
+            .values('code', 'codeName') \
+            .annotate(totalCount=Sum('count')) \
+            .annotate(totalAmount=Sum('amount')) \
+            .annotate(types=F('productCode__type'))
+        return orders
+
+    def get_list(self, orders):
+        self.result['list'] = render_to_string('release/partial_releaseOrder_list.html', {'orders': orders})
+        # return render_to_string('release/partial_releaseOrder_list.html', orders)
+
