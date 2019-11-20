@@ -1,0 +1,21 @@
+{% for pallet in pallets %}
+    {% if pallet.counts > 0%}
+        <i class="box-icon fas fa-box fa-2x pr-1"
+           data-toggle="tooltip"
+           data-html="true"
+           data-id="{{ pallet.id }}"
+           title="<input type='button' value='보기' class='btn btn-sm btn-outline-danger see' data-pallet-id={{ pallet.id }} />
+                  <input type='button' value='수정' class='btn btn-sm btn-outline-primary change' data-pallet-id={{ pallet.id }} />">
+            {{ pallet.seq }}
+        </i>
+    {% else %}
+        <i class="box-icon fas fa-box-open fa-2x pr-1"
+           data-toggle="tooltip"
+           data-html="true"
+           data-id="{{ pallet.id }}"
+           title="<input type='button' value='보기' class='btn btn-sm btn-outline-danger see' data-pallet-id={{ pallet.id }} />
+                  <input type='button' value='수정' class='btn btn-sm btn-outline-primary change' data-pallet-id={{ pallet.id }} />">
+            {{ pallet.seq }}
+        </i>
+    {% endif %}
+{% endfor %}

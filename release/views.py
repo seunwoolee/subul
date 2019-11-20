@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum, F, ExpressionWrapper, FloatField, IntegerField, Q
+from django.db.models import Sum, F, ExpressionWrapper, FloatField, IntegerField, Q, Count
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
@@ -9,8 +9,9 @@ from django.views import View
 from core.models import Location
 from eventlog.models import LogginMixin
 from order.models import Order
+from packing.models import AutoPacking
 from release.forms import ReleaseForm, ReleaseLocationForm
-from .models import Release
+from .models import Release, OrderList, Car, Pallet
 from product.models import ProductCode, SetProductCode, Product, ProductAdmin
 
 from .utils import render_to_pdf
@@ -233,22 +234,105 @@ class ReleaseOrder(View):
 
     def get(self, request):
         self.result = {}
-        location_id = request.GET.get('id', None)
+        id = request.GET.get('id', None)
         ymd = request.GET.get('ymd', None)
-        orders = self.get_query(location_id, ymd)
+        type = request.GET.get('type', None)
+        if type == 'unloaded':
+            orders = self.get_unloaded_query(id, ymd)
+        else:
+            orders = self.get_loaded_query(id, ymd)
         self.get_list(orders)
         return JsonResponse(self.result)
 
-    def get_query(self, location_id, ymd):
+    def get_unloaded_query(self, location_id, ymd):
         location = Location.objects.get(id=location_id)
-        orders = Order.objects.filter(Q(ymd=ymd), Q(orderLocationCode=location)) \
-            .values('code', 'codeName') \
-            .annotate(totalCount=Sum('count')) \
-            .annotate(totalAmount=Sum('amount')) \
-            .annotate(types=F('productCode__type'))
+        orders = OrderList.objects.filter(Q(ymd=ymd),
+                                          Q(location=location),
+                                          Q(pallet=None))\
+            .annotate(types=F('productCode__type')).order_by('id')
+        return orders
+
+    def get_loaded_query(self, pallet_id, ymd):
+        pallet = Pallet.objects.get(id=pallet_id)
+        orders = OrderList.objects.filter(Q(ymd=ymd), Q(pallet=pallet))\
+            .annotate(types=F('productCode__type')).order_by('id')
         return orders
 
     def get_list(self, orders):
         self.result['list'] = render_to_string('release/partial_releaseOrder_list.html', {'orders': orders})
-        # return render_to_string('release/partial_releaseOrder_list.html', orders)
 
+    def post(self, request):
+        ymd = self.request.POST.get('ymd')
+        orders = self.create_order_lists(ymd)
+
+        for order in orders:
+            self.calculate_box_with_create(order)
+
+        return HttpResponse(status=200)
+
+    def create_order_lists(self, ymd):
+        orders = Order.objects.values('orderLocationCode', 'orderLocationName', 'ymd', 'code', 'codeName').annotate(totalCount=Sum('count')).filter(ymd=ymd)
+        for order in orders:
+            existing_order = OrderList.objects.filter(Q(ymd=ymd),
+                                                      Q(code=order['code']),
+                                                      Q(location__id=order['orderLocationCode']),
+                                                      Q(count=order['totalCount'])).first()
+            if existing_order:
+                orders = orders.exclude(Q(ymd=order['ymd']), Q(code=order['code']), Q(orderLocationCode=order['orderLocationCode']))
+        return orders
+
+    def calculate_box_with_create(self, order):
+        big_box = AutoPacking.objects.filter(productCode=ProductCode.objects.get(code=order['code'])).filter(packingCode__type='외포장재').first()
+
+        if big_box:
+            order['box'], order['ea'] = divmod(order['totalCount'], big_box.count)
+        else:
+            order['box'], order['ea'] = 0, 0
+
+        order = self.create_order_dict_format(order)
+        OrderList(**order).save()
+
+    def create_order_dict_format(self, order):
+        order['location'] = Location.objects.get(id=order['orderLocationCode'])
+        order['productCode'] = ProductCode.objects.get(code=order['code'])
+        order['locationCodeName'] = order['orderLocationName']
+        order['count'] = order['totalCount']
+        del order['orderLocationCode']
+        del order['orderLocationName']
+        del order['totalCount']
+        return order
+
+
+class ReleaseOrderCar(View):
+    def get(self, request):
+        self.result = {}
+        car_id = request.GET.get('id', None)
+        ymd = request.GET.get('ymd', None)
+        pallets = Pallet.objects.filter(car__id=car_id).annotate(
+            counts=Count('order_list', filter=Q(order_list__ymd=ymd))
+        ).order_by('car__car_number', 'seq')
+        self.get_list(pallets)
+        return JsonResponse(self.result)
+
+    def get_list(self, pallets):
+        self.result['list'] = render_to_string('release/partial_releaseOrder_pallet.html', {'pallets': pallets})
+
+    def post(self, request):
+        pallet_id = request.POST.get('pallet_id')
+        order_list_ids = request.POST.get('order_list_id').split(',')
+        self.clear_current_pallet(pallet_id)
+        if order_list_ids[0]:
+            self.load_order_to_pallet(pallet_id, order_list_ids)
+
+        return HttpResponse(status=200)
+
+    def clear_current_pallet(self, pallet_id):
+        for orderList in OrderList.objects.filter(pallet_id=pallet_id):
+            orderList.pallet = None
+            orderList.save()
+
+    def load_order_to_pallet(self, pallet_id, order_list_ids):
+
+        for orderList in OrderList.objects.filter(id__in=order_list_ids):
+            orderList.pallet_id = pallet_id
+            orderList.save()

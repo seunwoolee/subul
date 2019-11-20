@@ -1,7 +1,6 @@
 from django.db import models
 from django.db.models import Q, F, ExpressionWrapper, Sum, DecimalField, When, Case, CharField, Value, IntegerField, \
     QuerySet
-from django.db.models.functions import Cast
 from model_utils import Choices
 from core.models import Detail, Location
 from eggs.models import Egg, ABS
@@ -571,8 +570,31 @@ class Release(Detail):
 
 class Car(models.Model):
     car_number = models.CharField(max_length=50)
-    palette_count = models.PositiveIntegerField()
     type = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.car_number
+        return f"{self.car_number}({self.type})_팔레트개수:{self.pallet.count()}"
+
+
+class Pallet(models.Model):
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='pallet')
+    seq = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.car}({self.seq})번째"
+
+
+class OrderList(models.Model):
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='+')
+    locationCodeName = models.CharField(max_length=255)
+    productCode = models.ForeignKey('product.ProductCode', on_delete=models.CASCADE, related_name='+')
+    code = models.CharField(max_length=255)
+    codeName = models.CharField(max_length=255)
+    ymd = models.CharField(max_length=8)
+    count = models.PositiveIntegerField()
+    box = models.PositiveIntegerField()
+    ea = models.PositiveIntegerField()
+    pallet = models.ForeignKey(Pallet, on_delete=models.CASCADE, related_name='order_list', null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.ymd} {self.location.codeName} {self.count} {self.pallet}"

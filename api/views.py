@@ -1,4 +1,4 @@
-from django.db.models import F, Sum, Q, Max
+from django.db.models import F, Sum, Q, Max, IntegerField, Value, Count
 from django.http import Http404, HttpResponse
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -981,7 +981,8 @@ class CarDatatableList(generics.ListAPIView):
     """
     출고지시서 - 차량 DataTable List
     """
-    queryset = Car.objects.all()
+    # queryset = Car.objects.all()
+    queryset = Car.objects.all().annotate(pallet_count=Count(F('pallet')))
     serializer_class = CarDatatableSerializer
 
 

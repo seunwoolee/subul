@@ -36,6 +36,7 @@ class ProductAdminSerializer(serializers.Serializer):
 
 
 class CarDatatableSerializer(serializers.ModelSerializer):
+    pallet_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Car

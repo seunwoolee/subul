@@ -2,13 +2,12 @@
     font-size: 85%;
     font-weight: 800;
     text-align: center;
-
 }
 
 .car-item {
+    display: none;
     background-color: #f0f3f5;
     text-align: center;
-
 }
 
 .location-item {
@@ -18,7 +17,25 @@
 }
 
 #pallet-bin {
+    min-height: 10rem;
+    width: 100%;
     background-color: #d5dbde;
-    padding: 5px;
+    padding: 2px;
     outline: 2px dashed #92b0b3;
+}
+
+#order-list-row {
+    min-height: 5rem;
+}
+
+.popover-body {
+    font-size: 0.875rem;
+}
+
+.box-icon {
+    cursor: pointer;
+}
+
+.card-header {
+    overflow-x: visible;
 }

@@ -142,3 +142,39 @@ class Nav(View):
 
     def get(self, request):
         return render(request, 'site/nav_index.html')
+
+
+class SiteReleaseOrder(View):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.data = {}
+        self.today = datetime.today().strftime('%Y-%m-%d')
+
+    def get(self, request):
+        display_date = request.GET.get('display_date',self.today)
+        # self.get_releases(display_date)
+        # return render(request, 'site/release_index.html', {'eggs': self.eggs})
+        return render(request, 'site/release_index.html')
+
+    def get_releases(self, yyyymmdd: str):
+        display_date = yyyymmdd[0:4]+yyyymmdd[5:7]+yyyymmdd[8:10]
+        self.eggs = EggOrder.objects.filter(Q(display_state='Y'),Q(ymd=display_date)).order_by('id')
+
+    # def post(self, request, pk):
+    #     eggOrder = get_object_or_404(EggOrder, pk=pk)
+    #     EggOrderForm(request.POST, instance=eggOrder).save()
+    #     self.get_eggs(request.POST['display_date'])
+    #     self.get_egg_list()
+    #     return JsonResponse(self.data)
+    #
+    #
+    # def get_egg_list(self):
+    #     self.data['list'] = render_to_string('site/partial_egg_order_list.html', {'eggs': self.eggs},
+    #                                          request=self.request)
+    #
+    # def get_form(self, pk):
+    #     eggOrder = get_object_or_404(EggOrder, pk=pk)
+    #     self.form = EggOrderForm(instance=eggOrder)
+    #     self.data['form'] = render_to_string('site/partial_egg_order_update.html', {'form': self.form},
+    #                                          request=self.request)
