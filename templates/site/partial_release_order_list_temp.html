@@ -1,0 +1,198 @@
+{% load humanize %}
+{% load custom %}
+
+<div class="row header">
+    <div class="cell">
+        거래처
+    </div>
+    <div class="cell">
+        팔레트
+    </div>
+    <div class="cell">
+        품목명
+    </div>
+    <div class="cell">
+        포장단위
+    </div>
+    <div class="cell">
+        수량
+    </div>
+    <div class="cell">
+        합계
+    </div>
+    <div class="cell">
+        Box
+    </div>
+    <div class="cell">
+        Ea
+    </div>
+</div>
+
+<div class="row junran" data-id={{ egg.id }}>
+    <div class="cell" data-title="거래처">
+    지앤애치
+    </div>
+    <div class="cell" data-title="팔레트">
+    1
+    </div>
+    <div class="cell" data-title="품목명">
+    전란
+    </div>
+    <div class="cell" data-title="포장단위">
+    BIB 5kg
+    </div>
+    <div class="cell" data-title="수량">
+    90
+    </div>
+    <div class="cell" data-title="합계">
+    90
+    </div>
+    <div class="cell" data-title="Box">
+    30
+    </div>
+    <div class="cell" data-title="Ea">
+    0
+    </div>
+</div>
+
+<div class="row nanbak" data-id={{ egg.id }}>
+    <div class="cell" data-title="거래처">
+    지앤애치
+    </div>
+    <div class="cell" data-title="팔레트">
+    2
+    </div>
+    <div class="cell" data-title="품목명">
+    베이커리난백
+    </div>
+    <div class="cell" data-title="포장단위">
+    BIB 5kg
+    </div>
+    <div class="cell" data-title="수량">
+    60
+    </div>
+    <div class="cell" data-title="합계">
+    60
+    </div>
+    <div class="cell" data-title="Box">
+    10
+    </div>
+    <div class="cell" data-title="Ea">
+    0
+    </div>
+</div>
+
+<div class="row junran" data-id={{ egg.id }}>
+    <div class="cell" data-title="거래처">
+    띵굴
+    </div>
+    <div class="cell" data-title="팔레트">
+    2
+    </div>
+    <div class="cell" data-title="품목명">
+    요리란 전란
+    </div>
+    <div class="cell" data-title="포장단위">
+    BIB 10kg
+    </div>
+    <div class="cell" data-title="수량">
+    120
+    </div>
+    <div class="cell" data-title="합계">
+    120
+    </div>
+    <div class="cell" data-title="Box">
+    60
+    </div>
+    <div class="cell" data-title="Ea">
+    0
+    </div>
+</div>
+
+<div class="row nanbak" data-id={{ egg.id }}>
+    <div class="cell" data-title="거래처">
+    띵굴
+    </div>
+    <div class="cell" data-title="팔레트">
+    1
+    </div>
+    <div class="cell" data-title="품목명">
+    요리란 난백
+    </div>
+    <div class="cell" data-title="포장단위">
+    BIB 5kg
+    </div>
+    <div class="cell" data-title="수량">
+    90
+    </div>
+    <div class="cell" data-title="합계">
+    90
+    </div>
+    <div class="cell" data-title="Box">
+    30
+    </div>
+    <div class="cell" data-title="Ea">
+    0
+    </div>
+</div>
+{##}
+{#{% for egg in eggs %}#}
+{#    <div class="row" data-id={{ egg.id }}>#}
+{##}
+{#        {% if egg.realCount %}#}
+{#            <div class="cell" data-title="입고처">#}
+{#                <strike style="color: red;">{{ egg.in_locationCodeName }}</strike>#}
+{#            </div>#}
+{#        {% else %}#}
+{#            <div class="cell" data-title="입고처">#}
+{#                {{ egg.in_locationCodeName }}#}
+{#            </div>#}
+{#        {% endif %}#}
+{##}
+{#        <div class="cell" data-title="원란명">#}
+{#            {{ egg.codeName }}#}
+{#        </div>#}
+{#        <div class="cell" data-title="입고일">#}
+{#            {{ egg.in_ymd|to_yyyy_mm_dd }}#}
+{#        </div>#}
+{#        <div class="cell" data-title="지시량">#}
+{#            {{ egg.orderCount|intcomma }}#}
+{#        </div>#}
+{#        {% if egg.realCount %}#}
+{#            <div class="cell" data-title="출하량">#}
+{#                {{ egg.realCount|intcomma }}#}
+{#            </div>#}
+{#        {% else %}#}
+{#            <div class="cell" data-title="출하량">#}
+{#            </div>#}
+{#        {% endif %}#}
+{#        <div class="cell" data-title="지시메모">#}
+{#            {{ egg.memo }}#}
+{#        </div>#}
+{#        {% if egg.site_memo %}#}
+{#            <div class="cell" data-title="작업메모">#}
+{#                {{ egg.site_memo }}#}
+{#            </div>#}
+{#        {% else %}#}
+{#            <div class="cell" data-title="작업메모">#}
+{#            </div>#}
+{#        {% endif %}#}
+{#    </div>#}
+{#{% empty %}#}
+{#    <div class="row" data-id={{ egg.id }}>#}
+{#        <div class="cell" data-title="입고처">#}
+{#        </div>#}
+{#        <div class="cell" data-title="원란명">#}
+{#        </div>#}
+{#        <div class="cell" data-title="입고일">#}
+{#        </div>#}
+{#        <div class="cell" data-title="지시량">#}
+{#        </div>#}
+{#        <div class="cell" data-title="출하량">#}
+{#        </div>#}
+{#        <div class="cell" data-title="지시메모">#}
+{#        </div>#}
+{#        <div class="cell" data-title="작업메모">#}
+{#        </div>#}
+{#    </div>#}
+{#{% endfor %}#}

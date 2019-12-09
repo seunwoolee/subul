@@ -234,14 +234,15 @@ class ReleaseOrder(View):
 
     def get(self, request):
         self.result = {}
-        id = request.GET.get('id', None)
+        location_id = request.GET.get('location_id', None)
+        pallet_id = request.GET.get('pallet_id', None)
         ymd = request.GET.get('ymd', None)
         type = request.GET.get('type', None)
         if type == 'unloaded':
-            orders = self.get_unloaded_query(id, ymd)
+            orders = self.get_unloaded_query(location_id, ymd)
         else:
-            orders = self.get_loaded_query(id, ymd)
-        self.get_list(orders)
+            orders = self.get_loaded_query(pallet_id, ymd)
+        self.get_list(orders, pallet_id)
         return JsonResponse(self.result)
 
     def get_unloaded_query(self, location_id, ymd):
@@ -258,8 +259,9 @@ class ReleaseOrder(View):
             .annotate(types=F('productCode__type')).order_by('id')
         return orders
 
-    def get_list(self, orders):
-        self.result['list'] = render_to_string('release/partial_releaseOrder_list.html', {'orders': orders})
+    def get_list(self, orders, pallet_id):
+        self.result['list'] = render_to_string('release/partial_releaseOrder_list.html',
+                                               {'orders': orders, 'pallet_id': pallet_id})
 
     def post(self, request):
         ymd = self.request.POST.get('ymd')
@@ -306,16 +308,18 @@ class ReleaseOrder(View):
 class ReleaseOrderCar(View):
     def get(self, request):
         self.result = {}
-        car_id = request.GET.get('id', None)
+        car_id = request.GET.get('car_id', None)
+        pallet_id = int(request.GET.get('pallet_id', '0'))
         ymd = request.GET.get('ymd', None)
         pallets = Pallet.objects.filter(car__id=car_id).annotate(
             counts=Count('order_list', filter=Q(order_list__ymd=ymd))
         ).order_by('car__car_number', 'seq')
-        self.get_list(pallets)
+        self.get_list(pallets, pallet_id)
         return JsonResponse(self.result)
 
-    def get_list(self, pallets):
-        self.result['list'] = render_to_string('release/partial_releaseOrder_pallet.html', {'pallets': pallets})
+    def get_list(self, pallets, pallet_id):
+        self.result['list'] = render_to_string('release/partial_releaseOrder_pallet.html'
+                                               , {'pallets': pallets, 'selected_pallet_id': pallet_id})
 
     def post(self, request):
         pallet_id = request.POST.get('pallet_id')

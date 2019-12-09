@@ -1,23 +1,13 @@
 class Main {
     constructor() {
-        $('#order_date').val(end_day);
         this.setDateClickEventHandler();
-        this.setLoadButtonClickEventHandler();
         this.setBoxIconClickEventHandler();
         this.setCreateClickEventHandler();
+        this.setCarRowClickEventHandler();
+        this.setLocationRowClickEventHandler();
         this.location = new Location();
-        this.location.setClickEventHandler();
         this.car = new Car();
-        this.car.setClickEventHandler();
         this.dragDrop = new DragDrop('.dragdrop','.dragdrop');
-    }
-
-    setDateClickEventHandler() {
-        $('#order_date').change( () => {
-            this.initData();
-            this.getCarTable();
-            $('#pallet-list i').remove();
-        });
     }
 
     initData() {
@@ -25,29 +15,11 @@ class Main {
         this.getLocationTable();
     }
 
-    setLoadButtonClickEventHandler() {
-
-        $('.load-button').click( () => {
-            let that = this;
-            debugger;
-            let selectPallet_id = $(".box-icon[data-selected=true]").attr('data-id');
-            if(selectPallet_id) {
-                let data = {'pallet_id': selectPallet_id};
-                data['order_list_id'] = $('#pallet-bin').serializeArray().map(objects => objects['value']).join();
-                $.ajax({
-                    url: '/release/releaseOrderCar',
-                    type: 'post',
-                    data: data,
-                }).done(function (data) {
-                    that.initData();
-                    that.car.getPalletList(that.car.carTable.row('.selected').data()['id']);
-                    $('#pallet-bin div').remove();
-                }).fail(function () {
-                    alert('수정 에러 전산실로 문의바랍니다.');
-                });
-            } else {
-                alert('차량선택 및 팔레트를 선택해주세요.')
-            }
+    setDateClickEventHandler() {
+        $('#order_date').change( () => {
+            this.initData();
+            this.getCarTable();
+            $('#pallet-list i').remove();
         });
     }
 
@@ -67,30 +39,68 @@ class Main {
                     alert('수정 에러 전산실로 문의바랍니다.');
                 });
             }
-            // this.getLocationTable();
         });
     }
 
     setBoxIconClickEventHandler() {
-        $(document).on('click', '.tooltip-inner .change', event => {
-            console.log($(event.currentTarget));
-        });
-
-        $(document).on('click', '.tooltip-inner .see', event => {
-            let id = $(event.currentTarget).attr('data-pallet-id');
+        $(document).on('click', '.box-icon', event => {
+            let location_id = null;
+            let pallet_id = $(event.currentTarget).attr('data-pallet-id');
             let ymd = set_yyyymmdd($('#order_date').val());
-            $.ajax({
-                url: '/release/releaseOrder',
-                type: 'get',
-                data: {'id': id, 'ymd': ymd, 'type': 'loaded'},
-            }).done(function (data) {
-                $("#pallet-bin").html(data['list']);
-                $('.box-icon').css('color','rgb(0, 0, 0)').removeAttr('data-selected');
-                $('i[data-id='+id+']').css('color', 'red').attr('data-selected', true);
-                main.dragDrop.setDragDrop('[class*=col]','.card-header','.dragdrop');
-            }).fail(function () {
-                alert('수정 에러 전산실로 문의바랍니다.');
-            });
+
+            this.location.getLoadedItems(location_id, pallet_id, ymd)
+                .then(data => {
+                    $("#pallet-bin").html(data['list']);
+                    $('.box-icon').css('color','rgb(0, 0, 0)').removeAttr('data-selected');
+                    $('.box-icon[data-pallet-id='+pallet_id+']').css('color', 'red').attr('data-selected', true);
+                    main.dragDrop.setDragDrop('[class*=col]','.card-header','.dragdrop');
+                })
+                .catch( () => alert('수정 에러 전산실로 문의바랍니다.'))
+        });
+    }
+
+    setCarRowClickEventHandler(){
+        $(document).on('click', ".car-item tbody tr", (event) => {
+            this.car.getPalletList(this.car.carTable.row(event.currentTarget).data()['id'])
+                .then((data)=>{
+                    $("#pallet-list").html(data['list']);
+                    $('[data-toggle="tooltip"]').tooltip('dispose');
+                    $('[data-toggle="tooltip"]').tooltip({delay: {"hide": 800 }});
+                })
+        });
+    }
+
+    setLocationRowClickEventHandler(){
+        $(document).on('click', ".location-item tbody tr", (event) => {
+            let location_id = this.location.locationTable.row(event.currentTarget).data()['orderLocationCode'];
+            let ymd = set_yyyymmdd($('#order_date').val());
+            let pallet_id = $('.box-icon[data-selected='+true+']').attr('data-pallet-id');
+            let isBoxSelected = $('.box-icon[data-selected='+true+']').length;
+
+            if(isBoxSelected) {
+                $('.loader-backdrop').css('display', 'block');
+
+                this.location.loadItems()
+                    .then(()=>this.location.getUnloadedItems(location_id, pallet_id, ymd))
+                    .then( (data) => {
+                        $("#order-list-row").html(data['list']);
+                    })
+                    .then(() => this.car.getPalletList(this.car.carTable.row('.selected').data()['id']))
+                    .then((data)=> {
+                        $("#pallet-list").html(data['list']);
+                        $('[data-toggle="tooltip"]').tooltip('dispose');
+                        $('[data-toggle="tooltip"]').tooltip({delay: {"hide": 800 }});
+                        $('.loader-backdrop').css('display', 'none');
+                        this.dragDrop.setDragDrop('[class*=col]','.card-header','.dragdrop');
+                    })
+                    .catch((err)=>{
+                        $('.loader-backdrop').css('display', 'none');
+                        console.log(err);
+                    })
+            } else {
+                alert('차량선택 후 팔레트를 선택해주세요.');
+                return false;
+            }
         });
     }
 
@@ -161,25 +171,15 @@ class Car {
         });
     }
 
-    setClickEventHandler(){
-        $(document).on('click', ".car-item tbody tr", (event) => {
-            this.getPalletList(this.carTable.row(event.currentTarget).data()['id']);
-        });
-    }
-
     getPalletList(car_id){
         let ymd = set_yyyymmdd($('#order_date').val());
-        $.ajax({
+        let selectPallet_id = $(".box-icon[data-selected=true]").attr('data-pallet-id');
+
+        return $.ajax({
             url: '/release/releaseOrderCar',
             type: 'get',
-            data: {'id': car_id, 'ymd': ymd},
-        }).done(function (data) {
-            $("#pallet-list").html(data['list']);
-            $('[data-toggle="tooltip"]').tooltip('dispose');
-            $('[data-toggle="tooltip"]').tooltip({delay: {"hide": 800 }});
-        }).fail(function () {
-            alert('수정 에러 전산실로 문의바랍니다.');
-        });
+            data: {'car_id': car_id, 'pallet_id': selectPallet_id ,'ymd': ymd},
+        })
     }
 }
 
@@ -213,32 +213,36 @@ class Location {
         });
     }
 
-    setClickEventHandler(){
-        $(document).on('click', ".location-item tbody tr", (event) => {
-            let id = this.locationTable.row(event.currentTarget).data()['orderLocationCode'];
-            let ymd = set_yyyymmdd($('#order_date').val());
-            let isBoxSelected = $('.box-icon[data-selected='+true+']').length;
-
-            if(isBoxSelected) {
-                if(confirm('주문 내역을 불러 오시겠습니까?')) {
-                    $.ajax({
-                        url: '/release/releaseOrder',
-                        type: 'get',
-                        data: {'id': id, 'ymd': ymd, 'type': 'unloaded'},
-                    }).done(function (data) {
-                        $("#order-list-row").html(data['list']);
-                        main.dragDrop.setDragDrop('[class*=col]','.card-header','.dragdrop');
-                    }).fail(function () {
-                        alert('수정 에러 전산실로 문의바랍니다.');
-                    });
-                }
-            } else {
-                alert('차량선택 후 팔레트를 선택해주세요.');
-            }
-
-        });
+    getUnloadedItems (location_id, pallet_id, ymd) {
+        return $.ajax({
+            url: '/release/releaseOrder',
+            type: 'get',
+            data: {'location_id': location_id, 'pallet_id': pallet_id, 'ymd': ymd, 'type': 'unloaded'},
+        })
     }
 
+    getLoadedItems (location_id, pallet_id, ymd) {
+        return $.ajax({
+            url: '/release/releaseOrder',
+            type: 'get',
+            data: {'location_id': location_id, 'pallet_id': pallet_id, 'ymd': ymd, 'type': 'loaded'},
+        })
+    }
+
+    loadItems () {
+        let selectPallet_id = $(".box-icon[data-selected=true]").attr('data-pallet-id');
+        if(selectPallet_id){
+            let data = {'pallet_id': selectPallet_id};
+            data['order_list_id'] = $('#pallet-bin').serializeArray().map(objects => objects['value']).join();
+            return $.ajax({
+                url: '/release/releaseOrderCar',
+                type: 'post',
+                data: data,
+            })
+        } else {
+            alert('차량선택 및 팔레트를 선택해주세요.');
+        }
+    }
 }
 
 main = new Main();

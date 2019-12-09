@@ -1,9 +1,8 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.views.generic.base import View
-from django.db.models import Q, F, ExpressionWrapper, Sum, DecimalField, When, Case, CharField, Value, IntegerField
+from django.db.models import Q, F, DecimalField, When, Case, IntegerField
 from datetime import datetime
 from datetime import timedelta
 
@@ -12,6 +11,7 @@ from labor.forms import EggOrderForm
 
 from product.forms import ProductOrderForm
 from product.models import ProductOrder
+from release.models import OrderList
 
 
 class SiteEggOrder(View):
@@ -148,18 +148,21 @@ class SiteReleaseOrder(View):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.data = {}
         self.today = datetime.today().strftime('%Y-%m-%d')
 
     def get(self, request):
         display_date = request.GET.get('display_date',self.today)
-        # self.get_releases(display_date)
-        # return render(request, 'site/release_index.html', {'eggs': self.eggs})
+
+        if request.is_ajax():
+            order_lists = self.get_releases(display_date)
+            data = {'list': self.get_release_list(order_lists)}
+            return JsonResponse(data)
+
         return render(request, 'site/release_index.html')
 
     def get_releases(self, yyyymmdd: str):
         display_date = yyyymmdd[0:4]+yyyymmdd[5:7]+yyyymmdd[8:10]
-        self.eggs = EggOrder.objects.filter(Q(display_state='Y'),Q(ymd=display_date)).order_by('id')
+        return OrderList.objects.filter(Q(ymd=display_date), Q(pallet__isnull=False)).order_by('id')
 
     # def post(self, request, pk):
     #     eggOrder = get_object_or_404(EggOrder, pk=pk)
@@ -169,9 +172,8 @@ class SiteReleaseOrder(View):
     #     return JsonResponse(self.data)
     #
     #
-    # def get_egg_list(self):
-    #     self.data['list'] = render_to_string('site/partial_egg_order_list.html', {'eggs': self.eggs},
-    #                                          request=self.request)
+    def get_release_list(self, order_lists):
+        return render_to_string('site/partial_release_order_list.html', {'order_lists': order_lists})
     #
     # def get_form(self, pk):
     #     eggOrder = get_object_or_404(EggOrder, pk=pk)

@@ -8,17 +8,11 @@
     <title>출하 지시서</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link href="{% static 'css/coreui-icons.min.css' %}" rel="stylesheet">
-    <link href="{% static 'bootstrap/dist/css/bootstrap.css' %}" rel="stylesheet">
-    <link href="{% static 'css/select2/css/select2.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/fontawesome/css/all.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
-    <link href="{% static 'css/buttonLoader.css' %}" rel="stylesheet">
-    <link href="{% static 'css/datepicker/bootstrap-datepicker.css' %}" rel="stylesheet">
 
     <link rel="stylesheet" type="text/css" href="{% static 'site/css/util.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'site/css/product_main.css' %}?version=1">
+    <link rel="stylesheet" type="text/css" href="{% static 'site/css/release_main.css' %}?version=1">
 </head>
 <body>
 
@@ -26,8 +20,7 @@
     <div class="container-table100">
         <div class="wrap-table100">
             <div class="table">
-                test
-{#                {% include 'site/partial_product_order_list.html' %}#}
+                {% include 'site/partial_release_order_list.html' %}
             </div>
         </div>
     </div>
@@ -40,6 +33,18 @@
         <input type="date" name="display_date" id="display_date" class="form-control" />
     </div>
 
+    <div id="display-city" class="input-group">
+        <div class="input-group-prepend">
+            <div class="input-group-text"><i class="far fa-building"></i></div>
+        </div>
+        <select class="form-control">
+            <option value="경기도">경기도</option>
+            <option value="서울">서울</option>
+            <option value="경북">경북</option>
+            <option value="대구">대구</option>
+        </select>
+    </div>
+
 </div>
 
 </body>
@@ -50,7 +55,6 @@
 <script src="{% static 'popper.js/dist/umd/popper.min.js' %}"></script>
 <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'site/js/site_base.js' %}?version=2"></script>
-<script src="{% static 'site/js/product_index.js' %}?version=4"></script>
-    {{ productOrderForm.media.js }}
+<script src="{% static 'site/js/release_index.js' %}?version=4"></script>
 </html>
 

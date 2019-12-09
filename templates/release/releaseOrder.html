@@ -10,6 +10,11 @@
 
 {% block content %}
 
+    <div class="loader-backdrop" style="display: none">
+        <div class="loader">Loading...</div>
+    </div>
+
+
     <div class="form-row ">
         <div class="col-md-3 input-group mb-2 mr-sm-2">
             <div class="input-group-prepend">
@@ -18,7 +23,6 @@
             </div>
             <input name="ymd" type="date" class="form-control" id="order_date" />
             <input type="button" value="생성" class="btn btn-info create"/>
-            <input type="button" value="적재" class="btn btn-success load-button"/>
         </div>
     </div>
 
