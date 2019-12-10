@@ -5,7 +5,7 @@
 
 {% block stylesheet %}
     <link href="{% static 'css/datepicker/bootstrap-datepicker.css' %}" rel="stylesheet">
-    <link href="{% static 'css/releaseOrder.css' %}" rel="stylesheet">
+    <link href="{% static 'css/releaseOrder.css' %}?version=2" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -91,5 +91,5 @@
 {% block js %}
     <script src="{% static 'jquery-ui-dist/jquery-ui.min.js' %}"></script>
     <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/releaseOrder.js' %}"></script>
+    <script src="{% static 'js/releaseOrder.js' %}?version=2"></script>
 {% endblock %}
