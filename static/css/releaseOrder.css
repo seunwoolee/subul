@@ -37,7 +37,7 @@
 }
 
 .card-header {
-    overflow-x: visible;
+    overflow-x: scroll;
 }
 
 /* Spinner */

@@ -23,8 +23,7 @@ from order.models import Order
 from packing.models import Packing, AutoPacking
 from product.models import Product, ProductEgg, ProductUnitPrice, \
     SetProductMatch, SetProductCode, ProductCode, ProductAdmin, ProductOrder, ProductOrderPacking
-from product.views import ProductOrderList
-from release.models import Release, Car
+from release.models import Release, Car, OrderList
 from .serializers import ProductSerializer, ProductEggSerializer, ProductUnitPriceSerializer, SetProductCodeSerializer, \
     ProductCodeSerializer, SetProductMatchSerializer
 
@@ -994,8 +993,10 @@ class LocationDatatableList(generics.ListAPIView):
 
     def get_queryset(self):
         ymd = self.request.query_params['ymd']
-        return Order.objects.values('orderLocationCode', 'orderLocationName').filter(ymd=ymd).order_by('orderLocationName').distinct()
+        return OrderList.objects.values(orderLocationCode=F('location'), orderLocationName=F('locationCodeName'))\
+            .annotate(total_count=Count('id')).annotate(is_unloaded=Count('id', filter=Q(pallet__isnull=True)))\
+            .filter(ymd=ymd).order_by('orderLocationName')
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        return Response(queryset.values('orderLocationCode', 'orderLocationName'))
+        return Response(queryset.values('orderLocationCode', 'orderLocationName', 'total_count', 'is_unloaded'))

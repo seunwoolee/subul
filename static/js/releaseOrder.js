@@ -92,6 +92,7 @@ class Main {
                         $('[data-toggle="tooltip"]').tooltip({delay: {"hide": 800 }});
                         $('.loader-backdrop').css('display', 'none');
                         this.dragDrop.setDragDrop('[class*=col]','.card-header','.dragdrop');
+                        this.location.locationTable.ajax.reload();
                     })
                     .catch((err)=>{
                         $('.loader-backdrop').css('display', 'none');
@@ -191,6 +192,7 @@ class Location {
                 searchPlaceholder: "거래처명",
                 infoFiltered: "",
                 info: "",
+                emptyTable: "데이터를 생성해주세요",
                 select: {
                     rows: ""
                 },
@@ -207,6 +209,8 @@ class Location {
             "columns": [
                 {"data": "orderLocationCode"},
                 {"data": "orderLocationName"},
+                {"data": "total_count"},
+                {"data": "is_unloaded"},
             ],
             dom: 'Bfrtip',
             buttons: [],
