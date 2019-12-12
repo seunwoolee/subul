@@ -127,6 +127,25 @@ $(document).on('click', '.stock-button', function () {
     $("#stockModal").modal();
 });
 
+$(document).on('click', '.RELEASE-STOCK', function (e) {
+    let parentDiv = $(this).closest('div');
+    let id = parentDiv.attr('data-id');
+    let url = '/api/productOrderReleaseStock/' + id;
+    let stockName = parentDiv.find('h3').text();
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: {"orderLocationCodeName": stockName},
+    }).done(function (data) {
+        alert('완료');
+        location.reload();
+    }).fail(function (xhr, status, error) {
+        alert('에러발생! 전산팀으로 문의 바랍니다.');
+    });
+
+});
+
 $(document).on('focusout', '.amount', function () {
     setAutoCountValue($(this));
 });
@@ -134,3 +153,4 @@ $(document).on('focusout', '.amount', function () {
 $(document).on('focusout', '.count', function () {
     setAutoAmountValue($(this));
 });
+

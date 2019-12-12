@@ -268,6 +268,15 @@ class ProductOrderList(View):
                 eaCount=remainder
             )
 
+    @staticmethod
+    def calculate_box_ea(productOrder: ProductOrder):
+        autoPacking = AutoPacking.objects\
+            .filter(Q(productCode=productOrder.productCode), Q(packingCode__type='외포장재')).first()
+
+        if autoPacking:
+            count = autoPacking.count
+            return divmod(productOrder.count, count)
+
 
 class ProductOrderPopup(LogginMixin, LoginRequiredMixin, View):
     def get(self, request, pk):

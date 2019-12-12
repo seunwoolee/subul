@@ -23,6 +23,7 @@ from order.models import Order
 from packing.models import Packing, AutoPacking
 from product.models import Product, ProductEgg, ProductUnitPrice, \
     SetProductMatch, SetProductCode, ProductCode, ProductAdmin, ProductOrder, ProductOrderPacking
+from product.views import ProductOrderList
 from release.models import Release, Car, OrderList
 from .serializers import ProductSerializer, ProductEggSerializer, ProductUnitPriceSerializer, SetProductCodeSerializer, \
     ProductCodeSerializer, SetProductMatchSerializer
@@ -896,6 +897,27 @@ class ProductOrderPackingStockCreate(generics.ListCreateAPIView):
             raise Http404
 
 
+class ProductOrderReleaseStock(generics.CreateAPIView):
+    def create(self, request, *args, **kwargs):
+        orderLocationCodeName = request.data.get('orderLocationCodeName', None)
+        productOrder = ProductOrder.objects.get(pk=kwargs['pk'])
+        mod_and_reminder: tuple = ProductOrderList.calculate_box_ea(productOrder)
+
+        if productOrder.future.first():
+            origin_productOrder = productOrder.future.first()
+        else:
+            origin_productOrder = productOrder.past.first()
+
+        ProductOrderPacking.objects.create(
+            type='일반',
+            productOrderCode=origin_productOrder,
+            boxCount=mod_and_reminder[0],
+            eaCount=mod_and_reminder[1],
+            orderLocationCodeName=orderLocationCodeName
+        )
+        return Response(status=status.HTTP_201_CREATED)
+
+
 class ProductOrderPackingUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
     """
     생산지시서-팝업창에서 Update, Delete를 칠때
@@ -911,14 +933,6 @@ class ProductOrderPackingUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIVi
             obj=instance,
             extra=model_to_dict(instance)
         )
-        # autoPacking = AutoPacking.objects.filter(Q(productCode=instance.productOrderCode.productCode),
-        #                                          Q(packingCode__type='외포장재')).first()
-        #
-        # if autoPacking:
-        #     count = instance.boxCount * autoPacking.count + instance.eaCount
-        #     instance.productOrderCode.count -= count
-        #     instance.productOrderCode.amount = instance.productOrderCode.amount_kg * instance.productOrderCode.count
-        #     instance.productOrderCode.save()
 
         self.destroy(request, *args, **kwargs)
         return Response(status=status.HTTP_200_OK)
@@ -931,17 +945,6 @@ class ProductOrderPackingUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIVi
             obj=instance,
             extra=model_to_dict(instance)
         )
-        # autoPacking = AutoPacking.objects.filter(Q(productCode=instance.productOrderCode.productCode),
-        #                                          Q(packingCode__type='외포장재')).first()
-        #
-        # if autoPacking:
-        #     origin_count = instance.boxCount * autoPacking.count + instance.eaCount
-        #     count = int(request.data['boxCount']) * int(autoPacking.count) + int(request.data['eaCount'])
-        #     count -= origin_count
-        #
-        #     instance.productOrderCode.count += count
-        #     instance.productOrderCode.amount = instance.productOrderCode.amount_kg * instance.productOrderCode.count
-        #     instance.productOrderCode.save()
 
         self.partial_update(request, *args, **kwargs)
         return Response(status=status.HTTP_200_OK)

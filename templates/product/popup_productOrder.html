@@ -47,7 +47,7 @@
 
     <script src="{% static 'js/buttonLoader.min.js' %}"></script>
     <script src="{% static 'js/base.js' %}"></script>
-    <script src="{% static 'js/popup_productOrder.js' %}"></script>
+    <script src="{% static 'js/popup_productOrder.js' %}?version=2"></script>
     <link href="{% static 'css/buttonLoader.css' %}" rel="stylesheet">
     <link href="{% static 'css/simple-line-icons/css/simple-line-icons.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
@@ -74,7 +74,7 @@
                                 <textarea name="memo" class="form-control" rows="2"></textarea>
                             {% endif %}
                             <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="patch"/>
-                            <button type="submit" class="btn btn-sm btn-dark mt-2 mb-1 MODIFY-PARENT">OK</button>
+                            <button type="submit" class="btn btn-sm btn-dark mt-2 mb-1 MODIFY-PARENT">수정</button>
                         </form>
 
                     <button type="submit" class="col-md-3 btn btn-warning stock-button">재고생성</button>
@@ -85,7 +85,9 @@
                 {# 전주 재고 내용 #}
                 {% if productOrder.past_stock %}
                 <div class="card">
-                    <div class="card-body" data-url="/api/productOrder/{{ productOrder.past_stock.id }}">
+                    <div class="card-body"
+                         data-id="{{ productOrder.past_stock.id }}"
+                         data-url="/api/productOrder/{{ productOrder.past_stock.id }}">
                         <form id="pastStockForm" action="/api/productOrder/{{ productOrder.past_stock.id }}">
                             <h3>전주재고</h3>
                             <table style="width: 100%">
@@ -95,7 +97,8 @@
                                 </tr>
                             </table>
                             <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="patch"/>
-                            <button type="submit" class="btn btn-sm btn-dark mt-1 mb-1 MODIFY-PARENT">OK</button>
+                            <button type="submit" class="btn btn-sm btn-dark mt-1 mb-1 MODIFY-PARENT">수정</button>
+                            <button type="button" class="btn btn-sm btn-primary mt-1 mb-1 RELEASE-STOCK">재고별도표기</button>
                             <button type="button" class="btn btn-danger btn-sm REMOVE">
                                 <i class="far fa-trash-alt"></i>
                             </button>
@@ -107,7 +110,9 @@
                 {# 차주 재고 내용 #}
                 {% if productOrder.future_stock %}
                     <div class="card">
-                        <div class="card-body" data-url="/api/productOrder/{{ productOrder.future_stock.id }}">
+                        <div class="card-body"
+                             data-id="{{ productOrder.future_stock.id }}"
+                             data-url="/api/productOrder/{{ productOrder.future_stock.id }}">
                         <form id="futureStockForm" action="/api/productOrder/{{ productOrder.future_stock.id }}">
                             <h3>차주재고</h3>
                             <table style="width: 100%">
@@ -117,7 +122,8 @@
                                 </tr>
                             </table>
                             <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="patch"/>
-                            <button type="submit" class="btn btn-sm btn-dark mt-1 mb-1 MODIFY-PARENT">OK</button>
+                            <button type="submit" class="btn btn-sm btn-dark mt-1 mb-1 MODIFY-PARENT">수정</button>
+                            <button type="button" class="btn btn-sm btn-primary mt-1 mb-1 RELEASE-STOCK">재고별도표기</button>
                             <button type="button" class="btn btn-danger btn-sm REMOVE">
                                 <i class="far fa-trash-alt"></i>
                             </button>
