@@ -54,6 +54,7 @@ class Main {
                     $('.box-icon').css('color','rgb(0, 0, 0)').removeAttr('data-selected');
                     $('.box-icon[data-pallet-id='+pallet_id+']').css('color', 'red').attr('data-selected', true);
                     main.dragDrop.setDragDrop('[class*=col]','.card-header','.dragdrop');
+                    main.dragDrop.getSumAmount();
                 })
                 .catch( () => alert('수정 에러 전산실로 문의바랍니다.'))
         });
@@ -135,9 +136,45 @@ class DragDrop {
             tolerance: 'pointer',
             forcePlaceholderSize: true,
             opacity: 0.8,
-            placeholder: 'card-placeholder'
+            placeholder: 'card-placeholder',
+            stop: (event, ui) => {
+                this.getSumAmount();
+            }
         }).disableSelection();
     }
+
+    getSumAmount () {
+        const reducer = (accumulator, currentValue) => accumulator + currentValue;
+        const rows = [...document.querySelectorAll('#pallet-bin .col-md-12')];
+        const kgAmount = rows.map(row => Number(row.dataset.amount));
+        const oneKgAmount = rows.filter(row => Number(row.dataset.amountType) === 1.00)
+            .map(row => Number(row.dataset.amount));
+        const fiveKgAmount = rows.filter(row => Number(row.dataset.amountType) === 5.00)
+            .map(row => Number(row.dataset.amount));
+        let sumKgAmount = 0;
+        let sumOneKgAmount = 0;
+        let sumFiveKgAmount = 0;
+        if(kgAmount.length){
+            sumKgAmount = kgAmount.reduce(reducer)
+        }
+        if(oneKgAmount.length){
+            sumOneKgAmount = oneKgAmount.reduce(reducer)
+        }
+        if(fiveKgAmount.length){
+            sumFiveKgAmount = fiveKgAmount.reduce(reducer)
+        }
+
+        $('#sumOneKgAmount').text(sumOneKgAmount);
+        $('#sumFiveKgAmount').text(sumFiveKgAmount);
+        $('#sumKgAmount').text(sumKgAmount);
+
+        // this.setSumAmount(sumOneKgAmount, sumFiveKgAmount)
+    }
+
+    // setSumAmount (sumOneKgAmount=0, sumFiveKgAmount=0) {
+    //     $('#sumOneKgAmount').text(sumOneKgAmount);
+    //     $('#sumFiveKgAmount').text(sumFiveKgAmount);
+    // }
 }
 
 class Car {

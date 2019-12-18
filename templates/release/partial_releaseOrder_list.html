@@ -1,7 +1,7 @@
 {% for order in orders %}
 
     {% if order.types == '전란' %}
-        <div class="col-md-12">
+        <div class="col-md-12" data-amount={{ order.amount }} data-amount-type={{ order.amount_types }} >
             <div class="card card-accent-success">
                 <div class="card-header drag">
                     <span class="badge badge-success product-item" >
@@ -14,7 +14,7 @@
             </div>
         </div>
     {% elif order.types == '난백' %}
-        <div class="col-md-12">
+        <div class="col-md-12" data-amount={{ order.amount }} data-amount-type={{ order.amount_types }} >
             <div class="card card-accent-primary">
                 <div class="card-header drag">
                     <span class="badge badge-primary product-item" >
@@ -27,7 +27,7 @@
             </div>
         </div>
     {% elif order.types == '난황' %}
-        <div class="col-md-12">
+        <div class="col-md-12" data-amount={{ order.amount }} data-amount-type={{ order.amount_types }} >
             <div class="card card-accent-warning">
                 <div class="card-header drag">
                     <span class="badge badge-danger product-item">
@@ -40,7 +40,7 @@
             </div>
         </div>
     {% else %}
-        <div class="col-md-12">
+        <div class="col-md-12" data-amount={{ order.amount }} data-amount-type={{ order.amount_types }} >
             <div class="card card-accent-secondary">
                 <div class="card-header drag">
                     <span class="badge badge-secondary product-item">

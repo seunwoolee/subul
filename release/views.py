@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum, F, ExpressionWrapper, FloatField, IntegerField, Q, Count
+from django.db.models import Sum, F, ExpressionWrapper, FloatField, IntegerField, Q, Count, DecimalField
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
@@ -250,13 +250,19 @@ class ReleaseOrder(View):
         orders = OrderList.objects.filter(Q(ymd=ymd),
                                           Q(location=location),
                                           Q(pallet=None))\
-            .annotate(types=F('productCode__type')).order_by('id')
+            .annotate(types=F('productCode__type')) \
+            .annotate(amount_types=F('productCode__amount_kg')) \
+            .annotate(amount=ExpressionWrapper(F('count') * F('productCode__amount_kg'), output_field=DecimalField())) \
+            .order_by('id')
         return orders
 
     def get_loaded_query(self, pallet_id, ymd):
         pallet = Pallet.objects.get(id=pallet_id)
         orders = OrderList.objects.filter(Q(ymd=ymd), Q(pallet=pallet))\
-            .annotate(types=F('productCode__type')).order_by('id')
+            .annotate(types=F('productCode__type')) \
+            .annotate(amount_types=F('productCode__amount_kg')) \
+            .annotate(amount=ExpressionWrapper(F('count') * F('productCode__amount_kg'), output_field=DecimalField())) \
+        .order_by('id')
         return orders
 
     def get_list(self, orders, pallet_id):

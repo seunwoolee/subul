@@ -20,10 +20,9 @@
                 {% endif %}
             </div>
 
-            {% with queryset=productOrder.detail.all|productOrderPacking_filter %}
+            {% with queryset=productOrder.detail.all.reverse|productOrderPacking_filter %}
 
                 {% for detail in queryset %}
-
                         {% if detail.orderLocationCodeName %}
                             {% if detail|calculate_eaCount %}
                                 <div class="cell cellRight" data-title="개수">
@@ -73,7 +72,7 @@
                 <div class="cell cellMemo" data-title="개수">
                     <div class="textCenter" style=" width: 20rem;">{{ productOrder.expire_memo }}</div> <hr />
                     {% if productOrder.memo %}
-                        <div class="textCenter" style="width: 20rem;">{{ productOrder.memo }}</div>
+                        <div class="textCenter" style="width: 20rem; color: red;">{{ productOrder.memo }}</div>
                     {% else %}
                         <div class="textCenter" style="width: 20rem;">&nbsp;</div>
                     {% endif %}

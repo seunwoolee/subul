@@ -1,5 +1,6 @@
 $('#start_date').val(end_day);
 $('#end_date').val(plusSeven_day);
+$('#id_ymd').val(set_yyyymmdd(end_day));
 fetch_data(end_day, plusSeven_day);
 function fetch_data(start_date = '', end_date = '') {
 
@@ -152,7 +153,6 @@ $('#finish').click(function () {
 
 $("#id_ymd").datepicker({
     autoclose: true,
-    todayHighlight: true,
     format: 'yyyymmdd'
 });
 
@@ -169,7 +169,6 @@ $("#createForm form").submit(function (e) {
         data: data,
     }).done(function (data) {
         alert('완료');
-        $('#id_ymd').val('');
         $('#id_count').val('');
         $('#id_amount').val('');
         $('#id_memo').val('');
@@ -217,9 +216,14 @@ $("#id_productCode").change(function () {
     }
 });
 
+$('#start_date').change(function () {
+    $('input[name="ymd"]').val(set_yyyymmdd($('#start_date').val()))
+});
+
 $(".amount").focusout(function () {
     setAutoCountValue($(this));
 });
+
 $(".count").focusout(function () {
     setAutoAmountValue($(this));
 });

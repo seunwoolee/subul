@@ -24,7 +24,7 @@ class SiteEggOrder(View):
         self.form: EggOrderForm
 
     def get(self, request):
-        display_date = request.GET.get('display_date',self.today)
+        display_date = request.GET.get('display_date', self.today)
         self.get_eggs(display_date)
 
         if request.is_ajax() and request.GET.get('pk'):
@@ -45,8 +45,8 @@ class SiteEggOrder(View):
         return JsonResponse(self.data)
 
     def get_eggs(self, yyyymmdd: str):
-        display_date = yyyymmdd[0:4]+yyyymmdd[5:7]+yyyymmdd[8:10]
-        self.eggs = EggOrder.objects.filter(Q(display_state='Y'),Q(ymd=display_date)).order_by('id')
+        display_date = yyyymmdd[0:4] + yyyymmdd[5:7] + yyyymmdd[8:10]
+        self.eggs = EggOrder.objects.filter(Q(display_state='Y'), Q(ymd=display_date)).order_by('id')
 
     def get_egg_list(self):
         self.data['list'] = render_to_string('site/partial_egg_order_list.html', {'eggs': self.eggs},
@@ -69,7 +69,7 @@ class SiteProductOrder(View):
         self.max_count = 1
 
     def get(self, request):
-        display_date = request.GET.get('display_date',self.today)
+        display_date = request.GET.get('display_date', self.today)
         self.productOrders = self.get_query(display_date)
 
         for productOrder in self.productOrders:
@@ -88,7 +88,7 @@ class SiteProductOrder(View):
             return render(request, 'site/product_index.html', data)
 
     def get_query(self, yyyymmdd: str):
-        display_date = yyyymmdd[0:4]+yyyymmdd[5:7]+yyyymmdd[8:10]
+        display_date = yyyymmdd[0:4] + yyyymmdd[5:7] + yyyymmdd[8:10]
         productOrders = ProductOrder.objects.filter(Q(ymd=display_date), Q(display_state='Y'),
                                                     Q(type__in=['전란', '난백난황'])) \
             .annotate(expire_memo=F('productCode__expiration')) \
@@ -151,7 +151,7 @@ class SiteReleaseOrder(View):
         self.today = datetime.today().strftime('%Y-%m-%d')
 
     def get(self, request):
-        display_date = request.GET.get('display_date',self.today)
+        display_date = request.GET.get('display_date', self.today)
 
         if request.is_ajax():
             order_lists = self.get_releases(display_date)
@@ -161,7 +161,7 @@ class SiteReleaseOrder(View):
         return render(request, 'site/release_index.html')
 
     def get_releases(self, yyyymmdd: str):
-        display_date = yyyymmdd[0:4]+yyyymmdd[5:7]+yyyymmdd[8:10]
+        display_date = yyyymmdd[0:4] + yyyymmdd[5:7] + yyyymmdd[8:10]
         return OrderList.objects.filter(Q(ymd=display_date), Q(pallet__isnull=False)).order_by('id')
 
     # def post(self, request, pk):
