@@ -20,9 +20,9 @@
                 {% endif %}
             </div>
 
-            {% with queryset=productOrder.detail.all.reverse|productOrderPacking_filter %}
+            {% with queryset=productOrder.detail.all|productOrderPacking_filter  %}
 
-                {% for detail in queryset %}
+                {% for detail in queryset reversed %}
                         {% if detail.orderLocationCodeName %}
                             {% if detail|calculate_eaCount %}
                                 <div class="cell cellRight" data-title="개수">
