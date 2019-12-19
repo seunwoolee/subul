@@ -1,3 +1,7 @@
+.alert b {
+    font-size: 0.75rem;
+}
+
 .product-item {
     font-size: 85%;
     font-weight: 800;

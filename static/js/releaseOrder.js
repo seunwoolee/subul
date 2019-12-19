@@ -74,6 +74,7 @@ class Main {
     setLocationRowClickEventHandler(){
         $(document).on('click', ".location-item tbody tr", (event) => {
             let location_id = this.location.locationTable.row(event.currentTarget).data()['orderLocationCode'];
+            let selectedIndex = this.location.locationTable.row(event.currentTarget).index();
             let ymd = set_yyyymmdd($('#order_date').val());
             let pallet_id = $('.box-icon[data-selected='+true+']').attr('data-pallet-id');
             let isBoxSelected = $('.box-icon[data-selected='+true+']').length;
@@ -93,7 +94,10 @@ class Main {
                         $('[data-toggle="tooltip"]').tooltip({delay: {"hide": 800 }});
                         $('.loader-backdrop').css('display', 'none');
                         this.dragDrop.setDragDrop('[class*=col]','.card-header','.dragdrop');
-                        this.location.locationTable.ajax.reload();
+                        this.location.locationTable.ajax.reload(() => {
+                            const row = this.location.locationTable.row(selectedIndex).node();
+                            $(row).addClass('selected');
+                        })
                     })
                     .catch((err)=>{
                         $('.loader-backdrop').css('display', 'none');
@@ -167,14 +171,8 @@ class DragDrop {
         $('#sumOneKgAmount').text(sumOneKgAmount);
         $('#sumFiveKgAmount').text(sumFiveKgAmount);
         $('#sumKgAmount').text(sumKgAmount);
-
-        // this.setSumAmount(sumOneKgAmount, sumFiveKgAmount)
     }
 
-    // setSumAmount (sumOneKgAmount=0, sumFiveKgAmount=0) {
-    //     $('#sumOneKgAmount').text(sumOneKgAmount);
-    //     $('#sumFiveKgAmount').text(sumFiveKgAmount);
-    // }
 }
 
 class Car {
