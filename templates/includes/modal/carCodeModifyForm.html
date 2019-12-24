@@ -1,0 +1,29 @@
+{% load widget_tweaks %}
+
+<table style="width : 100%">
+    <tr>
+        <td>
+            <div class="form-group">
+                <label><i class="nav-icon icon-drop"></i>차량번호</label>
+                {% render_field form.car_number class="form-control" %}
+            </div>
+        </td>
+        <td>
+            <div class="form-group">
+                <label><i class="nav-icon icon-drop"></i>타입</label>
+                {% render_field form.type class="form-control" %}
+            </div>
+        </td>
+    </tr>
+</table>
+
+<table style="width : 100%">
+    <tr>
+        <td>
+            <div class="form-group">
+                <label><i class="nav-icon icon-drop"></i>팔레트수</label>
+                {% render_field form.pallet_count class="form-control" %}
+            </div>
+        </td>
+    </tr>
+</table>

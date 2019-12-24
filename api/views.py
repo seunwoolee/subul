@@ -25,6 +25,7 @@ from product.models import Product, ProductEgg, ProductUnitPrice, \
     SetProductMatch, SetProductCode, ProductCode, ProductAdmin, ProductOrder, ProductOrderPacking
 from product.views import ProductOrderList
 from release.models import Release, Car, OrderList
+from release.services import CarServices
 from .serializers import ProductSerializer, ProductEggSerializer, ProductUnitPriceSerializer, SetProductCodeSerializer, \
     ProductCodeSerializer, SetProductMatchSerializer
 
@@ -983,9 +984,46 @@ class CarDatatableList(generics.ListAPIView):
     """
     출고지시서 - 차량 DataTable List
     """
-    # queryset = Car.objects.all()
     queryset = Car.objects.all().annotate(pallet_count=Count(F('pallet')))
     serializer_class = CarDatatableSerializer
+
+
+class CarCodeUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
+    """
+    출고지시서 - 차량 DataTable List
+    """
+    queryset = Car.objects.all()
+    serializer_class = CarDatatableSerializer
+
+    def delete(self, request, *args, **kwargs):
+        instance = Car.objects.get(pk=kwargs['pk'])
+        self.log(
+            user=request.user,
+            action="차량 삭제",
+            obj=instance,
+            extra=model_to_dict(instance)
+        )
+
+        self.destroy(request, *args, **kwargs)
+        return Response(status=status.HTTP_200_OK)
+
+    def patch(self, request, *args, **kwargs):
+        services = CarServices()
+        pallet_count = int(request.data.get('pallet_count'))
+        instance = Car.objects.get(pk=kwargs['pk'])
+        self.log(
+            user=request.user,
+            action="차량 수정",
+            obj=instance,
+            extra=model_to_dict(instance)
+        )
+        self.partial_update(request, *args, **kwargs)
+
+        if instance.pallet.count() != pallet_count:
+            instance.pallet.all().delete()
+            services.save_pallet(pallet_count, instance)
+
+        return Response(status=status.HTTP_200_OK)
 
 
 class LocationDatatableList(generics.ListAPIView):

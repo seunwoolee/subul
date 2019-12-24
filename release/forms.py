@@ -5,7 +5,7 @@ from core.models import Location
 from django_select2.forms import Select2Widget
 from product.models import ProductCode
 from users.models import CustomUser
-from .models import Release
+from .models import Release, Car
 
 
 class ReleaseForm(forms.Form):
@@ -59,3 +59,15 @@ class ReleaseForm(forms.Form):
 class ReleaseLocationForm(forms.Form):
     storedLocation = forms.ChoiceField(choices=list(Location.objects.values_list('code', 'codeName')
                                                      .filter(location_shoppingmall=2).order_by('code')))
+
+
+class CarForm(forms.ModelForm):
+    pallet_count = forms.IntegerField(min_value=0, required=True, label='팔레트 수')
+
+    class Meta:
+        model = Car
+        fields = ('car_number', 'type', 'pallet_count')
+        labels = {
+            'car_number': '차량 넘버',
+            'type': '차량 구분'
+        }

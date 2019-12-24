@@ -1,16 +1,17 @@
 from decimal import Decimal
-
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum, F, ExpressionWrapper, FloatField, IntegerField, Q, Count, DecimalField
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.views import View
 from core.models import Location
 from eventlog.models import LogginMixin
 from order.models import Order
 from packing.models import AutoPacking
-from release.forms import ReleaseForm, ReleaseLocationForm
+from release.forms import ReleaseForm, ReleaseLocationForm, CarForm
+from release.services import CarServices
 from .models import Release, OrderList, Car, Pallet
 from product.models import ProductCode, SetProductCode, Product, ProductAdmin
 
@@ -346,3 +347,31 @@ class ReleaseOrderCar(View):
         for orderList in OrderList.objects.filter(id__in=order_list_ids):
             orderList.pallet_id = pallet_id
             orderList.save()
+
+
+class CarCodeReg(View):
+    def get(self, request):
+        carForm = CarForm()
+        return render(request, 'code/carReg.html', {'form': carForm})
+
+    def post(self, request):
+        services = CarServices()
+        data: dict = request.POST.copy()
+        pallet_count: int = data['pallet_count']
+        form: CarForm = CarForm(data)
+        if form.is_valid():
+            car = form.save()
+            services.save_pallet(pallet_count, car)
+        else:
+            messages.error(request, '저장 실패(중복된 차량 넘버)')
+
+        return redirect('carCodeReg')
+
+    # def save_pallet(self, car: Car, seq: int):
+    #     return Pallet(**{'car': car, 'seq': seq}).save()
+
+
+class CarCodeList(View):
+    def get(self, request):
+        form = CarForm()
+        return render(request, 'code/carList.html', {'form': form})

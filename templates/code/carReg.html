@@ -1,0 +1,54 @@
+﻿{% extends 'baseHTML.html' %}
+
+{% load static %}
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
+
+{% block stylesheet %}
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-md-center">
+    <div class="col-lg-12 col-sm-12">
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-align-justify"></i> 차량등록
+                <div class="card-header-actions">
+                        <small class="text-muted"></small>
+                </div>
+            </div>
+
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li class="{{ message.tags }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="row" style="padding: 2rem;">
+                    <div class="col-md-6">
+                        {{ form.car_number|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.type|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.pallet_count|as_crispy_field }}
+                        <button type="submit" class="btn btn-success">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock %}
+
+
+{% block js %}
+{% endblock %}

@@ -569,7 +569,7 @@ class Release(Detail):
 
 
 class Car(models.Model):
-    car_number = models.CharField(max_length=50)
+    car_number = models.CharField(max_length=50, unique=True)
     type = models.CharField(max_length=50)
 
     def __str__(self):
@@ -594,7 +594,7 @@ class OrderList(models.Model):
     count = models.PositiveIntegerField()
     box = models.PositiveIntegerField()
     ea = models.PositiveIntegerField()
-    pallet = models.ForeignKey(Pallet, on_delete=models.CASCADE, related_name='order_list', null=True, blank=True)
+    pallet = models.ForeignKey(Pallet, on_delete=models.SET_NULL, related_name='order_list', null=True, blank=True)
 
     def __str__(self):
         return f"{self.ymd} {self.location.codeName} {self.count} {self.pallet}"

@@ -10,4 +10,6 @@ urlpatterns = [
     path('pdf', views.GeneratePDF.as_view()),
     path('releaseOrder', views.ReleaseOrder.as_view()),
     path('releaseOrderCar', views.ReleaseOrderCar.as_view()),
+    path('carCodeReg', views.CarCodeReg.as_view(), name='carCodeReg'),
+    path('carCodeList', views.CarCodeList.as_view(), name='carCodeList'),
 ]
