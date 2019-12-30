@@ -29,6 +29,7 @@
              {"data": "location_phone"},
              {"data": "location_companyNumber"},
              {"data": "location_address"},
+             {"data": "location_address_category"},
              {"data": "type_string"},
              {"data": "character_string"},
              {"data": "location_manager_string"},
@@ -57,6 +58,7 @@ function editButtonClick(data)
     $('#modifyModal #id_codeName').val(data['codeName']);
     $('#modifyModal #id_location_owner').val(data['location_owner']);
     $('#modifyModal #id_location_address').val(data['location_address']);
+    $('#modifyModal #id_location_address_category').val(data['location_address_category']);
     $('#modifyModal #id_location_companyNumber').val(data['location_companyNumber']);
     $('#modifyModal #id_location_phone').val(data['location_phone']);
     $('#modifyModal #id_location_manager').val(data['location_manager']);

@@ -11,4 +11,4 @@ class LocationSerializer(serializers.ModelSerializer):
         model = Location
         fields = ('id', 'code', 'codeName', 'type', 'location_address', 'location_phone', 'location_companyNumber',
                   'location_owner', 'location_shoppingmall', 'location_character', 'location_manager',
-                  'type_string', 'character_string', 'location_manager_string')
+                  'type_string', 'character_string', 'location_manager_string', 'location_address_category')

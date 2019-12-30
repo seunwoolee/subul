@@ -12,13 +12,7 @@
         품목명
     </div>
     <div class="cell">
-        단위
-    </div>
-    <div class="cell">
         수량
-    </div>
-    <div class="cell">
-        합계
     </div>
     <div class="cell">
         Box
@@ -50,15 +44,7 @@
     <div class="cell" data-title="품목명">
         {{order_list.codeName}}
     </div>
-    <div class="cell" data-title="포장단위">
-        {# TODO 포장단위 컬럼 생성필요    #}
-        {{order_list.productCode.store_type}}
-    </div>
     <div class="cell" data-title="수량">
-        {{order_list.count|intcomma}}
-    </div>
-    <div class="cell" data-title="합계">
-        {# TODO 무슨 합계    #}
         {{order_list.count|intcomma}}
     </div>
     <div class="cell" data-title="Box">

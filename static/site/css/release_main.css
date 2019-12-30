@@ -289,6 +289,13 @@ iframe {
   width: 200px;
   position: fixed;
   top: 20px;
+  right: 440px;
+}
+
+#display-car {
+  width: 200px;
+  position: fixed;
+  top: 20px;
   right: 230px;
 }
 

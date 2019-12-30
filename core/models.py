@@ -95,6 +95,7 @@ class Location(Code):
         default='05',
     )
     location_address = models.CharField(max_length=255, blank=True, null=True)
+    location_address_category = models.CharField(max_length=255, blank=True, null=True)
     location_phone = models.CharField(max_length=255, blank=True, null=True)
     location_companyNumber = models.CharField(max_length=255, blank=True, null=True)
     location_owner = models.CharField(max_length=255, blank=True, null=True)
@@ -116,7 +117,6 @@ class Location(Code):
 
     @staticmethod
     def locationQuery(**kwargs) -> object:
-
         ORDER_COLUMN_CHOICES = Choices(
             ('0', 'id'),
             ('1', 'codeName'),
@@ -124,9 +124,10 @@ class Location(Code):
             ('3', 'location_phone'),
             ('4', 'location_companyNumber'),
             ('5', 'location_address'),
-            ('6', 'character_string'),
+            ('6', 'location_address_category'),
             ('7', 'character_string'),
-            ('8', 'location_manager_string'),
+            ('8', 'character_string'),
+            ('9', 'location_manager_string'),
         )
         draw = int(kwargs.get('draw', None)[0])
         start = int(kwargs.get('start', None)[0])

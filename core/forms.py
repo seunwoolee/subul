@@ -7,7 +7,7 @@ class LocationForm(forms.ModelForm):
     class Meta:
         model = Location
         fields = ('codeName', 'type', 'location_address', 'location_phone', 'location_companyNumber', 'location_owner',
-                  'location_character', 'location_manager')
+                  'location_character', 'location_manager', 'location_address_category')
         labels = {
             'codeName': '거래처명',
             'type': '거래처 구분',
@@ -17,4 +17,5 @@ class LocationForm(forms.ModelForm):
             'location_owner': '대표자명',
             'location_character': '분류',
             'location_manager': '담당자',
+            'location_address_category': '지역분류'
         }

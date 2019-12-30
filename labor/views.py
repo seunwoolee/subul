@@ -7,7 +7,7 @@ from datetime import datetime
 from datetime import timedelta
 
 from eggs.models import EggOrder
-from labor.forms import EggOrderForm
+from labor.forms import EggOrderForm, ReleaseLabor
 
 from product.forms import ProductOrderForm
 from product.models import ProductOrder
@@ -151,18 +151,28 @@ class SiteReleaseOrder(View):
         self.today = datetime.today().strftime('%Y-%m-%d')
 
     def get(self, request):
+        form = ReleaseLabor()
         display_date = request.GET.get('display_date', self.today)
+        display_city = request.GET.get('display_city', None)
+        display_car = request.GET.get('display_car', None)
 
         if request.is_ajax():
-            order_lists = self.get_releases(display_date)
+            order_lists = self.get_releases(display_date, display_city, display_car)
             data = {'list': self.get_release_list(order_lists)}
             return JsonResponse(data)
 
-        return render(request, 'site/release_index.html')
+        return render(request, 'site/release_index.html',{'form': form})
 
-    def get_releases(self, yyyymmdd: str):
+    def get_releases(self, yyyymmdd: str, city: str, car: str):
+
         display_date = yyyymmdd[0:4] + yyyymmdd[5:7] + yyyymmdd[8:10]
-        return OrderList.objects.filter(Q(ymd=display_date), Q(pallet__isnull=False)).order_by('id')
+
+        orderList = OrderList.objects.filter(Q(ymd=display_date), Q(pallet__isnull=False)).order_by('id')
+        if city:
+            orderList = orderList.filter(location__location_address_category=city.strip())
+        if car:
+            orderList = orderList.filter(pallet__car__pk=car)
+        return orderList
 
     # def post(self, request, pk):
     #     eggOrder = get_object_or_404(EggOrder, pk=pk)
