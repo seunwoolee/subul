@@ -2,6 +2,7 @@ class Main {
     constructor() {
         this.setDateClickEventHandler();
         this.setBoxIconClickEventHandler();
+        this.setBoxIconDbClickEventHandler();
         this.setCreateClickEventHandler();
         this.setCarRowClickEventHandler();
         this.setLocationRowClickEventHandler();
@@ -60,9 +61,20 @@ class Main {
         });
     }
 
+    setBoxIconDbClickEventHandler() {
+        $(document).on('dblclick', '.box-icon', event => {
+            const car_id = this.car.selectedCarId;
+            const pallet_id = $(event.currentTarget).attr('data-pallet-id');
+            const ymd = set_yyyymmdd($('#order_date').val());
+            window.open('/release/releaseOrderPrint?' +
+                'car_id=' + car_id + '&pallet_id=' + pallet_id + '&ymd=' + ymd);
+        });
+    }
+
     setCarRowClickEventHandler(){
         $(document).on('click', ".car-item tbody tr", (event) => {
-            this.car.getPalletList(this.car.carTable.row(event.currentTarget).data()['id'])
+            this.car.selectedCarId = this.car.carTable.row(event.currentTarget).data()['id'];
+            this.car.getPalletList(this.car.selectedCarId)
                 .then((data)=>{
                     $("#pallet-list").html(data['list']);
                     $('[data-toggle="tooltip"]').tooltip('dispose');
@@ -176,7 +188,9 @@ class DragDrop {
 }
 
 class Car {
-
+    constructor() {
+        this.selectedCarId = null;
+    }
     getCarDataTable() {
         this.carTable = $('.car-item').DataTable({
             "language": {

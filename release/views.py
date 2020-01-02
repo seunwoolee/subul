@@ -1,7 +1,9 @@
+import json
 from decimal import Decimal
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum, F, ExpressionWrapper, FloatField, IntegerField, Q, Count, DecimalField
+from django.core import serializers
+from django.db.models import Sum, F, ExpressionWrapper, Q, Count, DecimalField, Manager
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
@@ -14,7 +16,7 @@ from release.forms import ReleaseForm, ReleaseLocationForm, CarForm
 from release.services import CarServices
 from .models import Release, OrderList, Car, Pallet
 from product.models import ProductCode, SetProductCode, Product, ProductAdmin
-
+from django.core.serializers.json import DjangoJSONEncoder
 from .utils import render_to_pdf
 
 
@@ -367,11 +369,36 @@ class CarCodeReg(View):
 
         return redirect('carCodeReg')
 
-    # def save_pallet(self, car: Car, seq: int):
-    #     return Pallet(**{'car': car, 'seq': seq}).save()
-
 
 class CarCodeList(View):
     def get(self, request):
         form = CarForm()
         return render(request, 'code/carList.html', {'form': form})
+
+
+class ReleaseOrderPrint(View):
+    def get(self, request):
+        car_id = request.GET.get('car_id', None)
+        pallet_id = request.GET.get('pallet_id', None)
+        ymd = request.GET.get('ymd', None)
+
+        # orderList: Manager = OrderList.objects.annotate(pallet_seq=F('pallet__seq'))\
+        #     .filter(Q(ymd=ymd), Q(pallet__car_id=car_id), Q(pallet_id=pallet_id)).values()
+
+        orderList: Manager = OrderList.objects.annotate(pallet_seq=F('pallet__seq'))\
+            .filter(Q(ymd=ymd), Q(pallet__car_id=car_id)).order_by('pallet__seq', 'locationCodeName').values()
+        address_categorys = OrderList.objects.filter(Q(ymd=ymd), Q(pallet__car_id=car_id))\
+            .values(address_category=F('location__location_address_category')).distinct()
+
+        if not len(address_categorys) == 1:
+            return render(request, 'release/releasetReport.html', {'rows': 0,
+                                                                   'address_category': 0,
+                                                                   'title': 0})
+
+        title = ymd[4:6] + '월' + ymd[6:8] + '일' + ' 출하지시서'
+        rows = json.dumps(list(orderList))
+        return render(request, 'release/releasetReport.html',
+                      {'rows': rows,
+                       'address_category': address_categorys[0]['address_category'],
+                       'title': title})
+
