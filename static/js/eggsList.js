@@ -124,17 +124,21 @@ function setStepOneDataTable(args)
             {"data": "memo"},
             {"data": "type", "render": function(data, type, row, meta){
 
-                    if(SUPERUSER || getYearMonth(row.ymd) >= getYearMonth(today))
+                    if(superUserOrfutureData(row.ymd))
                     {
                         return setDataTableActionButton();
                     }
 
-                    if(getYear(row.ymd) == getYear(today) && getMonth(row.ymd) == getMonth(today) - 1)
+                    if(oneMonthBefore(row.ymd))
                     {
                         if(today <= getMiddleDay(today))
                         {
                             return setDataTableActionButton();
                         }
+                    }
+
+                    if (nextYearCheck(row.ymd)) {
+                        return setDataTableActionButton();
                     }
 
                     return "";

@@ -228,3 +228,50 @@ var intVal = function (i) {
         typeof i === 'number' ?
             i : 0;
 };
+
+function setActionButton(data, yyyymmdd) {
+    const data_yyyymm = getYearMonth(yyyymmdd);
+    const today_yyyymm = getYearMonth(today);
+    const NEXTYEARDIFF = 89;
+
+    if (SUPERUSER || data_yyyymm >= today_yyyymm) {
+        if (data > 0) {
+            return setDataTableActionButtonWithoutEdit();
+        } else {
+            return setDataTableActionButtonWithPdf();
+        }
+    }
+
+    if (getYear(yyyymmdd) === getYear(today) && getMonth(yyyymmdd) === getMonth(today) - 1) {
+        if (today <= getMiddleDay(today)) {
+            if (data > 0) {
+                return setDataTableActionButtonWithoutEdit();
+            } else {
+                return setDataTableActionButtonWithPdf();
+            }
+        }
+    }
+
+    if(parseInt(today_yyyymm) - parseInt(data_yyyymm) === NEXTYEARDIFF ){
+        if (data > 0) {
+            return setDataTableActionButtonWithoutEdit();
+        } else {
+            return setDataTableActionButtonWithPdf();
+        }
+    }
+
+    return setDataTableActionButtonOnlyPdf();
+}
+
+function superUserOrfutureData(yyyymmdd) {
+    return SUPERUSER || getYearMonth(yyyymmdd) >= getYearMonth(today);
+}
+
+function oneMonthBefore(yyyymmdd) {
+    return getYear(yyyymmdd) === getYear(today) && getMonth(yyyymmdd) === getMonth(today) - 1
+}
+
+function nextYearCheck(yyyymmdd) {
+    const NEXTYEARDIFF = 89;
+    return NEXTYEARDIFF === parseInt(getYearMonth(today)) - parseInt(getYearMonth(yyyymmdd))
+}

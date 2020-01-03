@@ -132,8 +132,7 @@ function setStepOneDataTable(args) {
             {"data": "setProduct"},
             {
                 "data": "release_id", "render": function (data, type, row, meta) {
-
-                    if (SUPERUSER || getYearMonth(row.ymd) >= getYearMonth(today)) {
+                    if (superUserOrfutureData(row.ymd)) {
                         if (data > 0) {
                             return setDataTableActionButtonWithoutEdit();
                         } else {
@@ -141,14 +140,21 @@ function setStepOneDataTable(args) {
                         }
                     }
 
-
-                    if (getYear(row.ymd) == getYear(today) && getMonth(row.ymd) == getMonth(today) - 1) {
+                    if (oneMonthBefore(row.ymd)) {
                         if (today <= getMiddleDay(today)) {
                             if (data > 0) {
                                 return setDataTableActionButtonWithoutEdit();
                             } else {
                                 return setDataTableActionButtonWithPdf();
                             }
+                        }
+                    }
+
+                    if (nextYearCheck(row.ymd)) {
+                        if (data > 0) {
+                            return setDataTableActionButtonWithoutEdit();
+                        } else {
+                            return setDataTableActionButtonWithPdf();
                         }
                     }
 

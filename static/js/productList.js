@@ -130,8 +130,8 @@ function fetch_data(start_date = '', end_date = '') {
             {
                 "data": "list_type", "render": function (data, type, row, meta) {
 
-                    if (SUPERUSER || getYearMonth(row.list_ymd) >= getYearMonth(today)) {
-                        if (data == "제품생산") {
+                    if (superUserOrfutureData(row.list_ymd)) {
+                        if (data === "제품생산") {
                             return setDataTableActionButtonWithRecall();
                         } else if (data.includes("미출고품")) {
                             return setDataTableActionButtonOnlyDelete();
@@ -141,17 +141,27 @@ function fetch_data(start_date = '', end_date = '') {
                     }
 
 
-                    if (getYear(row.list_ymd) == getYear(today) && getMonth(row.list_ymd) == getMonth(today) - 1) // 이전달의 데이터
+                    if (oneMonthBefore(row.list_ymd))
                     {
                         if (today <= getMiddleDay(today)) // 한달전의 1일부터 30일까지 자료는 수정 삭제 가능
                         {
-                            if (data == "제품생산") {
+                            if (data === "제품생산") {
                                 return setDataTableActionButtonWithRecall();
                             } else if (data.includes("미출고품")) {
                                 return setDataTableActionButtonOnlyDelete();
                             } else {
                                 return setDataTableActionButton();
                             }
+                        }
+                    }
+
+                    if (nextYearCheck(row.list_ymd)) {
+                        if (data === "제품생산") {
+                            return setDataTableActionButtonWithRecall();
+                        } else if (data.includes("미출고품")) {
+                            return setDataTableActionButtonOnlyDelete();
+                        } else {
+                            return setDataTableActionButton();
                         }
                     }
 
@@ -397,7 +407,6 @@ function deleteSelectedRows() {
             } else {
                 productEgg_data.push(row.id)
             }
-
         });
 
         if(product_data.length > 0 || productEgg_data.length > 0) {
@@ -416,5 +425,4 @@ function deleteSelectedRows() {
             alert('삭제할 대상을 선택해주세요.');
         }
     }
-
 }

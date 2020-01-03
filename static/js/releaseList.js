@@ -176,31 +176,33 @@ function setStepOneDataTable(args)
             {'data': 'id'},
             {'data': 'code'},
             {"data": 'type', "render": function(data, type, row, meta){
+                if (superUserOrfutureData(row.ymd)) {
+                    if(row.locationType === '원란판매'){return '';}
 
-                    if(SUPERUSER || getYearMonth(row.ymd) >= getYearMonth(today))
-                    {
-                        if(row.locationType == '원란판매'){return '';}
+                    if(data === '이동'){return '';}
+                    else if(data === '판매'){return setDataTableActionButtonWithPdfRecall();}
+                    else{return setDataTableActionButtonWithoutEdit();}
+                }
 
-                        if(data == '이동'){return '';}
-                        else if(data == '판매'){return setDataTableActionButtonWithPdfRecall();}
+                if (oneMonthBefore(row.ymd)) {
+                    if (today <= getMiddleDay(today)) {
+                        if(row.locationType === '원란판매'){return '';}
+
+                        if(data === '이동'){return '';}
+                        else if(data === '판매'){return setDataTableActionButtonWithPdfRecall();}
                         else{return setDataTableActionButtonWithoutEdit();}
                     }
+                }
 
+                if (nextYearCheck(row.ymd)) {
+                    if(row.locationType === '원란판매'){return '';}
 
-                    if(getYear(row.ymd) == getYear(today) && getMonth(row.ymd) == getMonth(today) - 1)
-                    {
-                        if(today <= getMiddleDay(today))
-                        {
-                            if(row.locationType == '원란판매'){return '';}
+                    if(data === '이동'){return '';}
+                    else if(data === '판매'){return setDataTableActionButtonWithPdfRecall();}
+                    else{return setDataTableActionButtonWithoutEdit();}
+                }
 
-                            if(data == '이동'){return '';}
-                            else if(data == '판매'){return setDataTableActionButtonWithPdfRecall();}
-                            else{return setDataTableActionButtonWithoutEdit();}
-                        }
-                    }
-
-                    return setDataTableActionButtonOnlyPdf();
-
+                return setDataTableActionButtonOnlyPdf();
             }}
         ],
         dom: 'Bfrtip',
