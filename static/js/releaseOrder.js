@@ -2,7 +2,7 @@ class Main {
     constructor() {
         this.setDateClickEventHandler();
         this.setBoxIconClickEventHandler();
-        this.setBoxIconDbClickEventHandler();
+        this.setPrintClickHandler();
         this.setCreateClickEventHandler();
         this.setCarRowClickEventHandler();
         this.setLocationRowClickEventHandler();
@@ -61,13 +61,18 @@ class Main {
         });
     }
 
-    setBoxIconDbClickEventHandler() {
-        $(document).on('dblclick', '.box-icon', event => {
+    setPrintClickHandler() {
+        $('.print').click(event => {
             const car_id = this.car.selectedCarId;
-            const pallet_id = $(event.currentTarget).attr('data-pallet-id');
+            const pallet_id = 0;
             const ymd = set_yyyymmdd($('#order_date').val());
-            window.open('/release/releaseOrderPrint?' +
-                'car_id=' + car_id + '&pallet_id=' + pallet_id + '&ymd=' + ymd);
+            if(car_id){
+                window.open('/release/releaseOrderPrint?' +
+                    'car_id=' + car_id + '&pallet_id=' + pallet_id + '&ymd=' + ymd);
+                return
+            }
+            alert('차량을 클릭해주세요');
+
         });
     }
 

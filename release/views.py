@@ -386,6 +386,7 @@ class ReleaseOrderPrint(View):
         #     .filter(Q(ymd=ymd), Q(pallet__car_id=car_id), Q(pallet_id=pallet_id)).values()
 
         orderList: Manager = OrderList.objects.annotate(pallet_seq=F('pallet__seq'))\
+            .annotate(product_type=F('productCode__type'))\
             .filter(Q(ymd=ymd), Q(pallet__car_id=car_id)).order_by('pallet__seq', 'locationCodeName').values()
         address_categorys = OrderList.objects.filter(Q(ymd=ymd), Q(pallet__car_id=car_id))\
             .values(address_category=F('location__location_address_category')).distinct()

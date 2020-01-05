@@ -8,7 +8,10 @@
 
 <style>
 body {
+    margin: 0;
+    font-size: 12px;
     background: rgb(204,204,204);
+    -webkit-print-color-adjust: exact !important;
 }
 
 table {
@@ -20,7 +23,12 @@ td, th {
     white-space: nowrap;
     border: 1px solid #000000;
     text-align: center;
-    padding: 2px;
+    padding: 1px;
+}
+
+page[size="A4"] {
+    width: 21cm;
+    height: 29.7cm;
 }
 
 page {
@@ -28,7 +36,8 @@ page {
     display: block;
     margin: 0 auto;
     margin-bottom: 0.5cm;
-    box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+    {#margin-top: 0.5cm;#}
+    {#box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);#}
 }
 
 .titleDiv {
@@ -62,14 +71,38 @@ page {
 
 page[size="A4"][layout="landscape"] {
     width: 29cm;
-    height: 20cm;
+    height: 21cm;
 }
 
 @media print{
+    body, page {
+        margin: 0;
+        size: 29cm 21cm;
+    }
     @page {
         margin: 0;
-        size: A4 landscape;
+        size: 29cm 21cm;;
     }
+}
+
+.detail {
+    font-size: 1rem;
+}
+
+.junran{
+    background-color: #ccf3cc;
+}
+
+.nanbak{
+    background-color: #ffffc0;
+}
+
+.nanhwang{
+    background-color: #ff9505;
+}
+
+.etc{
+    background-color: #f7c5e8;
 }
 
 </style>
@@ -84,41 +117,45 @@ page[size="A4"][layout="landscape"] {
 
 <body>
 
-<page size="A4" layout="landscape">
-    <div class="titleDiv"></div>
+<div>
+    <page size="A4" layout="landscape">
+        <div class="titleDiv"></div>
 
-    <table class="table">
-        <tr>
-            <th class="locationCategory" rowspan="50"></th>
-            <th>거래처명</th>
-            <th>팔레트NO</th>
-            <th>품목명</th>
-            <th>수량</th>
-            <th>Box</th>
-            <th>EA</th>
-            <th>
-                <table>
-                    <tr >
-                        <td class="bottomBorder" colspan="2">확인</td>
-                    </tr>
-                    <tr>
-                        <td class="bottomBorderRight">출하담당자</td>
-                        <td class="bottomBorder">출하담당자</td>
-                    </tr>
-                    <tr>
-                        <td class="bottomBorderRight"><br/></td>
-                        <td class="bottomBorder"><br/></td>
-                    </tr>
-                    <tr>
-                        <td class="bottomBorderRight">서명</td>
-                        <td class="bottomBorder">서명</td>
-                    </tr>
-                </table>
-            </th>
-        </tr>
+        <table class="table">
+            <tr>
+                <th class="locationCategory" rowspan="50"></th>
+                <th>거래처명</th>
+                <th>팔레트NO</th>
+                <th>품목명</th>
+                <th>수량</th>
+                <th>Box</th>
+                <th>EA</th>
+                <th>
+                    <table>
+                        <tr>
+                            <td class="bottomBorder" colspan="2">확인</td>
+                        </tr>
+                        <tr>
+                            <td class="bottomBorderRight">출하담당자</td>
+                            <td class="bottomBorder">출하담당자</td>
+                        </tr>
+                        <tr>
+                            <td class="bottomBorderRight"><br/></td>
+                            <td class="bottomBorder"><br/></td>
+                        </tr>
+                        <tr>
+                            <td class="bottomBorderRight">서명</td>
+                            <td class="bottomBorder">서명</td>
+                        </tr>
+                    </table>
+                </th>
+            </tr>
 
-    </table>
-</page>
+        </table>
+    </page>
+</div>
+
+
 
 </body>
 </html>

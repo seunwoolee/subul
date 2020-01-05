@@ -3,10 +3,10 @@
 
 <div class="row header">
     <div class="cell">
-        거래처
+        팔레트
     </div>
     <div class="cell">
-        팔레트
+        거래처
     </div>
     <div class="cell">
         품목명
@@ -34,12 +34,11 @@
         <div class="row etc" data-id={{ order_list.id }}>
     {% endif %}
 
-
-    <div class="cell" data-title="거래처">
-        {{order_list.locationCodeName}}
-    </div>
     <div class="cell" data-title="팔레트">
         {{order_list.pallet.seq}}
+    </div>
+    <div class="cell" data-title="거래처">
+        {{order_list.locationCodeName}}
     </div>
     <div class="cell" data-title="품목명">
         {{order_list.codeName}}
