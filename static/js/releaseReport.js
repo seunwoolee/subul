@@ -122,8 +122,7 @@ class Main {
     setDetailReport(rows) {
         rows.forEach((row, index) => {
             let detailPage = `
-                <div style="font-size: 32px; height: 100%;">
-                <page size="A4" layout="landscape">
+                <page style="font-size: 2rem; margin-top: 15px" size="A4" layout="landscape">
                     <table>
                         <tr>
                             <th>팔레트NO</th>
@@ -142,8 +141,7 @@ class Main {
                             <td>${row.ea}</td>
                         </tr>
                     </table>
-                </page>
-                </div>`;
+                </page>`;
             $('body').append(detailPage);
         })
     }
