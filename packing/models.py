@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Q, F, Sum, Func
+from django.db.models import Q, F, Sum, Func, manager
 from model_utils import Choices
 from core.models import Detail, Location, Code, DELETE_STATE_CHOICES
 from order.models import ABS
@@ -170,7 +170,7 @@ class Packing(Detail):
         end_date = kwargs.get('end_date', None)[0]
         arr = []
 
-        packing_previous: Packing = Packing.objects.values('code', 'codeName') \
+        packing_previous: manager = Packing.objects.values('code', 'codeName') \
             .annotate(totalCount=Sum('count')) \
             .filter(ymd__lt=start_date) \
             .filter(totalCount__gt=0)  # 재고가 0초과인 이전 재고
@@ -284,7 +284,8 @@ class Packing(Detail):
                         arr[i]['in'] = arr[i + 1]['in']
                     if not arr[i]['in_price']:
                         arr[i]['in_price'] = arr[i + 1]['in_price']
-                    arr[i]['currentStock'] = arr[i]['previousStock'] + arr[i]['in'] + int(arr[i]['release'] or 0)
+                    arr[i]['currentStock'] = arr[i]['previousStock'] + arr[i]['in'] +\
+                                             int(arr[i]['release'] or 0) + int(arr[i]['adjust'] or 0)
                     arr.pop(i + 1)
                 else:
                     continue
