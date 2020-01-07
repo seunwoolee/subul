@@ -32,7 +32,7 @@
             {"data": "setProductCodeName"},
             {"data": "productCode"},
             {"data": "productCodeName"},
-            {"data": "price", "render": $.fn.dataTable.render.number( ',')},
+            {"data": "price", "render": $.fn.dataTable.render.number(',', '.', 1)},
             {"data": "count", "render": $.fn.dataTable.render.number( ',')},
             {"data": null, "render": function(data, type, row, meta){return setDataTableActionButton();}}
         ],
@@ -91,14 +91,13 @@ $(document).on('click', "#create", function()
 {
     let location = $('.type_filter #location select').val();
     let setProduct = $('.type_filter #setProduct select').val();
-    let locationCodeName = $('.type_filter #location select option:selected').text();
-    let setProductCodeName = $('.type_filter #product select option:selected').text();
+    let setProductCodeName = $('.type_filter #setProduct select option:selected').text();
 
     if (location && setProduct)
     {
         $('#createModal #id_locationCode').val(location);
         $('#createModal #id_setProductCode').val(setProduct);
-        $('#createModal .codeName').text(locationCodeName + '('+setProductCodeName+')');
+        $('#createModal .codeName').text(setProductCodeName);
         $("#createModal").modal();
     }
     else

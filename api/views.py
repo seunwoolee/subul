@@ -691,19 +691,28 @@ class SetProductMatchsAPIView(APIView):
         product_instance = ProductCode.objects.get(code=request.data['product'])
         setProduct_instance = SetProductCode.objects.get(code=request.data['setProductCode'])
         count = int(request.data['count'])
-        price = int(request.data['price'])
-        if not SetProductMatch.objects.filter(saleLocation=location_instance) \
-                .filter(productCode=product_instance).filter(setProductCode=setProduct_instance):
-            SetProductMatch.objects.create(
-                saleLocation=location_instance,
-                productCode=product_instance,
-                setProductCode=setProduct_instance,
-                price=price,
-                count=count
-            )
-            return Response(status=status.HTTP_201_CREATED, template_name=None, content_type=None)
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST, template_name=None, content_type=None)
+        price = request.data['price']
+        SetProductMatch.objects.create(
+            saleLocation=location_instance,
+            productCode=product_instance,
+            setProductCode=setProduct_instance,
+            price=price,
+            count=count
+        )
+        return Response(status=status.HTTP_201_CREATED, template_name=None, content_type=None)
+
+        # if not SetProductMatch.objects.filter(saleLocation=location_instance) \
+        #         .filter(productCode=product_instance).filter(setProductCode=setProduct_instance):
+        #     SetProductMatch.objects.create(
+        #         saleLocation=location_instance,
+        #         productCode=product_instance,
+        #         setProductCode=setProduct_instance,
+        #         price=price,
+        #         count=count
+        #     )
+        #     return Response(status=status.HTTP_201_CREATED, template_name=None, content_type=None)
+        # else:
+        #     return Response(status=status.HTTP_400_BAD_REQUEST, template_name=None, content_type=None)
 
 
 class SetProductMatchsUpdate(generics.RetrieveUpdateDestroyAPIView):

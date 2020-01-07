@@ -3,12 +3,6 @@
 {% load static %}
 {% load widget_tweaks %}
 
-{% block stylesheet %}
-<link rel="stylesheet" type="text/css"
-      href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-flash-1.5.4/b-html5-1.5.4/b-print-1.5.4/datatables.min.css"/>
-<link href="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css" rel="stylesheet">
-<link href="https://cdn.datatables.net/colreorder/1.5.1/css/colReorder.dataTables.min.css" rel="stylesheet">
-{% endblock %}
 
 {% block content %}
 <div class="row justify-content-md-center">
@@ -125,7 +119,6 @@
             </div>
             <div class="modal-body">
                 <form role="form" class="deleteAndEdit">
-                    <!--{% csrf_token %}-->
                     <input type="hidden" class="ajaxUrlType" name="ajaxUrlType" value="delete"/>
                     <button type="submit" class="btn btn-danger">Delete</button>
                     <button type="button" data-dismiss="modal" class="btn">Cancel</button>
@@ -139,6 +132,6 @@
 
 {% block js %}
 <script src="{% static 'js/baseList.js' %}"></script>
-<script src="{% static 'js/setProductMatchList.js' %}"></script>
+<script src="{% static 'js/setProductMatchList.js' %}?version=3"></script>
 {{ productUnitPricesForm.media.js }}
 {% endblock %}

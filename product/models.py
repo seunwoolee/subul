@@ -603,7 +603,7 @@ class SetProductCode(Code):
 class SetProductMatch(TimeStampedModel):
     setProductCode = models.ForeignKey(SetProductCode, on_delete=models.CASCADE)
     productCode = models.ForeignKey(ProductCode, on_delete=models.CASCADE)
-    price = models.IntegerField()
+    price = models.DecimalField(decimal_places=1, max_digits=19)
     count = models.IntegerField(blank=True, null=True)
     saleLocation = models.ForeignKey(Location, on_delete=models.CASCADE)
     delete_state = models.CharField(
