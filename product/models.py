@@ -407,7 +407,7 @@ class Product(Detail):
 
         queryset = Product.objects.all().annotate(locationCode_code=F('purchaseLocation__code')) \
             .annotate(totalPrice=F('purchaseSupplyPrice') + F('purchaseVat')) \
-            .filter(ymd__gte=start_date).filter(ymd__lte=end_date).exclude(purchaseYmd=None)
+            .filter(purchaseYmd__gte=start_date).filter(purchaseYmd__lte=end_date).exclude(purchaseYmd=None)
 
         total = queryset.count()
 
