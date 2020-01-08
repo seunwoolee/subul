@@ -3,7 +3,7 @@ class Main {
         this.setLocationCategory(address_category);
         this.setTitle(title);
         this.setLocationCatRowspan(rows.length + 1);
-        // this.setTitle(title);
+        this.rowsLenth = rows.length;
 
         try {
             this.diffLocation = rows[0].locationCodeName;
@@ -122,6 +122,7 @@ class Main {
         rows.length !== 1 ? this.pallet_seqs.push(rows.length-1): this.pallet_seqs.push(rows.length);
         rows.forEach((row, index) => {
             if(this.pallet_seqs.length > 1){
+                console.log(this.pallet_seqs);
                 let detailPage = `
                 <page style="font-size: 1.5rem; " size="A4" layout="landscape">
                     <table>
@@ -158,6 +159,10 @@ class Main {
     palletSeqBetween(value, index) {
         const start = this.pallet_seqs[0];
         const end = this.pallet_seqs[1];
+        if(!this.pallet_seqs[2]){
+            // contain last tr content
+            return start <= index && index <= end
+        }
         return start <= index && index < end
     }
 
