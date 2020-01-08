@@ -2,7 +2,7 @@ class Main {
     constructor(rows, address_category, title) {
         this.setLocationCategory(address_category);
         this.setTitle(title);
-        this.setLocationCatRowspan(rows.length+1);
+        this.setLocationCatRowspan(rows.length + 1);
         // this.setTitle(title);
 
         try {
@@ -62,7 +62,6 @@ class Main {
                 $('.pallet_seq' + j).remove();
             }
         }
-
         this.setDetailReport(rows);
     }
 
@@ -120,9 +119,11 @@ class Main {
     }
 
     setDetailReport(rows) {
+        rows.length !== 1 ? this.pallet_seqs.push(rows.length-1): this.pallet_seqs.push(rows.length);
         rows.forEach((row, index) => {
-            let detailPage = `
-                <page style="font-size: 2rem; margin-top: 15px" size="A4" layout="landscape">
+            if(this.pallet_seqs.length > 1){
+                let detailPage = `
+                <page style="font-size: 1.5rem; " size="A4" layout="landscape">
                     <table>
                         <tr>
                             <th>팔레트NO</th>
@@ -132,19 +133,34 @@ class Main {
                             <th>Box</th>
                             <th>EA</th>
                         </tr>
-                        <tr style="height: 300px;">
-                            <td>${row.pallet_seq}</td>
-                            <td>${row.locationCodeName}</td>
-                            <td>${row.codeName}</td>
-                            <td>${row.count}</td>
-                            <td>${row.box}</td>
-                            <td>${row.ea}</td>
-                        </tr>
+                        ${rows.filter(this.palletSeqBetween.bind(this)).map(row => this.setDetailContent(row)).join('')}
+
                     </table>
                 </page>`;
-            $('body').append(detailPage);
+                $('body').append(detailPage);
+                this.pallet_seqs.shift();
+            }
         })
     }
+
+    setDetailContent(row) {
+        return `
+                <tr>
+                    <td>${row.pallet_seq}</td>
+                    <td>${row.locationCodeName}</td>
+                    <td>${row.codeName}</td>
+                    <td>${row.count}</td>
+                    <td>${row.box}</td>
+                    <td>${row.ea}</td>
+                </tr>`
+    }
+
+    palletSeqBetween(value, index) {
+        const start = this.pallet_seqs[0];
+        const end = this.pallet_seqs[1];
+        return start <= index && index < end
+    }
+
 }
 
 main = new Main(rows, address_category, title);

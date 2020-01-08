@@ -172,21 +172,7 @@ class SiteReleaseOrder(View):
             orderList = orderList.filter(location__location_address_category=city.strip())
         if car:
             orderList = orderList.filter(pallet__car__pk=car)
-        return orderList
+        return orderList.order_by('pallet__seq')
 
-    # def post(self, request, pk):
-    #     eggOrder = get_object_or_404(EggOrder, pk=pk)
-    #     EggOrderForm(request.POST, instance=eggOrder).save()
-    #     self.get_eggs(request.POST['display_date'])
-    #     self.get_egg_list()
-    #     return JsonResponse(self.data)
-    #
-    #
     def get_release_list(self, order_lists):
         return render_to_string('site/partial_release_order_list.html', {'order_lists': order_lists})
-    #
-    # def get_form(self, pk):
-    #     eggOrder = get_object_or_404(EggOrder, pk=pk)
-    #     self.form = EggOrderForm(instance=eggOrder)
-    #     self.data['form'] = render_to_string('site/partial_egg_order_update.html', {'form': self.form},
-    #                                          request=self.request)
