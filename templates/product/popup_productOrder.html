@@ -19,6 +19,9 @@
     <script src="{% static 'popper.js/dist/umd/popper.min.js' %}"></script>
     <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
     <script src="{% static '@coreui/coreui-pro/dist/js/coreui.min.js' %}"></script>
+    <script src="{% static 'js/custom/datepicker.js' %}"></script>
+
+    <link href="{% static 'css/datepicker/bootstrap-datepicker.css' %}" rel="stylesheet">
 
     <script>
         var AMOUNT_KG = {"AMOUNT_KG": {{productOrder.amount_kg}} };
@@ -47,7 +50,7 @@
 
     <script src="{% static 'js/buttonLoader.min.js' %}"></script>
     <script src="{% static 'js/base.js' %}"></script>
-    <script src="{% static 'js/popup_productOrder.js' %}?version=2"></script>
+    <script src="{% static 'js/popup_productOrder.js' %}?version=3"></script>
     <link href="{% static 'css/buttonLoader.css' %}" rel="stylesheet">
     <link href="{% static 'css/simple-line-icons/css/simple-line-icons.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
@@ -63,10 +66,17 @@
 
                 <div class="card">
                     <div class="card-body">
-
                         {# 메인 productOrder 내용 #}
                         <form action="/api/productOrder/{{ productOrder.id }}">
                             <h2>{{ productOrder.codeName }}</h2>
+                            <label for="datepicker" class="col-form-label">날짜</label>
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend ">
+                                    <div class="input-group-text"><i class="far fa-calendar-alt"></i>
+                                    </div>
+                                </div>
+                                <input  name="ymd" id="datepicker" class="form-control"  value="{{ productOrder.ymd }}"/>
+                            </div>
                             <label for="id_memo" class="col-form-label">메모</label>
                             {% if productOrder.memo %}
                                 <textarea id="id_memo" name="memo" class="form-control" rows="2">{{ productOrder.memo }}</textarea>

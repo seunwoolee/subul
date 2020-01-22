@@ -35,6 +35,16 @@ $(function () {
         $("#createPackingStockModal input[name='amount']").attr('max',future_stock_amount);
     }
 
+    const yyyy = String(ymd).substring(0, 4);
+    const mm = String(ymd).substring(4, 6);
+    const dd = String(ymd).substring(6, 8);
+
+    $( "#datepicker" ).datepicker({
+        todayHighlight: false,
+        format: "yyyymmdd",
+        language: "kr"
+    }).datepicker("setDate", new Date(yyyy, mm -1, dd));
+
 });
 
 function getCookie(c_name) {
