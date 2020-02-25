@@ -15,7 +15,7 @@ from packing.models import AutoPacking
 from release.forms import ReleaseForm, ReleaseLocationForm, CarForm
 from release.services import CarServices
 from .models import Release, OrderList, Car, Pallet
-from product.models import ProductCode, SetProductCode, Product, ProductAdmin
+from product.models import ProductCode, SetProductCode, Product, ProductAdmin, SetProductMatch
 from django.core.serializers.json import DjangoJSONEncoder
 from .utils import render_to_pdf
 
@@ -80,8 +80,14 @@ class ReleaseReg(LogginMixin, LoginRequiredMixin, View):
         specialTag = request.POST.get('specialTag', '')
         totalPrice = int(Decimal(data['price']) * int(data['count']))
 
-        if setProductCode:  # 세트 상품 존재 시 부가세 0원
-            releaseVat = 0
+        if setProductCode:  # 세트 상품 존재 시 부가세 0원, 단) OEM 만 있는 세트상품은 부가세 계산 실시
+            productCodes = SetProductMatch.objects.filter(setProductCode__code=setProductCode)
+            total_length = len(productCodes)
+            oem_length = len([productCode for productCode in productCodes if productCode.productCode.oem == 'Y'])
+            if total_length == oem_length:
+                releaseVat = round(totalPrice - (totalPrice / 1.1))
+            else:
+                releaseVat = 0
         else:
             releaseVat = round(totalPrice - (totalPrice / 1.1)) if productCode.vat else 0  # vat 계산
 
