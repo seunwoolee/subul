@@ -195,6 +195,75 @@ function setStepTwoDataTable(args)
 function setStepThreeDataTable(args)
 {
     eggReportTable = args['table'].DataTable({
+    	"footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+
+            let one = api
+                .column( 1, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let two = api
+                .column( 2, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let three = api
+                .column( 3, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let four = api
+                .column( 4, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let five = api
+                .column( 5, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let six = api
+                .column( 6, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let seven = api
+                .column( 7, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            let eight = api
+                .column( 8, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            // Update footer
+            $( api.column( 1 ).footer() ).html( numberFormatWithDot(one));
+            $( api.column( 2 ).footer() ).html( numberFormatWithDot(two));
+            $( api.column( 3 ).footer() ).html( numberFormatWithDot(three));
+            $( api.column( 4 ).footer() ).html( numberFormatWithDot(four));
+            $( api.column( 5 ).footer() ).html( numberFormatWithDot(five));
+            $( api.column( 6 ).footer() ).html( numberFormatWithDot(six));
+            $( api.column( 7 ).footer() ).html( numberFormatWithDot(seven));
+            $( api.column( 8 ).footer() ).html( numberFormatWithDot(eight));
+        },
         "language": {
         "lengthMenu": "_MENU_ 페이지당 개수",
         "zeroRecords": "결과 없음",
