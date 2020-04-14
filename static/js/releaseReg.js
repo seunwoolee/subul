@@ -354,8 +354,12 @@ $('#orderReleaseButton').click(function () {
                 }).done(function (data) {
                     $(".everyModal").modal('hide');
                     $('#orderDatatable').DataTable().search($("input[type='search']").val()).draw();
-                }).fail(function () {
-                    alert('수정 에러 전산실로 문의바랍니다.');
+                }).fail(function (error) {
+                    if(error.status === 400) {
+                        alert('생산일은 출고일보다 빨라야합니다.')
+                    } else {
+                        alert('수정 에러 전산실로 문의바랍니다.');
+                    }
                 })
             }
         }

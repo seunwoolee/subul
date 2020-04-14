@@ -80,6 +80,9 @@ class ReleaseReg(LogginMixin, LoginRequiredMixin, View):
         specialTag = request.POST.get('specialTag', '')
         totalPrice = int(Decimal(data['price']) * int(data['count']))
 
+        if data['productYmd'] > data['ymd']:
+            return HttpResponse(status=400)
+
         if setProductCode:  # 세트 상품 존재 시 부가세 0원, 단) OEM 만 있는 세트상품은 부가세 계산 실시
             productCodes = SetProductMatch.objects.filter(setProductCode__code=setProductCode)
             total_length = len(productCodes)
