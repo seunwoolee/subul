@@ -80,6 +80,7 @@ function setStepOneDataTable(args) {
         "language": {searchPlaceholder: "제품명, 메모"},
         "processing": true,
         "serverSide": true,
+        "select": true,
         "ajax": {
             "url": "/api/order/",
             "type": "GET",
@@ -527,4 +528,31 @@ $('#locationManagerSearch').click(function () {
     } else {
         alert("날짜를 모두 입력해주세요");
     }
+});
+
+$('#pdfSelected').click(function () {
+    const selectedRows = table.rows('.selected').data().toArray();
+    if(selectedRows.length === 0){
+        return alert('주문 내역을 선택해 주세요');
+    }
+
+    const checkedLocation = selectedRows.find(row => selectedRows[0].orderLocationCode !== row.orderLocationCode);
+    if(checkedLocation){
+        return alert('동일한 거래처만 선택해 주세요');
+    }
+
+    const checkedYmd = selectedRows.find(row => selectedRows[0].ymd !== row.ymd);
+    if(checkedYmd){
+        return alert('같은 날짜만 선택해 주세요');
+    }
+
+    const ids = selectedRows.map(row => row.id);
+    const ymd = selectedRows[0].ymd;
+    const orderLocationCode = selectedRows[0].orderLocationCode;
+    const moneyMark = $("#moneyMark").is(":checked");
+
+    window.open('http://kcfeed.com/order/pdf_selected?ymd=' + ymd +
+                    '&orderLocationCode=' + orderLocationCode +
+                    '&selectedRows=' + ids +
+                    '&moneyMark=' + moneyMark, '_blank');
 });

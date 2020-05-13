@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect
 from django.views import View
+from model_utils.managers import QueryManager
+
 from core.models import Location
 from eggs.models import Egg
 from eventlog.models import LogginMixin
 from order.forms import OrderFormSet, OrderForm
 from order.models import Order, ABS
 from product.models import ProductCode, SetProductCode
-from django.db.models import Sum, F, ExpressionWrapper, FloatField, IntegerField, Func, Value, CharField
+from django.db.models import Sum, F, ExpressionWrapper, FloatField, IntegerField, Func, Value, CharField, Q
 from core.utils import render_to_pdf
 from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -14,6 +16,36 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 
 class Round(Func):
     function = 'ROUND'
+
+
+def create_pdf_orders(ymd: str, location: Location):
+    return Order.objects.filter(Q(ymd=ymd), Q(orderLocationCode=location)) \
+        .values('code', 'codeName', 'price', 'specialTag', 'memo') \
+        .annotate(totalCount=Sum('count')) \
+        .annotate(pricePerEa=F('price')) \
+        .annotate(totalPrice=ExpressionWrapper(F('totalCount') * F('price'), output_field=IntegerField())) \
+        .annotate(vat=ExpressionWrapper(F('productCode__vat') * 0.01 + 1, output_field=FloatField())) \
+        .annotate(supplyPrice=ExpressionWrapper(Round(F('totalPrice') / F('vat')), output_field=IntegerField())) \
+        .annotate(vatPrice=F('totalPrice') - F('supplyPrice'))
+
+
+def create_pdf_selected_orders(ids: list):
+    return Order.objects.filter(Q(id__in=ids)) \
+        .values('code', 'codeName', 'price', 'specialTag', 'memo') \
+        .annotate(totalCount=Sum('count')) \
+        .annotate(pricePerEa=F('price')) \
+        .annotate(totalPrice=ExpressionWrapper(F('totalCount') * F('price'), output_field=IntegerField())) \
+        .annotate(vat=ExpressionWrapper(F('productCode__vat') * 0.01 + 1, output_field=FloatField())) \
+        .annotate(supplyPrice=ExpressionWrapper(Round(F('totalPrice') / F('vat')), output_field=IntegerField())) \
+        .annotate(vatPrice=F('totalPrice') - F('supplyPrice'))
+
+
+def create_pdf_sum(orders: QueryManager):
+    sumTotalCount = orders.aggregate(sumTotalCount=Sum('totalCount'))
+    sumSupplyPrice = orders.aggregate(sumSupplyPrice=Sum('supplyPrice'))
+    sumVat = orders.aggregate(sumVat=Sum('vatPrice'))
+    sumTotal = sumSupplyPrice['sumSupplyPrice'] + sumVat['sumVat']
+    return sumTotalCount, sumSupplyPrice, sumVat, sumTotal
 
 
 class GeneratePDF(View):
@@ -25,14 +57,7 @@ class GeneratePDF(View):
         moneyMark = request.GET['moneyMark']
         location = Location.objects.get(code=orderLocationCode)
         egg_location = Location.objects.filter(codeName=location.codeName).filter(type='07').first()
-        orders = Order.objects.filter(ymd=ymd).filter(orderLocationCode=location) \
-            .values('code', 'codeName', 'price', 'specialTag', 'memo') \
-            .annotate(totalCount=Sum('count')) \
-            .annotate(pricePerEa=F('price')) \
-            .annotate(totalPrice=ExpressionWrapper(F('totalCount') * F('price'), output_field=IntegerField())) \
-            .annotate(vat=ExpressionWrapper(F('productCode__vat') * 0.01 + 1, output_field=FloatField())) \
-            .annotate(supplyPrice=ExpressionWrapper(Round(F('totalPrice') / F('vat')), output_field=IntegerField())) \
-            .annotate(vatPrice=F('totalPrice') - F('supplyPrice'))
+        orders = create_pdf_orders(ymd, location)
 
         if egg_location:
             eggs = Egg.objects.filter(ymd=ymd).filter(locationCode=egg_location) \
@@ -47,10 +72,41 @@ class GeneratePDF(View):
                 .annotate(vatPrice=F('totalPrice') - F('supplyPrice'))
             orders = orders.union(eggs)
 
-        sumTotalCount = orders.aggregate(sumTotalCount=Sum('totalCount'))
-        sumSupplyPrice = orders.aggregate(sumSupplyPrice=Sum('supplyPrice'))
-        sumVat = orders.aggregate(sumVat=Sum('vatPrice'))
-        sumTotal = sumSupplyPrice['sumSupplyPrice'] + sumVat['sumVat']
+        sumTotalCount, sumSupplyPrice, sumVat, sumTotal = create_pdf_sum(orders)
+        sumData = {'sumTotalCount': sumTotalCount['sumTotalCount'],
+                   'sumSupplyPrice': sumSupplyPrice['sumSupplyPrice'],
+                   'sumVat': sumVat['sumVat'],
+                   'sumTotal': sumTotal,
+                   'moneyMark': moneyMark}
+        context_dict = {
+            "yyyymmdd": yyyymmdd,
+            "orders": orders,
+            "sumData": sumData,
+            "location": location,
+        }
+        pdf = render_to_pdf('invoice/주문거래명세표.html', context_dict)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = "invoice.pdf"
+            content = "inline; filename=%s" % (filename)
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename=%s" % (filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not found")
+
+
+class GeneratePDFSelected(View):
+    def get(self, request, *args, **kwargs):
+        ymd: str = request.GET['ymd']
+        selectedRows: str = request.GET['selectedRows']
+        orderLocationCode: str = request.GET['orderLocationCode']
+        location = Location.objects.get(code=orderLocationCode)
+        moneyMark: str = request.GET['moneyMark']
+        yyyymmdd = "{}/{}/{}".format(ymd[0:4], ymd[4:6], ymd[6:])
+        orders = create_pdf_selected_orders(selectedRows.split(','))
+        sumTotalCount, sumSupplyPrice, sumVat, sumTotal = create_pdf_sum(orders)
         sumData = {'sumTotalCount': sumTotalCount['sumTotalCount'],
                    'sumSupplyPrice': sumSupplyPrice['sumSupplyPrice'],
                    'sumVat': sumVat['sumVat'],

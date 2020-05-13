@@ -43,7 +43,7 @@
                         <div class="form-check form-check-inline" id="moneyMarkFilter">
                             <input class="form-check-input" type="checkbox" id="moneyMark">
                             <label class="form-check-label" for="moneyMark"><span
-                                    class="badge badge-warning">거래명세표 금액표기</span></label>
+                                    class="badge badge-warning">명세표 금액표기</span></label>
                         </div>
                         <!--필터 끝-->
                     </div>
@@ -123,10 +123,12 @@
                                     </div>
                                     <div class="col">
                                         <input type="button" name="search" id="search" value="Search"
-                                               class="btn btn-info"/>
+                                               class="btn btn-sm btn-info p-2"/>
+                                        <input type="button" name="pdfSelected" id="pdfSelected" value="PDF"
+                                               class="btn btn-sm btn-warning p-2"/>
                                         <input type="button" name="search" id="locationManagerSearch"
-                                               value="담당자검색"
-                                               class="btn btn-success"/>
+                                               value="담당검색"
+                                               class="btn btn-sm btn-success p-2"/>
                                     </div>
                                 </div>
                             </div>
@@ -284,6 +286,6 @@
 
 {% block js %}
 <script src="{% static 'js/baseList.js' %}"></script>
-<script src="{% static 'js/orderList.js' %}?version=4"></script>
+<script src="{% static 'js/orderList.js' %}?version=6"></script>
 {{ form.media.js }}
 {% endblock %}
