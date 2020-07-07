@@ -282,6 +282,7 @@ $(".location").change(function () {
             data: data,
         }).done(function (data) {
             window.PRODUCTINFO = [];
+            data.sort((a, b) => {return ( a.codeName < b.codeName ) ? -1 : ( a.codeName === b.codeName ) ? 0 : 1; })
             product.empty();
             data.forEach(function (element, i) {
                 var option = $("<option value=" + element["code"] + " >" + element["codeName"] + "</option>");
