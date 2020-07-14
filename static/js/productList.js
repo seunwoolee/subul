@@ -392,6 +392,12 @@ $("#productReport").click(function () {
 
 function deleteSelectedRows() {
 
+    const minYmd = Math.min(...table.rows('.selected').data().toArray().map(row => row.list_ymd));
+    if(minYmd < minusFifteen_day){
+        alert('15일 전의 데이터는 일괄 삭제 할 수 없습니다.');
+        return;
+    }
+
     if(confirm('삭제하시겠습니까?')) {
         let codeHash = {'01201': '01201', '01202': '01202', '01203': '01203'}; // RAW TANK 코드
         let selectedRows = table.rows('.selected').data();
