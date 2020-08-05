@@ -11,10 +11,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='order',
-            name='delete_state',
-        ),
         migrations.AlterField(
             model_name='order',
             name='setProduct',
