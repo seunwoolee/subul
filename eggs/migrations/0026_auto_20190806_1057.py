@@ -10,10 +10,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='egg',
-            name='delete_state',
-        ),
         migrations.AlterField(
             model_name='eggorder',
             name='display_state',
