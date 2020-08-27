@@ -10,10 +10,7 @@ function fetch_data(start_date = '', end_date = '') {
 
     table = $('.datatable').DataTable({
         "responsive": true,
-        "columnDefs": [
-            {responsivePriority: 1, targets: 0},
-            {responsivePriority: 2, targets: -1, orderable: false},
-        ],
+        "searching": false,
         "language": {searchPlaceholder: "품명"},
         "processing": true,
         "serverSide": true,

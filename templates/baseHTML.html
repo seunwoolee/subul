@@ -31,6 +31,7 @@
         var EXCOMPANY = false;
         var SUPERUSER = false;
         var isStaff = false;
+        var EXCOMPANYCODE = "";
 
         if ("{{user.is_superuser}}" == "True") {
             SUPERUSER = true;
@@ -38,8 +39,10 @@
 
         if ("{{user.last_name}}" == "업체") {
             EXCOMPANY = true;
-            if("{{user.is_staff}}" === "True"){
-            isStaff = true;
+            EXCOMPANYCODE = "{{user.first_name}}";
+
+            if ("{{user.is_staff}}" === "True") {
+                isStaff = true;
             }
         }
     </script>
@@ -64,9 +67,9 @@
             <a class="nav-link nav-link pr-2" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
                aria-expanded="false">
                 {% if user.is_authenticated %}
-{#                    {% with 'img/employee/'|add:user.username|add:'.jpg' as image_static %}#}
-{#                        <img class="img-avatar" src="{% static  image_static %} " alt=" ">#}
-{#                    {% endwith %}#}
+                    {#                    {% with 'img/employee/'|add:user.username|add:'.jpg' as image_static %}#}
+                    {#                        <img class="img-avatar" src="{% static  image_static %} " alt=" ">#}
+                    {#                    {% endwith %}#}
                     <span>{{ user.username }}</span>
                 {% else %}
                     <span>로그인필요</span>

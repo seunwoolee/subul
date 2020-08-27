@@ -6,15 +6,14 @@ $(function () {
     $('#id_form-0-product').find('option').remove();
     $('input[type=date]').val(end_day);
 
-    var url = '/api/OrderProductUnitPrice/' + '00468'
-    data = '00468';
+    var url = '/api/OrderProductUnitPrice/' + EXCOMPANYCODE
     product = $('.product');
     price = $('.price');
 
     $.ajax({
         url: url,
         type: 'get',
-        data: data
+        data: EXCOMPANYCODE
     }).done(function (data) {
         window.PRODUCTINFO = [];
         product.empty();
