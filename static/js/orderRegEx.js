@@ -1,8 +1,4 @@
 $(function () {
-    if (isStaff && EXCOMPANY) {
-        alert("주문 가능한 시간대가 아닙니다.");
-    }
-
     $('#id_form-0-product').find('option').remove();
     $('input[type=date]').val(end_day);
 
@@ -40,8 +36,7 @@ $(function () {
             PRODUCTINFO.push(temp);
         })
     }).fail(function () {
-        console.log('fail');
-        alert('수정 에러 전산실로 문의바랍니다.');
+        return alert("주문 가능한 시간대가 아닙니다.");
     });
 
 
@@ -211,17 +206,11 @@ $(".count").focusout(function () {
 $("#submitButton").click(function (e) {
     e.preventDefault();
 
-    if (isStaff && EXCOMPANY) {
-        alert('주문 가능한 시간이 아닙니다.');
-        return false;
-    }
-
     if ($('form')[0].checkValidity()) {
         let dayOfWeek = getDayOfWeek($('input[type=date]').val());
         if (confirm(`주문일자가 ${$('input[type=date]').val()} ${dayOfWeek}요일이 맞습니까?`)) {
             ymd = set_yyyymmdd($('input[type=date]').val());
             $("input[type=hidden][id*='ymd']").each(function (i, element) {
-                debugger;
                 $(element).val(ymd);
             });
             $("input:disabled").prop('disabled', false);

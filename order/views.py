@@ -206,6 +206,9 @@ class OrderReg(LogginMixin, LoginRequiredMixin, View):
 class OrderRegEx(LogginMixin, LoginRequiredMixin, View):
 
     def post(self, request):
+        if self.request.user.is_staff:
+            return redirect('orderRegEx')
+
         formset = OrderFormExSet(request.POST)
         self.log(
             user=request.user,

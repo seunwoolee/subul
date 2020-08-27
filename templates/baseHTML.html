@@ -30,7 +30,6 @@
     <script type="text/javascript">
         var EXCOMPANY = false;
         var SUPERUSER = false;
-        var isStaff = false;
         var EXCOMPANYCODE = "";
 
         if ("{{user.is_superuser}}" == "True") {
@@ -40,10 +39,6 @@
         if ("{{user.last_name}}" == "업체") {
             EXCOMPANY = true;
             EXCOMPANYCODE = "{{user.first_name}}";
-
-            if ("{{user.is_staff}}" === "True") {
-                isStaff = true;
-            }
         }
     </script>
 </head>

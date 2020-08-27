@@ -282,6 +282,9 @@ class OrderProductUnitPrice(APIView):
             raise Http404
 
     def get(self, request, code, format=None):
+        if self.request.user.is_staff:
+            return Response(status=404)
+
         productUnitPrice = self.get_object(code)
         serializer = ProductUnitPriceSerializer(productUnitPrice, many=True)
         return Response(serializer.data)
