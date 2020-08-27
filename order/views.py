@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.views import View
 from model_utils.managers import QueryManager
@@ -5,7 +6,7 @@ from model_utils.managers import QueryManager
 from core.models import Location
 from eggs.models import Egg
 from eventlog.models import LogginMixin
-from order.forms import OrderFormSet, OrderForm
+from order.forms import OrderFormSet, OrderForm, OrderFormExSet
 from order.models import Order, ABS
 from product.models import ProductCode, SetProductCode
 from django.db.models import Sum, F, ExpressionWrapper, FloatField, IntegerField, Func, Value, CharField, Q
@@ -200,3 +201,63 @@ class OrderReg(LogginMixin, LoginRequiredMixin, View):
     def get(self, request):
         orderForm = OrderFormSet(request.GET or None)
         return render(request, 'order/orderReg.html', {'orderForm': orderForm})
+
+
+class OrderRegEx(LogginMixin, LoginRequiredMixin, View):
+
+    def post(self, request):
+        formset = OrderFormExSet(request.POST)
+        self.log(
+            user=request.user,
+            action="외부주문등록",
+            obj=Order.objects.first(),
+            extra=request.POST
+        )
+
+        if formset.is_valid():
+            for form in formset:
+                ymd = form.cleaned_data.get('ymd')
+                code = form.cleaned_data.get('product')
+                productCode = ProductCode.objects.get(code=code)
+                codeName = productCode.codeName
+                count = form.cleaned_data.get('count')
+                amount = form.cleaned_data.get('amount')
+                amount_kg = form.cleaned_data.get('amount_kg')
+                memo = form.cleaned_data.get('memo')
+                price = form.cleaned_data.get('price')
+                user: User = request.user
+
+                location = Location.objects.get(code=user.first_name)
+
+                Order.objects.create(
+                    ymd=ymd,
+                    code=code,
+                    codeName=codeName,
+                    amount=amount,
+                    count=count,
+                    amount_kg=amount_kg,
+                    price=price,
+                    memo=memo,
+                    orderLocationCode=location,
+                    orderLocationName=location.codeName,
+                    productCode=productCode,
+                ).save()
+
+        else:
+            self.log(
+                user=request.user,
+                action="주문등록에러",
+                obj=Order.objects.first(),
+                extra=formset.errors[0]
+            )
+        return redirect('orderRegEx')
+
+    def get(self, request):
+        orderForm = OrderFormExSet(request.GET or None)
+        return render(request, 'order/orderRegEx.html', {'orderForm': orderForm})
+
+
+class OrderListEx(LoginRequiredMixin, View):
+
+    def get(self, request):
+        return render(request, 'order/orderListEx.html')

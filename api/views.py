@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db.models import F, Sum, Q, Max, IntegerField, Value, Count
 from django.http import Http404, HttpResponse
 from rest_framework import generics, status
@@ -9,7 +10,7 @@ from django.forms.models import model_to_dict
 from api.autoPackingSerializers import AutoPackingSerializer
 from api.eggSerializers import EggSerializer, EggOrderSerializer
 from api.locationSerializers import LocationSerializer
-from api.orderSerializers import OrderSerializer
+from api.orderSerializers import OrderSerializer, OrderDatatableSerializer
 from api.packingSerializers import PackingSerializer
 from api.productCodeSerializers import ProductCodeDatatableSerializer
 from api.productOEMSerializers import ProductOEMSerializer
@@ -123,6 +124,25 @@ class OrdersAPIView(APIView):
 
         except Exception as e:
             return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+
+
+class OrderExAPIView(generics.ListAPIView):
+
+    serializer_class = OrderDatatableSerializer
+
+    def get_queryset(self):
+        start_date = self.request.query_params["start_date"]
+        end_date = self.request.query_params["end_date"]
+        user: User = self.request.user
+        orderLocationCode = Location.objects.filter(code=user.first_name).first()
+
+        queryset = Order.objects.filter(Q(ymd__gte=start_date),
+                                        Q(ymd__lte=end_date),
+                                        Q(orderLocationCode=orderLocationCode))\
+            .annotate(totalPrice=Sum(F('count') * F('price'), output_field=IntegerField())) \
+            .annotate(setProductCode=F('setProduct__code'))
+
+        return queryset
 
 
 class ProductUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
@@ -984,9 +1004,9 @@ class OrderPriceMatch(generics.ListAPIView):
     serializer_class = ProductUnitPriceListSerializer
 
     def get_queryset(self):
-        productCode = self.request.query_params ['productCode']
-        locationCode = self.request.query_params ['locationCode']
-        return ProductUnitPrice.objects.filter(Q(productCode__code=productCode),Q(locationCode__code=locationCode))
+        productCode = self.request.query_params['productCode']
+        locationCode = self.request.query_params['locationCode']
+        return ProductUnitPrice.objects.filter(Q(productCode__code=productCode), Q(locationCode__code=locationCode))
 
 
 class CarDatatableList(generics.ListAPIView):
@@ -1043,8 +1063,8 @@ class LocationDatatableList(generics.ListAPIView):
 
     def get_queryset(self):
         ymd = self.request.query_params['ymd']
-        return OrderList.objects.values(orderLocationCode=F('location'), orderLocationName=F('locationCodeName'))\
-            .annotate(total_count=Count('id')).annotate(is_unloaded=Count('id', filter=Q(pallet__isnull=True)))\
+        return OrderList.objects.values(orderLocationCode=F('location'), orderLocationName=F('locationCodeName')) \
+            .annotate(total_count=Count('id')).annotate(is_unloaded=Count('id', filter=Q(pallet__isnull=True))) \
             .filter(ymd=ymd).order_by('orderLocationName')
 
     def list(self, request, *args, **kwargs):
