@@ -58,4 +58,22 @@ class OrderForm(forms.Form):
                                                     .order_by('first_name'), required=False)
 
 
+class OrderFormEx(forms.Form):
+    product = forms.ChoiceField(choices=list(ProductCode.objects.values_list('code', 'codeName').filter(delete_state='N')))
+    amount = forms.DecimalField(decimal_places=2, max_digits=19, min_value=0)
+    amount_kg = forms.DecimalField(decimal_places=2, max_digits=19, min_value=0, widget=forms.HiddenInput())
+    count = forms.IntegerField(min_value=0)
+    price = forms.DecimalField(decimal_places=1, max_digits=19, min_value=0)
+    memo = forms.CharField(
+        label='',
+        widget=forms.Textarea(attrs={'rows': 2}), required=False
+    )
+    ymd = forms.CharField(max_length=8, widget=forms.HiddenInput())
+
+    def __init__(self, *args, **kwargs):
+        super(OrderFormEx, self).__init__(*args, **kwargs)
+        self.fields['product'] = forms.ChoiceField(choices=ProductCode.objects.values_list('code', 'codeName').filter(delete_state='N'))
+
+
 OrderFormSet = formset_factory(OrderForm)
+OrderFormExSet = formset_factory(OrderFormEx)

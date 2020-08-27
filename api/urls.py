@@ -7,7 +7,7 @@ from .views import ProductsAPIView, ProductUpdate, ProductEggUpdate, OrderProduc
     LocationsAPIView, LocationUpdate, AutoPackingAPIView, AutoPackingUpdate, OrderLocation, EggOrderListAPIView, \
     EggOrderUpdate, ProductOrderListAPIView, ProductOrderUpdate, ProductOrderPackingUpdate, ProductCodeByPk, \
     ProductCodeDatatableList, ProductCodeUpdate, ProductOrderPackingStockCreate, DeleteSelectedRows, OrderPriceMatch, \
-    CarDatatableList, LocationDatatableList, ProductOrderReleaseStock, CarCodeUpdate
+    CarDatatableList, LocationDatatableList, ProductOrderReleaseStock, CarCodeUpdate, OrderExAPIView
 
 urlpatterns = [
     # 생산쪽 API
@@ -28,6 +28,7 @@ urlpatterns = [
     path('productOEM/<int:pk>', ProductOEMUpdate.as_view()),
     # 주문쪽 API
     path('order/', OrdersAPIView.as_view()),
+    path('orderEx/', OrderExAPIView.as_view()),
     path('order/<int:pk>', OrderUpdate.as_view()),
     path('orderLocation/', OrderLocation.as_view()),
     path('OrderProductUnitPrice/<slug:code>', OrderProductUnitPrice.as_view()),
