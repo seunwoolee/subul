@@ -35,6 +35,8 @@ $('.datatable tbody, #eggDatatable tbody').on('click', 'button', function () {
         deleteButtonClick(data);
     } else if (class_name === 'btn btn-warning btn-sm PDF') {
         pdfButtonClick(data);
+    } else if (class_name === 'btn btn-default btn-sm PDF') {
+        pdfMoveButtonClick(data);
     } else if (class_name === 'btn btn-success btn-sm RECALL') {
         recallButtonClick(data);
     }

@@ -179,7 +179,7 @@ function setStepOneDataTable(args)
                 if (superUserOrfutureData(row.ymd)) {
                     if(row.locationType === '원란판매'){return '';}
 
-                    if(data === '이동'){return '';}
+                    if(data === '이동'){return setDataTableActionButtonMovePdf();}
                     else if(data === '판매'){return setDataTableActionButtonWithPdfRecall();}
                     else{return setDataTableActionButtonWithoutEdit();}
                 }
@@ -188,7 +188,7 @@ function setStepOneDataTable(args)
                     if (today <= getMiddleDay(today)) {
                         if(row.locationType === '원란판매'){return '';}
 
-                        if(data === '이동'){return '';}
+                        if(data === '이동'){return setDataTableActionButtonMovePdf();}
                         else if(data === '판매'){return setDataTableActionButtonWithPdfRecall();}
                         else{return setDataTableActionButtonWithoutEdit();}
                     }
@@ -197,7 +197,7 @@ function setStepOneDataTable(args)
                 if (nextYearCheck(row.ymd)) {
                     if(row.locationType === '원란판매'){return '';}
 
-                    if(data === '이동'){return '';}
+                    if(data === '이동'){return setDataTableActionButtonMovePdf();}
                     else if(data === '판매'){return setDataTableActionButtonWithPdfRecall();}
                     else{return setDataTableActionButtonWithoutEdit();}
                 }
@@ -804,6 +804,12 @@ function pdfButtonClick(data)
     let releaseLocationCode = data['releaseLocationCodes'];
     let moneyMark = $("#moneyMark").is(":checked");
     window.open('/release/pdf?ymd=' + ymd + '&releaseLocationCode=' + releaseLocationCode + "&moneyMark=" + moneyMark, '_blank');
+}
+
+function pdfMoveButtonClick(data) {
+    let ymd = data['ymd'];
+    let releaseLocationCode = data['releaseLocationCodes'];
+    window.open('/release/movePdf?ymd=' + ymd + '&releaseLocationCode=' + releaseLocationCode, '_blank');
 }
 
 var AMOUNT_KG = {};

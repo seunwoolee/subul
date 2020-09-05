@@ -109,6 +109,10 @@ function setDataTableActionButtonOnlyPdf() {
     return '<button class="btn btn-warning btn-sm PDF" href="#"><i class="fas fa-file-pdf"></i></button>';
 }
 
+function setDataTableActionButtonMovePdf() {
+    return '<button class="btn btn-default btn-sm PDF" href="#"><i class="fas fa-file-pdf"></i></button>';
+}
+
 function setDataTableActionButton() {
     return '<button class="btn btn-danger btn-sm REMOVE" href="#"><i class="far fa-trash-alt"></i></button>' +
         '<button class="btn btn-info btn-sm MODIFY" href="#"><i class="fa fa-edit"></i></button>';

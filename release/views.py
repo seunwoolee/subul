@@ -62,6 +62,47 @@ class GeneratePDF(View):
         return HttpResponse("Not found")
 
 
+class MovePdf(View):
+
+    def get(self, request, *args, **kwargs):
+        ymd = request.GET['ymd']
+        yyyymmdd = "{}/{}/{}".format(ymd[0:4], ymd[4:6], ymd[6:])
+        releaseLocationCode = request.GET['releaseLocationCode']
+        location = Location.objects.get(code=releaseLocationCode)
+        releases = Release.objects.filter(ymd=ymd).filter(releaseLocationCode=location) \
+            .filter(type__in=['이동']) \
+            .values('code', 'codeName', 'price', 'specialTag', 'releaseVat') \
+            .annotate(totalCount=Sum('count')) \
+            .annotate(totalPrice=F('price')) \
+            .annotate(supplyPrice=F('totalPrice') - F('releaseVat'))
+        sumTotalCount = releases.aggregate(sumTotalCount=Sum('totalCount'))
+        sumSupplyPrice = releases.aggregate(sumSupplyPrice=Sum('supplyPrice'))
+        sumVat = releases.aggregate(sumVat=Sum('releaseVat'))
+        sumTotal = sumSupplyPrice['sumSupplyPrice'] + sumVat['sumVat']
+        sumData = {'sumTotalCount': sumTotalCount['sumTotalCount'],
+                   'sumSupplyPrice': sumSupplyPrice['sumSupplyPrice'],
+                   'sumVat': sumVat['sumVat'],
+                   'sumTotal': sumTotal,
+                   'moneyMark': False}
+        context_dict = {
+            "yyyymmdd": yyyymmdd,
+            "orders": releases,
+            "sumData": sumData,
+            "location": location,
+        }
+        pdf = render_to_pdf('invoice/출고거래명세표.html', context_dict)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = "invoice.pdf"
+            content = "inline; filename=%s" % (filename)
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename=%s" % (filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not found")
+
+
 class ReleaseList(LoginRequiredMixin, View):
     def get(self, request):
         form = ReleaseForm(auto_id=False)
