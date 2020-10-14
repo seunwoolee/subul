@@ -2,17 +2,20 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.views import View
 from model_utils.managers import QueryManager
+from openpyxl.worksheet import worksheet
+from openpyxl.worksheet.worksheet import Worksheet
 
 from core.models import Location
 from eggs.models import Egg
 from eventlog.models import LogginMixin
 from order.forms import OrderFormSet, OrderForm, OrderFormExSet
 from order.models import Order, ABS
-from product.models import ProductCode, SetProductCode
+from product.models import ProductCode, SetProductCode, ProductUnitPrice
 from django.db.models import Sum, F, ExpressionWrapper, FloatField, IntegerField, Func, Value, CharField, Q
 from core.utils import render_to_pdf
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from openpyxl import load_workbook, Workbook
 
 
 class Round(Func):
@@ -66,7 +69,8 @@ class GeneratePDF(View):
                 .annotate(specialTag=Value('', CharField())) \
                 .annotate(memo=F('memo')) \
                 .annotate(totalCount=ABS(Sum('count'))) \
-                .annotate(pricePerEa=ExpressionWrapper(Round(F('price') / F('totalCount')), output_field=IntegerField())) \
+                .annotate(
+                pricePerEa=ExpressionWrapper(Round(F('price') / F('totalCount')), output_field=IntegerField())) \
                 .annotate(totalPrice=F('price')) \
                 .annotate(vat=Value(1, IntegerField())) \
                 .annotate(supplyPrice=ExpressionWrapper(Round(F('totalPrice') / F('vat')), output_field=IntegerField())) \
@@ -264,3 +268,73 @@ class OrderListEx(LoginRequiredMixin, View):
 
     def get(self, request):
         return render(request, 'order/orderListEx.html')
+
+
+class ExcelUpload(LoginRequiredMixin, View):
+
+    def post(self, request):
+        excel_file = request.FILES.get('excelFile')
+        wb: Workbook = load_workbook(excel_file, data_only=True)
+        sheet1: Worksheet = wb['Sheet1']
+        invalid_locations = []
+        invalid_products = []
+
+        for i, row in enumerate(sheet1.rows):
+            if i > 1:
+                ymd: str = row[0].value.strftime('%Y%m%d')
+                locationName: str = row[1].value
+                productName: str = row[2].value
+                count: int = row[3].value
+                memo: str = str(row[4].value)
+
+                try:
+                    location: Location = Location.objects.get(Q(codeName__contains=locationName.strip()), Q(type="05"))
+                except Location.MultipleObjectsReturned as e:
+                    location: Location = Location.objects.get(Q(codeName=locationName.strip()), Q(type="05"))
+                except Location.DoesNotExist as e:
+                    invalid_locations.append(i + 1)
+
+                try:
+                    productCode: ProductCode = ProductCode.objects.get(Q(codeName__contains=productName.strip()))
+                except ProductCode.MultipleObjectsReturned as e:
+                    productCode: ProductCode = ProductCode.objects.get(Q(codeName=productName.strip()))
+                except ProductCode.DoesNotExist as e:
+                    invalid_products.append(i + 1)
+
+        if len(invalid_locations) > 0 or len(invalid_products) > 0:
+            return JsonResponse([invalid_locations, invalid_products], safe=False, status=400)
+
+        for i, row in enumerate(sheet1.rows):
+            if i > 1:
+                ymd: str = row[0].value.strftime('%Y%m%d')
+                locationName: str = row[1].value
+                productName: str = row[2].value
+                count: int = row[3].value
+                memo: str = str(row[4].value)
+
+                try:
+                    location: Location = Location.objects.get(Q(codeName__contains=locationName.strip()), Q(type="05"))
+                except Location.MultipleObjectsReturned as e:
+                    location: Location = Location.objects.get(Q(codeName=locationName.strip()), Q(type="05"))
+
+                try:
+                    productCode: ProductCode = ProductCode.objects.get(Q(codeName__contains=productName.strip()))
+                except ProductCode.MultipleObjectsReturned as e:
+                    productCode: ProductCode = ProductCode.objects.get(Q(codeName=productName.strip()))
+
+                productUnitPrice = ProductUnitPrice.objects.get(Q(locationCode=location), Q(productCode=productCode))
+                Order.objects.create(
+                    ymd=ymd,
+                    code=productCode.code,
+                    codeName=productCode.codeName,
+                    amount=productCode.amount_kg * count,
+                    count=count,
+                    amount_kg=productCode.amount_kg,
+                    price=productUnitPrice.price,
+                    memo=memo,
+                    orderLocationCode=location,
+                    orderLocationName=location.codeName,
+                    productCode=productCode,
+                ).save()
+
+        return HttpResponse(status=200)

@@ -5,6 +5,7 @@ $(function () {
 });
 
 SEQ = 2;
+
 function cloneMore(selector, prefix) {
     $(selector).find('.location').select2("destroy");
     let previousLocationValue = $(selector).find('.location').val();
@@ -146,7 +147,7 @@ function setPackageElementInputInfo(parentTR, $this, data, total) {
             $this.attr({'name': name, 'id': id}).val(data[i]["count"] * COUNT);
         } else if (name.indexOf("price") >= 0) {
             let price = data[i]["price"];
-            if(OLAP_SHOPPINGMALL === LOCATION && $("#employeePrice input:checkbox").is(":checked")) {
+            if (OLAP_SHOPPINGMALL === LOCATION && $("#employeePrice input:checkbox").is(":checked")) {
                 price = data[i]["price"] * 0.7;
             }
             $this.attr({'name': name, 'id': id}).val(price).removeAttr('readonly');
@@ -282,7 +283,9 @@ $(".location").change(function () {
             data: data,
         }).done(function (data) {
             window.PRODUCTINFO = [];
-            data.sort((a, b) => {return ( a.codeName < b.codeName ) ? -1 : ( a.codeName === b.codeName ) ? 0 : 1; })
+            data.sort((a, b) => {
+                return (a.codeName < b.codeName) ? -1 : (a.codeName === b.codeName) ? 0 : 1;
+            })
             product.empty();
             data.forEach(function (element, i) {
                 var option = $("<option value=" + element["code"] + " >" + element["codeName"] + "</option>");
@@ -394,7 +397,7 @@ $(".count").focusout(function () {
 $("#submitButton").click(function (e) {
     e.preventDefault();
 
-    if($('.add-form-set').length !== 0){
+    if ($('.add-form-set').length !== 0) {
         alert('세트상품을 확인해주세요 검정색 버튼 클릭 필요!');
         return false;
     }
@@ -414,6 +417,41 @@ $("#submitButton").click(function (e) {
         }
     }
 
+});
+
+$('.custom-file-input').on('change', function () {
+    const fileName = $(this).val().split("\\").pop();
+    $(this).siblings('.custom-file-label').html(fileName);
+});
+
+$('#excelSaveButton').click(function () {
+    const url = 'order/excelUpload';
+    const files = $('#excelUploadButton').prop('files');
+    const formData = new FormData();
+    formData.append("excelFile", files[0]);
+    $.ajax({
+        url: url,
+        type: 'post',
+        data: formData,
+        contentType: false,
+        processData: false,
+    }).done(function () {
+        alert('성공');
+    }).fail(function (error) {
+        const invalidLocations =  error.responseJSON[0];
+        const invalidProducts = error.responseJSON[1];
+        let errorMessage = '';
+
+        for (let i = 0; i < invalidLocations.length; i++) {
+            errorMessage += `[행 : ${invalidLocations[i]}] 거래처 이름을 확인하세요 \n`;
+        }
+
+        for (let i = 0; i < invalidProducts.length; i++) {
+            errorMessage += `[행 : ${invalidProducts[i]}] 제품 이름을 확인하세요 \n`;
+        }
+
+        alert(errorMessage);
+    })
 });
 
 function makeSetStyle(parentTR) {
@@ -475,3 +513,4 @@ function calculatePriceCount() {
     $('#totalCount').html(total_count.toLocaleString());
     $('#totalPrice').html(total_price.toLocaleString());
 }
+
