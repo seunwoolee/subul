@@ -535,8 +535,11 @@ class EggsUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
 
         if instance.type == '입고':
             egg_releases = Egg.objects \
-                .filter(Q(code=instance.code), Q(in_ymd=instance.in_ymd), Q(in_locationCode=instance.in_locationCode)) \
-                .exclude(id=instance.id)
+                .filter(Q(code=instance.code),
+                        Q(in_ymd=instance.in_ymd),
+                        ~Q(type='입고'),
+                        Q(in_locationCode=instance.in_locationCode)) \
+                .exclude(Q(id=instance.id))
 
             if egg_releases:
                 ids = [str(egg_release.id) for egg_release in egg_releases]
