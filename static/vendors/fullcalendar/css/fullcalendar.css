@@ -86,12 +86,12 @@ NOTE: use percentage font sizes or else old IE chokes
 }
 
 .fc-icon-left-single-arrow:after {
-  content: "\f104";
+  content: "<";
   font-weight: bold;
 }
 
 .fc-icon-right-single-arrow:after {
-  content: "\f105";
+  content: ">";
   font-weight: bold;
 }
 

@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db.models import F, Sum, Q, Max, IntegerField, Value, Count
 from django.http import Http404, HttpResponse
 from rest_framework import generics, status
+from rest_framework.decorators import api_view
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
@@ -1076,3 +1078,10 @@ class LocationDatatableList(generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         return Response(queryset.values('orderLocationCode', 'orderLocationName', 'total_count', 'is_unloaded'))
+
+
+@api_view(['POST'])
+def createAudit(request: Request):
+    ymd: str = request.data.get('ymd')
+    print(ymd)
+

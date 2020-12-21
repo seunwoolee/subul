@@ -20,7 +20,7 @@ class LocationReg(LogginMixin, LoginRequiredMixin, View):
         formset = LocationForm(request.POST)
         if formset.is_valid():
             code = str(int(Location.objects.order_by('-code').first().code) + 1)
-            code = '00'+code if len(code) == 3 else '0'+code
+            code = '00' + code if len(code) == 3 else '0' + code
             form = formset.save(commit=False)
             form.code = code
             form.save()
@@ -36,3 +36,9 @@ class LocationReg(LogginMixin, LoginRequiredMixin, View):
     def get(self, request):
         form = LocationForm(request.GET or None)
         return render(request, 'code/locationReg.html', {'form': form})
+
+
+class Audit(LoginRequiredMixin, View):
+
+    def get(self, request):
+        return render(request, 'code/audit.html')
