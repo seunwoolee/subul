@@ -176,3 +176,7 @@ class Location(Code):
             'total': total,
             'draw': draw
         }
+
+
+class Audit(models.Model):
+    ymd = models.CharField(max_length=8)
