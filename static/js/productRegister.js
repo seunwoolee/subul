@@ -1,4 +1,5 @@
 SEQ = 2;
+
 function cloneMore(selector, prefix) {
 
     $(selector).find('select').select2("destroy");
@@ -6,10 +7,10 @@ function cloneMore(selector, prefix) {
     var no = newElement.find('.no');
 
     var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
-    newElement.find(':input').each(function() {
+    newElement.find(':input').each(function () {
         var name = $(this).attr('name');
-        if(name) {
-            name = name.replace('-' + (total-1) + '-', '-' + total + '-');
+        if (name) {
+            name = name.replace('-' + (total - 1) + '-', '-' + total + '-');
             var id = 'id_' + name;
             $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
         }
@@ -21,9 +22,9 @@ function cloneMore(selector, prefix) {
     $(selector).after(newElement);
     var conditionRow = $('.forms-row:not(:last)');
     conditionRow.find('.btn.add-form-row')
-    .removeClass('btn-success').addClass('btn-danger')
-    .removeClass('add-form-row').addClass('remove-form-row')
-    .html('-');
+        .removeClass('btn-success').addClass('btn-danger')
+        .removeClass('add-form-row').addClass('remove-form-row')
+        .html('-');
 
     $('.django-select2').djangoSelect2();
     return false;
@@ -39,12 +40,12 @@ function updateElementIndex(el, prefix, ndx) {
 
 function deleteForm(prefix, btn) {
     var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-    if (total > 1){
+    if (total > 1) {
         btn.closest('.forms-row').remove();
         var forms = $('.forms-row');
         $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
-        for (var i=0; i<forms.length; i++) {
-            $(forms.get(i)).find(':input').each(function() {
+        for (var i = 0; i < forms.length; i++) {
+            $(forms.get(i)).find(':input').each(function () {
                 updateElementIndex(this, prefix, i);
             });
         }
@@ -53,33 +54,32 @@ function deleteForm(prefix, btn) {
 }
 
 AMOUNT_KG = {};
-$( ".product" ).change(function() {
+$(".product").change(function () {
     parentTR = $(this).parents('tr');
     data = parentTR.find('.product').val();
-    url = '/api/productCodes/'+data;
+    url = '/api/productCodes/' + data;
 
-    if(data)
-    {
+    if (data) {
         $.ajax({
-        url: url,
-        type: 'get',
-        data: data,
-        }).done(function(data) {
+            url: url,
+            type: 'get',
+            data: data,
+        }).done(function (data) {
 
-            window.AMOUNT_KG = {"parentTR" : parentTR, "AMOUNT_KG" : data["amount_kg"]};
+            window.AMOUNT_KG = {"parentTR": parentTR, "AMOUNT_KG": data["amount_kg"]};
 
-        }).fail(function() {
+        }).fail(function () {
             alert('수정 에러 전산실로 문의바랍니다.');
         });
     }
 });
 
-$(document).on('click', '.add-form-row', function(e){
+$(document).on('click', '.add-form-row', function (e) {
     e.preventDefault();
     let parentTR = $(this).parents('tr');
     let count = intVal(parentTR.find('.count').val());
 
-    if(Number.isInteger(count) && count){
+    if (Number.isInteger(count) && count) {
         cloneMore('.forms-row:last', 'form');
         setReadOnly($(this).parents('tr'));
     } else {
@@ -88,7 +88,7 @@ $(document).on('click', '.add-form-row', function(e){
     return false;
 });
 
-$(document).on('click', '.remove-form-row', function(e){
+$(document).on('click', '.remove-form-row', function (e) {
     e.preventDefault();
     deleteForm('form', $(this));
     return false;
@@ -98,61 +98,65 @@ $('.switch-slider').bind('click', myHandlerFunction);
 var first = true;
 
 function myHandlerFunction(e) {
-    if(first){
+    if (first) {
         $(this).parents('.form-row').find('input[type=number]').attr("readonly", true).val(0);
-    }else{
+    } else {
         $(this).parents('.form-row').find('input[type=number]').attr("readonly", false).val("");
     }
     first = !first;
 }
 
-$(document).on('click', '#submitButton', function(e){
+$(document).on('click', '#submitButton', function (e) {
     e.preventDefault();
-    if ($('form')[0].checkValidity()) {
-        ymd = set_yyyymmdd($('input[name=fakeYmd]').val());
-        $('input[name=ymd]').val(ymd);
-        $("input:disabled").prop('disabled', false);
-        $('.django-select2').prop("disabled", false);
-        $("form").submit();
-    } else {
-        alert('필요한 부분을 모두 입력해주세요.');
-    }
+    ymd = set_yyyymmdd($('input[name=fakeYmd]').val());
+
+    checkAudit(ymd)
+        .then(r => {
+            if ($('form')[0].checkValidity()) {
+                $('input[name=ymd]').val(ymd);
+                $("input:disabled").prop('disabled', false);
+                $('.django-select2').prop("disabled", false);
+                $("form").submit();
+            } else {
+                alert('필요한 부분을 모두 입력해주세요.');
+            }
+        })
+        .catch(err => {
+            alert(auditMessage);
+        })
 });
 
-$(document).on('click', '#changeButton', function(e){
+$(document).on('click', '#changeButton', function (e) {
     e.preventDefault();
     ymd = set_yyyymmdd($('input[name=fakeYmd]').val());
     $('input[name=ymd]').val(ymd);
     $this = $("#mainForm input[type!=date]"); // form
     let data = $this.serialize();
-    let url = '/api/productMaster/'+ymd;
+    let url = '/api/productMaster/' + ymd;
 
-    if($this.eq(1).val() > 0 && $this.eq(2).val() && $this.eq(3).val() && $this.eq(4).val())
-    {
+    if ($this.eq(1).val() > 0 && $this.eq(2).val() && $this.eq(3).val() && $this.eq(4).val()) {
         $.ajax({
-        url: url,
-        type: 'patch',
-        data: data,
-        }).done(function(data) {
+            url: url,
+            type: 'patch',
+            data: data,
+        }).done(function (data) {
             alert('로스량 변경 완료.');
-        }).fail(function() {
+        }).fail(function () {
             alert('해당일자에 등록된 생산이 없습니다. 생산을 등록해주세요');
         });
-    }
-    else
-    {
+    } else {
         alert("로스량을 모두 0보다 크게 입력해주세요.");
     }
 });
 
-$(".amount").focusout(function() {
-    if(AMOUNT_KG['parentTR'][0] == parentTR[0]) {
+$(".amount").focusout(function () {
+    if (AMOUNT_KG['parentTR'][0] == parentTR[0]) {
         setAutoCountValue($(this));
     }
 });
 
-$(".count").focusout(function() {
-    if(AMOUNT_KG['parentTR'][0] == parentTR[0]) {
+$(".count").focusout(function () {
+    if (AMOUNT_KG['parentTR'][0] == parentTR[0]) {
         setAutoAmountValue($(this));
     }
 });

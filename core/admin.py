@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Location
+from .models import Location, Audit
 from django.core.paginator import Paginator
 from django.utils.functional import cached_property
 
@@ -21,4 +21,5 @@ class LocationAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Location, LocationAdmin)
+admin.site.register(Audit)
 # Register your models here.

@@ -263,7 +263,7 @@ function setActionButton(data, yyyymmdd) {
         }
     }
 
-    if(parseInt(today_yyyymm) - parseInt(data_yyyymm) === NEXTYEARDIFF ){
+    if (parseInt(today_yyyymm) - parseInt(data_yyyymm) === NEXTYEARDIFF) {
         if (data > 0) {
             return setDataTableActionButtonWithoutEdit();
         } else {
@@ -286,3 +286,13 @@ function nextYearCheck(yyyymmdd) {
     const NEXTYEARDIFF = 89;
     return NEXTYEARDIFF === parseInt(getYearMonth(today)) - parseInt(getYearMonth(yyyymmdd))
 }
+
+async function checkAudit(ymd) {
+    return $.ajax({
+        url: '/api/checkAudit/',
+        type: 'get',
+        data: {'ymd': ymd},
+    });
+}
+
+var auditMessage = '재무팀 월 마감 이전 데이터를 생성, 수정, 삭제 할 수 없습니다.';

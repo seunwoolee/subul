@@ -5,7 +5,7 @@ from django.db.models import Sum, F, Case, When, Value, CharField, Func, Decimal
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic.base import View
-from core.models import Location
+from core.models import Location, Audit
 from eggs.models import Egg
 from eventlog.models import LogginMixin
 from order.models import ABS, Order

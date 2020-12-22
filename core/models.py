@@ -180,3 +180,8 @@ class Location(Code):
 
 class Audit(models.Model):
     ymd = models.CharField(max_length=8)
+
+    @staticmethod
+    def checkAudit(ymd: str):
+        audit: Audit = Audit.objects.last()
+        return int(ymd) < int(audit.ymd)

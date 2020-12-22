@@ -14,12 +14,12 @@ from api.eggSerializers import EggSerializer, EggOrderSerializer
 from api.locationSerializers import LocationSerializer
 from api.orderSerializers import OrderSerializer, OrderDatatableSerializer
 from api.packingSerializers import PackingSerializer
-from api.productCodeSerializers import ProductCodeDatatableSerializer
+from api.productCodeSerializers import ProductCodeDatatableSerializer, AuditSerializer
 from api.productOEMSerializers import ProductOEMSerializer
 from api.productOrderSerializers import ProductOrderSerializer, ProductOrderPackingSerializer
 from api.productUnitPriceSerializers import ProductUnitPriceListSerializer, SetProductMatchListSerializer
 from api.releaseSerializers import ReleaseSerializer, CarDatatableSerializer, LocationDatatableSerializer
-from core.models import Location
+from core.models import Location, Audit
 from eggs.models import Egg, EggOrder
 from eventlog.models import LogginMixin
 from order.models import Order
@@ -129,7 +129,6 @@ class OrdersAPIView(APIView):
 
 
 class OrderExAPIView(generics.ListAPIView):
-
     serializer_class = OrderDatatableSerializer
 
     def get_queryset(self):
@@ -140,7 +139,7 @@ class OrderExAPIView(generics.ListAPIView):
 
         queryset = Order.objects.filter(Q(ymd__gte=start_date),
                                         Q(ymd__lte=end_date),
-                                        Q(orderLocationCode=orderLocationCode))\
+                                        Q(orderLocationCode=orderLocationCode)) \
             .annotate(totalPrice=Sum(F('count') * F('price'), output_field=IntegerField())) \
             .annotate(setProductCode=F('setProduct__code'))
 
@@ -1081,7 +1080,31 @@ class LocationDatatableList(generics.ListAPIView):
 
 
 @api_view(['POST'])
-def createAudit(request: Request):
+def create_remove_audit(request: Request):
     ymd: str = request.data.get('ymd')
-    print(ymd)
+    audit = Audit.objects.filter(ymd=ymd).first()
 
+    if audit:
+        audit.delete()
+        return Response(status=200)
+
+    Audit.objects.create(ymd=ymd).save()
+    return Response(status=201)
+
+
+@api_view(['GET'])
+def get_audit(request: Request):
+    audits = Audit.objects.all()
+    serializer = AuditSerializer(audits, many=True)
+    return Response(data=serializer.data, status=200)
+
+
+@api_view(['GET'])
+def check_audit(request: Request):
+    ymd = request.query_params.get('ymd', '00000000')
+    assert len(ymd) == 8, 'ymd 확인'
+
+    if Audit.checkAudit(ymd):
+        return Response(status=412)
+
+    return Response(status=200)
