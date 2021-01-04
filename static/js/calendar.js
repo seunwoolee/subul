@@ -25,10 +25,10 @@ function getAudit() {
 
 function createFullCalendar(events) {
     myFullCalendar = $('#calendar').fullCalendar({
-        header: {
-            left: 'prev,next today',
-            right: ''
-        },
+        // header: {
+        //     left: 'prev,next today',
+        //     right: ''
+        // },
         defaultDate: moment().format('YYYY-MM-DD'),
         dayClick(date, jsEvent, view, resourceObj) {
             if (confirm("월 마감을 실시 하시겠습니까?")) {
