@@ -396,26 +396,34 @@ $(".count").focusout(function () {
 
 $("#submitButton").click(function (e) {
     e.preventDefault();
+    auditYmd = set_yyyymmdd($('input[type=date]').val());
 
-    if ($('.add-form-set').length !== 0) {
-        alert('세트상품을 확인해주세요 검정색 버튼 클릭 필요!');
-        return false;
-    }
+    checkAudit(auditYmd)
+        .then(r => {
+            if ($('.add-form-set').length !== 0) {
+                alert('세트상품을 확인해주세요 검정색 버튼 클릭 필요!');
+                return false;
+            }
 
-    if ($('form')[0].checkValidity()) {
-        let dayOfWeek = getDayOfWeek($('input[type=date]').val());
-        if (confirm(`주문일자가 ${$('input[type=date]').val()} ${dayOfWeek}요일이 맞습니까?`)) {
-            ymd = set_yyyymmdd($('input[type=date]').val());
-            $("input[type=hidden][id*='ymd']").each(function (i, element) {
-                $(element).val(ymd);
-            });
-            $("input:disabled").prop('disabled', false);
-            $('.django-select2').prop("disabled", false);
-            $("form").submit();
-        } else {
-            return false;
-        }
-    }
+            if ($('form')[0].checkValidity()) {
+                let dayOfWeek = getDayOfWeek($('input[type=date]').val());
+                if (confirm(`주문일자가 ${$('input[type=date]').val()} ${dayOfWeek}요일이 맞습니까?`)) {
+                    ymd = set_yyyymmdd($('input[type=date]').val());
+                    $("input[type=hidden][id*='ymd']").each(function (i, element) {
+                        $(element).val(ymd);
+                    });
+                    $("input:disabled").prop('disabled', false);
+                    $('.django-select2').prop("disabled", false);
+                    $("form").submit();
+                } else {
+                    return false;
+                }
+            }
+        })
+        .catch(err => {
+            alert(auditMessage);
+        })
+
 
 });
 
@@ -438,7 +446,7 @@ $('#excelSaveButton').click(function () {
     }).done(function () {
         alert('성공');
     }).fail(function (error) {
-        const invalidLocations =  error.responseJSON[0];
+        const invalidLocations = error.responseJSON[0];
         const invalidProducts = error.responseJSON[1];
         let errorMessage = '';
 

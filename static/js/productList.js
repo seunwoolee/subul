@@ -141,8 +141,7 @@ function fetch_data(start_date = '', end_date = '') {
                     }
 
 
-                    if (oneMonthBefore(row.list_ymd))
-                    {
+                    if (oneMonthBefore(row.list_ymd)) {
                         if (today <= getMiddleDay(today)) // 한달전의 1일부터 30일까지 자료는 수정 삭제 가능
                         {
                             if (data === "제품생산") {
@@ -288,6 +287,7 @@ function setTypeButton(data) {
 var AMOUNT_KG = {};
 
 function editButtonClick(data) {
+    auditYmd = data['list_ymd'];
     if (data['list_type'] == "제품생산") {
         window.AMOUNT_KG = {"AMOUNT_KG": data["list_amount_kg"]};
         $('#amount').val(data['list_amount']);
@@ -316,6 +316,7 @@ function editButtonClick(data) {
 }
 
 function deleteButtonClick(data) {
+    auditYmd = data['list_ymd'];
     let code = data['list_code'];
     let codeHash = {'01201': '01201', '01202': '01202', '01203': '01203'}; // RAW TANK 코드
     let FALG = codeHash[code];
@@ -330,6 +331,7 @@ function deleteButtonClick(data) {
 }
 
 function recallButtonClick(data) {
+    auditYmd = data['list_ymd'];
     window.AMOUNT_KG = {"AMOUNT_KG": data["list_amount_kg"]};
     $('#id_amount_recall').val(data['list_amount']).attr("max", data['list_amount']);
     $('#id_count_recall').val(data['list_count']).attr("max", data['list_count']);
@@ -344,21 +346,29 @@ $('form').on('submit', function (e) {
     let type = $this.find('.ajaxUrlType').val();
     url = setAjaxUrl($this);
 
-    $.ajax({
-        url: url,
-        type: type,
-        data: data,
-    }).done(function (data) {
-        alert('완료');
-        $('.datatable').DataTable().search($("input[type='search']").val()).draw();
-        $(".everyModal").modal('hide');
-    }).fail(function (e) {
-        if (e.status == 403) {
-            alert('재고를 확인해 주세요');
-        } else {
-            alert('수정 에러 전산실로 문의바랍니다.');
-        }
-    });
+    checkAudit(auditYmd)
+        .then(r => {
+            $.ajax({
+                url: url,
+                type: type,
+                data: data,
+            }).done(function (data) {
+                alert('완료');
+                $('.datatable').DataTable().search($("input[type='search']").val()).draw();
+                $(".everyModal").modal('hide');
+            }).fail(function (e) {
+                if (e.status == 403) {
+                    alert('재고를 확인해 주세요');
+                } else {
+                    alert('수정 에러 전산실로 문의바랍니다.');
+                }
+            });
+        })
+        .catch(error => {
+            alert(auditMessage);
+        })
+
+
 });
 
 function setAjaxUrl($this) {
@@ -393,18 +403,18 @@ $("#productReport").click(function () {
 function deleteSelectedRows() {
 
     const minYmd = Math.min(...table.rows('.selected').data().toArray().map(row => row.list_ymd));
-    if(minYmd < minusFifteen_day){
+    if (minYmd < minusFifteen_day) {
         alert('15일 전의 데이터는 일괄 삭제 할 수 없습니다.');
         return;
     }
 
-    if(confirm('삭제하시겠습니까?')) {
+    if (confirm('삭제하시겠습니까?')) {
         let codeHash = {'01201': '01201', '01202': '01202', '01203': '01203'}; // RAW TANK 코드
         let selectedRows = table.rows('.selected').data();
         let product_data = [];
         let productEgg_data = [];
 
-        $.each(selectedRows, function( index, row ) {
+        $.each(selectedRows, function (index, row) {
             let code = row['list_code'];
             let FALG = codeHash[code];
 
@@ -415,7 +425,7 @@ function deleteSelectedRows() {
             }
         });
 
-        if(product_data.length > 0 || productEgg_data.length > 0) {
+        if (product_data.length > 0 || productEgg_data.length > 0) {
             $.ajax({
                 url: '/api/product/deleteSelectedRows',
                 type: 'delete',

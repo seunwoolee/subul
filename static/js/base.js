@@ -296,3 +296,4 @@ async function checkAudit(ymd) {
 }
 
 var auditMessage = '재무팀 월 마감 이전 데이터를 생성, 수정, 삭제 할 수 없습니다.';
+var auditYmd = '';

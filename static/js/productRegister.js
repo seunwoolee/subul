@@ -109,8 +109,9 @@ function myHandlerFunction(e) {
 $(document).on('click', '#submitButton', function (e) {
     e.preventDefault();
     ymd = set_yyyymmdd($('input[name=fakeYmd]').val());
+    auditYmd = set_yyyymmdd($('input[name=fakeYmd]').val());
 
-    checkAudit(ymd)
+    checkAudit(auditYmd)
         .then(r => {
             if ($('form')[0].checkValidity()) {
                 $('input[name=ymd]').val(ymd);

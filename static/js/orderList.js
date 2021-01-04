@@ -413,13 +413,19 @@ function setWeekdayButton(data) {
 }
 
 var AMOUNT_KG = {};
+
 function editButtonClick(data) {
+    auditYmd = data['ymd'];
     if (data['release_id'] > 0) {
         alert('출고된 주문내역은 수정할 수 없습니다.');
         return false;
     } else {
         let fakeYmd = set_yyyy_mm_dd(data['ymd']);
-        window.AMOUNT_KG = {"AMOUNT_KG": data["amount_kg"], "productCode": data["code"], "locationCode": data["orderLocationCode"]};
+        window.AMOUNT_KG = {
+            "AMOUNT_KG": data["amount_kg"],
+            "productCode": data["code"],
+            "locationCode": data["orderLocationCode"]
+        };
         $('#id_ymd').val(data['ymd']);
         $('#id_fakeYmd').val(fakeYmd);
         $('#id_type').val(data['type']);
@@ -446,6 +452,7 @@ $(".fakeYmd").focusout(function () {
 });
 
 function deleteButtonClick(data) {
+    auditYmd = data['ymd'];
     $('#modal_title').text('DELETE');
     $("#confirm").modal();
 }
@@ -464,17 +471,24 @@ $('form').on('submit', function (e) {
     let data = $this.serialize();
     url = '/api/order/' + id;
 
-    $.ajax({
-        url: url,
-        type: type,
-        data: data,
-    }).done(function (data) {
-        alert('수정완료');
-        $('#stepOne .datatable').DataTable().search($("input[type='search']").val()).draw();
-        $(".everyModal").modal('hide');
-    }).fail(function () {
-        alert('수정 에러 전산실로 문의바랍니다.');
-    });
+    checkAudit(auditYmd)
+        .then(r => {
+            $.ajax({
+                url: url,
+                type: type,
+                data: data,
+            }).done(function (data) {
+                alert('수정완료');
+                $('#stepOne .datatable').DataTable().search($("input[type='search']").val()).draw();
+                $(".everyModal").modal('hide');
+            }).fail(function () {
+                alert('수정 에러 전산실로 문의바랍니다.');
+            });
+        })
+        .catch(error => {
+            alert(auditMessage);
+        })
+
 });
 
 $('#id_specialTag').change(function () {
@@ -491,7 +505,7 @@ $('#id_specialTag').change(function () {
         let price = data.results[0]['price'];
         let specialPrice = data.results[0]['specialPrice'];
 
-        if(specialTag === '특인가'){
+        if (specialTag === '특인가') {
             $('#id_price').val(specialPrice);
         } else {
             $('#id_price').val(price);
@@ -532,17 +546,17 @@ $('#locationManagerSearch').click(function () {
 
 $('#pdfSelected').click(function () {
     const selectedRows = table.rows('.selected').data().toArray();
-    if(selectedRows.length === 0){
+    if (selectedRows.length === 0) {
         return alert('주문 내역을 선택해 주세요');
     }
 
     const checkedLocation = selectedRows.find(row => selectedRows[0].orderLocationCode !== row.orderLocationCode);
-    if(checkedLocation){
+    if (checkedLocation) {
         return alert('동일한 거래처만 선택해 주세요');
     }
 
     const checkedYmd = selectedRows.find(row => selectedRows[0].ymd !== row.ymd);
-    if(checkedYmd){
+    if (checkedYmd) {
         return alert('같은 날짜만 선택해 주세요');
     }
 
@@ -552,7 +566,7 @@ $('#pdfSelected').click(function () {
     const moneyMark = $("#moneyMark").is(":checked");
 
     window.open('http://kcfeed.com/order/pdf_selected?ymd=' + ymd +
-                    '&orderLocationCode=' + orderLocationCode +
-                    '&selectedRows=' + ids +
-                    '&moneyMark=' + moneyMark, '_blank');
+        '&orderLocationCode=' + orderLocationCode +
+        '&selectedRows=' + ids +
+        '&moneyMark=' + moneyMark, '_blank');
 });
