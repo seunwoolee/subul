@@ -1,11 +1,5 @@
-/**
- * --------------------------------------------------------------------------
- * CoreUI Pro Boostrap Admin Template (2.1.1): datatables.js
- * Licensed under MIT (https://coreui.io/license)
- * --------------------------------------------------------------------------
- */
-
 SEQ = 2;
+
 function cloneMore(selector, prefix) {
 
     $(selector).find('.location').select2("destroy");
@@ -14,7 +8,9 @@ function cloneMore(selector, prefix) {
     var no = newElement.find('.no');
     var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
 
-    newElement.find(':input').each(function() { setNewElementInputInfo($(this), total); });
+    newElement.find(':input').each(function () {
+        setNewElementInputInfo($(this), total);
+    });
     total++;
     no.html(SEQ).css("background-color", "");
     SEQ++;
@@ -26,22 +22,22 @@ function cloneMore(selector, prefix) {
     return false;
 }
 
-function setNewElementInputInfo($this, total)
-{
+function setNewElementInputInfo($this, total) {
     var name = $this.attr('name');
-    if(name) {
-        name = name.replace('-' + (total-1) + '-', '-' + total + '-');
+    if (name) {
+        name = name.replace('-' + (total - 1) + '-', '-' + total + '-');
         var id = 'id_' + name;
         $this.attr({'name': name, 'id': id}).val('').removeAttr('checked');
     }
 }
 
-function minusConditionRow(conditionRow, type)
-{
-    if(type == "normal"){ conditionRow = conditionRow.find('.btn.add-form-row'); }
+function minusConditionRow(conditionRow, type) {
+    if (type == "normal") {
+        conditionRow = conditionRow.find('.btn.add-form-row');
+    }
     conditionRow.removeClass('btn-success').removeClass('btn-dark').addClass('btn-danger')
-    .removeClass('add-form-row').removeClass('add-form-set').addClass('remove-form-row')
-    .html('-');
+        .removeClass('add-form-row').removeClass('add-form-set').addClass('remove-form-row')
+        .html('-');
 }
 
 function updateElementIndex(el, prefix, ndx) {
@@ -54,12 +50,12 @@ function updateElementIndex(el, prefix, ndx) {
 
 function deleteForm(prefix, btn) {
     var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-    if (total > 1){
+    if (total > 1) {
         btn.closest('.forms-row').remove();
         var forms = $('.forms-row');
         $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
-        for (var i=0; i<forms.length; i++) {
-            $(forms.get(i)).find(':input').each(function() {
+        for (var i = 0; i < forms.length; i++) {
+            $(forms.get(i)).find(':input').each(function () {
                 updateElementIndex(this, prefix, i);
             });
         }
@@ -67,26 +63,54 @@ function deleteForm(prefix, btn) {
     return false;
 }
 
-$(document).on('click', '.add-form-row', function(e){ //일반상품 + 버튼
+$(document).on('click', '.add-form-row', function (e) { //일반상품 + 버튼
     e.preventDefault();
     cloneMore('.forms-row:last', 'form');
     return false;
 });
 
-$(document).on('click', '.remove-form-row', function(e){ // 삭제 - 버튼
+$(document).on('click', '.remove-form-row', function (e) { // 삭제 - 버튼
     e.preventDefault();
     deleteForm('form', $(this));
     return false;
 });
 
 
-$("form").submit(function(){
+// $("form").submit(function () {
+//     ymd = set_yyyymmdd($('input[type=date]').val());
+//
+//     // auditYmd = ymd;
+//     checkAudit(ymd)
+//         .then(r => {
+//             debugger
+//             $("input[type=hidden][id*='ymd']").each(function (i, element) {
+//                 $(element).val(ymd);
+//             });
+//
+//             $("form").submit();
+//
+//         })
+//         .catch(err => {
+//             alert(auditMessage);
+//         })
+//
+//
+// })
+
+$("#submitButton").click(function () {
     ymd = set_yyyymmdd($('input[type=date]').val());
-    if(ymd)
-    {
-        $("input[type=hidden][id*='ymd']").each(function (i, element){
-            $(element).val(ymd);
-        });
-        $("form").submit();
-    }
-})
+    checkAudit(ymd)
+        .then(r => {
+            if ($('form')[0].checkValidity()) {
+                $("input[type=hidden][id*='ymd']").each(function (i, element) {
+                    $(element).val(ymd);
+                });
+                $("form").submit();
+            } else {
+                alert('필요한 정보를 모두 입력하세요');
+            }
+        })
+        .catch(err => {
+            alert(auditMessage);
+        })
+});
