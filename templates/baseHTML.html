@@ -86,101 +86,101 @@
     <div class="sidebar">
         <nav class="sidebar-nav">
             <ul class="nav" id="navBar">
-                <li class="nav-title">생산등록</li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'productRegister' %}">
-                        <i class="nav-icon icon-pencil"></i>제품생산등록</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'productList' %}">
-                        <i class="nav-icon icon-pencil"></i>생산내역조회</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'productOrder' %}">
-                        <i class="nav-icon icon-pencil"></i>생산지시서</a>
-                </li>
-                <li class="nav-title">주문발주</li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'orderReg' %}">
-                        <i class="nav-icon icon-star"></i>주문등록</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'orderList' %}">
-                        <i class="nav-icon icon-star"></i>주문조회</a>
-                </li>
-                <li class="nav-title">출고</li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'releaseReg' %}">
-                        <i class="nav-icon icon-star"></i>출고등록</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'releaseList' %}">
-                        <i class="nav-icon icon-star"></i>출고조회</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'releaseOrder' %}">
-                        <i class="nav-icon icon-star"></i>출고지시서</a>
-                </li>
-                <li class="nav-title">원란</li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'eggsReg' %}">
-                        <i class="nav-icon icon-bell"></i>원란등록</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'eggsList' %}">
-                        <i class="nav-icon icon-bell"></i>원란조회</a>
-                </li>
-                <li class="nav-title">포장재</li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'packingReg' %}">
-                        <i class="nav-icon icon-energy"></i>포장재등록</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'packingList' %}">
-                        <i class="nav-icon icon-energy"></i>포장재조회</a>
-                </li>
-                <li class="nav-title">OEM 상품</li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'productOEMReg' %}">
-                        <i class="nav-icon icon-list"></i>OEM 등록</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'productOEMList' %}">
-                        <i class="nav-icon icon-list"></i>OEM 조회</a>
-                </li>
-                <li class="nav-title">코드관리</li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'locationReg' %}">
-                        <i class="nav-icon icon-calculator"></i>거래처 등록</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'locationList' %}">
-                        <i class="nav-icon icon-calculator"></i>거래처 조회</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'productCodeList' %}">
-                        <i class="nav-icon icon-calculator"></i>제품 조회</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'productUnitPricesList' %}">
-                        <i class="nav-icon icon-calculator"></i>거래처별 제품단가</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'setProductMatchList' %}">
-                        <i class="nav-icon icon-calculator"></i>세트상품관리</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'autoPackingList' %}">
-                        <i class="nav-icon icon-calculator"></i>포장재자동출고</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'carCodeReg' %}">
-                        <i class="nav-icon icon-calculator"></i>차량 등록</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'carCodeList' %}">
-                        <i class="nav-icon icon-calculator"></i>차량 조회</a>
-                </li>
+                {#                <li class="nav-title">생산등록</li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'productRegister' %}">#}
+                {#                        <i class="nav-icon icon-pencil"></i>제품생산등록</a>#}
+                {#                </li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'productList' %}">#}
+                {#                        <i class="nav-icon icon-pencil"></i>생산내역조회</a>#}
+                {#                </li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'productOrder' %}">#}
+                {#                        <i class="nav-icon icon-pencil"></i>생산지시서</a>#}
+                {#                </li>#}
+                {#                <li class="nav-title">주문발주</li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'orderReg' %}">#}
+                {#                        <i class="nav-icon icon-star"></i>주문등록</a>#}
+                {#                </li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'orderList' %}">#}
+                {#                        <i class="nav-icon icon-star"></i>주문조회</a>#}
+                {#                </li>#}
+                {#                <li class="nav-title">출고</li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'releaseReg' %}">#}
+                {#                        <i class="nav-icon icon-star"></i>출고등록</a>#}
+                {#                </li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'releaseList' %}">#}
+                {#                        <i class="nav-icon icon-star"></i>출고조회</a>#}
+                {#                </li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'releaseOrder' %}">#}
+                {#                        <i class="nav-icon icon-star"></i>출고지시서</a>#}
+                {#                </li>#}
+                {#                <li class="nav-title">원란</li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'eggsReg' %}">#}
+                {#                        <i class="nav-icon icon-bell"></i>원란등록</a>#}
+                {#                </li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'eggsList' %}">#}
+                {#                        <i class="nav-icon icon-bell"></i>원란조회</a>#}
+                {#                </li>#}
+                {#                <li class="nav-title">포장재</li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'packingReg' %}">#}
+                {#                        <i class="nav-icon icon-energy"></i>포장재등록</a>#}
+                {#                </li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'packingList' %}">#}
+                {#                        <i class="nav-icon icon-energy"></i>포장재조회</a>#}
+                {#                </li>#}
+                {#                <li class="nav-title">OEM 상품</li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'productOEMReg' %}">#}
+                {#                        <i class="nav-icon icon-list"></i>OEM 등록</a>#}
+                {#                </li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'productOEMList' %}">#}
+                {#                        <i class="nav-icon icon-list"></i>OEM 조회</a>#}
+                {#                </li>#}
+                {#                <li class="nav-title">코드관리</li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'locationReg' %}">#}
+                {#                        <i class="nav-icon icon-calculator"></i>거래처 등록</a>#}
+                {#                </li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'locationList' %}">#}
+                {#                        <i class="nav-icon icon-calculator"></i>거래처 조회</a>#}
+                {#                </li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'productCodeList' %}">#}
+                {#                        <i class="nav-icon icon-calculator"></i>제품 조회</a>#}
+                {#                </li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'productUnitPricesList' %}">#}
+                {#                        <i class="nav-icon icon-calculator"></i>거래처별 제품단가</a>#}
+                {#                </li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'setProductMatchList' %}">#}
+                {#                        <i class="nav-icon icon-calculator"></i>세트상품관리</a>#}
+                {#                </li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'autoPackingList' %}">#}
+                {#                        <i class="nav-icon icon-calculator"></i>포장재자동출고</a>#}
+                {#                </li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'carCodeReg' %}">#}
+                {#                        <i class="nav-icon icon-calculator"></i>차량 등록</a>#}
+                {#                </li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="{% url 'carCodeList' %}">#}
+                {#                        <i class="nav-icon icon-calculator"></i>차량 조회</a>#}
+                {#                </li>#}
             </ul>
         </nav>
         <button class="sidebar-minimizer brand-minimizer" type="button"></button>
@@ -211,13 +211,127 @@
 </footer>
 
 <script type="text/javascript">
+    if (EXCOMPANY) {
+        $('#navBar').replaceWith(
+            '<ul class="nav" id="navBar">' +
+            '<li class="nav-title">주문발주</li>' +
+            '<li class="nav-item open">\n' +
+            ' <a class="nav-link" href="/order/ex">\n' +
+            '  <i class="nav-icon icon-star"></i>주문등록</a>\n' +
+            '</li>' +
+            '<li class="nav-item">\n' +
+            ' <a class="nav-link" href="/order/listEx">\n' +
+            '  <i class="nav-icon icon-star"></i>주문조회</a>\n' +
+            '</li>' +
+            '</ul>')
+    } else {
+        $('#navBar').replaceWith('<ul class="nav" id="navBar">\n' +
+            '                <li class="nav-title">생산등록</li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/product/">\n' +
+            '                        <i class="nav-icon icon-pencil"></i>제품생산등록</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/product/list">\n' +
+            '                        <i class="nav-icon icon-pencil"></i>생산내역조회</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/product/order">\n' +
+            '                        <i class="nav-icon icon-pencil"></i>생산지시서</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-title">주문발주</li>\n' +
+            '                <li class="nav-item open">\n' +
+            '                    <a class="nav-link" href="/order/">\n' +
+            '                        <i class="nav-icon icon-star"></i>주문등록</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/order/list">\n' +
+            '                        <i class="nav-icon icon-star"></i>주문조회</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-title">출고</li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/release/">\n' +
+            '                        <i class="nav-icon icon-star"></i>출고등록</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/release/list">\n' +
+            '                        <i class="nav-icon icon-star"></i>출고조회</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/release/order">\n' +
+            '                        <i class="nav-icon icon-star"></i>출고지시서</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-title">원란</li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/eggs/">\n' +
+            '                        <i class="nav-icon icon-bell"></i>원란등록</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/eggs/list">\n' +
+            '                        <i class="nav-icon icon-bell"></i>원란조회</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-title">포장재</li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/packing/">\n' +
+            '                        <i class="nav-icon icon-energy"></i>포장재등록</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/packing/list">\n' +
+            '                        <i class="nav-icon icon-energy"></i>포장재조회</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-title">OEM 상품</li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/product/productOEMReg">\n' +
+            '                        <i class="nav-icon icon-list"></i>OEM 등록</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/product/productOEMList">\n' +
+            '                        <i class="nav-icon icon-list"></i>OEM 조회</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-title">코드관리</li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/core/">\n' +
+            '                        <i class="nav-icon icon-calculator"></i>거래처 등록</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/core/list">\n' +
+            '                        <i class="nav-icon icon-calculator"></i>거래처 조회</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/product/productCodeList">\n' +
+            '                        <i class="nav-icon icon-calculator"></i>제품 조회</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/product/ProductUnitPricesList">\n' +
+            '                        <i class="nav-icon icon-calculator"></i>거래처별 제품단가</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/product/setProductMatchList">\n' +
+            '                        <i class="nav-icon icon-calculator"></i>세트상품관리</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/product/autoPackingList">\n' +
+            '                        <i class="nav-icon icon-calculator"></i>포장재자동출고</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/release/carCodeReg">\n' +
+            '                        <i class="nav-icon icon-calculator"></i>차량 등록</a>\n' +
+            '                </li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/release/carCodeList">\n' +
+            '                        <i class="nav-icon icon-calculator"></i>차량 조회</a>\n' +
+            '                </li>\n' +
+            '            </ul>\n')
+
+    }
+
     if (SUPERUSER) {
         $('#navBar').append(
-            '<li class="nav-title">재무팀</li>' +
-            '<li class="nav-item">\n' +
-            ' <a class="nav-link" href="/core/audit">\n' +
-            '  <i class="nav-icon icon-star"></i>월 마감</a>\n' +
-            '</li>')
+            '                <li class="nav-title">재무팀</li>\n' +
+            '                <li class="nav-item">\n' +
+            '                    <a class="nav-link" href="/core/audit">\n' +
+            '                        <i class="nav-icon icon-star"></i>월 마감</a>\n' +
+            '                </li>\n' );
     }
 </script>
 
