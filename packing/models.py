@@ -173,7 +173,7 @@ class Packing(Detail):
         packing_previous: manager = Packing.objects.values('code', 'codeName') \
             .annotate(totalCount=Sum('count')) \
             .filter(ymd__lt=start_date) \
-            .filter(totalCount__gt=0)  # 재고가 0초과인 이전 재고
+            .filter(Q(totalCount__gt=0)|Q(totalCount__lt=0))  # 재고가 0초과 OR 이하 인 이전 재고
 
         if search_value:
             packing_previous = packing_previous.filter(codeName__icontains=search_value)

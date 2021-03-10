@@ -204,7 +204,10 @@ function getYear(yyyymmdd) {
 }
 
 function getMiddleDay(yyyymmdd) {
-    return yyyymmdd.substring(0, 6) + "15";
+    //return yyyymmdd.substring(0, 6) + "15";
+    //2021.02.03 60일로 변경
+    return yyyymmdd.substring(0, 6) + "60";
+
 }
 
 function getFirstDay(yyyymmdd) {
