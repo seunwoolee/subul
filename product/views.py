@@ -150,7 +150,8 @@ class ProductList(LoginRequiredMixin, PermissionRequiredMixin, View):
         return render(request, 'product/productList.html')
 
 
-class ProductOrderList(View):
+class ProductOrderList(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = 'product.add_product'
 
     def get(self, request):
         productOrderForm = ProductOrderForm()

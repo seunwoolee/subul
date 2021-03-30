@@ -197,7 +197,7 @@ class Audit(models.Model):
 
 
 class OrderTime(models.Model):
-    company = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)
+    company = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True, related_name='order_time')
     company_name = models.CharField(max_length=255)
     weekday = models.CharField(
         max_length=2,

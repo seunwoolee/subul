@@ -1,3 +1,6 @@
+import datetime
+
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.views import View
@@ -5,17 +8,19 @@ from model_utils.managers import QueryManager
 from openpyxl.worksheet import worksheet
 from openpyxl.worksheet.worksheet import Worksheet
 
-from core.models import Location
+from core.models import Location, OrderTime
 from eggs.models import Egg
 from eventlog.models import LogginMixin
 from order.forms import OrderFormSet, OrderForm, OrderFormExSet
 from order.models import Order, ABS
 from product.models import ProductCode, SetProductCode, ProductUnitPrice
-from django.db.models import Sum, F, ExpressionWrapper, FloatField, IntegerField, Func, Value, CharField, Q
+from django.db.models import Sum, F, ExpressionWrapper, FloatField, IntegerField, Func, Value, CharField, Q, QuerySet
 from core.utils import render_to_pdf
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from openpyxl import load_workbook, Workbook
+
+from users.models import CustomUser
 
 
 class Round(Func):
@@ -209,8 +214,39 @@ class OrderReg(LogginMixin, LoginRequiredMixin, View):
 
 class OrderRegEx(LogginMixin, LoginRequiredMixin, View):
 
+    def is_valid_order(self, request):
+        user: CustomUser = request.user
+        now = datetime.datetime.now()
+        if user.last_name != '업체':
+            return True
+
+        weekday = now.weekday()
+        weekday = weekday + 1
+        if weekday == 7:
+            weekday = 0  # 일요일
+
+        order_time: OrderTime = user.order_time.filter(weekday=weekday).first()
+        if not order_time:  # 외부 업체인데 시간이 미정이면 등록못함
+            return False
+
+        current_time: int = int(now.strftime('%H%M'))
+        start: list = order_time.start.split(':')
+        end: list = order_time.end.split(':')
+
+        start: int = int(start[0] + start[1])
+        end: int = int(end[0] + end[1])
+
+        if start < current_time < end:
+            return True
+
+        return False
+
     def post(self, request):
         if self.request.user.is_staff:
+            return redirect('orderRegEx')
+
+        if not self.is_valid_order(request):
+            messages.info(request, '주문 가능한 시간이 아닙니다.')
             return redirect('orderRegEx')
 
         formset = OrderFormExSet(request.POST)
@@ -260,6 +296,8 @@ class OrderRegEx(LogginMixin, LoginRequiredMixin, View):
         return redirect('orderRegEx')
 
     def get(self, request):
+        if not self.is_valid_order(request):
+            messages.info(request, '주문 가능한 시간이 아닙니다.')
         orderForm = OrderFormExSet(request.GET or None)
         return render(request, 'order/orderRegEx.html', {'orderForm': orderForm})
 
