@@ -12,14 +12,14 @@ from django.forms.models import model_to_dict
 from api.autoPackingSerializers import AutoPackingSerializer
 from api.eggSerializers import EggSerializer, EggOrderSerializer
 from api.locationSerializers import LocationSerializer
-from api.orderSerializers import OrderSerializer, OrderDatatableSerializer
+from api.orderSerializers import OrderSerializer, OrderDatatableSerializer, OrderTimeDatatableSerializer
 from api.packingSerializers import PackingSerializer
 from api.productCodeSerializers import ProductCodeDatatableSerializer, AuditSerializer
 from api.productOEMSerializers import ProductOEMSerializer
 from api.productOrderSerializers import ProductOrderSerializer, ProductOrderPackingSerializer
 from api.productUnitPriceSerializers import ProductUnitPriceListSerializer, SetProductMatchListSerializer
 from api.releaseSerializers import ReleaseSerializer, CarDatatableSerializer, LocationDatatableSerializer
-from core.models import Location, Audit
+from core.models import Location, Audit, OrderTime
 from eggs.models import Egg, EggOrder
 from eventlog.models import LogginMixin
 from order.models import Order
@@ -1108,3 +1108,13 @@ def check_audit(request: Request):
         return Response(status=412)
 
     return Response(status=200)
+
+
+class OrderTimeDatatableList(generics.ListAPIView):
+    queryset = OrderTime.objects.all()
+    serializer_class = OrderTimeDatatableSerializer
+
+
+class OrderTimeUpdate(LogginMixin, generics.RetrieveUpdateDestroyAPIView):
+    queryset = OrderTime.objects.all()
+    serializer_class = OrderTimeDatatableSerializer

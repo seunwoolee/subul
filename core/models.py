@@ -3,12 +3,21 @@ from django.db.models import F, Q, When, Case, CharField, Value
 from model_utils import Choices
 from users.models import CustomUser
 
-
 DELETE_STATE_CHOICES = (
     ('Y', 'deleted'),
     ('N', 'notDeleted'),
 )
 
+# 0 ~ 6(일 ~ 토)
+WEEK_DAY_CHOICES = (
+    ('0', '일요일'),
+    ('1', '월요일'),
+    ('2', '화요일'),
+    ('3', '수요일'),
+    ('4', '목요일'),
+    ('5', '금요일'),
+    ('6', '토요일'),
+)
 
 class TimeStampedModel(models.Model):
     """
@@ -138,27 +147,27 @@ class Location(Code):
         order_column = ORDER_COLUMN_CHOICES[order_column]
         type = kwargs.get('type', None)[0]
 
-        queryset = Location.objects.all().filter(delete_state='N').filter(type=type)\
-                    .annotate(type_string=Case(
-                                    When(type='01', then=Value('포장재입고')),
-                                    When(type='03', then=Value('원란입고')),
-                                    When(type='07', then=Value('원란판매')),
-                                    When(type='09', then=Value('OEM입고거래처')),
-                                    default=Value('판매'),
-                                    output_field=CharField()))\
-                    .annotate(character_string=Case(
-                                    When(location_character='01', then=Value('B2B')),
-                                    When(location_character='02', then=Value('급식')),
-                                    When(location_character='03', then=Value('미군납')),
-                                    When(location_character='04', then=Value('백화점')),
-                                    When(location_character='05', then=Value('온라인')),
-                                    When(location_character='06', then=Value('자사몰')),
-                                    When(location_character='07', then=Value('직거래')),
-                                    When(location_character='08', then=Value('특판')),
-                                    When(location_character='09', then=Value('하이퍼')),
-                                    default=Value('기타'),
-                                    output_field=CharField())) \
-                    .annotate(location_manager_string=F('location_manager__first_name'))
+        queryset = Location.objects.all().filter(delete_state='N').filter(type=type) \
+            .annotate(type_string=Case(
+            When(type='01', then=Value('포장재입고')),
+            When(type='03', then=Value('원란입고')),
+            When(type='07', then=Value('원란판매')),
+            When(type='09', then=Value('OEM입고거래처')),
+            default=Value('판매'),
+            output_field=CharField())) \
+            .annotate(character_string=Case(
+            When(location_character='01', then=Value('B2B')),
+            When(location_character='02', then=Value('급식')),
+            When(location_character='03', then=Value('미군납')),
+            When(location_character='04', then=Value('백화점')),
+            When(location_character='05', then=Value('온라인')),
+            When(location_character='06', then=Value('자사몰')),
+            When(location_character='07', then=Value('직거래')),
+            When(location_character='08', then=Value('특판')),
+            When(location_character='09', then=Value('하이퍼')),
+            default=Value('기타'),
+            output_field=CharField())) \
+            .annotate(location_manager_string=F('location_manager__first_name'))
 
         if order == 'desc':
             order_column = '-' + order_column
@@ -185,3 +194,15 @@ class Audit(models.Model):
     def checkAudit(ymd: str):
         audit: Audit = Audit.objects.last()
         return int(ymd) < int(audit.ymd)
+
+
+class OrderTime(models.Model):
+    company = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)
+    company_name = models.CharField(max_length=255)
+    weekday = models.CharField(
+        max_length=2,
+        choices=WEEK_DAY_CHOICES,
+        default='0',
+    )
+    start = models.CharField(max_length=20)
+    end = models.CharField(max_length=20)

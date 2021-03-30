@@ -1,7 +1,8 @@
 from datetime import datetime
 from rest_framework import serializers
-from core.models import Location
+from core.models import Location, OrderTime
 from order.models import Order
+from users.models import CustomUser
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -68,3 +69,15 @@ class OrderDatatableSerializer(serializers.ModelSerializer):
         yyyy_mm_dd = '{}-{}-{}'.format(obj.ymd[0:4], obj.ymd[4:6], obj.ymd[6:8])
         weekday_index = datetime.strptime(yyyy_mm_dd, '%Y-%m-%d').weekday()
         return WEEK_ARRAY[weekday_index]
+
+
+class OrderTimeDatatableSerializer(serializers.ModelSerializer):
+    weekday = serializers.SerializerMethodField(read_only=True)
+    # company = serializers.CharField(source='company.username')
+
+    class Meta:
+        model = OrderTime
+        fields = '__all__'
+
+    def get_weekday(self, obj):
+        return obj.get_weekday_display()

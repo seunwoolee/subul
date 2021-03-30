@@ -8,7 +8,7 @@ from .views import ProductsAPIView, ProductUpdate, ProductEggUpdate, OrderProduc
     EggOrderUpdate, ProductOrderListAPIView, ProductOrderUpdate, ProductOrderPackingUpdate, ProductCodeByPk, \
     ProductCodeDatatableList, ProductCodeUpdate, ProductOrderPackingStockCreate, DeleteSelectedRows, OrderPriceMatch, \
     CarDatatableList, LocationDatatableList, ProductOrderReleaseStock, CarCodeUpdate, OrderExAPIView, \
-    create_remove_audit, get_audit, check_audit
+    create_remove_audit, get_audit, check_audit, OrderTimeDatatableList, OrderTimeUpdate
 
 urlpatterns = [
     # 생산쪽 API
@@ -69,4 +69,7 @@ urlpatterns = [
     path('audit/', create_remove_audit),
     path('get_audit/', get_audit),
     path('checkAudit/', check_audit),
+    path('orderTime/', OrderTimeDatatableList.as_view()),
+    path('orderTime/<int:pk>', OrderTimeUpdate.as_view()),
+
 ]

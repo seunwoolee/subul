@@ -204,9 +204,7 @@ function getYear(yyyymmdd) {
 }
 
 function getMiddleDay(yyyymmdd) {
-    //return yyyymmdd.substring(0, 6) + "15";
-    //2021.02.03 60일로 변경
-    return yyyymmdd.substring(0, 6) + "60";
+    return yyyymmdd.substring(0, 6) + "30";
 
 }
 
@@ -247,7 +245,7 @@ function setActionButton(data, yyyymmdd) {
     const data_yyyymm = getYearMonth(yyyymmdd);
     const today_yyyymm = getYearMonth(today);
     const NEXTYEARDIFF = 89;
-
+    debugger;
     if (SUPERUSER || data_yyyymm >= today_yyyymm) {
         if (data > 0) {
             return setDataTableActionButtonWithoutEdit();

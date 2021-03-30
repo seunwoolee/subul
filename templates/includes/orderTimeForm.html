@@ -1,0 +1,22 @@
+{% load widget_tweaks %}
+{% load mathfilters %}
+
+    {{ orderTimeForm.management_form }}
+
+    {% for field in orderTimeForm %}
+          <tr class="forms-row">
+            <td class="no" data-title="No">{{ forloop.counter }}</td>
+            <td data-title="특인">{% render_field field.company class="form-control company" required="True" %}</td>
+            <td data-title="특인">{% render_field field.weekday class="form-control weekday" required="True" %}</td>
+            <td data-title="타입">{% render_field field.start class="form-control start" required="True"%}</td>
+            <td data-title="메모">
+                <div class="input-group">
+                    {% render_field field.end class="form-control end" required="True"%}
+                    <div class="input-group-append">
+                        <button class="btn btn-success add-form-row">+</button>
+                    </div>
+                </div>
+            </td>
+    {% endfor %}
+
+    {{ orderTimeForm.media.js }}
