@@ -293,7 +293,7 @@ class OrderRegEx(LogginMixin, LoginRequiredMixin, View):
                 obj=Order.objects.first(),
                 extra=formset.errors[0]
             )
-        return redirect('orderRegEx')
+        return redirect('orderListEx')
 
     def get(self, request):
         if not self.is_valid_order(request):

@@ -75,7 +75,7 @@ class OrderTimeReg(LoginRequiredMixin, View):
                     end=end
                 ).save()
 
-        return redirect('orderTimeReg')
+        return redirect('orderTimeList')
 
     def get(self, request):
         orderTimeForm = OrderTimeFormSet(request.GET or None)
